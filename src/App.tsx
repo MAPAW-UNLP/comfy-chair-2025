@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { fetchDummyEndpoint } from './services/dummy';
 import { useState } from 'react';
+import { DummyApp } from './components/dummy/DummyApp';
 
 function App() {
   const [text, setText] = useState<string>('');
@@ -14,6 +15,7 @@ function App() {
     <div className="flex min-h-svh flex-col items-center justify-center">
       <Button onClick={handleClick}>Click me</Button>
       <p>{text}</p>
+      <DummyApp />
     </div>
   );
 }
