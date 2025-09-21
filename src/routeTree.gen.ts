@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DummyRouteImport } from './routes/dummy'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ArticlesIdRevisoresRouteImport } from './routes/articles.$id.revisores'
 
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
@@ -23,40 +22,31 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticlesIdRevisoresRoute = ArticlesIdRevisoresRouteImport.update({
-  id: '/articles/$id/revisores',
-  path: '/articles/$id/revisores',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
-  '/articles/$id/revisores': typeof ArticlesIdRevisoresRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
-  '/articles/$id/revisores': typeof ArticlesIdRevisoresRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
-  '/articles/$id/revisores': typeof ArticlesIdRevisoresRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy' | '/articles/$id/revisores'
+  fullPaths: '/' | '/dummy'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy' | '/articles/$id/revisores'
-  id: '__root__' | '/' | '/dummy' | '/articles/$id/revisores'
+  to: '/' | '/dummy'
+  id: '__root__' | '/' | '/dummy'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DummyRoute: typeof DummyRoute
-  ArticlesIdRevisoresRoute: typeof ArticlesIdRevisoresRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,20 +65,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articles/$id/revisores': {
-      id: '/articles/$id/revisores'
-      path: '/articles/$id/revisores'
-      fullPath: '/articles/$id/revisores'
-      preLoaderRoute: typeof ArticlesIdRevisoresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DummyRoute: DummyRoute,
-  ArticlesIdRevisoresRoute: ArticlesIdRevisoresRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
