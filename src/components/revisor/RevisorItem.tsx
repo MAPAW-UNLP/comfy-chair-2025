@@ -1,61 +1,62 @@
 import type { Revisor } from '@/services/revisor';
 import type React from 'react';
-import { useState } from 'react';
+import { Smile, Plus, Trash2 } from 'lucide-react';
 
 interface RevisorProps {
   revisor: Revisor;
+  asignado?: boolean;
+  onAsignar?: () => void;
+  onEliminar?: () => void;
 }
 
-export const RevisorItem: React.FC<RevisorProps> = ({ revisor }) => {
-  const [showModal, setShowModal] = useState(false);
+const interesMap: Record<string, string> = {
+  interesado: 'Interesado',
+  quizas: 'Quizás',
+  no_interesado: 'No interesado',
+  ninguno: 'No indicó'
+};
 
-  const handleAsignar = () => {
-    setShowModal(true);
+export const RevisorItem: React.FC<RevisorProps> = ({ revisor, asignado, onAsignar, onEliminar }) => {
+  const getEstadoColor = () => {
+    switch (revisor.interes) {
+      case 'interesado':
+        return { backgroundColor: 'hsl(141.7 76.6% 73.1%)' };
+      case 'quizas':
+        return { backgroundColor: 'hsl(52.8 98.3% 76.9%)' };
+      case 'no_interesado':
+        return { backgroundColor: 'hsl(0, 90.6%, 70.8%)' };
+      default:
+        return { backgroundColor: 'hsl(240, 4.9%, 83.9%)' };
+    }
   };
-
-  const handleCerrar = () => {
-    setShowModal(false);
-  };
-
   return (
-    <div className="flex flex-col border p-2 rounded-md">
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="font-semibold">{revisor.nombre_completo}</p>
-          <p className="text-sm text-gray-600">{revisor.email}</p>
+    <div className="flex items-center justify-between border-3 border-black rounded-xl p-3 shadow-2xl bg-white">
+      <div className="flex items-center gap-4">
+        <Smile size={40} className="text-yellow-500 flex-shrink-0" />
+        <div className="flex flex-col items-start">
+          <p className="scroll-m-20 text-xl font-semibold tracking-tight">{revisor.nombre_completo}</p>
+          <span
+            className="mt-1 px-3 py-1 rounded-md text-sm font-bold text-black flex items-center justify-center border-2 border-black"
+            style={getEstadoColor()}
+          >
+            {interesMap[revisor.interes] || 'No indicó'}
+          </span>
         </div>
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-          onClick={handleAsignar}
-        >
-          Asignar
-        </button>
       </div>
-
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-md w-80">
-            <h2 className="font-bold text-lg mb-4">Asignar Revisor</h2>
-            <p>¿Deseas asignar a {revisor.nombre_completo} al artículo?</p>
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                className="px-3 py-1 rounded border hover:bg-gray-100"
-                onClick={handleCerrar}
-              >
-                Cancelar
-              </button>
-              <button
-                className="px-3 py-1 rounded bg-green-500 text-white hover:bg-green-600"
-                onClick={() => {
-                  alert(`Revisor ${revisor.nombre_completo} asignado!`);
-                  handleCerrar();
-                }}
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
+      {asignado ? (
+        <button
+          onClick={onEliminar}
+          className="flex items-center gap-1 bg-red-600 px-3 py-1 rounded-lg text-sm font-bold hover:bg-red-700 border-2 border-black"
+        >
+          <Trash2 size={16} /> Eliminar
+        </button>
+      ) : (
+        <button
+          onClick={onAsignar}
+          className="flex items-center gap-1 bg-green-600 px-3 py-1 rounded-lg text-sm font-bold hover:bg-green-700 border-2 border-black"
+        >
+          <Plus size={16} /> Asignar
+        </button>
       )}
     </div>
   );
