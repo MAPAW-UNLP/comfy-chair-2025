@@ -1,7 +1,8 @@
 import { createDummy, getAllDummies, type Dummy } from '@/services/dummy';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type SetStateAction } from 'react';
 import { DummyItem } from './Dummy';
 import { Button } from '../ui/button';
+import { Input } from "@/components/ui/input"
 
 export const DummyApp = () => {
   const [name, setName] = useState<string>('');
@@ -23,20 +24,24 @@ export const DummyApp = () => {
   };
 
   return (
-    <div className="flex min-h-svh flex-col gap-8 items-center justify-center">
-      <form className="flex flex-col gap-3" onSubmit={handleClick}>
-        <label>Nuevo Dummy</label>
-        <input
+    <div className="flex min-h-svh flex-col gap-4 mx-4 items-center justify-center">
+      <form className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4" onSubmit={handleClick}>
+
+        <h2 className="text-lg font-bold italic text-slate-500 text-center">Nuevo Dummy</h2>
+        <hr className="bg-slate-100"/>
+        <Input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e: { target: { value: SetStateAction<string>; }; }) => setName(e.target.value)}
           type="text"
-          placeholder="Name"
+          placeholder="Nombre"
           className="border-2 border-black"
         />
-        <Button>Create Dummy</Button>
+        <Button variant="outline" className="bg-slate-900 text-white w-full">Crear Dummy</Button>
       </form>
+
+
       <div>
-        <h2 className="font-bold text-2xl">Dummies Creados</h2>
+        <h2 className="font-bold text-2xl">Dummies Creados: {dummies.length}</h2>
         <ul>
           {dummies.map((dummy) => (
             <DummyItem key={dummy.id} dummy={dummy} />
