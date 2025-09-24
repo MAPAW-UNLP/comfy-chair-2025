@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export type Estado = "Aceptado" | "Recibido" | "Rechazado";
 
@@ -63,22 +71,50 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, estado
       <p className="text-md text-slate-500 text-center">{conferencia}</p>
       
       {/* Contenedor de los dos botones */}
-      <div className="flex gap-2 mt-2">
+      <div className="flex gap-2 mt-auto">
 
         {/* Boton Estado */}
         <div className="flex-1 flex flex-col gap-1">
           <span className="text-sm text-slate-900 font-medium text-start">Estado</span>
-          <Button variant="outline" className={`${estadoColor[estado]} text-white w-full`}>
-            {estado}
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className={`${estadoColor[estado]} text-white w-full`}>
+                {estado}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Detalle del Estado</DialogTitle>
+                <DialogDescription>
+                  Su articulo se encuentra en estado <b>{estado}</b>.
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Boton Modificar */}
         <div className="flex-1 flex flex-col gap-1">
           <span className="text-sm text-slate-900 font-medium text-start">Modificar</span>
-          <Button variant="outline" disabled={estado !== "Recibido"} className={`w-full ${estado === "Recibido" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
-            {estado === "Recibido" ? tiempoRestante + " Restantes" || "..." : "No Disponible"}
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" disabled={estado !== "Recibido"} className={`w-full ${estado === "Recibido" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
+                {estado === "Recibido" ? tiempoRestante + " Restantes" || "..." : "No Disponible"}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Modificar Articulo</DialogTitle>
+                <DialogDescription>
+                  <span>
+                    Tienes tiempo de modificar tu articulo hasta el dia
+                    <br/>
+                    <b>{finPeriodo ? finPeriodo.toLocaleString("es-AR", {dateStyle: "full", timeStyle: "short",}): "No se estableció una fecha límite."}</b>
+                  </span>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
 
       </div>

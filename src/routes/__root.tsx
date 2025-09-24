@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { Armchair } from 'lucide-react';
 
 const RootLayout = () => (
   <>
@@ -13,6 +14,9 @@ const RootLayout = () => (
       <Link to="/articulos" className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
         Mis Articulos
       </Link>
+      <div className="px-3 py-1 rounded-md ml-auto">
+        <Armchair />
+      </div>
     </nav>
     <main className="p-4">
       <Outlet />

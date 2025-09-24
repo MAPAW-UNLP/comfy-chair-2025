@@ -24,7 +24,7 @@ export const DummyApp = () => {
   };
 
   return (
-    <div className="flex min-h-svh flex-col gap-4 mx-4 items-center justify-center">
+    <div className="flex flex-col gap-4 mx-4 items-center">
       <form className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4" onSubmit={handleClick}>
 
         <h2 className="text-lg font-bold italic text-slate-500 text-center">Nuevo Dummy</h2>
@@ -38,7 +38,6 @@ export const DummyApp = () => {
         />
         <Button variant="outline" className="bg-slate-900 text-white w-full">Crear Dummy</Button>
       </form>
-
 
       <div>
         <h2 className="font-bold text-2xl">Dummies Creados: {dummies.length}</h2>
