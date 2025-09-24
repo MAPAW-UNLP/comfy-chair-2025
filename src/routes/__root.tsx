@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { Toaster } from "@/components/ui/sonner";
 
 const RootLayout = () => (
   <>
@@ -10,6 +11,7 @@ const RootLayout = () => (
       <Link to="/dummy" className="[&.active]:font-bold">
         Dummy
       </Link>
+      <Toaster />
     </div>
     <hr />
     <Outlet />
