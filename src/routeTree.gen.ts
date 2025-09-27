@@ -9,12 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnaSesionRouteImport } from './routes/una-sesion'
+import { Route as UnaConferenciaRouteImport } from './routes/una-conferencia'
 import { Route as DummyRouteImport } from './routes/dummy'
+import { Route as AltaConferenciaRouteImport } from './routes/alta-conferencia'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const UnaSesionRoute = UnaSesionRouteImport.update({
+  id: '/una-sesion',
+  path: '/una-sesion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnaConferenciaRoute = UnaConferenciaRouteImport.update({
+  id: '/una-conferencia',
+  path: '/una-conferencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
   path: '/dummy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AltaConferenciaRoute = AltaConferenciaRouteImport.update({
+  id: '/alta-conferencia',
+  path: '/alta-conferencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +49,100 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
+  '/una-conferencia': typeof UnaConferenciaRoute
+  '/una-sesion': typeof UnaSesionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
+  '/una-conferencia': typeof UnaConferenciaRoute
+  '/una-sesion': typeof UnaSesionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
+  '/una-conferencia': typeof UnaConferenciaRoute
+  '/una-sesion': typeof UnaSesionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/alta-conferencia'
+    | '/dummy'
+    | '/una-conferencia'
+    | '/una-sesion'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy'
-  id: '__root__' | '/' | '/dummy'
+  to:
+    | '/'
+    | '/admin'
+    | '/alta-conferencia'
+    | '/dummy'
+    | '/una-conferencia'
+    | '/una-sesion'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/alta-conferencia'
+    | '/dummy'
+    | '/una-conferencia'
+    | '/una-sesion'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AltaConferenciaRoute: typeof AltaConferenciaRoute
   DummyRoute: typeof DummyRoute
+  UnaConferenciaRoute: typeof UnaConferenciaRoute
+  UnaSesionRoute: typeof UnaSesionRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/una-sesion': {
+      id: '/una-sesion'
+      path: '/una-sesion'
+      fullPath: '/una-sesion'
+      preLoaderRoute: typeof UnaSesionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/una-conferencia': {
+      id: '/una-conferencia'
+      path: '/una-conferencia'
+      fullPath: '/una-conferencia'
+      preLoaderRoute: typeof UnaConferenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dummy': {
       id: '/dummy'
       path: '/dummy'
       fullPath: '/dummy'
       preLoaderRoute: typeof DummyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alta-conferencia': {
+      id: '/alta-conferencia'
+      path: '/alta-conferencia'
+      fullPath: '/alta-conferencia'
+      preLoaderRoute: typeof AltaConferenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +157,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AltaConferenciaRoute: AltaConferenciaRoute,
   DummyRoute: DummyRoute,
+  UnaConferenciaRoute: UnaConferenciaRoute,
+  UnaSesionRoute: UnaSesionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
