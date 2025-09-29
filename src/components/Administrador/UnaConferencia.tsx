@@ -1,16 +1,63 @@
-import React from 'react'
-import { Route } from '@/routes/conferencias/$id'
-import Header from './Header'
+import React, { useState } from 'react';
+import { Route } from '@/routes/conferencias/$id';
+import Header from './Header';
+import type { Conferencia } from './AdministradorApp';
+import { Edit, Plus } from 'lucide-react';
+import { Button } from '../ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 function UnaConferencia() {
-  const conferencia= Route.useLoaderData() 
+  const conferenciaInicial = Route.useLoaderData();
+  const [conferencia, setConferencia] =
+    useState<Conferencia>(conferenciaInicial);
+  const navigate= useNavigate()
+
+  const irEditarConferencia= () =>{
+    navigate({to: `/conferencias/editar/${conferencia.id}`})
+  }
+
+  const agregarSesion= () =>{
+
+  }
 
   return (
-    <div className="flex flex-col justify-center items-center gap-5 bg-[#EEEEEE] h-full ">
+    <div className="flex flex-col justify-center items-center gap-5 bg-[#EEEEEE] h-full w-full ">
       <Header />
-      {conferencia.titulo}
+      <div className="flex flex-col px-8 w-full gap-2">
+        <div className="bg-white rounded shadow p-2 py-1 w-full">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">{conferencia.titulo}</h1>
+            <Edit size={'15'} className="cursor-pointer" onClick={irEditarConferencia} />
+          </div>
+
+          <p className="text-sm">
+            Desde {conferencia.fecha_fin} a {conferencia.fecha_fin}
+          </p>
+        </div>
+
+        <div className="flex flex-col bg-white rounded shadow p-2 py-1 w-full">
+          <h2 className="text-1xl font-bold">Descripción</h2>
+          <p>{conferencia.descripcion}</p>
+          <h2 className="text-1xl font-bold">Chair general</h2>
+          <p>Jose Hernandez</p> {/*conferencia.chair*/}
+        </div>
+
+        <div className='flex flex-col bg-white rounded shadow p-2 w-full'>
+          <div className='flex justify-between'>
+            <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
+            <Button
+              size={'sm'}
+              onClick={agregarSesion}
+              className="cursor-pointer"
+            >
+              <Plus />
+              Nueva sesión
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default UnaConferencia
+export default UnaConferencia;

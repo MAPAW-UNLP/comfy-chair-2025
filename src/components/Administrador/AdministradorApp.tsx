@@ -32,7 +32,7 @@ function AdministradorApp() {
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
-    navigate({ to: '/alta-conferencia' });
+    navigate({ to: '/conferencias/alta-conferencia' });
   };
 
   useEffect(() => {
