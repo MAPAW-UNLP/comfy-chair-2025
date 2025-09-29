@@ -27,7 +27,9 @@ function UnaConferencia() {
         <div className="bg-white rounded shadow p-2 py-1 w-full">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{conferencia.titulo}</h1>
-            <Edit size={'15'} className="cursor-pointer" onClick={irEditarConferencia} />
+            <div className="cursor-pointer rounded hover:bg-gray-200 p-1">
+              <Edit size={'15'} onClick={irEditarConferencia} />
+            </div>
           </div>
 
           <p className="text-sm">

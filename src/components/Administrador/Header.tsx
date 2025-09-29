@@ -14,9 +14,9 @@ function Header() {
         <div className='cursor-pointer' onClick={goHome}>
             Logo
         </div>
-        <div className='flex items-center gap-1'>
-            <User className="w-4 h-4"  />
-            Usuario
+        <div className='flex items-center gap-1 cursor-pointer hover:bg-[#141E34] rounded p-1'>
+          <User className="w-4 h-4"  />
+          Usuario
         </div>
     </div>
   )
