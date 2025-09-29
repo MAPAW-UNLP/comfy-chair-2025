@@ -10,11 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DummyRouteImport } from './routes/dummy'
+import { Route as AltaConferenciaRouteImport } from './routes/alta-conferencia'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
 
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
   path: '/dummy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AltaConferenciaRoute = AltaConferenciaRouteImport.update({
+  id: '/alta-conferencia',
+  path: '/alta-conferencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,31 +35,59 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
+  id: '/conferencias/$id',
+  path: '/conferencias/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
+  '/conferencias/$id': typeof ConferenciasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
+  '/conferencias/$id': typeof ConferenciasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
+  '/conferencias/$id': typeof ConferenciasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/alta-conferencia'
+    | '/dummy'
+    | '/conferencias/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy'
-  id: '__root__' | '/' | '/dummy'
+  to: '/' | '/admin' | '/alta-conferencia' | '/dummy' | '/conferencias/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/alta-conferencia'
+    | '/dummy'
+    | '/conferencias/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AltaConferenciaRoute: typeof AltaConferenciaRoute
   DummyRoute: typeof DummyRoute
+  ConferenciasIdRoute: typeof ConferenciasIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +99,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DummyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/alta-conferencia': {
+      id: '/alta-conferencia'
+      path: '/alta-conferencia'
+      fullPath: '/alta-conferencia'
+      preLoaderRoute: typeof AltaConferenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +120,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conferencias/$id': {
+      id: '/conferencias/$id'
+      path: '/conferencias/$id'
+      fullPath: '/conferencias/$id'
+      preLoaderRoute: typeof ConferenciasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AltaConferenciaRoute: AltaConferenciaRoute,
   DummyRoute: DummyRoute,
+  ConferenciasIdRoute: ConferenciasIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
