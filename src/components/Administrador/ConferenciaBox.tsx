@@ -15,7 +15,7 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
   }
   
   return (
-    <div onClick={irUnaConferencia} className="flex flex-col bg-[#F1F5F9] w-full p-2 rounded-sm gap-2 shadow cursor-pointer">
+    <div onClick={irUnaConferencia} className="flex flex-col bg-[#F1F5F9] hover:bg-[#E2E8F0] w-full p-2 rounded-sm gap-2 shadow cursor-pointer">
 
       <div className="flex justify-between items-center">
         <b>{conferencia.titulo}</b>
