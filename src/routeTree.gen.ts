@@ -9,23 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnaSesionRouteImport } from './routes/una-sesion'
-import { Route as UnaConferenciaRouteImport } from './routes/una-conferencia'
 import { Route as DummyRouteImport } from './routes/dummy'
 import { Route as AltaConferenciaRouteImport } from './routes/alta-conferencia'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
 
-const UnaSesionRoute = UnaSesionRouteImport.update({
-  id: '/una-sesion',
-  path: '/una-sesion',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UnaConferenciaRoute = UnaConferenciaRouteImport.update({
-  id: '/una-conferencia',
-  path: '/una-conferencia',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
   path: '/dummy',
@@ -46,22 +35,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
+  id: '/conferencias/$id',
+  path: '/conferencias/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
-  '/una-conferencia': typeof UnaConferenciaRoute
-  '/una-sesion': typeof UnaSesionRoute
+  '/conferencias/$id': typeof ConferenciasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
-  '/una-conferencia': typeof UnaConferenciaRoute
-  '/una-sesion': typeof UnaSesionRoute
+  '/conferencias/$id': typeof ConferenciasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +61,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/alta-conferencia': typeof AltaConferenciaRoute
   '/dummy': typeof DummyRoute
-  '/una-conferencia': typeof UnaConferenciaRoute
-  '/una-sesion': typeof UnaSesionRoute
+  '/conferencias/$id': typeof ConferenciasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,24 +70,16 @@ export interface FileRouteTypes {
     | '/admin'
     | '/alta-conferencia'
     | '/dummy'
-    | '/una-conferencia'
-    | '/una-sesion'
+    | '/conferencias/$id'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin'
-    | '/alta-conferencia'
-    | '/dummy'
-    | '/una-conferencia'
-    | '/una-sesion'
+  to: '/' | '/admin' | '/alta-conferencia' | '/dummy' | '/conferencias/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/alta-conferencia'
     | '/dummy'
-    | '/una-conferencia'
-    | '/una-sesion'
+    | '/conferencias/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,26 +87,11 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AltaConferenciaRoute: typeof AltaConferenciaRoute
   DummyRoute: typeof DummyRoute
-  UnaConferenciaRoute: typeof UnaConferenciaRoute
-  UnaSesionRoute: typeof UnaSesionRoute
+  ConferenciasIdRoute: typeof ConferenciasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/una-sesion': {
-      id: '/una-sesion'
-      path: '/una-sesion'
-      fullPath: '/una-sesion'
-      preLoaderRoute: typeof UnaSesionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/una-conferencia': {
-      id: '/una-conferencia'
-      path: '/una-conferencia'
-      fullPath: '/una-conferencia'
-      preLoaderRoute: typeof UnaConferenciaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dummy': {
       id: '/dummy'
       path: '/dummy'
@@ -152,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conferencias/$id': {
+      id: '/conferencias/$id'
+      path: '/conferencias/$id'
+      fullPath: '/conferencias/$id'
+      preLoaderRoute: typeof ConferenciasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -160,8 +135,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AltaConferenciaRoute: AltaConferenciaRoute,
   DummyRoute: DummyRoute,
-  UnaConferenciaRoute: UnaConferenciaRoute,
-  UnaSesionRoute: UnaSesionRoute,
+  ConferenciasIdRoute: ConferenciasIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
