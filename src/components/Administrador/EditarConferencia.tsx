@@ -94,7 +94,7 @@ function EditarConferencia() {
         <div className="flex flex-col gap-2">
           <label className="font-semibold">Visualización</label>
           <div className="flex gap-4">
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="visualizacion"
@@ -104,7 +104,7 @@ function EditarConferencia() {
               />
               Single blind
             </label>
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="visualizacion"
@@ -114,7 +114,7 @@ function EditarConferencia() {
               />
               Double blind
             </label>
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="visualizacion"
