@@ -87,7 +87,7 @@ function AltaConferencia() {
         <div className="flex flex-col gap-2">
           <label className="font-semibold">Visualización</label>
           <div className="flex gap-4">
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="visualizacion"
@@ -97,7 +97,7 @@ function AltaConferencia() {
               />
               Single blind
             </label>
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="visualizacion"
@@ -107,7 +107,7 @@ function AltaConferencia() {
               />
               Double blind
             </label>
-            <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
                 name="visualizacion"
@@ -143,7 +143,7 @@ function AltaConferencia() {
           <div className="font-semibold mb-2">Sesiones</div>
           <button
             type="button"
-            className="bg-[#0F172A] text-white rounded px-4 py-2 flex items-center gap-2"
+            className="bg-[#0F172A] text-white rounded px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-[#475569]"
             onClick={handleNuevaSesion}
           >
             + Nueva sesión
@@ -155,7 +155,7 @@ function AltaConferencia() {
         <div className="flex justify-between mt-4">
           <button
             type="button"
-            className="bg-gray-400 text-white rounded px-6 py-2 font-semibold"
+            className="bg-gray-400 text-white rounded px-6 py-2 font-semibold cursor-pointer hover:bg-gray-500"
             onClick={() => window.history.back()}
             disabled={loading}
           >
@@ -163,7 +163,7 @@ function AltaConferencia() {
           </button>
           <button
             type="submit"
-            className="bg-green-600 text-white rounded px-6 py-2 font-semibold"
+            className="bg-green-600 text-white rounded px-6 py-2 font-semibold  cursor-pointer hover:bg-green-700"
             disabled={loading}
           >
             Guardar

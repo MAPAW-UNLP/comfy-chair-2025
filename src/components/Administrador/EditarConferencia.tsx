@@ -1,14 +1,15 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import { Route } from '@/routes/conferencias/editar/$id';
-import type { Conferencia } from '@/services/conferencias';
+import { getConferencia, type Conferencia } from '@/services/conferencias';
 import api from '@/services/api';
 
 function EditarConferencia() {
   const conferenciaInicial = Route.useLoaderData() as Conferencia;
   const [titulo, setTitulo] = useState(conferenciaInicial.titulo);
-  const [descripcion, setDescripcion] = useState(conferenciaInicial.descripcion);
+  const [descripcion, setDescripcion] = useState(
+    conferenciaInicial.descripcion
+  );
   const [usuarioChair, setUsuarioChair] = useState(''); // Ajustar si hay campo real
   const [visualizacion, setVisualizacion] = useState(conferenciaInicial.vista);
   const [fechaInicio, setFechaInicio] = useState(conferenciaInicial.fecha_ini);
@@ -38,6 +39,19 @@ function EditarConferencia() {
     }
   };
 
+  useEffect(() => {
+    const actualizarConferencia = async () =>{
+      const data= await getConferencia(conferenciaInicial.id)
+      setTitulo(data.titulo)
+      setDescripcion(data.descripcion)
+      setVisualizacion(data.vista)
+      setFechaInicio(data.fecha_ini)
+      setFechaCierre(data.fecha_fin)
+    }
+
+    actualizarConferencia();
+  }, []);
+
   return (
     <div className="bg-[#EEEEEE] min-h-screen flex flex-col items-center">
       <Header />
@@ -53,7 +67,7 @@ function EditarConferencia() {
             className="border rounded px-2 py-1"
             placeholder="Ingrese nombre..."
             value={titulo}
-            onChange={e => setTitulo(e.target.value)}
+            onChange={(e) => setTitulo(e.target.value)}
             required
           />
         </div>
@@ -63,7 +77,7 @@ function EditarConferencia() {
             className="border rounded px-2 py-1"
             placeholder="Ingrese una descripción..."
             value={descripcion}
-            onChange={e => setDescripcion(e.target.value)}
+            onChange={(e) => setDescripcion(e.target.value)}
             required
           />
         </div>
@@ -73,7 +87,7 @@ function EditarConferencia() {
             className="border rounded px-2 py-1"
             placeholder="Ingrese usuario..."
             value={usuarioChair}
-            onChange={e => setUsuarioChair(e.target.value)}
+            onChange={(e) => setUsuarioChair(e.target.value)}
             // required (si corresponde)
           />
         </div>
@@ -118,7 +132,7 @@ function EditarConferencia() {
             type="date"
             className="border rounded px-2 py-1"
             value={fechaInicio}
-            onChange={e => setFechaInicio(e.target.value)}
+            onChange={(e) => setFechaInicio(e.target.value)}
             required
           />
         </div>
@@ -128,16 +142,18 @@ function EditarConferencia() {
             type="date"
             className="border rounded px-2 py-1"
             value={fechaCierre}
-            onChange={e => setFechaCierre(e.target.value)}
+            onChange={(e) => setFechaCierre(e.target.value)}
             required
           />
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
-        {success && <div className="text-green-600 text-sm">Guardado correctamente</div>}
+        {success && (
+          <div className="text-green-600 text-sm">Guardado correctamente</div>
+        )}
         <div className="flex justify-between mt-4">
           <button
             type="button"
-            className="bg-gray-400 text-white rounded px-6 py-2 font-semibold"
+            className="bg-gray-400 text-white rounded px-6 py-2 font-semibold cursor-pointer hover:bg-gray-500"
             onClick={() => window.history.back()}
             disabled={loading}
           >
@@ -145,7 +161,7 @@ function EditarConferencia() {
           </button>
           <button
             type="submit"
-            className="bg-green-600 text-white rounded px-6 py-2 font-semibold"
+            className="bg-green-600 text-white rounded px-6 py-2 font-semibold cursor-pointer hover:bg-green-700"
             disabled={loading}
           >
             Guardar

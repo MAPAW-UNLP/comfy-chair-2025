@@ -33,6 +33,7 @@ function AdministradorApp() {
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
+    //Para testear
     // await createConferencia({
     //   titulo: "Informatica 2",
     //   descripcion: "Descripcion de informaticaaaaaaaa",

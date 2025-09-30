@@ -4,5 +4,5 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/conferencias/$id')({
   component: UnaConferencia,
-  loader: async ({ params }) => { return await getConferencia(params.id) }
+  loader: async ({ params }) => { return await getConferencia(params.id) },
 })
