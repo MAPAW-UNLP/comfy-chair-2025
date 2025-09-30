@@ -46,11 +46,11 @@ function AltaConferencia() {
   };
 
   return (
-    <div className="bg-[#EEEEEE] min-h-screen flex flex-col items-center">
+    <div className="bg-[#EEEEEE] w-full flex flex-col items-center gap-4">
       <Header />
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-md p-6 mt-8 w-[370px] flex flex-col gap-4"
+        className="mb-3 bg-white rounded-xl shadow-md p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
         style={{ maxWidth: 370 }}
       >
         <h2 className="text-2xl font-bold mb-2">Agregar Conferencia</h2>
@@ -86,7 +86,7 @@ function AltaConferencia() {
         </div>
         <div className="flex flex-col gap-2">
           <label className="font-semibold">Visualización</label>
-          <div className="flex gap-4">
+          <div className="flex gap-4 text-sm">
             <label className="flex items-center gap-1 cursor-pointer">
               <input
                 type="radio"
@@ -152,7 +152,7 @@ function AltaConferencia() {
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
         {success && <div className="text-green-600 text-sm">Guardado correctamente</div>}
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between gap-1">
           <button
             type="button"
             className="bg-gray-400 text-white rounded px-6 py-2 font-semibold cursor-pointer hover:bg-gray-500"
