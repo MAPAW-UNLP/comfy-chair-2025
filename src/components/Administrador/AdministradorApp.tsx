@@ -5,6 +5,7 @@ import Tabs from './Tabs';
 import ConferenciaBox from './ConferenciaBox';
 import { useNavigate } from '@tanstack/react-router';
 import {
+  createConferencia,
   getConferenciasActivas,
   getConferenciasTerminadas,
 } from '@/services/conferencias';
@@ -32,6 +33,13 @@ function AdministradorApp() {
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
+    // await createConferencia({
+    //   titulo: "Informatica 2",
+    //   descripcion: "Descripcion de informaticaaaaaaaa",
+    //   fecha_ini: "2025-09-01",
+    //   fecha_fin: "2025-09-10",
+    //   vista: "completo"
+    // })
     navigate({ to: '/conferencias/alta-conferencia' });
   };
 
@@ -59,11 +67,11 @@ function AdministradorApp() {
       <h1 className="text-3xl font-bold">Conferencias</h1>
 
       <div className="flex justify-between items-center gap-2 px-5 w-full">
-        <Buscador confActivas={confActivas} confTerminadas={confTerminadas} setConferencias={setConferencias} />
+        <Buscador confActivas={confActivas} confTerminadas={confTerminadas} setConferencias={setConferencias} verActivas={verActivas} />
         <Button
           size={'lg'}
           onClick={irAltaConferencia}
-          className="cursor-pointer"
+          className="cursor-pointer bg-[#0F172A] hover:bg-[#475569]"
         >
           <Plus />
           Conferencia

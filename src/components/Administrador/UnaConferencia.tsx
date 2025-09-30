@@ -50,7 +50,7 @@ function UnaConferencia() {
             <Button
               size={'sm'}
               onClick={agregarSesion}
-              className="cursor-pointer"
+              className="cursor-pointer bg-[#0F172A] hover:bg-[#475569]"
             >
               <Plus />
               Nueva sesión
