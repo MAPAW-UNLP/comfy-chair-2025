@@ -3,6 +3,7 @@ import { useEffect, useState, type SetStateAction } from 'react';
 import { DummyItem } from './Dummy';
 import { Button } from '../ui/button';
 import { Input } from "@/components/ui/input"
+import { Label } from '../ui/label';
 
 export const DummyApp = () => {
   const [name, setName] = useState<string>('');
@@ -29,12 +30,13 @@ export const DummyApp = () => {
 
         <h2 className="text-lg font-bold italic text-slate-500 text-center">Nuevo Dummy</h2>
         <hr className="bg-slate-100"/>
+
+        <Label htmlFor="autor">Nombre</Label>
         <Input
           value={name}
           onChange={(e: { target: { value: SetStateAction<string>; }; }) => setName(e.target.value)}
           type="text"
-          placeholder="Nombre"
-          className="border-2 border-black"
+          placeholder="Nombre del dummy..."
         />
         <Button variant="outline" className="bg-slate-900 text-white w-full">Crear Dummy</Button>
       </form>

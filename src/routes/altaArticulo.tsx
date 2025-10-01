@@ -7,7 +7,7 @@ export const Route = createFileRoute('/altaArticulo')({
 
 function RouteComponent() {
   return (
-      <div>
+      <div className="flex flex-wrap gap-4 mx-4 justify-center">
         <AltaArticulo></AltaArticulo>
       </div>
     )

@@ -21,17 +21,23 @@ function RouteComponent() {
     }, []);
 
   return (
-      <div className="flex flex-wrap gap-4 mx-4 justify-center">
+    <div className="flex flex-wrap gap-4 mx-4 justify-center">
+      {articulo.length === 0 ? (
+        <div className="flex min-h-svh flex-col items-center justify-center">
+          <h1 className="text-3xl font-bold italic text-slate-500 text-center">No hay articulos para mostrar...</h1>
+        </div>
+      ) : (
         <ul>
           {articulo.map((article) => (
             <ArticuloCard
               titulo={article.title}
               conferencia={article.session_name}
               estado={article.status}
-              deadline={new Date(new Date().getTime() + 120 * 60 * 1000)} // 120 minutos desde ahora
+              deadline={new Date(new Date().getTime() + 120 * 60 * 1000)}
             />
           ))}
         </ul>
-      </div>
+      )}
+    </div>
   );
 }

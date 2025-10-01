@@ -2,14 +2,8 @@ import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 
 export default function AltaArticulo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,81 +27,99 @@ export default function AltaArticulo() {
 
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
-      <h3>Título</h3>
-      <Input id="Titulo" placeholder="Escribí el título" />
+      <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Articulo</h2>
+      <hr className="bg-slate-100"/>
+      
+      <div className="grid w-full items-center gap-3">
+        <Label htmlFor="title">Titulo</Label>
+        <Input type="text" id="title" placeholder="Titulo del articulo..." />
+      </div>
 
-      <h3>Archivo adjunto</h3>
-      <div>
+      <div className="grid w-full items-center gap-3">
+        <Label htmlFor="DetalleRegular">Articulo</Label>
         <input
           type="file"
-          ref={fileInputRef}
-          onChange={handleChange}
+          ref={extraFileRef}
+          onChange={handleExtraFileChange}
           className="hidden"
         />
-        <Button className="mb-4" onClick={handleClick} type="button">
-          Adjuntar archivo
+        <Button onClick={handleExtraFileClick} type="button" className="w-full">
+          Archivo con el Articulo
         </Button>
       </div>
 
-      <h3>Autor</h3>
-      <Input id="Autor" placeholder="Escribí el nombre del autor" />
+      <Select>
+        <Label htmlFor="autor">Autores del Articulo</Label>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Seleccione un autor..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="light">Autor 1</SelectItem>
+          <SelectItem value="dark">Autor 2</SelectItem>
+          <SelectItem value="system">Autor 3</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <h3>Autor de notificación</h3>
-      <Input
-        id="AutorNotificacion"
-        placeholder="Escribí el nombre del autor de notificación"
-      />
+      <Select>
+        <Label htmlFor="autor">Autor de Notificacion</Label>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Seleccione un autor..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="light">Autor 1</SelectItem>
+          <SelectItem value="dark">Autor 2</SelectItem>
+          <SelectItem value="system">Autor 3</SelectItem>
+        </SelectContent>
+      </Select>
+  
+      <Select value={tipoArticulo} onValueChange={setTipoArticulo}>
+        <Label htmlFor="tipo-articulo">Tipo de Articulo</Label>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Seleccione un tipo..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="regular">Regular</SelectItem>
+          <SelectItem value="poster">Poster</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <Accordion type="single" collapsible>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Seleccionar el tipo de artículo</AccordionTrigger>
-          <AccordionContent>
-            <RadioGroup
-              name="tipoArticulo"
-              value={tipoArticulo}
-              onValueChange={setTipoArticulo}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="poster" id="poster" />
-                <Label htmlFor="poster">Poster</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="regular" id="regular" />
-                <Label htmlFor="regular">Regular</Label>
-              </div>
-            </RadioGroup>
+      {/* Campos dinámicos para abstrac / poster */}
+      <div>
+          {tipoArticulo === "poster" && (
+            <div className="grid w-full items-center gap-3">
+              <Label htmlFor="DetalleRegular">Fuentes</Label>
+              <input
+                type="file"
+                ref={extraFileRef}
+                onChange={handleExtraFileChange}
+                className="hidden"
+              />
+              <Button onClick={handleExtraFileClick} type="button" className="w-full">
+                Archivo con las Fuentes
+              </Button>
+            </div>
+          )}
 
-            {/* Campos dinámicos */}
-            {tipoArticulo === "poster" && (
-              <div className="mt-4">
-                <input
-                  type="file"
-                  ref={extraFileRef}
-                  onChange={handleExtraFileChange}
-                  className="hidden"
-                />
-                <Button onClick={handleExtraFileClick} type="button">
-                  Adjuntar archivo extra (Poster)
-                </Button>
-              </div>
-            )}
-
-            {tipoArticulo === "regular" && (
-              <div className="mt-4">
-                <Textarea
-                  id="DetalleRegular"
-                  placeholder="Detalle adicional para artículo regular..."
-                />
-              </div>
-            )}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <div id="bottom-buttons" className="flex gap-2">
-        <Button type="button" variant="outline">Cancelar</Button>
-        <Button type="submit">Subir</Button>
+          {tipoArticulo === "regular" && (
+            <div className="grid w-full items-center gap-3">
+              <Label htmlFor="DetalleRegular">Abstract</Label>
+              <Textarea
+                id="DetalleRegular"
+                placeholder="Abstract de hasta 300 caracteres..."
+              />
+            </div>
+          )}
       </div>
+
+      <div id="bottom-buttons" className="flex w-full gap-2">
+        <Button type="button" variant="outline" className="w-1/2">
+          Cancelar
+        </Button>
+        <Button type="submit" className="w-1/2">
+          Subir
+        </Button>
+      </div>
+
     </div>
   );
 }
