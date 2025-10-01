@@ -14,6 +14,9 @@ const RootLayout = () => (
       <Link to="/articulos" className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
         Mis Articulos
       </Link>
+       <Link to="/altaArticulo" className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
+        Subir Articulo
+      </Link>
       <div className="px-3 py-1 rounded-md ml-auto">
         <Armchair />
       </div>
