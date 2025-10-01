@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DummyRouteImport } from './routes/dummy'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ArticlesIdRevisoresRouteImport } from './routes/articles.$id.revisores'
+import { Route as ArticulosIdRevisoresRouteImport } from './routes/articulos.$id.revisores'
 
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
@@ -23,40 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticlesIdRevisoresRoute = ArticlesIdRevisoresRouteImport.update({
-  id: '/articles/$id/revisores',
-  path: '/articles/$id/revisores',
+const ArticulosIdRevisoresRoute = ArticulosIdRevisoresRouteImport.update({
+  id: '/articulos/$id/revisores',
+  path: '/articulos/$id/revisores',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
-  '/articles/$id/revisores': typeof ArticlesIdRevisoresRoute
+  '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
-  '/articles/$id/revisores': typeof ArticlesIdRevisoresRoute
+  '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
-  '/articles/$id/revisores': typeof ArticlesIdRevisoresRoute
+  '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy' | '/articles/$id/revisores'
+  fullPaths: '/' | '/dummy' | '/articulos/$id/revisores'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy' | '/articles/$id/revisores'
-  id: '__root__' | '/' | '/dummy' | '/articles/$id/revisores'
+  to: '/' | '/dummy' | '/articulos/$id/revisores'
+  id: '__root__' | '/' | '/dummy' | '/articulos/$id/revisores'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DummyRoute: typeof DummyRoute
-  ArticlesIdRevisoresRoute: typeof ArticlesIdRevisoresRoute
+  ArticulosIdRevisoresRoute: typeof ArticulosIdRevisoresRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +75,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articles/$id/revisores': {
-      id: '/articles/$id/revisores'
-      path: '/articles/$id/revisores'
-      fullPath: '/articles/$id/revisores'
-      preLoaderRoute: typeof ArticlesIdRevisoresRouteImport
+    '/articulos/$id/revisores': {
+      id: '/articulos/$id/revisores'
+      path: '/articulos/$id/revisores'
+      fullPath: '/articulos/$id/revisores'
+      preLoaderRoute: typeof ArticulosIdRevisoresRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DummyRoute: DummyRoute,
-  ArticlesIdRevisoresRoute: ArticlesIdRevisoresRoute,
+  ArticulosIdRevisoresRoute: ArticulosIdRevisoresRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
