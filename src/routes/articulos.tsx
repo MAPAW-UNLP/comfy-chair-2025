@@ -21,9 +21,9 @@ function RouteComponent() {
     }, []);
 
   return (
-    <div className="flex flex-wrap gap-4 mx-4 justify-center">
+    <div className="flex min-h-full flex-wrap gap-4 mx-4 justify-center">
       {articulo.length === 0 ? (
-        <div className="flex min-h-svh flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <h1 className="text-3xl font-bold italic text-slate-500 text-center">
             No hay articulos para mostrar...
           </h1>
