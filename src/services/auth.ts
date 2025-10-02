@@ -1,32 +1,69 @@
-import axiosInstance from './api'
-import type { RegisterFormData, LoginFormData } from '@/lib/validations'
+import {axiosInstance} from './api'
 
-export interface AuthResponse {
-  token: string
-  user: {
-    id: string
-    email: string
-    nombreCompleto: string
-    afiliacion: string
-  }
+export interface RegisterData {
+  nombre_completo: string;
+  afiliacion: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  nombre_completo: string;
+  afiliacion: string;
+}
+
+export interface LoginResponse {
+  status: string;
+  token: string;
+  user: User;
 }
 
 export const authService = {
-  register: async (data: RegisterFormData): Promise<AuthResponse> => {
-    const response = await axiosInstance.post('/auth/register', {
-      nombreCompleto: data.nombreCompleto,
-      afiliacion: data.afiliacion,
-      email: data.email,
-      password: data.contraseña
-    })
-    return response.data
+  // Register a new user
+  async register(data: RegisterData): Promise<User> {
+    const response = await axiosInstance.post('/users/registro/', data);
+    return response.data;
   },
 
-  login: async (data: LoginFormData): Promise<AuthResponse> => {
-    const response = await axiosInstance.post('/auth/login', {
-      email: data.email,
-      password: data.contraseña
-    })
-    return response.data
-  }
-}
+  // Login user
+  async login(data: LoginData): Promise<LoginResponse> {
+    const response = await axiosInstance.post<LoginResponse>('/users/login/', data);
+    const { token, user } = response.data;
+    
+    // Store token and user in localStorage
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    
+    return response.data;
+  },
+
+  // Logout user
+  logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+  },
+
+  // Get current user from localStorage
+  getCurrentUser(): User | null {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  // Check if user is authenticated
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('authToken');
+  },
+
+  // Fetch current user from backend (validates token)
+  async fetchCurrentUser(): Promise<User> {
+    const response = await axiosInstance.get<User>('/users/getUsuario/');
+    return response.data;
+  },
+};

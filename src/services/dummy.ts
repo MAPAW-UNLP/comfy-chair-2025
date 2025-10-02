@@ -1,4 +1,4 @@
-import api from './api';
+import { axiosInstance as api } from './api';
 
 interface TestResponse {
   message: string;

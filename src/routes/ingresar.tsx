@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { loginSchema, type LoginFormData } from '@/lib/validations'
-import { authService } from '@/services/auth'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const Route = createFileRoute('/ingresar')({
   component: LoginPage,
@@ -13,6 +13,7 @@ export const Route = createFileRoute('/ingresar')({
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     contraseña: '',
@@ -46,10 +47,9 @@ function LoginPage() {
 
     setIsLoading(true)
     try {
-      const response = await authService.login(formData)
-      // TODO: Store token in localStorage or context
-      console.log('Login successful:', response)
-      navigate({ to: '/' })
+      await login(formData.email, formData.contraseña)
+      console.log('Login successful')
+      navigate({ to: '/panel' })
     } catch (error) {
       console.error('Login failed:', error)
       window.alert('Error al ingresar: ' + error)

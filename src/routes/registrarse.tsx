@@ -49,10 +49,15 @@ function RegisterPage() {
 
     setIsLoading(true)
     try {
-      const response = await authService.register(formData)
+      const response = await authService.register({
+        nombre_completo: formData.nombreCompleto,
+        afiliacion: formData.afiliacion,
+        email: formData.email,
+        password: formData.contraseña,
+      })
       // TODO: Store token in localStorage or context
       console.log('Registration successful:', response)
-      navigate({ to: '/' })
+      navigate({ to: '/ingresar' })
     } catch (error) {
       console.error('Registration failed:', error)
       window.alert('Error al registrarse: ' + error)

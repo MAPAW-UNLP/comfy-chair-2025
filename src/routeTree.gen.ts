@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegistrarseRouteImport } from './routes/registrarse'
+import { Route as PanelRouteImport } from './routes/panel'
 import { Route as IngresarRouteImport } from './routes/ingresar'
 import { Route as DummyRouteImport } from './routes/dummy'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const RegistrarseRoute = RegistrarseRouteImport.update({
   id: '/registrarse',
   path: '/registrarse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanelRoute = PanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IngresarRoute = IngresarRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
   '/ingresar': typeof IngresarRoute
+  '/panel': typeof PanelRoute
   '/registrarse': typeof RegistrarseRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
   '/ingresar': typeof IngresarRoute
+  '/panel': typeof PanelRoute
   '/registrarse': typeof RegistrarseRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
   '/ingresar': typeof IngresarRoute
+  '/panel': typeof PanelRoute
   '/registrarse': typeof RegistrarseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy' | '/ingresar' | '/registrarse'
+  fullPaths: '/' | '/dummy' | '/ingresar' | '/panel' | '/registrarse'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy' | '/ingresar' | '/registrarse'
-  id: '__root__' | '/' | '/dummy' | '/ingresar' | '/registrarse'
+  to: '/' | '/dummy' | '/ingresar' | '/panel' | '/registrarse'
+  id: '__root__' | '/' | '/dummy' | '/ingresar' | '/panel' | '/registrarse'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DummyRoute: typeof DummyRoute
   IngresarRoute: typeof IngresarRoute
+  PanelRoute: typeof PanelRoute
   RegistrarseRoute: typeof RegistrarseRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/registrarse'
       fullPath: '/registrarse'
       preLoaderRoute: typeof RegistrarseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panel': {
+      id: '/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof PanelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ingresar': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DummyRoute: DummyRoute,
   IngresarRoute: IngresarRoute,
+  PanelRoute: PanelRoute,
   RegistrarseRoute: RegistrarseRoute,
 }
 export const routeTree = rootRouteImport
