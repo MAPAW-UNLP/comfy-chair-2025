@@ -13,9 +13,7 @@ export function formatearFecha(fecha: string): string {
 }
 
 function UnaConferencia() {
-  const conferenciaInicial = Route.useLoaderData();
-  const [conferencia, setConferencia] =
-    useState<Conferencia>(conferenciaInicial);
+  const conferencia = Route.useLoaderData();
   const navigate= useNavigate()
 
   const irEditarConferencia= () =>{
@@ -26,17 +24,11 @@ function UnaConferencia() {
 
   }
 
-  useEffect(() =>{
-    const actualizarConferencia= async () => setConferencia(await getConferencia(conferencia.id))
-
-    actualizarConferencia();
-  },[])
-
   return (
-    <div className="flex flex-col justify-start items-center gap-5 bg-[#EEEEEE] h-screen w-full ">
+    <div className="flex flex-col justify-start items-center gap-5 w-full ">
       <Header />
       <div className="flex flex-col px-8 w-full gap-2">
-        <div className="bg-white rounded shadow p-2 py-1 w-full">
+        <div className="bg-[#F1F5F9] rounded shadow border border-gray-300 p-2 py-1 w-full">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{conferencia.titulo}</h1>
             <div onClick={irEditarConferencia} className="cursor-pointer rounded hover:bg-gray-200 p-1">
@@ -49,14 +41,14 @@ function UnaConferencia() {
           </p>
         </div>
 
-        <div className="flex flex-col bg-white rounded shadow p-2 py-1 w-full">
+        <div className="flex flex-col bg-[#F1F5F9] rounded shadow border border-gray-300 p-2 py-1 w-full">
           <h2 className="text-1xl font-bold">Descripción</h2>
           <p>{conferencia.descripcion}</p>
           <h2 className="text-1xl font-bold">Chair general</h2>
           <p>Jose Hernandez</p> {/*conferencia.chair*/}
         </div>
 
-        <div className='flex flex-col bg-white rounded shadow p-2 w-full'>
+        <div className='flex flex-col bg-[#F1F5F9] rounded shadow border border-gray-300 p-2 w-full'>
           <div className='flex justify-between'>
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
             <Button

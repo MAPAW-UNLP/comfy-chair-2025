@@ -27,7 +27,7 @@ export const Buscador = ({confActivas, confTerminadas, setConferencias, verActiv
   },[query])
 
   return (
-    <div className="flex flex-auto border border-gray-300 rounded-lg bg-white min-w-20 overflow-hidden">
+    <div className="flex flex-auto border border-gray-300 rounded-lg bg-white min-w-20 overflow-hidden shadow">
       <div className="flex items-center pl-2">
         <Search className="w-4 text-gray-400" />
       </div>

@@ -53,11 +53,11 @@ function EditarConferencia() {
   }, []);
 
   return (
-    <div className="bg-[#EEEEEE] w-full flex flex-col items-center gap-4">
+    <div className="w-full flex flex-col items-center justify-start gap-4">
       <Header />
       <form
         onSubmit={handleSubmit}
-        className="mb-3 bg-white rounded-xl shadow-md p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
+        className="mb-3 bg-gray-300 rounded-xl shadow border border-gray-400 p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
         style={{ maxWidth: 370 }}
       >
         <h2 className="text-2xl font-bold ">Editar Conferencia</h2>

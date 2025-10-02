@@ -15,7 +15,7 @@ function Tabs({setVerActivas, verActivas} : TabsProps) {
     setVerActivas(false)
   }
   return (
-    <div className='flex justify-center items-center bg-[#F1F5F9] px-1 py-1  rounded-sm gap-3 shadow'>
+    <div className='flex justify-center items-center bg-[#F1F5F9] px-1 py-1  rounded-sm gap-3 shadow border border-gray-300'>
       <div onClick={mostrarActivas} className={`flex justify-center items-center px-3 py-1 rounded-sm cursor-pointer ${verActivas && "bg-white font-bold shadow"}` }>
         <p>Activas</p>
       </div>

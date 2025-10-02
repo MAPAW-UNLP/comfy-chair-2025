@@ -62,7 +62,7 @@ function AdministradorApp() {
   },[confTerminadas])
 
   return (
-    <div className="flex flex-col justify-start items-center gap-5 bg-[#EEEEEE] h-screen">
+    <div className="flex flex-col justify-start items-center gap-5 ">
       <Header />
 
       <h1 className="text-3xl font-bold">Conferencias</h1>
