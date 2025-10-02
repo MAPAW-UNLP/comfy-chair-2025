@@ -4,8 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import type { User } from "@/services/users";
 
-export default function AltaArticulo() {
+type AltaArticuloProps = {
+  users: User[];
+};
+
+export default function AltaArticulo({users}: AltaArticuloProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const extraFileRef = useRef<HTMLInputElement>(null);
 
@@ -54,9 +59,11 @@ export default function AltaArticulo() {
           <SelectValue placeholder="Seleccione un autor..." />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="light">Autor 1</SelectItem>
-          <SelectItem value="dark">Autor 2</SelectItem>
-          <SelectItem value="system">Autor 3</SelectItem>
+          {users.map((u) => (
+            <SelectItem key={u.id} value={u.first_name}>
+              {u.first_name} {u.last_name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
@@ -66,9 +73,11 @@ export default function AltaArticulo() {
           <SelectValue placeholder="Seleccione un autor..." />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="light">Autor 1</SelectItem>
-          <SelectItem value="dark">Autor 2</SelectItem>
-          <SelectItem value="system">Autor 3</SelectItem>
+          {users.map((u) => (
+            <SelectItem key={u.id} value={u.first_name}>
+              {u.first_name} {u.last_name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
   
