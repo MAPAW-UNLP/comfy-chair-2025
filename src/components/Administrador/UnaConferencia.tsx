@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route } from '@/routes/conferencias/$id';
 import Header from './Header';
 import type { Conferencia } from './AdministradorApp';
 import { Edit, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
+import { getConferencia } from '@/services/conferencias';
+
+export function formatearFecha(fecha: string): string {
+  const [year, month, day] = fecha.split("-");
+  return `${day}/${month}/${year}`;
+}
 
 function UnaConferencia() {
   const conferenciaInicial = Route.useLoaderData();
@@ -20,6 +26,12 @@ function UnaConferencia() {
 
   }
 
+  useEffect(() =>{
+    const actualizarConferencia= async () => setConferencia(await getConferencia(conferencia.id))
+
+    actualizarConferencia();
+  },[])
+
   return (
     <div className="flex flex-col justify-start items-center gap-5 bg-[#EEEEEE] h-screen w-full ">
       <Header />
@@ -27,13 +39,13 @@ function UnaConferencia() {
         <div className="bg-white rounded shadow p-2 py-1 w-full">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{conferencia.titulo}</h1>
-            <div className="cursor-pointer rounded hover:bg-gray-200 p-1">
-              <Edit size={'15'} onClick={irEditarConferencia} />
+            <div onClick={irEditarConferencia} className="cursor-pointer rounded hover:bg-gray-200 p-1">
+              <Edit size={'15'} />
             </div>
           </div>
 
           <p className="text-sm">
-            Desde {conferencia.fecha_fin} a {conferencia.fecha_fin}
+            Desde {formatearFecha(conferencia.fecha_ini)} a {formatearFecha(conferencia.fecha_fin)}
           </p>
         </div>
 
@@ -50,7 +62,7 @@ function UnaConferencia() {
             <Button
               size={'sm'}
               onClick={agregarSesion}
-              className="cursor-pointer"
+              className="cursor-pointer bg-[#0F172A] hover:bg-[#475569]"
             >
               <Plus />
               Nueva sesión

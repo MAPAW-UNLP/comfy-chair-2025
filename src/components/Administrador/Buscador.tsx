@@ -3,15 +3,20 @@ import { Search } from 'lucide-react';
 import type { Conferencia } from './AdministradorApp';
 
 type BuscadorProps= {
-    confActivas:Conferencia[];
-    confTerminadas: Conferencia[];
-    setConferencias: React.Dispatch<React.SetStateAction<Conferencia[]>>
+  confActivas:Conferencia[];
+  confTerminadas: Conferencia[];
+  setConferencias: React.Dispatch<React.SetStateAction<Conferencia[]>>;
+  verActivas: boolean;
 }
 
-export const Buscador = ({confActivas, confTerminadas, setConferencias}: BuscadorProps) => {
+export const Buscador = ({confActivas, confTerminadas, setConferencias, verActivas}: BuscadorProps) => {
   const [query, setQuery] = useState('');
 
   const buscar= ()=>{
+    if (query===''){
+      setConferencias(verActivas ? confActivas : confTerminadas)
+      return
+    }
     const valor= query.toLowerCase()
     const resultado= [...confActivas, ...confTerminadas].filter(conf => conf.titulo.toLowerCase().includes(valor))
     setConferencias(resultado)
