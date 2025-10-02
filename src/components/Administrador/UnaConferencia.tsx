@@ -21,7 +21,7 @@ function UnaConferencia() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center gap-5 bg-[#EEEEEE] h-full w-full ">
+    <div className="flex flex-col justify-start items-center gap-5 bg-[#EEEEEE] h-screen w-full ">
       <Header />
       <div className="flex flex-col px-8 w-full gap-2">
         <div className="bg-white rounded shadow p-2 py-1 w-full">

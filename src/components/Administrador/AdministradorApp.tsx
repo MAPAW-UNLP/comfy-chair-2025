@@ -53,7 +53,7 @@ function AdministradorApp() {
   },[confTerminadas])
 
   return (
-    <div className="flex flex-col justify-center items-center gap-5 bg-[#EEEEEE]">
+    <div className="flex flex-col justify-start items-center gap-5 bg-[#EEEEEE] h-screen">
       <Header />
 
       <h1 className="text-3xl font-bold">Conferencias</h1>
@@ -70,7 +70,7 @@ function AdministradorApp() {
         </Button>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-5 w-full px-5">
+      <div className="flex flex-col justify-center items-center gap-3 w-full px-5">
         <Tabs verActivas={verActivas} setVerActivas={setVerActivas} />
         {conferencias.length > 0 ? (
           conferencias.map((c) => {
