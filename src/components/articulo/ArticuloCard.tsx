@@ -9,12 +9,13 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
-// Solo 3 tipos de estado posibles
+// Tipos de estado posibles
 export type Estado = "reception" | "bidding" | "assignment" | "review" | "selection" | "accepted" | "rejected";
 
 // Lo que espera recibir el componente
 export interface ArticuloCardProps {
   titulo: string;
+  sesion: string;
   conferencia: string;
   estado: Estado;
   deadline: Date;
@@ -31,22 +32,45 @@ const estadoColor: Record<Estado, string> = {
   rejected: "bg-red-900",
 };
 
-// Función para formatear el tiempo restante hasta el deadline (recibe en ms)
+// Textos asociados a cada estado
+const estadoTexto: Record<Estado, string> = {
+  accepted: "Aceptado",
+  reception: "Recibido",
+  bidding: "Bidding",
+  assignment: "Asignación",
+  review: "Revisión",
+  selection: "Selección",
+  rejected: "Rechazado",
+};
+
+// Descripciones asociadas a cada estado
+const estadoDescripcion: Record<Estado, string> = {
+  accepted: "Su articulo ha sido aceptado para la conferencia. ¡Felicitaciones!",
+  reception: "Su articulo ha sido recibido y está pendiente de revisión.",
+  bidding: "Su articulo está en proceso de bidding.",
+  assignment: "Su articulo está en proceso de asignación de revisores.",
+  review: "Su articulo está siendo revisado por los revisores asignados.",
+  selection: "Su articulo está en proceso de selección final.",
+  rejected: "Lamentablemente, su articulo ha sido rechazado para la conferencia.",
+};
+
 function formatearTiempo(msRestante: number): string {
   const minutosTotales = Math.floor(msRestante / (1000 * 60));
   const horasTotales = Math.floor(msRestante / (1000 * 60 * 60));
   const diasTotales = Math.floor(msRestante / (1000 * 60 * 60 * 24));
 
-  if (diasTotales >= 2) {
-    return `${diasTotales} Días`; // Si quedan 2 o más días, mostrar en días
-  } else if (horasTotales >= 2) {
-    return `${horasTotales} Horas`; // Si quedan menos de 2 días pero 2 o más horas, mostrar en horas
+  if (horasTotales >= 48) {
+    return `${diasTotales} ${diasTotales === 1 ? "Día Restante" : "Días Restantes"}`;
+  } else if (horasTotales >= 1) {
+    return `${horasTotales} ${horasTotales === 1 ? "Hora Restante" : "Horas Restantes"}`;
   } else {
-    return `${minutosTotales} Minutos`; // Si quedan menos de 2 horas, mostrar en minutos
+    // Si falta menos de una hora → en minutos
+    const minutos = Math.max(minutosTotales, 1);
+    return `${minutos} ${minutos === 1 ? "Minuto Restante" : "Minutos Restantes"}`;
   }
 }
 
-const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, estado, deadline }) => {
+const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion, estado, deadline }) => {
 
   // Guarda un string con el tiempo restante para mostrar en el boton
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
@@ -75,13 +99,13 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, estado
 
   // Renderizado del componente
   return (
-    <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
+    <div className="w-full max-w-md rounded-2xl shadow-md border p-4 mb-2 bg-white flex flex-col gap-4">
       
       {/* Titulo y Conferencia */}
       <h2 className="text-lg font-bold italic text-slate-500 text-center">{titulo}</h2>
       <hr className="bg-slate-100"/>
-      <p className="text-md text-slate-500 text-center">{conferencia}</p>
-      
+      <p className="text-md text-slate-500"><b>Sesion:</b> {sesion}</p>
+      <p className="text-md text-slate-500"><b>Conferencia:</b> {conferencia}</p>
       {/* Contenedor de los dos botones */}
       <div className="flex gap-2 mt-auto">
 
@@ -91,14 +115,14 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, estado
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" className={`${estadoColor[estado]} text-white w-full`}>
-                {estado}
+                {estadoTexto[estado]}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Detalle del Estado</DialogTitle>
                 <DialogDescription>
-                  Su articulo se encuentra en estado <b>{estado}</b>.
+                  {estadoDescripcion[estado]}
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
@@ -111,7 +135,7 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, estado
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" disabled={estado !== "reception"} className={`w-full ${estado === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
-                {estado === "reception" ? tiempoRestante + " Restantes" || "..." : "No Disponible"}
+                {estado === "reception" ? tiempoRestante || "..." : "No Disponible"}
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -119,7 +143,7 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, estado
                 <DialogTitle>Modificar Articulo</DialogTitle>
                 <DialogDescription>
                   <span>
-                    Tienes tiempo de modificar tu articulo hasta el dia
+                    Tienes tiempo de modificar tu articulo hasta el dia:
                     <br/>
                     <b>{deadline.toLocaleString("es-AR", {dateStyle: "full", timeStyle: "short"})}</b>
                   </span>
