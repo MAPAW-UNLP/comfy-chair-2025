@@ -16,9 +16,9 @@ export type Estado = "reception" | "bidding" | "assignment" | "review" | "select
 export interface ArticuloCardProps {
   titulo: string;
   sesion: string;
-  conferencia: string;
+  conferencia: string
   estado: Estado;
-  deadline: Date;
+  deadline: string;
 }
 
 // Colores asociados a cada estado
@@ -72,6 +72,8 @@ function formatearTiempo(msRestante: number): string {
 
 const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion, estado, deadline }) => {
 
+  const deadlineDate = deadline ? new Date(deadline) : null;
+
   // Guarda un string con el tiempo restante para mostrar en el boton
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
 
@@ -81,7 +83,13 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
 
     const actualizarTiempo = () => { 
       const ahora = new Date().getTime();
-      const limite = deadline.getTime();
+      const limite = deadlineDate?.getTime();
+
+      if (typeof limite !== "number") {
+        setTiempoRestante("Sin fecha límite");
+        return;
+      }
+
       const diferencia = limite - ahora;
 
       if (diferencia <= 0) {
@@ -145,7 +153,7 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
                   <span>
                     Tienes tiempo de modificar tu articulo hasta el dia:
                     <br/>
-                    <b>{deadline.toLocaleString("es-AR", {dateStyle: "full", timeStyle: "short"})}</b>
+                    <b>{deadlineDate?.toLocaleString("es-AR", { dateStyle: "full", timeStyle: "short" })}</b>
                   </span>
                 </DialogDescription>
               </DialogHeader>

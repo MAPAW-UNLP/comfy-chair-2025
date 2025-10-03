@@ -21,7 +21,7 @@ function RouteComponent() {
     }, []);
 
   return (
-    <div className="flex min-h-full flex-wrap gap-4 mx-4 justify-center">
+    <div className="flex flex-wrap gap-4 mx-4 justify-center">
       {articulo.length === 0 ? (
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-3xl font-bold italic text-slate-500 text-center">
@@ -33,10 +33,10 @@ function RouteComponent() {
           <ArticuloCard        
             key={article.title}
             titulo={article.title}
-            sesion='Sesion de Prueba'
-            conferencia={article.session_name}
+            sesion={article.session?.title || 'Sin sesión'}
+            conferencia={article.session?.conference?.name || 'Sin conferencia'}
             estado={article.status}
-            deadline={new Date(new Date().getTime() + 121 * 60 * 1000)}
+            deadline={article.session?.deadline || 'Sin fecha límite'}
           />
         ))
       )}
