@@ -21,13 +21,21 @@ function EditarConferencia() {
         navigate({ to: `/conferencias/${conferenciaInicial.id}` });
       }, 1000);
     } catch (err: any) {
-      setError('Error al guardar los cambios');
+      if (
+        err.response?.data?.titulo[0] ==
+        'conferencia with this titulo already exists.'
+      )
+        setError('Ya existe una conferencia con ese título');
+      else setError('Error al guardar la conferencia');
     }
   };
 
   return (
     <div className="w-full flex flex-col items-center justify-start gap-4 mt-3">
-      <FormConferencia handleSubmit={handleSubmit} valorConferencia={conferenciaInicial}>
+      <FormConferencia
+        handleSubmit={handleSubmit}
+        valorConferencia={conferenciaInicial}
+      >
         {error && <div className="text-red-600 text-sm">{error}</div>}
         {success && (
           <div className="text-green-600 text-sm">Guardado correctamente</div>

@@ -139,6 +139,7 @@ function FormConferencia({
           className="cursor-pointer bg-gray-500 hover:bg-gray-400"
           size={'lg'}
           type='button'
+          onClick={() => window.history.back()}
         >
           Cancelar
         </Button>
