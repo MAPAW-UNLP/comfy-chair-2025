@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../ui/Header';
+import Header from '../Header';
 import { Route } from '@/routes/conferencias/editar/$id';
 import { getConferencia, type Conferencia } from '@/services/conferencias';
 import api from '@/services/api';
@@ -58,11 +58,10 @@ function EditarConferencia() {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-start gap-4">
-      <Header />
+    <div className="w-full flex flex-col items-center justify-start gap-4 mt-3">
       <form
         onSubmit={handleSubmit}
-        className="mb-3 bg-gray-300 rounded-xl shadow border border-gray-400 p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
+        className="mb-3 bg-card rounded-xl shadow border border-gray-200 p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
         style={{ maxWidth: 370 }}
       >
         <h2 className="text-2xl font-bold ">Editar Conferencia</h2>

@@ -1,4 +1,4 @@
-import Header from '../ui/Header';
+import Header from '../Header';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import Tabs from './Tabs';
@@ -62,9 +62,7 @@ function AdministradorApp() {
   },[confTerminadas])
 
   return (
-    <div className="flex flex-col justify-start items-center gap-5 ">
-      <Header />
-
+    <div className="flex flex-col justify-start items-center gap-5 mt-3">
       <h1 className="text-3xl font-bold">Conferencias</h1>
 
       <div className="flex justify-between items-center gap-2 px-5 w-full">
@@ -72,7 +70,7 @@ function AdministradorApp() {
         <Button
           size={'lg'}
           onClick={irAltaConferencia}
-          className="cursor-pointer bg-[#0F172A] hover:bg-[#475569]"
+          className="cursor-pointer"
         >
           <Plus />
           Conferencia

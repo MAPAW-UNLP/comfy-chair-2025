@@ -1,11 +1,10 @@
-
-
 import React, { useState } from 'react';
-import Header from '../ui/Header';
 import { createConferencia } from '@/services/conferencias';
 import { useNavigate } from '@tanstack/react-router';
+import { Button } from '../ui/button';
+import { Plus } from 'lucide-react';
 
-type Sesion = { nombre: string; descripcion: string };
+
 function AltaConferencia() {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -14,13 +13,6 @@ function AltaConferencia() {
   const [visualizacion, setVisualizacion] = useState<'single blind' | 'double blind' | 'completo'>('single blind');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaCierre, setFechaCierre] = useState('');
-  const [sesiones, setSesiones] = useState<Sesion[]>([]);
-
-  const handleNuevaSesion = () => {
-    setSesiones([...sesiones, { nombre: '', descripcion: '' }]);
-  };
-
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -50,12 +42,14 @@ function AltaConferencia() {
     }
   };
 
+  const agregarSesion= ()=>{
+  }
+
   return (
-    <div className="w-full flex flex-col items-center gap-4">
-      <Header />
+    <div className="w-full flex flex-col items-center gap-4 mt-3">
       <form
         onSubmit={handleSubmit}
-        className="mb-3 bg-gray-300 rounded-xl shadow border border-gray-400 p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
+        className="mb-3 bg-card rounded-xl shadow border border-gray-200 p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
         style={{ maxWidth: 370 }}
       >
         <h2 className="text-2xl font-bold mb-2">Agregar Conferencia</h2>
@@ -146,13 +140,14 @@ function AltaConferencia() {
         </div>
         <div className="mt-2">
           <div className="font-semibold mb-2">Sesiones</div>
-          <button
-            type="button"
-            className="bg-[#0F172A] text-white rounded px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-[#475569]"
-            onClick={handleNuevaSesion}
-          >
-            + Nueva sesión
-          </button>
+            <Button
+              size={'sm'}
+              onClick={agregarSesion}
+              className="cursor-pointer"
+            >
+              <Plus />
+              Nueva sesión
+            </Button>
           {/* Aquí pondria las sesiones si tan solo tuviera una */}
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
