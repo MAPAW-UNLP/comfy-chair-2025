@@ -9,16 +9,23 @@ type CalendarioProps = {
   label: string;
   date?: string;
   setDate: (d: string) => void;
+  validarFin?: (d: Date) => boolean;
 };
 
-function Calendario({ label, date, setDate }: CalendarioProps) {
+function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
   const [open, setOpen] = useState(false);
   const [realDate, setRealDate] = useState(new Date());
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  const seleccionarFecha = (d: Date) => {
+    if (validarFin && !validarFin(d)) return;
+    setRealDate(d);
+    setOpen(false);
+  };
+
   useEffect(() => {
-    setDate(realDate.toISOString().split('T')[0]);
+    if (realDate) setDate(realDate.toISOString().split('T')[0]);
   }, [realDate]);
 
   useEffect(() => {
@@ -30,7 +37,7 @@ function Calendario({ label, date, setDate }: CalendarioProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <Label htmlFor="date" className="px-1">
+      <Label className="px-1">
         {label}
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
@@ -40,7 +47,7 @@ function Calendario({ label, date, setDate }: CalendarioProps) {
             id="date"
             className="w-48 justify-between font-normal"
           >
-            {realDate.toLocaleDateString('es-AR')}
+            {realDate?.toLocaleDateString('es-AR')}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -49,10 +56,7 @@ function Calendario({ label, date, setDate }: CalendarioProps) {
             mode="single"
             selected={realDate}
             captionLayout="dropdown"
-            onSelect={(d) => {
-              setRealDate(d);
-              setOpen(false);
-            }}
+            onSelect={(d) => seleccionarFecha(d)}
             disabled={(realDate) => realDate < today}
           />
         </PopoverContent>

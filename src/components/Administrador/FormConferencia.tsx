@@ -41,6 +41,13 @@ function FormConferencia({
   const actualizarFechaFin = (d: string) =>
     setConferencia((prev) => ({ ...prev, fecha_fin: d }));
 
+  const validarFin = (d: Date) => {
+    if (!conferencia.fecha_ini) return false;
+    const [year, month, day] = conferencia.fecha_ini.split('-').map(Number);
+    const fechaInicio = new Date(year, month - 1, day);
+    return d >= fechaInicio;
+  }
+
   useEffect(() => {
     if (valorConferencia) setConferencia(valorConferencia);
   }, []);
@@ -122,6 +129,7 @@ function FormConferencia({
         label="Fecha de cierre"
         date={conferencia.fecha_fin}
         setDate={actualizarFechaFin}
+        validarFin={validarFin}
       />
 
       {children}
