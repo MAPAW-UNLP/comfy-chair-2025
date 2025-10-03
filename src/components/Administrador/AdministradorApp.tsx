@@ -67,8 +67,8 @@ function AdministradorApp() {
         </Button>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-3 w-full px-5">
         <Tabs verActivas={verActivas} setVerActivas={setVerActivas} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  justify-center items-center gap-3 w-full px-5">
         {conferencias.length > 0 ? (
           conferencias.map((c) => {
             return <ConferenciaBox key={c.id} conferencia={c} />;

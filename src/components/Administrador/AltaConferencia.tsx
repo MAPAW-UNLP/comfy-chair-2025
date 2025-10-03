@@ -30,7 +30,6 @@ function AltaConferencia() {
 
   return (
     <div className="w-full flex flex-col items-center gap-4 mt-3">
-      <h2 className="text-2xl font-bold mb-2">Agregar Conferencia</h2>
       <FormConferencia handleSubmit={handleSubmit}>
         {/* <div className="mt-2">
           <h3 className="font-semibold mb-2">Sesiones</h3>

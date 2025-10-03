@@ -16,10 +16,10 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
   }
   
   return (
-    <div onClick={irUnaConferencia} className="flex flex-col bg-card hover:bg-card/60 w-full p-2 mb-2 rounded-sm gap-2 shadow border border-gray-300 cursor-pointer">
+    <div onClick={irUnaConferencia} className="flex flex-col bg-card hover:bg-card/60 w-full p-2 mb-2 rounded-sm gap-2 shadow border border-gray-400 cursor-pointer">
 
       <div className="flex justify-between items-center">
-        <b>{conferencia.titulo}</b>
+        <b>{conferencia.titulo.toUpperCase()}</b>
         <span className="text-sm">
           {formatearFecha(conferencia.fecha_ini)}-{formatearFecha(conferencia.fecha_fin)}
         </span>

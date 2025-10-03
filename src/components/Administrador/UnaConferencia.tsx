@@ -22,11 +22,10 @@ function UnaConferencia() {
   }   
 
   return (
-    <div className="flex flex-col justify-start items-center gap-5 w-full mt-3">
-      <div className="flex flex-col px-8 w-full gap-2">
-        <div className="bg-card rounded shadow border border-gray-200 p-2 py-1 w-full">
+      <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
+        <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">{conferencia.titulo}</h1>
+            <h1 className="text-2xl font-bold">{conferencia.titulo.toUpperCase()}</h1>
             <div onClick={irEditarConferencia} className="cursor-pointer rounded hover:bg-gray-200 p-1">
               <Edit size={'15'} />
             </div>
@@ -37,14 +36,14 @@ function UnaConferencia() {
           </p>
         </div>
 
-        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-2 py-1 w-full">
+        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
           <h2 className="text-1xl font-bold">Descripción</h2>
           <p>{conferencia.descripcion}</p>
           <h2 className="text-1xl font-bold">Chair general</h2>
           <p>Jose Hernandez</p> {/*conferencia.chair*/}
         </div>
 
-        <div className='flex flex-col bg-card rounded shadow border border-gray-200 p-2 w-full'>
+        <div className='flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full'>
           <div className='flex justify-between'>
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
             <Button
@@ -58,7 +57,6 @@ function UnaConferencia() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
