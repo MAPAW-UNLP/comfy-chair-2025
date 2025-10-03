@@ -1,8 +1,9 @@
 
 
 import React, { useState } from 'react';
-import Header from './Header';
+import Header from '../ui/Header';
 import { createConferencia } from '@/services/conferencias';
+import { useNavigate } from '@tanstack/react-router';
 
 type Sesion = { nombre: string; descripcion: string };
 function AltaConferencia() {
@@ -23,6 +24,7 @@ function AltaConferencia() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const navigate= useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +40,9 @@ function AltaConferencia() {
         vista: visualizacion,
       });
       setSuccess(true);
+      setTimeout(()=>{
+        navigate({to: "/admin"})
+      },1000)
     } catch (err: any) {
       setError('Error al guardar la conferencia');
     } finally {

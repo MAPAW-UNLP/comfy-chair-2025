@@ -1,4 +1,4 @@
-import Header from './Header';
+import Header from '../ui/Header';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import Tabs from './Tabs';

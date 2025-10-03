@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Route } from '@/routes/conferencias/$id';
-import Header from './Header';
-import type { Conferencia } from './AdministradorApp';
+import Header from '../ui/Header';
 import { Edit, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { getConferencia } from '@/services/conferencias';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split("-");
@@ -22,7 +20,7 @@ function UnaConferencia() {
 
   const agregarSesion= () =>{
 
-  }
+  }   
 
   return (
     <div className="flex flex-col justify-start items-center gap-5 w-full ">

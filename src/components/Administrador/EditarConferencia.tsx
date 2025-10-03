@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Header from './Header';
+import Header from '../ui/Header';
 import { Route } from '@/routes/conferencias/editar/$id';
 import { getConferencia, type Conferencia } from '@/services/conferencias';
 import api from '@/services/api';
+import { useNavigate } from '@tanstack/react-router';
 
 function EditarConferencia() {
   const conferenciaInicial = Route.useLoaderData() as Conferencia;
@@ -17,6 +18,7 @@ function EditarConferencia() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +34,9 @@ function EditarConferencia() {
         vista: visualizacion,
       });
       setSuccess(true);
+      setTimeout(() => {
+        navigate({ to: `/conferencias/${conferenciaInicial.id}` });
+      }, 1000);
     } catch (err: any) {
       setError('Error al guardar los cambios');
     } finally {
@@ -40,14 +45,14 @@ function EditarConferencia() {
   };
 
   useEffect(() => {
-    const actualizarConferencia = async () =>{
-      const data= await getConferencia(conferenciaInicial.id)
-      setTitulo(data.titulo)
-      setDescripcion(data.descripcion)
-      setVisualizacion(data.vista)
-      setFechaInicio(data.fecha_ini)
-      setFechaCierre(data.fecha_fin)
-    }
+    const actualizarConferencia = async () => {
+      const data = await getConferencia(conferenciaInicial.id);
+      setTitulo(data.titulo);
+      setDescripcion(data.descripcion);
+      setVisualizacion(data.vista);
+      setFechaInicio(data.fecha_ini);
+      setFechaCierre(data.fecha_fin);
+    };
 
     actualizarConferencia();
   }, []);
