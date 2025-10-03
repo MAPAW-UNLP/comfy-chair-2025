@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route } from '@/routes/conferencias/$id';
-import Header from '../Header';
 import { Edit, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';

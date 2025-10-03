@@ -1,11 +1,9 @@
-import Header from '../Header';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import Tabs from './Tabs';
 import ConferenciaBox from './ConferenciaBox';
 import { useNavigate } from '@tanstack/react-router';
 import {
-  createConferencia,
   getConferenciasActivas,
   getConferenciasTerminadas,
 } from '@/services/conferencias';
@@ -33,14 +31,6 @@ function AdministradorApp() {
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
-    //Para testear
-    // await createConferencia({
-    //   titulo: "Informatica 2",
-    //   descripcion: "Descripcion de informaticaaaaaaaa",
-    //   fecha_ini: "2025-09-01",
-    //   fecha_fin: "2025-09-10",
-    //   vista: "completo"
-    // })
     navigate({ to: '/conferencias/alta-conferencia' });
   };
 
