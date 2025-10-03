@@ -42,7 +42,7 @@ export const DummyApp = () => {
       </form>
 
       <div>
-        <h2 className="font-bold text-2xl">Dummies Creados: {dummies.length}</h2>
+        <h2 className="font-bold text-2xl mb-2">Dummies Creados: {dummies.length}</h2>
         <ul>
           {dummies.map((dummy) => (
             <DummyItem key={dummy.id} dummy={dummy} />

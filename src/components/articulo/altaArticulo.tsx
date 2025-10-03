@@ -5,12 +5,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import type { User } from "@/services/users";
+import type { Conference } from "@/services/conferences";
 
 type AltaArticuloProps = {
   users: User[];
+  conferences: Conference[];
 };
 
-export default function AltaArticulo({users}: AltaArticuloProps) {
+export default function AltaArticulo({users, conferences}: AltaArticuloProps) {
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const extraFileRef = useRef<HTMLInputElement>(null);
 
@@ -35,6 +38,30 @@ export default function AltaArticulo({users}: AltaArticuloProps) {
       <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Articulo</h2>
       <hr className="bg-slate-100"/>
       
+      <Select>
+        <Label htmlFor="autor">Conferencia</Label>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Seleccione una conferencia..." />
+        </SelectTrigger>
+        <SelectContent>
+          {conferences.map((c) => (
+            <SelectItem key={c.id} value={c.name}>
+              {c.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select>
+        <Label htmlFor="autor">Sesion</Label>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Seleccione una sesion..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="regular">Aca deberia traer solamente las sesiones de la conferencia seleccionada</SelectItem>
+        </SelectContent>
+      </Select>
+
       <div className="grid w-full items-center gap-3">
         <Label htmlFor="title">Titulo</Label>
         <Input type="text" id="title" placeholder="Titulo del articulo..." />
@@ -44,12 +71,12 @@ export default function AltaArticulo({users}: AltaArticuloProps) {
         <Label htmlFor="DetalleRegular">Articulo</Label>
         <input
           type="file"
-          ref={extraFileRef}
-          onChange={handleExtraFileChange}
+          ref={fileInputRef}
+          onChange={handleChange}
           className="hidden"
         />
-        <Button onClick={handleExtraFileClick} type="button" className="w-full">
-          Archivo con el Articulo
+        <Button onClick={handleClick} type="button" className="w-full">
+          Seleccionar archivo...
         </Button>
       </div>
 
@@ -104,7 +131,7 @@ export default function AltaArticulo({users}: AltaArticuloProps) {
                 className="hidden"
               />
               <Button onClick={handleExtraFileClick} type="button" className="w-full">
-                Archivo con las Fuentes
+                Seleccionar archivo...
               </Button>
             </div>
           )}

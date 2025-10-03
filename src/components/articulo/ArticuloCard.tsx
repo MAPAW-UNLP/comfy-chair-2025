@@ -110,10 +110,13 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 mb-2 bg-white flex flex-col gap-4">
       
       {/* Titulo y Conferencia */}
-      <h2 className="text-lg font-bold italic text-slate-500 text-center">{titulo}</h2>
+      <div className="flex-1 flex flex-col justify-center">
+        <h2 className="text-lg font-bold italic text-slate-500 text-center">{titulo}</h2>
+      </div>
       <hr className="bg-slate-100"/>
       <p className="text-md text-slate-500"><b>Sesion:</b> {sesion}</p>
       <p className="text-md text-slate-500"><b>Conferencia:</b> {conferencia}</p>
+      
       {/* Contenedor de los dos botones */}
       <div className="flex gap-2 mt-auto">
 
@@ -153,14 +156,15 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
                   <span>
                     Tienes tiempo de modificar tu articulo hasta el dia:
                     <br/>
-                    <b>{deadlineDate?.toLocaleString("es-AR", { dateStyle: "full", timeStyle: "short" })}</b>
+                    {/*TODO FIX: por alguna razon interpreta la Date de la base de datos como zona horaria UTC y al parsearse a la
+                      hora de argentina UTC-3 muestra 3 horas menos, se parsea a hora UTC para que muestre la fecha y hota reales*/}
+                    <b>{deadlineDate?.toLocaleString("es-AR", { timeZone: "UTC", dateStyle: "full", timeStyle: "short" })}</b>
                   </span>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>
         </div>
-
       </div>
     </div>
   );

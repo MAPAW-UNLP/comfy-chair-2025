@@ -21,9 +21,11 @@ function RouteComponent() {
     }, []);
 
   return (
-    <div className="flex flex-wrap gap-4 mx-4 justify-center">
+    /*Comportamiento dinamico del CSS para centrar el mensaje cuando no hay articulos para mostrar, sino rompe las cards*/
+    <div className={`flex flex-wrap gap-4 mx-4 justify-center ${articulo.length === 0 ? "min-h-full items-center" : ""}`}>
+      {/*Cuando no hay articulos, muestro un mensaje*/}
       {articulo.length === 0 ? (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
           <h1 className="text-3xl font-bold italic text-slate-500 text-center">
             No hay articulos para mostrar...
           </h1>
@@ -41,6 +43,5 @@ function RouteComponent() {
         ))
       )}
     </div>
-
   );
 }
