@@ -8,7 +8,7 @@ function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const goHome = () => {
-    navigate({ to: '/admin' }); //TODO: Dependiendo el rol, ir a home del rol
+    navigate({ to: '/' }); //TODO: Dependiendo el rol, ir a home del rol
   };
 
   return (
@@ -16,7 +16,7 @@ function Header() {
       <div className="cursor-pointer" onClick={() => setSidebarOpen(true)}>
         <Menu className="w-6 h-6" />
       </div>
-      
+
       <div className="cursor-pointer mr-5" onClick={goHome}>
         <p className="text-2xl italic">ComfyChair</p>
       </div>
