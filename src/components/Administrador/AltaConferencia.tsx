@@ -21,8 +21,8 @@ function AltaConferencia() {
         navigate({ to: '/admin' });
       }, 1000);
     } catch (err: any) {
-      console.log(err);
-      setError('Error al guardar la conferencia');
+      if (err.response?.data?.titulo[0] == "conferencia with this titulo already exists.") setError('Ya existe una conferencia con ese título');
+      else setError('Error al guardar la conferencia');
     }
   };
 
