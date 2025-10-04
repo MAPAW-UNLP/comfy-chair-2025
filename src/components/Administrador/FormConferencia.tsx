@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Calendario from './Calendario';
 import type { Conferencia } from './AdministradorApp';
 import { Button } from '../ui/button';
+import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 
 type FormConferenciaProps = {
   handleSubmit: (conf: Omit<Conferencia, 'id'>) => Promise<void>;
@@ -86,38 +87,21 @@ function FormConferencia({
       </div>
       <div className="flex flex-col gap-2">
         <label className="font-semibold">Visualización</label>
-        <div className="flex gap-4 text-sm">
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="radio"
-              name="vista"
-              value="single blind"
-              checked={conferencia.vista === 'single blind'}
-              onChange={handleChange}
-            />
+        <ToggleGroup
+          value={conferencia.vista}
+          onValueChange={(value) => setConferencia(prev => ({ ...prev, vista: value as 'single blind' | 'double blind' | 'completo' }))}
+          className="w-full"
+        >
+          <ToggleGroupItem value="single blind">
             Single blind
-          </label>
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="radio"
-              name="vista"
-              value="double blind"
-              checked={conferencia.vista === 'double blind'}
-              onChange={handleChange}
-            />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="double blind">
             Double blind
-          </label>
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="radio"
-              name="vista"
-              value="completo"
-              checked={conferencia.vista === 'completo'}
-              onChange={handleChange}
-            />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="completo">
             Completo
-          </label>
-        </div>
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
       <Calendario
