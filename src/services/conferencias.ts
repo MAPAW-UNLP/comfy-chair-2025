@@ -46,3 +46,7 @@ export const createConferencia = async (
   return response.data
 }
 
+export const deleteConferencia = async (id: string): Promise<void> => {
+  await api.delete(`/conferencias/${id}/`);
+}
+
