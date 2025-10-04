@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Calendario from './Calendario';
 import type { Conferencia } from './AdministradorApp';
 import { Button } from '../ui/button';
-import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
 type FormConferenciaProps = {
   handleSubmit: (conf: Omit<Conferencia, 'id'>) => Promise<void>;
@@ -87,21 +87,23 @@ function FormConferencia({
       </div>
       <div className="flex flex-col gap-2">
         <label className="font-semibold">Visualización</label>
-        <ToggleGroup
+        <Tabs
           value={conferencia.vista}
           onValueChange={(value) => setConferencia(prev => ({ ...prev, vista: value as 'single blind' | 'double blind' | 'completo' }))}
           className="w-full"
         >
-          <ToggleGroupItem value="single blind">
-            Single blind
-          </ToggleGroupItem>
-          <ToggleGroupItem value="double blind">
-            Double blind
-          </ToggleGroupItem>
-          <ToggleGroupItem value="completo">
-            Completo
-          </ToggleGroupItem>
-        </ToggleGroup>
+          <TabsList className="grid w-full grid-cols-3 h-12">
+            <TabsTrigger value="single blind" className="text-xs sm:text-sm">
+              Single blind
+            </TabsTrigger>
+            <TabsTrigger value="double blind" className="text-xs sm:text-sm">
+              Double blind
+            </TabsTrigger>
+            <TabsTrigger value="completo" className="text-xs sm:text-sm">
+              Completo
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       <Calendario
