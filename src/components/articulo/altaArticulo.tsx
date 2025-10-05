@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createArticle } from "@/services/newArticle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X } from "lucide-react";
 import type { User } from "@/services/users";
-import type { Conference } from "@/services/conferences";
+import type { Conference } from "@/services/conferences"; 
 import { getSessionsByConference } from "@/services/sessions";
 import type { Session } from "@/services/sessions";
+import type { Articulo } from "@/services/newArticle";
 
 type AltaArticuloProps = {
   users: User[];
@@ -26,6 +28,13 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
   const [autoresSeleccionados, setAutoresSeleccionados] = useState<User[]>([]);
   const [autorNotif, setAutorNotif] = useState<string>("");
+
+  /*manu*/
+  const [titulo, setTitulo] = useState<string>("");
+  const [abstract, setAbstract] = useState<string>("");
+  const [archivo, setArchivo] = useState<File | null>(null);
+  const [archivoExtra, setArchivoExtra] = useState<File | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleClick = () => fileInputRef.current?.click();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +77,44 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
       setSelectedSession(null);
     }
   }, [selectedConference]);
+
+const handleSubmit = async () => {
+  try {
+    /*
+    if (!titulo || !selectedConference || !selectedSession || !archivo || !autorNotif) {
+      alert("Complete todos los campos obligatorios antes de enviar.");
+      return;
+    }
+*/
+    setLoading(true);
+
+    // Construimos el objeto Articulo con la estructura correcta
+    const article: Articulo = {
+      title: titulo,
+      main_file_url:"https://www.example.com/archivo.pdf",
+      status: 'reception',
+      article_type: tipoArticulo,
+      abstract: tipoArticulo === "regular" ? abstract : "",
+      source_file_url: archivoExtra?.name || "",
+      authors: autoresSeleccionados.map((a) => a.id),
+      notification_author: Number(autorNotif),
+      session_id: Number(selectedSession),
+    };
+
+    console.log("Datos a enviar:", article);
+
+    const response = await createArticle(article);
+    console.log("Artículo creado:", response);
+
+    alert("Artículo subido correctamente 🎉");
+  } catch (error) {
+    console.error("Error al subir el artículo:", error);
+    alert("Hubo un error al subir el artículo.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
@@ -119,10 +166,13 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
       </Select>
 
       {/* Campo de título */}
-      <div className="grid w-full items-center gap-3">
-        <Label htmlFor="title">Título</Label>
-        <Input type="text" id="title" placeholder="Título del artículo..." />
-      </div>
+      <Input
+        type="text"
+        id="title"
+        placeholder="Título del artículo..."
+        value={titulo}
+        onChange={(e) => setTitulo(e.target.value)}
+        />
 
       {/* Archivo principal */}
       <div className="grid w-full items-center gap-3">
@@ -213,19 +263,21 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
         )}
 
         {tipoArticulo === "regular" && (
-          <div className="grid w-full items-center gap-3">
-            <Label htmlFor="DetalleRegular">Abstract</Label>
-            <Textarea id="DetalleRegular" placeholder="Abstract de hasta 300 caracteres..." />
-          </div>
+          <Textarea
+            id="DetalleRegular"
+            placeholder="Abstract de hasta 300 caracteres..."
+            value={abstract}
+            onChange={(e) => setAbstract(e.target.value)}
+          />
         )}
       </div>
 
       {/* Botones inferiores */}
       <div id="bottom-buttons" className="flex w-full gap-2">
-        <Button type="button" variant="outline" className="w-1/2">
+        <Button  variant="outline" className="w-1/2">
           Cancelar
         </Button>
-        <Button type="submit" className="w-1/2">
+        <Button onClick={handleSubmit} className="w-1/2">
           Subir
         </Button>
       </div>
