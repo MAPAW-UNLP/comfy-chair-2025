@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X } from "lucide-react";
 import type { User } from "@/services/users";
 import type { Conference } from "@/services/conferences";
 import { getSessionsByConference } from "@/services/sessions";
@@ -23,39 +24,54 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loadingSessions, setLoadingSessions] = useState<boolean>(false);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const [autoresSeleccionados, setAutoresSeleccionados] = useState<User[]>([]);
+  const [autorNotif, setAutorNotif] = useState<string>("");
 
   const handleClick = () => fileInputRef.current?.click();
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) console.log("Archivo seleccionado:", file.name);
   };
 
   const handleExtraFileClick = () => extraFileRef.current?.click();
-
   const handleExtraFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) console.log("Archivo extra (Poster):", file.name);
   };
 
-  // Efecto para traer sesiones cuando cambia la conferencia seleccionada
+  // Manejo de autores
+  const handleAgregarAutor = (id: string) => {
+    const autor = users.find((u) => String(u.id) === id);
+    if (autor && !autoresSeleccionados.some((a) => a.id === autor.id)) {
+      setAutoresSeleccionados([...autoresSeleccionados, autor]);
+    }
+  };
+
+  const handleEliminarAutor = (id: number) => {
+    setAutoresSeleccionados(autoresSeleccionados.filter((a) => a.id !== id));
+    if (autorNotif === String(id)) {
+      setAutorNotif(""); // limpiar autorNotif si se elimina
+    }
+  };
+
+  // Efecto para traer sesiones al cambiar conferencia
   useEffect(() => {
     if (selectedConference) {
       setLoadingSessions(true);
-      setSelectedSession(null); // limpia la sesión al cambiar conferencia
+      setSelectedSession(null);
       getSessionsByConference(Number(selectedConference))
         .then((data) => setSessions(data))
         .catch((err) => console.error("Error cargando sesiones:", err))
         .finally(() => setLoadingSessions(false));
     } else {
       setSessions([]);
-      setSelectedSession(null); // limpia si no hay conferencia
+      setSelectedSession(null);
     }
   }, [selectedConference]);
 
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
-      <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Articulo</h2>
+      <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Artículo</h2>
       <hr className="bg-slate-100" />
 
       {/* Select de Conferencias */}
@@ -73,7 +89,7 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
         </SelectContent>
       </Select>
 
-      {/* Select de Sesiones (filtrado) */}
+      {/* Select de Sesiones */}
       <Label htmlFor="sesion">Sesión</Label>
       <Select
         value={selectedSession ?? ""}
@@ -119,7 +135,7 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
 
       {/* Select de autores */}
       <Label htmlFor="autor">Autores del Artículo</Label>
-      <Select>
+      <Select onValueChange={handleAgregarAutor}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Seleccione un autor..." />
         </SelectTrigger>
@@ -132,16 +148,41 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
         </SelectContent>
       </Select>
 
+      {/* Lista de autores seleccionados */}
+      <div className="flex flex-wrap gap-2">
+        {autoresSeleccionados.map((a) => (
+          <div
+            key={a.id}
+            className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full shadow-sm"
+          >
+            <span>
+              {a.first_name} {a.last_name}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleEliminarAutor(a.id)}
+              className="text-red-500 hover:text-red-700"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ))}
+      </div>
+
       {/* Select de autor de notificación */}
       <Label htmlFor="autorNotif">Autor de Notificación</Label>
-      <Select>
+      <Select
+        value={autorNotif}
+        onValueChange={setAutorNotif}
+        disabled={autoresSeleccionados.length === 0}
+      >
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Seleccione un autor..." />
         </SelectTrigger>
         <SelectContent>
-          {users.map((u) => (
-            <SelectItem key={u.id} value={String(u.id)}>
-              {u.first_name} {u.last_name}
+          {autoresSeleccionados.map((a) => (
+            <SelectItem key={a.id} value={String(a.id)}>
+              {a.first_name} {a.last_name}
             </SelectItem>
           ))}
         </SelectContent>
