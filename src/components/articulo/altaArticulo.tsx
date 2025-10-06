@@ -166,6 +166,7 @@ const handleSubmit = async () => {
       </Select>
 
       {/* Campo de título */}
+      <Label htmlFor="autor">Título</Label>
       <Input
         type="text"
         id="title"
@@ -198,26 +199,28 @@ const handleSubmit = async () => {
         </SelectContent>
       </Select>
 
-      {/* Lista de autores seleccionados */}
-      <div className="flex flex-wrap gap-2">
-        {autoresSeleccionados.map((a) => (
-          <div
-            key={a.id}
-            className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full shadow-sm"
-          >
-            <span>
-              {a.first_name} {a.last_name}
-            </span>
-            <button
-              type="button"
-              onClick={() => handleEliminarAutor(a.id)}
-              className="text-red-500 hover:text-red-700"
+      {/* Lista de autores seleccionados (solo renderiza si hay autores) */}
+      {autoresSeleccionados?.length > 0 && (
+        <div className="flex flex-col gap-2 w-full">
+          {autoresSeleccionados.map((a) => (
+            <div
+              key={a.id}
+              className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full"
             >
-              <X size={16} />
-            </button>
-          </div>
-        ))}
-      </div>
+              <span className="truncate">
+                {a.first_name} {a.last_name}
+              </span>
+              <button
+                type="button"
+                onClick={() => handleEliminarAutor(a.id)}
+                className="text-red-500 hover:text-red-700"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Select de autor de notificación */}
       <Label htmlFor="autorNotif">Autor de Notificación</Label>
@@ -251,36 +254,31 @@ const handleSubmit = async () => {
       </Select>
 
       {/* Campos dinámicos */}
-      <div>
-        {tipoArticulo === "poster" && (
-          <div className="grid w-full items-center gap-3">
-            <Label htmlFor="DetalleRegular">Fuentes</Label>
-            <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
-            <Button onClick={handleExtraFileClick} type="button" className="w-full">
-              Seleccionar archivo...
-            </Button>
-          </div>
-        )}
+      {tipoArticulo === "poster" && (
+        <div className="grid w-full items-center gap-3">
+          <Label htmlFor="DetalleRegular">Fuentes</Label>
+          <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
+          <Button onClick={handleExtraFileClick} type="button" className="w-full">
+            Seleccionar archivo...
+          </Button>
+        </div>
+      )}
 
-        {tipoArticulo === "regular" && (
-          <Textarea
-            id="DetalleRegular"
-            placeholder="Abstract de hasta 300 caracteres..."
-            value={abstract}
-            onChange={(e) => setAbstract(e.target.value)}
-          />
-        )}
-      </div>
+      {tipoArticulo === "regular" && (
+        <Textarea
+          id="DetalleRegular"
+          placeholder="Abstract de hasta 300 caracteres..."
+          value={abstract}
+          onChange={(e) => setAbstract(e.target.value)}
+        />
+      )}
 
-      {/* Botones inferiores */}
-      <div id="bottom-buttons" className="flex w-full gap-2">
-        <Button  variant="outline" className="w-1/2">
-          Cancelar
-        </Button>
-        <Button onClick={handleSubmit} className="w-1/2">
-          Subir
-        </Button>
-      </div>
+      <hr className="bg-slate-100" />
+
+      {/* Boton inferior */}
+      <Button onClick={handleSubmit} className="w-full">
+        Subir
+      </Button>
     </div>
   );
 }

@@ -38,6 +38,8 @@ export const DummyApp = () => {
           type="text"
           placeholder="Nombre del dummy..."
         />
+        
+        <hr className="bg-slate-100" />
         <Button variant="outline" className="bg-slate-900 text-white w-full">Crear Dummy</Button>
       </form>
 
