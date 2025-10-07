@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DummyRouteImport } from './routes/dummy'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+<<<<<<< HEAD
 import { Route as ArticulosIdRevisoresRouteImport } from './routes/articulos.$id.revisores'
+=======
+import { Route as ConferenciasAltaConferenciaRouteImport } from './routes/conferencias/alta-conferencia'
+import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
+import { Route as ConferenciasEditarIdRouteImport } from './routes/conferencias/editar/$id'
+>>>>>>> main
 
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
   path: '/dummy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -23,26 +35,59 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+<<<<<<< HEAD
 const ArticulosIdRevisoresRoute = ArticulosIdRevisoresRouteImport.update({
   id: '/articulos/$id/revisores',
   path: '/articulos/$id/revisores',
+=======
+const ConferenciasAltaConferenciaRoute =
+  ConferenciasAltaConferenciaRouteImport.update({
+    id: '/conferencias/alta-conferencia',
+    path: '/conferencias/alta-conferencia',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
+  id: '/conferencias/$id',
+  path: '/conferencias/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenciasEditarIdRoute = ConferenciasEditarIdRouteImport.update({
+  id: '/conferencias/editar/$id',
+  path: '/conferencias/editar/$id',
+>>>>>>> main
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/dummy': typeof DummyRoute
+<<<<<<< HEAD
   '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
+=======
+  '/conferencias/$id': typeof ConferenciasIdRoute
+  '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
+  '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
+>>>>>>> main
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/dummy': typeof DummyRoute
+<<<<<<< HEAD
   '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
+=======
+  '/conferencias/$id': typeof ConferenciasIdRoute
+  '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
+  '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
+>>>>>>> main
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/dummy': typeof DummyRoute
+<<<<<<< HEAD
   '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
 }
 export interface FileRouteTypes {
@@ -51,12 +96,50 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/dummy' | '/articulos/$id/revisores'
   id: '__root__' | '/' | '/dummy' | '/articulos/$id/revisores'
+=======
+  '/conferencias/$id': typeof ConferenciasIdRoute
+  '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
+  '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/dummy'
+    | '/conferencias/$id'
+    | '/conferencias/alta-conferencia'
+    | '/conferencias/editar/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/admin'
+    | '/dummy'
+    | '/conferencias/$id'
+    | '/conferencias/alta-conferencia'
+    | '/conferencias/editar/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/dummy'
+    | '/conferencias/$id'
+    | '/conferencias/alta-conferencia'
+    | '/conferencias/editar/$id'
+>>>>>>> main
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   DummyRoute: typeof DummyRoute
+<<<<<<< HEAD
   ArticulosIdRevisoresRoute: typeof ArticulosIdRevisoresRoute
+=======
+  ConferenciasIdRoute: typeof ConferenciasIdRoute
+  ConferenciasAltaConferenciaRoute: typeof ConferenciasAltaConferenciaRoute
+  ConferenciasEditarIdRoute: typeof ConferenciasEditarIdRoute
+>>>>>>> main
 }
 
 declare module '@tanstack/react-router' {
@@ -68,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DummyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -75,11 +165,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+<<<<<<< HEAD
     '/articulos/$id/revisores': {
       id: '/articulos/$id/revisores'
       path: '/articulos/$id/revisores'
       fullPath: '/articulos/$id/revisores'
       preLoaderRoute: typeof ArticulosIdRevisoresRouteImport
+=======
+    '/conferencias/alta-conferencia': {
+      id: '/conferencias/alta-conferencia'
+      path: '/conferencias/alta-conferencia'
+      fullPath: '/conferencias/alta-conferencia'
+      preLoaderRoute: typeof ConferenciasAltaConferenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conferencias/$id': {
+      id: '/conferencias/$id'
+      path: '/conferencias/$id'
+      fullPath: '/conferencias/$id'
+      preLoaderRoute: typeof ConferenciasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conferencias/editar/$id': {
+      id: '/conferencias/editar/$id'
+      path: '/conferencias/editar/$id'
+      fullPath: '/conferencias/editar/$id'
+      preLoaderRoute: typeof ConferenciasEditarIdRouteImport
+>>>>>>> main
       parentRoute: typeof rootRouteImport
     }
   }
@@ -87,8 +199,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   DummyRoute: DummyRoute,
+<<<<<<< HEAD
   ArticulosIdRevisoresRoute: ArticulosIdRevisoresRoute,
+=======
+  ConferenciasIdRoute: ConferenciasIdRoute,
+  ConferenciasAltaConferenciaRoute: ConferenciasAltaConferenciaRoute,
+  ConferenciasEditarIdRoute: ConferenciasEditarIdRoute,
+>>>>>>> main
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
