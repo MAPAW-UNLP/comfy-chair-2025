@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Trash2, Smile } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 import type { Revisor } from "@/services/revisor"
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
 interface RevisorProps {
   revisor: Revisor
   asignado?: boolean
-  onAsignar?: () => boolean | void   // 🔹 ajustado
+  onAsignar?: () => boolean
   onEliminar?: () => void
 }
 
@@ -38,7 +38,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
   const getEstadoColor = () => {
     switch (revisor.interes) {
       case "interesado":
-        return { backgroundColor: "hsla(141, 81%, 66%, 1)" }
+        return { backgroundColor: "hsla(141, 81%, 66%, 1.00)" }
       case "quizas":
         return { backgroundColor: "hsl(52.8 98.3% 76.9%)" }
       case "no_interesado":
@@ -50,7 +50,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
 
   const handleAsignar = () => {
     const exito = onAsignar?.()
-    if (exito === undefined || exito) {   // 🔹 maneja undefined como éxito
+    if (exito) {
       setIsAsignado(true)
       setShowAsignadoDialog(true)
     }
@@ -64,38 +64,39 @@ export const RevisorItem: React.FC<RevisorProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between border-2 border-black rounded-xl p-3 shadow-2xl bg-white">
-        <div className="flex items-center gap-4">
-          <Smile size={40} className="text-yellow-500 flex-shrink-0" />
-          <div className="flex flex-col items-start">
-            <p className="text-lg font-semibold">{revisor.nombre_completo}</p>
-            <span
-              className="mt-1 px-3 py-1 rounded-md text-sm font-bold text-black flex items-center justify-center border-2 border-black"
-              style={getEstadoColor()}
-            >
-              {interesMap[revisor.interes] || "No indicó"}
-            </span>
-          </div>
+      <div className="w-screen flex items-center justify-between py-6 border-b border-black relative left-1/2 right-1/2 -translate-x-1/2 px-8">
+        <div className="flex-1 text-center mr-4">
+          <p className="text-2xl font-bold text-gray-900 tracking-wide">
+            {revisor.nombre_completo}
+          </p>
         </div>
 
-        {isAsignado ? (
-          <button
-            onClick={handleEliminarClick}
-            className="flex items-center gap-1 bg-red-600 px-3 py-1 rounded-lg text-sm font-bold hover:bg-red-700 border-2 border-black"
+        <div className="flex flex-col items-center min-w-[160px]">
+          <span
+            className="mb-3 h-9 w-26 flex items-center justify-center rounded-md text-sm font-bold text-black border border-black"
+            style={getEstadoColor()}
           >
-            <Trash2 size={16} /> Eliminar
-          </button>
-        ) : (
-          <button
-            onClick={handleAsignar}
-            className="flex items-center gap-1 bg-green-600 px-3 py-1 rounded-lg text-sm font-bold hover:bg-green-700 border-2 border-black"
-          >
-            <Plus size={16} /> Asignar
-          </button>
-        )}
+            {interesMap[revisor.interes] || "No indicó"}
+          </span>
+
+          {isAsignado ? (
+            <button
+              onClick={handleEliminarClick}
+              className="flex items-center gap-2 bg-red-600 text-white px-5 py-1 rounded-lg text-lg font-bold hover:bg-red-700 border border-black transition"
+            >
+              <Trash2 size={20} /> Eliminar
+            </button>
+          ) : (
+            <button
+              onClick={handleAsignar}
+              className="flex items-center gap-2 bg-green-600 text-white px-5 py-1 rounded-lg text-lg font-bold hover:bg-green-700 border border-black transition"
+            >
+              <Plus size={20} /> Asignar
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Dialog asignado */}
       <Dialog open={showAsignadoDialog} onOpenChange={setShowAsignadoDialog}>
         <DialogContent>
           <DialogHeader>
@@ -107,7 +108,6 @@ export const RevisorItem: React.FC<RevisorProps> = ({
         </DialogContent>
       </Dialog>
 
-      {/* Dialog eliminado */}
       <Dialog open={showEliminadoDialog} onOpenChange={setShowEliminadoDialog}>
         <DialogContent>
           <DialogHeader>

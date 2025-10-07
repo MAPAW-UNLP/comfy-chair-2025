@@ -13,3 +13,4 @@ export const getRevisoresByArticulo = async (
   const response = await api.get(`/chairs/articulos/${articuloId}/revisores-disponibles/`);
   return response.data;
 };
+
