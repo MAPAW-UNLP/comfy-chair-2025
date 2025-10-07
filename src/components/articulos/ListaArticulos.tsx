@@ -5,7 +5,6 @@ import { ArticuloCard } from './ArticuloCard';
 import {
   Pagination,
   PaginationContent,
-  // PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -42,7 +41,7 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Listado de Artículos</h1>
 
-      <ul className="space-y-4">
+      <ul className="divide-y divide-gray-200">
         {articulosVisibles.map((articulo) => (
           <ArticuloCard key={articulo.id} articulo={articulo} />
         ))}
@@ -51,7 +50,6 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
       <div className="mt-6 text-center text-sm text-gray-500">
         Mostrando {articulosVisibles.length} de {items.length} artículos
       </div>
-
 
       <Pagination className="mt-4">
         <PaginationContent>
@@ -67,7 +65,6 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
               }
             />
           </PaginationItem>
-
 
           {Array.from({ length: totalPaginas }).map((_, i) => (
             <PaginationItem key={i}>

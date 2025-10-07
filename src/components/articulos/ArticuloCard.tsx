@@ -1,54 +1,65 @@
 import type { Articulo } from '@/services/articulos';
 import { useNavigate } from '@tanstack/react-router';
+import { UserPlus2, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import type React from 'react';
 
 interface ArticuloCardProps {
   articulo: Articulo;
 }
 
-const getInitials = (name: string): string => {
-  return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
-};
-
 export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
-  const { id, title, description, revisores = [] } = articulo;
+  const { id, title, revisores = [] } = articulo;
   const navigate = useNavigate();
-  
-  const handleAddRevisor = () => {
-    navigate({ to: `/articulos/${id}/revisores-disponibles` });
+
+  const completo = revisores.length === 3;
+
+  const handleCardClick = () => {
+    navigate({ to: `/articulos/${id}` });
   };
 
-  const handleRevisorClick = () => {
-    navigate({ to: `/articulos/${id}/revisores-disponibles` }); // esto deberia ser '/revisor/${revisor.id}' o algo así y traerme revisorId: number
+  const handleRevisorClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate({
+      to: completo
+        ? `/articulos/${id}/revisores`
+        : `/articulos/${id}/revisores-disponibles`,
+    });
   };
-  
+
   return (
-    <li className="rounded-xl border p-4 shadow-sm flex items-center justify-between">
-      <div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="text-sm text-gray-600">{description}</p>
-      </div>
-      <div className="flex items-center gap-2">
-        {revisores && revisores.length > 0 && (
-          <div className="flex -space-x-2">
-            {revisores.slice(0, 3).map((revisor, index) => (
-              <button
-                key={index}
-                onClick={handleRevisorClick}
-                className="w-8 h-8 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center border-2 border-white hover:bg-blue-600 cursor-pointer"
-                title={revisor}
-              >
-                {getInitials(revisor)}
-              </button>
-            ))}
-          </div>
-        )}
-        <button 
-          onClick={handleAddRevisor}
-          className="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 text-gray-400 hover:border-gray-400 hover:text-gray-600 flex items-center justify-center text-sm cursor-pointer"
-          title="Agregar revisor"
+    <li
+      className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-muted/50 transition cursor-pointer"
+      onClick={handleCardClick}
+    >
+      <h2 className="text-sm font-medium text-foreground">{title}</h2>
+
+      <div className="flex flex-col items-center gap-2">
+        <Badge
+          variant={completo ? 'default' : 'secondary'}
+          className={
+            completo
+              ? 'bg-green-100 text-green-700'
+              : 'bg-gray-200 text-gray-700'
+          }
         >
-          +
-        </button>
+          {completo ? 'Completo' : 'Incompleto'}
+        </Badge>
+
+        <Button
+          size="icon"
+          variant="outline"
+          className="rounded-full bg-gray-200 hover:bg-gray-300"
+          title={completo ? 'Editar revisores' : 'Agregar revisor'}
+          onClick={handleRevisorClick}
+        >
+          {completo ? (
+            <Users className="h-5 w-5 text-gray-700" />
+          ) : (
+            <UserPlus2 className="h-5 w-5 text-gray-700" />
+          )}
+        </Button>
       </div>
     </li>
   );

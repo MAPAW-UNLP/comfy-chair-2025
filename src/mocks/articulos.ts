@@ -2,37 +2,74 @@
 export const articulosMock = [
   {
     id: 1,
-    title: "Articulo 1",
-    autores: ["Autor1", "Autor2"],
-    description: "En el artículo 1 se explora...",
-    revisores: ["Sofia Rod", "Sofia Ced"]
+    title: "A Deep Learning Approach for Real-Time Object Detection in Autonomous Vehicles",
+    autores: ["Yann LeCun", "Andrew Ng", "Fei-Fei Li"],
+    description: "Este artículo presenta un nuevo framework de deep learning para detección de objetos en tiempo real aplicado a vehículos autónomos, mejorando la precisión en un 15% respecto a métodos anteriores.",
+    revisores: ["María González", "Carlos Rodríguez", "Ana Martínez"],
+    conferencia: "CVPR 2023",
+    estado: "Aceptado"
   },
   {
     id: 2,
-    title: "Articulo 2",
-    autores: ["Autor1"],
-    description: "En el articulo 2 se desarrolla...",
-    revisores: ["Juan Ignacio G."]
+    title: "Blockchain-based Secure Voting System: Implementation and Security Analysis",
+    autores: ["Vitalik Buterin", "Nick Szabo"],
+    description: "Investigación sobre un sistema de votación electrónica basado en blockchain que garantiza transparencia, seguridad y anonimato en procesos electorales.",
+    revisores: ["Laura Chen", "David Kim", "Elena Petrova"],
+    conferencia: "IEEE Security & Privacy 2023",
+    estado: "En revisión"
   },
   {
     id: 3,
-    title: "Articulo 3",
-    autores: ["Autor3", "Autor1"],
-    description: "En el articulo 3 se analiza...",
-    revisores: ["Agustina S", "Facundo PS", "Sofia Rod" , "Agus S"]
+    title: "Quantum Machine Learning: Hybrid Algorithms for Optimization Problems",
+    autores: ["John Preskill", "Michele Mosca", "Scott Aaronson"],
+    description: "Exploración de algoritmos híbridos que combinan computación cuántica con machine learning tradicional para resolver problemas de optimización complejos.",
+    revisores: ["Sofia Rodríguez", "Facundo Pérez", "Agustina Silva", "Juan García"],
+    conferencia: "QIP 2023",
+    estado: "Aceptado con revisiones"
   },
   {
     id: 4,
-    title: "Articulo 4",
-    autores: ["Autor4", "Autor2"],
-    description: "En el articulo 4 se investiga...",
-    revisores: ["Facundo PS", "Sofia Rod"]
+    title: "Natural Language Processing for Early Detection of Mental Health Disorders",
+    autores: ["Christopher Manning", "Yoshua Bengio", "Joelle Pineau"],
+    description: "Desarrollo de modelos de NLP que analizan patrones lingüísticos en redes sociales para la detección temprana de trastornos de salud mental.",
+    revisores: ["Facundo Pérez", "Sofia Rodríguez", "Carlos López"],
+    conferencia: "ACL 2023",
+    estado: "Aceptado"
   },
   {
     id: 5,
-    title: "Articulo 5",
-    autores: ["Autor5"],
-    description: "En el articulo 5 se propone...",
-    revisores: ["Sofia Rod", "Sofia Ced"]
+    title: "Edge Computing Architecture for IoT Devices in Smart Cities",
+    autores: ["Kate Crawford", "Tim Berners-Lee"],
+    description: "Propuesta de una arquitectura de edge computing escalable para gestionar el gran volumen de datos generados por dispositivos IoT en entornos urbanos inteligentes.",
+    revisores: ["Sofia Rodríguez", "María Cedrés", "Roberto Díaz"],
+    conferencia: "MobiCom 2023",
+    estado: "En revisión"
   },
+  {
+    id: 6,
+    title: "Explainable AI in Healthcare: Interpretable Models for Medical Diagnosis",
+    autores: ["Cynthia Rudin", "Zoubin Ghahramani", "Daphne Koller"],
+    description: "Implementación de modelos de IA explicable para diagnóstico médico que permiten a los profesionales entender las decisiones del sistema.",
+    revisores: ["Juan Ignacio Gómez", "Elena Castillo", "Miguel Ángel Reyes"],
+    conferencia: "NeurIPS 2023",
+    estado: "Aceptado"
+  },
+  {
+    id: 7,
+    title: "Federated Learning for Privacy-Preserving Medical Data Analysis",
+    autores: ["Brendan McMahan", "Peter Kairouz", "Virginia Smith"],
+    description: "Estudio sobre aplicaciones de aprendizaje federado en el análisis de datos médicos, preservando la privacidad de los pacientes.",
+    revisores: ["Agustina Silva", "Facundo Pérez", "Sofia Rodríguez", "Ana López"],
+    conferencia: "ICML 2023",
+    estado: "En revisión"
+  },
+  {
+    id: 8,
+    title: "Computer Vision Techniques for Archaeological Site Reconstruction",
+    autores: ["Noah Snavely", "Alyosha Efros", "Jitendra Malik"],
+    description: "Aplicación de técnicas avanzadas de visión por computadora para la reconstrucción 3D de sitios arqueológicos a partir de fotografías.",
+    revisores: ["Sofia Cedrés", "María González", "Carlos Rodríguez"],
+    conferencia: "ICCV 2023",
+    estado: "Aceptado"
+  }
 ];
