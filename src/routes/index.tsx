@@ -1,14 +1,14 @@
-import Inicio from '@/components/Reviews/Index';
-import { createFileRoute } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/')({
-  component: Index,
-});
+import { createFileRoute } from "@tanstack/react-router";
+import Inicio from "@/components/Reviews/Index";
 
 function Index() {
   return (
-    <div className="p-2">
-      <Inicio></Inicio>
+    <div className="p-4">
+      <Inicio />
     </div>
   );
 }
+
+export const Route = createFileRoute("/")({
+  component: Index,
+});
