@@ -1,0 +1,92 @@
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
+  FieldTitle,
+} from '@/components/ui/field';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useEffect, useState } from 'react';
+
+type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
+
+type VisualizacionProp = {
+  valorVisualizacion?: VISTA_CHOICES;
+  actualizarVista: (v: VISTA_CHOICES) => void
+};
+
+export function Visualizacion({ valorVisualizacion, actualizarVista }: VisualizacionProp) {
+  const [valorSeleccionado, setValorSeleccionado] = useState<VISTA_CHOICES>('single blind');
+
+    useEffect(() =>{
+       actualizarVista(valorSeleccionado)
+       console.log(valorSeleccionado)
+    },[valorSeleccionado])
+
+  useEffect(() => {
+    if (valorVisualizacion) setValorSeleccionado(valorVisualizacion);
+  }, [valorVisualizacion]);
+
+  return (
+    <div className="w-full max-w-md">
+      <FieldGroup>
+        <FieldSet>
+          <FieldLabel
+            className="font-semibold text-md"
+            htmlFor="compute-environment-p8w"
+          >
+            Visualización
+          </FieldLabel>
+          <FieldDescription>
+            Selecciona la visualización de los artículos.
+          </FieldDescription>
+          <RadioGroup
+            value={valorSeleccionado}
+            onValueChange={setValorSeleccionado}
+          >
+            <FieldLabel htmlFor="single blind">
+              <Field orientation="horizontal">
+                <FieldContent>
+                  <FieldTitle>Single blind</FieldTitle>
+                  <FieldDescription>
+                    El autor puede ver quién revisó su artículo pero el revisor
+                    no puede ver el autor.
+                  </FieldDescription>
+                </FieldContent>
+                <RadioGroupItem value="single blind" id="single blind" />
+              </Field>
+            </FieldLabel>
+
+            <FieldLabel htmlFor="double blind">
+              <Field orientation="horizontal">
+                <FieldContent>
+                  <FieldTitle>Double blind</FieldTitle>
+                  <FieldDescription>
+                    El autor no puede ver quién revisó su artículo ni el revisor
+                    puede ver el autor.
+                  </FieldDescription>
+                </FieldContent>
+                <RadioGroupItem value="double blind" id="double blind" />
+              </Field>
+            </FieldLabel>
+
+            <FieldLabel htmlFor="completo">
+              <Field orientation="horizontal">
+                <FieldContent>
+                  <FieldTitle>Completo</FieldTitle>
+                  <FieldDescription>
+                    El autor puede ver quién revisó el artículo y el revisor
+                    puede ver el autor.
+                  </FieldDescription>
+                </FieldContent>
+                <RadioGroupItem value="completo" id="completo" />
+              </Field>
+            </FieldLabel>
+          </RadioGroup>
+        </FieldSet>
+      </FieldGroup>
+    </div>
+  );
+}

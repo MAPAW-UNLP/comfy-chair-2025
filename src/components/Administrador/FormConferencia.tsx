@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Calendario from './Calendario';
 import type { Conferencia } from './AdministradorApp';
 import { Button } from '../ui/button';
-import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import { Visualizacion } from './Visualizacion';
+import { Separator } from '../ui/separator';
 
 function esFechaValida(fecha1: string, fecha2: string) {
   const f1 = new Date(fecha1);
   const f2 = new Date(fecha2);
-  
+
   return f2 >= f1;
 }
-
 
 type FormConferenciaProps = {
   handleSubmit: (conf: Omit<Conferencia, 'id'>) => Promise<void>;
@@ -23,7 +23,7 @@ function FormConferencia({
   handleSubmit,
   children,
   valorConferencia,
-  setError
+  setError,
 }: FormConferenciaProps) {
   const [conferencia, setConferencia] = useState<Omit<Conferencia, 'id'>>({
     titulo: '',
@@ -36,13 +36,13 @@ function FormConferencia({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!esFechaValida(conferencia.fecha_ini, conferencia.fecha_fin)) {
-      console.log("aca");
+      console.log('aca');
       setError(
         'La fecha de fin debe ser posterior o igual a la fecha de inicio'
       );
       return;
     }
-    
+
     handleSubmit(conferencia);
   };
   const handleChange = (
@@ -60,6 +60,10 @@ function FormConferencia({
   const actualizarFechaFin = (d: string) =>
     setConferencia((prev) => ({ ...prev, fecha_fin: d }));
 
+  const actualizarVista = (v: Conferencia['vista']) => {
+    setConferencia((prev) => ({ ...prev, vista: v }));
+  }
+
   const validarFin = (d: Date) => {
     if (!conferencia.fecha_ini) return false;
     const [year, month, day] = conferencia.fecha_ini.split('-').map(Number);
@@ -69,7 +73,7 @@ function FormConferencia({
 
   useEffect(() => {
     if (valorConferencia) setConferencia(valorConferencia);
-  }, []);
+  }, [valorConferencia]);
 
   return (
     <form
@@ -104,40 +108,11 @@ function FormConferencia({
         <p>Jose Hernandez</p>
       </div> */}
 
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Visualización</label>
-        <Tabs
-          value={conferencia.vista}
-          onValueChange={(value) =>
-            setConferencia((prev) => ({
-              ...prev,
-              vista: value as 'single blind' | 'double blind' | 'completo',
-            }))
-          }
-          className="w-full"
-        >
-          <TabsList className="grid w-full grid-cols-3 h-12 shadow">
-            <TabsTrigger
-              value="single blind"
-              className="text-xs sm:text-sm cursor-pointer"
-            >
-              Single blind
-            </TabsTrigger>
-            <TabsTrigger
-              value="double blind"
-              className="text-xs sm:text-sm cursor-pointer"
-            >
-              Double blind
-            </TabsTrigger>
-            <TabsTrigger
-              value="completo"
-              className="text-xs sm:text-sm cursor-pointer"
-            >
-              Completo
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      {valorConferencia ? (
+        <Visualizacion valorVisualizacion={valorConferencia.vista} actualizarVista={actualizarVista}/>
+      ) : (
+        <Visualizacion actualizarVista={actualizarVista} />
+      )}
 
       <Calendario
         label="Fecha de inicio"
