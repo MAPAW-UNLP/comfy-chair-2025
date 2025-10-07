@@ -19,7 +19,7 @@ export const articulosMock = [
     title: "Articulo 3",
     autores: ["Autor3", "Autor1"],
     description: "En el articulo 3 se analiza...",
-    revisores: ["Agustina S", "Facundo PS", "Sofia Rod, Agus S"]
+    revisores: ["Agustina S", "Facundo PS", "Sofia Rod" , "Agus S"]
   },
   {
     id: 4,

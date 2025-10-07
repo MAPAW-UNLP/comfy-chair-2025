@@ -39,7 +39,7 @@ export const ArticulosApp = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-8">Cargando artículos...</div>;
+    return <div className="p-8 animate-pulse">Cargando artículos...</div>;
   }
 
   return (
