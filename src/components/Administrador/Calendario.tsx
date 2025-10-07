@@ -37,7 +37,7 @@ function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <Label className="px-1">
+      <Label className="px-1 text-md"  >
         {label}
       </Label>
       <Popover open={open} onOpenChange={setOpen}>

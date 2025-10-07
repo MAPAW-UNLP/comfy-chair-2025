@@ -36,7 +36,7 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
           className="p-1 rounded hover:bg-gray-200 transition-colors"
           title="Editar conferencia"
         >
-          <Edit className="w-4 h-4" />
+          <Edit className="w-4 h-4 cursor-pointer" />
         </button>
       </div>
 

@@ -19,7 +19,7 @@ function EditarConferencia() {
       setSuccess(true);
       setTimeout(() => {
         navigate({ to: `/conferencias/${conferenciaInicial.id}` });
-      }, 1000);
+      }, 800);
     } catch (err: any) {
       if (
         err.response?.data?.titulo[0] ==
@@ -35,6 +35,7 @@ function EditarConferencia() {
       <FormConferencia
         handleSubmit={handleSubmit}
         valorConferencia={conferenciaInicial}
+        setError={setError}
       >
         {error && <div className="text-red-600 text-sm">{error}</div>}
         {success && (

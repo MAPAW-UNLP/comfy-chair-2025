@@ -1,6 +1,6 @@
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
-import Tabs from './Tabs';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import ConferenciaBox from './ConferenciaBox';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -67,7 +67,23 @@ function AdministradorApp() {
         </Button>
       </div>
 
-        <Tabs verActivas={verActivas} setVerActivas={setVerActivas} />
+      <Tabs value={verActivas ? "activas" : "terminadas"} onValueChange={v => setVerActivas(v === "activas")} className="w-full flex items-center">
+        <TabsList className='h-10 shadow'>
+          <TabsTrigger
+            value="activas"
+            className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+          >
+            Activas
+          </TabsTrigger>
+          <TabsTrigger
+            value="terminadas"
+            className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+          >
+            Terminadas
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  justify-center items-center gap-3 w-full px-5">
         {conferencias.length > 0 ? (
           conferencias.map((c) => {

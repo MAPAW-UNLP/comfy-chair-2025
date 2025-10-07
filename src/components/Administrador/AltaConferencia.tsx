@@ -19,7 +19,7 @@ function AltaConferencia() {
       setSuccess(true);
       setTimeout(() => {
         navigate({ to: '/admin' });
-      }, 1000);
+      }, 800);
     } catch (err: any) {
       if (err.response?.data?.titulo[0] == "conferencia with this titulo already exists.") setError('Ya existe una conferencia con ese título');
       else setError('Error al guardar la conferencia');
@@ -30,7 +30,7 @@ function AltaConferencia() {
 
   return (
     <div className="w-full flex flex-col items-center gap-4 mt-3">
-      <FormConferencia handleSubmit={handleSubmit}>
+      <FormConferencia handleSubmit={handleSubmit} setError={setError}>
         {/* <div className="mt-2">
           <h3 className="font-semibold mb-2">Sesiones</h3>
           <Button

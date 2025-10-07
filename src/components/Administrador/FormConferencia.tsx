@@ -4,16 +4,26 @@ import type { Conferencia } from './AdministradorApp';
 import { Button } from '../ui/button';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
+function esFechaValida(fecha1: string, fecha2: string) {
+  const f1 = new Date(fecha1);
+  const f2 = new Date(fecha2);
+  
+  return f2 >= f1;
+}
+
+
 type FormConferenciaProps = {
   handleSubmit: (conf: Omit<Conferencia, 'id'>) => Promise<void>;
   children: React.ReactNode;
   valorConferencia?: Omit<Conferencia, 'id'>;
+  setError: React.Dispatch<React.SetStateAction<string>>;
 };
 
 function FormConferencia({
   handleSubmit,
   children,
   valorConferencia,
+  setError
 }: FormConferenciaProps) {
   const [conferencia, setConferencia] = useState<Omit<Conferencia, 'id'>>({
     titulo: '',
@@ -25,6 +35,14 @@ function FormConferencia({
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!esFechaValida(conferencia.fecha_ini, conferencia.fecha_fin)) {
+      console.log("aca");
+      setError(
+        'La fecha de fin debe ser posterior o igual a la fecha de inicio'
+      );
+      return;
+    }
+    
     handleSubmit(conferencia);
   };
   const handleChange = (
@@ -47,7 +65,7 @@ function FormConferencia({
     const [year, month, day] = conferencia.fecha_ini.split('-').map(Number);
     const fechaInicio = new Date(year, month - 1, day);
     return d >= fechaInicio;
-  }
+  };
 
   useEffect(() => {
     if (valorConferencia) setConferencia(valorConferencia);
@@ -81,25 +99,40 @@ function FormConferencia({
           required
         />
       </div>
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-1">
         <label className="font-semibold">Usuario del Chair general</label>
         <p>Jose Hernandez</p>
-      </div>
+      </div> */}
+
       <div className="flex flex-col gap-2">
         <label className="font-semibold">Visualización</label>
         <Tabs
           value={conferencia.vista}
-          onValueChange={(value) => setConferencia(prev => ({ ...prev, vista: value as 'single blind' | 'double blind' | 'completo' }))}
+          onValueChange={(value) =>
+            setConferencia((prev) => ({
+              ...prev,
+              vista: value as 'single blind' | 'double blind' | 'completo',
+            }))
+          }
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-3 h-12">
-            <TabsTrigger value="single blind" className="text-xs sm:text-sm">
+          <TabsList className="grid w-full grid-cols-3 h-12 shadow">
+            <TabsTrigger
+              value="single blind"
+              className="text-xs sm:text-sm cursor-pointer"
+            >
               Single blind
             </TabsTrigger>
-            <TabsTrigger value="double blind" className="text-xs sm:text-sm">
+            <TabsTrigger
+              value="double blind"
+              className="text-xs sm:text-sm cursor-pointer"
+            >
               Double blind
             </TabsTrigger>
-            <TabsTrigger value="completo" className="text-xs sm:text-sm">
+            <TabsTrigger
+              value="completo"
+              className="text-xs sm:text-sm cursor-pointer"
+            >
               Completo
             </TabsTrigger>
           </TabsList>
@@ -124,7 +157,7 @@ function FormConferencia({
         <Button
           className="cursor-pointer bg-gray-500 hover:bg-gray-400"
           size={'lg'}
-          type='button'
+          type="button"
           onClick={() => window.history.back()}
         >
           Cancelar

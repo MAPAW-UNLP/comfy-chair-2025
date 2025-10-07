@@ -72,14 +72,14 @@ function UnaConferencia() {
         <div className='flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full'>
           <div className='flex justify-between'>
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
-            <Button
+            {/* <Button
               size={'sm'}
               onClick={agregarSesion}
               className="cursor-pointer"
             >
               <Plus />
               Nueva sesión
-            </Button>
+            </Button> */}
           </div>
         </div>
 
@@ -88,7 +88,7 @@ function UnaConferencia() {
           <Button
             variant="destructive"
             onClick={handleEliminarConferencia}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
           >
             <Trash2 size={16} />
             Eliminar conferencia
@@ -102,13 +102,14 @@ function UnaConferencia() {
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border-2 border-gray-300">
             <h3 className="text-lg font-bold mb-4">Confirmar eliminación</h3>
             <p className="mb-6">
-              ¿Estás seguro de que deseas eliminar la conferencia "{conferencia.titulo}"? 
+              ¿Estás seguro que deseas eliminar la conferencia "{conferencia.titulo}"? 
               Esta acción no se puede deshacer.
             </p>
             <div className="flex justify-end gap-3">
               <Button
                 variant="outline"
                 onClick={cancelarEliminar}
+                className='cursor-pointer'
                 disabled={deleting}
               >
                 Cancelar
@@ -116,6 +117,7 @@ function UnaConferencia() {
               <Button
                 variant="destructive"
                 onClick={confirmarEliminar}
+                className='cursor-pointer'
                 disabled={deleting}
               >
                 {deleting ? 'Eliminando...' : 'Eliminar'}
