@@ -1,9 +1,12 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useParams } from "@tanstack/react-router"
 import { RevisorItem } from "./RevisorItem"
-import { getRevisoresByArticulo, type Revisor } from "@/services/revisor"
+import {
+  getRevisoresByArticulo,
+  assignReviewerToArticle,
+  removeReviewerFromArticle,
+  type Revisor,
+} from "@/services/revisor"
 import { getArticuloById, type Article } from "@/services/articulos"
 import {
   Dialog,
@@ -28,7 +31,12 @@ export const RevisoresApp = () => {
       try {
         setLoadingRevisores(true)
         const data = await getRevisoresByArticulo(Number(id))
-        setRevisores(data ?? [])
+        const revisoresConAsignado = (data ?? []).map((rev: Revisor) => ({
+          ...rev,
+          asignado: rev.asignado ?? false,
+        }))
+        setRevisores(revisoresConAsignado)
+        setAsignados(revisoresConAsignado.filter((r) => r.asignado).length)
       } catch (error) {
         console.error("Error al traer revisores:", error)
         setRevisores([])
@@ -55,17 +63,39 @@ export const RevisoresApp = () => {
     fetchArticulo()
   }, [id])
 
-  const handleAsignar = () => {
+  const handleAsignar = async (revisorId: number) => {
     if (asignados >= maxAsignados) {
       setShowMaxDialog(true)
       return false
     }
-    setAsignados((prev) => prev + 1)
-    return true
+
+    try {
+      await assignReviewerToArticle(revisorId, Number(id))
+      setRevisores((prev) =>
+        prev.map((r) =>
+          r.id === revisorId ? { ...r, asignado: true } : r
+        )
+      )
+      setAsignados((prev) => prev + 1)
+      return true
+    } catch (error) {
+      console.error("Error al asignar revisor:", error)
+      return false
+    }
   }
 
-  const handleEliminar = () => {
-    setAsignados((prev) => Math.max(prev - 1, 0))
+  const handleEliminar = async (revisorId: number) => {
+    try {
+      await removeReviewerFromArticle(revisorId, Number(id))
+      setRevisores((prev) =>
+        prev.map((r) =>
+          r.id === revisorId ? { ...r, asignado: false } : r
+        )
+      )
+      setAsignados((prev) => Math.max(prev - 1, 0))
+    } catch (error) {
+      console.error("Error al eliminar revisor:", error)
+    }
   }
 
   if (loadingRevisores || loadingArticulo) {
@@ -79,12 +109,9 @@ export const RevisoresApp = () => {
   return (
     <div className="flex flex-col min-h-screen bg-primary">
       <h2 className="relative font-semibold text-2xl tracking-tight my-4 text-center text-white">
-        {articulo && (
-          <div>
-            {articulo.title}
-          </div>
-        )}
+        {articulo && articulo.title}
       </h2>
+
       {revisores.length > 0 ? (
         <div
           className="flex flex-col gap-4 py-4 px-6 shadow-inner w-full min-h-screen"
@@ -94,11 +121,12 @@ export const RevisoresApp = () => {
             <RevisorItem
               key={rev.id}
               revisor={rev}
-              asignado={false}
-              onAsignar={handleAsignar}
-              onEliminar={handleEliminar}
+              asignado={rev.asignado} // <-- usamos el estado guardado
+              onAsignar={() => handleAsignar(rev.id)}
+              onEliminar={() => handleEliminar(rev.id)}
             />
           ))}
+
           <div className="mt-auto text-center">
             <div
               className="bg-gray-500 text-white rounded-full px-8 py-2 text-sm font-medium inline-block border border-black"
