@@ -22,14 +22,14 @@ const DummyRoute = DummyRouteImport.update({
   path: '/dummy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ArticulosRoute = ArticulosRouteImport.update({
   id: '/articulos',
   path: '/articulos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -87,35 +87,35 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/articulos'
     | '/dummy'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/conferencias/editar/$id'
-    | '/articulos'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/articulos'
     | '/dummy'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/conferencias/editar/$id'
-    | '/articulos'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/articulos'
     | '/dummy'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/conferencias/editar/$id'
-    | '/articulos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ArticulosRoute: typeof ArticulosRoute
   AdminRoute: typeof AdminRoute
+  ArticulosRoute: typeof ArticulosRoute
   DummyRoute: typeof DummyRoute
   ConferenciasIdRoute: typeof ConferenciasIdRoute
   ConferenciasAltaConferenciaRoute: typeof ConferenciasAltaConferenciaRoute
@@ -131,18 +131,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DummyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/articulos': {
       id: '/articulos'
       path: '/articulos'
       fullPath: '/articulos'
       preLoaderRoute: typeof ArticulosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
