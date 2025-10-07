@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X } from "lucide-react";
+import { X, CheckCircle2Icon, AlertCircleIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/users";
 import type { Conference } from "@/services/conferences"; 
 import { getSessionsByConference } from "@/services/sessions";
@@ -35,17 +36,24 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   const [archivo, setArchivo] = useState<File | null>(null);
   const [archivoExtra, setArchivoExtra] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
+  const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const handleClick = () => fileInputRef.current?.click();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) console.log("Archivo seleccionado:", file.name);
+    if (file) {
+      setArchivo(file);
+    }
   };
 
   const handleExtraFileClick = () => extraFileRef.current?.click();
   const handleExtraFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) console.log("Archivo extra (Poster):", file.name);
+    if (file) {
+      setArchivoExtra(file);
+    }
   };
 
   // Manejo de autores
@@ -79,23 +87,62 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   }, [selectedConference]);
 
 const handleSubmit = async () => {
+  // Limpiar alertas anteriores
+  setShowSuccessAlert(false);
+  setShowErrorAlert(false);
+  setValidationErrors([]);
+
+  // Validaciones
+  const errors: string[] = [];
+  
+  if (!titulo.trim()) {
+    errors.push("El título es obligatorio");
+  }
+  
+  if (!selectedConference) {
+    errors.push("Debe seleccionar una conferencia");
+  }
+  
+  if (!selectedSession) {
+    errors.push("Debe seleccionar una sesión");
+  }
+  
+  if (autoresSeleccionados.length === 0) {
+    errors.push("Debe agregar al menos un autor");
+  }
+  
+  if (!autorNotif) {
+    errors.push("Debe seleccionar un autor de notificación");
+  }
+  
+  if (!archivo) {
+    errors.push("Debe seleccionar un archivo principal");
+  }
+  
+  if (tipoArticulo === "regular" && !abstract.trim()) {
+    errors.push("El abstract es obligatorio para artículos regulares");
+  }
+  
+  if (tipoArticulo === "poster" && !archivoExtra) {
+    errors.push("El archivo de fuentes es obligatorio para posters");
+  }
+
+  if (errors.length > 0) {
+    setValidationErrors(errors);
+    return;
+  }
+
   try {
-    /*
-    if (!titulo || !selectedConference || !selectedSession || !archivo || !autorNotif) {
-      alert("Complete todos los campos obligatorios antes de enviar.");
-      return;
-    }
-*/
     setLoading(true);
 
     // Construimos el objeto Articulo con la estructura correcta
     const article: Articulo = {
       title: titulo,
-      main_file_url:"https://www.example.com/archivo.pdf",
+      main_file: archivo!,
+      source_file: tipoArticulo === "poster" ? archivoExtra : null,
       status: 'reception',
       article_type: tipoArticulo,
       abstract: tipoArticulo === "regular" ? abstract : "",
-      source_file_url: archivoExtra?.name || "",
       authors: autoresSeleccionados.map((a) => a.id),
       notification_author: Number(autorNotif),
       session_id: Number(selectedSession),
@@ -106,10 +153,10 @@ const handleSubmit = async () => {
     const response = await createArticle(article);
     console.log("Artículo creado:", response);
 
-    alert("Artículo subido correctamente 🎉");
+    setShowSuccessAlert(true);
   } catch (error) {
     console.error("Error al subir el artículo:", error);
-    alert("Hubo un error al subir el artículo.");
+    setShowErrorAlert(true);
   } finally {
     setLoading(false);
   }
@@ -269,6 +316,7 @@ const handleSubmit = async () => {
           id="DetalleRegular"
           placeholder="Abstract de hasta 300 caracteres..."
           value={abstract}
+          maxLength={300}
           onChange={(e) => setAbstract(e.target.value)}
         />
       )}
@@ -276,9 +324,46 @@ const handleSubmit = async () => {
       <hr className="bg-slate-100" />
 
       {/* Boton inferior */}
-      <Button onClick={handleSubmit} className="w-full">
-        Subir
+      <Button onClick={handleSubmit} className="w-full" disabled={loading}>
+        {loading ? "Subiendo..." : "Subir"}
       </Button>
+
+      {/* Success Alert */}
+      {showSuccessAlert && (
+        <Alert>
+          <CheckCircle2Icon />
+          <AlertTitle>¡Éxito!</AlertTitle>
+          <AlertDescription>
+            Artículo subido correctamente 🎉
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Error Alert */}
+      {showErrorAlert && (
+        <Alert variant="destructive">
+          <AlertCircleIcon />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Hubo un error al subir el artículo.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Validation Errors Alert */}
+      {validationErrors.length > 0 && (
+        <Alert variant="destructive">
+          <AlertCircleIcon />
+          <AlertTitle>Campos obligatorios</AlertTitle>
+          <AlertDescription>
+            <ul className="list-disc list-inside space-y-1">
+              {validationErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 }

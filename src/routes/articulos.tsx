@@ -19,7 +19,6 @@ function RouteComponent() {
       };
       fetchArticulos();
     }, []);
-
   return (
     /*Comportamiento dinamico del CSS para centrar el mensaje cuando no hay articulos para mostrar, sino rompe las cards*/
     <div className={`flex flex-wrap gap-4 mx-4 justify-center ${articulo.length === 0 ? "min-h-full items-center" : ""}`}>
@@ -33,7 +32,7 @@ function RouteComponent() {
       ) : (
         articulo.map((article) => (
           <ArticuloCard        
-            key={article.title}
+            key={article.id}
             titulo={article.title}
             sesion={article.session?.title || 'Sin sesión'}
             conferencia={article.session?.conference?.name || 'Sin conferencia'}
