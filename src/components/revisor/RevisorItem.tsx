@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import type { Revisor } from "@/services/revisor"
 import {
@@ -14,8 +14,8 @@ import {
 interface RevisorProps {
   revisor: Revisor
   asignado?: boolean
-  onAsignar?: () => boolean
-  onEliminar?: () => void
+  onAsignar?: () => boolean | Promise<boolean>
+  onEliminar?: () => void | Promise<void>
 }
 
 const interesMap: Record<string, string> = {
@@ -35,6 +35,10 @@ export const RevisorItem: React.FC<RevisorProps> = ({
   const [showAsignadoDialog, setShowAsignadoDialog] = useState(false)
   const [showEliminadoDialog, setShowEliminadoDialog] = useState(false)
 
+  useEffect(() => {
+    setIsAsignado(asignado)
+  }, [asignado])
+
   const getEstadoColor = () => {
     switch (revisor.interes) {
       case "interesado":
@@ -48,17 +52,19 @@ export const RevisorItem: React.FC<RevisorProps> = ({
     }
   }
 
-  const handleAsignar = () => {
-    const exito = onAsignar?.()
+  const handleAsignar = async () => {
+    if (!onAsignar) return
+    const exito = await onAsignar()
     if (exito) {
       setIsAsignado(true)
       setShowAsignadoDialog(true)
     }
   }
 
-  const handleEliminarClick = () => {
+  const handleEliminarClick = async () => {
+    if (!onEliminar) return
+    await onEliminar()
     setIsAsignado(false)
-    onEliminar?.()
     setShowEliminadoDialog(true)
   }
 
