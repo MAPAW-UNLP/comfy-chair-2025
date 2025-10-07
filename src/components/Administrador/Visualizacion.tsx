@@ -46,7 +46,7 @@ export function Visualizacion({ valorVisualizacion, actualizarVista }: Visualiza
             value={valorSeleccionado}
             onValueChange={setValorSeleccionado}
           >
-            <FieldLabel htmlFor="single blind">
+            <FieldLabel htmlFor="single blind" className='cursor-pointer'>
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Single blind</FieldTitle>
@@ -58,7 +58,7 @@ export function Visualizacion({ valorVisualizacion, actualizarVista }: Visualiza
               </Field>
             </FieldLabel>
 
-            <FieldLabel htmlFor="double blind">
+            <FieldLabel htmlFor="double blind" className='cursor-pointer'>
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Double blind</FieldTitle>
@@ -70,7 +70,7 @@ export function Visualizacion({ valorVisualizacion, actualizarVista }: Visualiza
               </Field>
             </FieldLabel>
 
-            <FieldLabel htmlFor="completo">
+            <FieldLabel htmlFor="completo" className='cursor-pointer'>
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Completo</FieldTitle>
