@@ -2,7 +2,6 @@ import type { Articulo } from '@/services/articulos';
 import { useNavigate } from '@tanstack/react-router';
 import { UserPlus2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import type React from 'react';
 
 interface ArticuloCardProps {
@@ -29,38 +28,44 @@ export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
   };
 
   return (
-    <li
-      className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-muted/50 transition cursor-pointer"
+    <div
+      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer w-full"
       onClick={handleCardClick}
     >
-      <h2 className="text-sm font-medium text-foreground">{title}</h2>
+      {/* Título */}
+      <div className="flex-1 pr-4">
+        <h3 className="text-base text-gray-900 leading-tight">
+          {title}
+        </h3>
+      </div>
 
       <div className="flex flex-col items-center gap-2">
-        <Badge
-          variant={completo ? 'default' : 'secondary'}
-          className={
+        {/* Estado */}
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
             completo
               ? 'bg-green-100 text-green-700'
-              : 'bg-gray-200 text-gray-700'
-          }
+              : 'bg-gray-100 text-gray-700'
+          }`}
         >
           {completo ? 'Completo' : 'Incompleto'}
-        </Badge>
+        </span>
 
+        {/* Botón de revisores */}
         <Button
           size="icon"
           variant="outline"
-          className="rounded-full bg-gray-200 hover:bg-gray-300"
+          className="w-8 h-8 rounded-full border-gray-300 hover:bg-gray-100"
           title={completo ? 'Editar revisores' : 'Agregar revisor'}
           onClick={handleRevisorClick}
         >
           {completo ? (
-            <Users className="h-5 w-5 text-gray-700" />
+            <Users className="h-4 w-4 text-gray-600" />
           ) : (
-            <UserPlus2 className="h-5 w-5 text-gray-700" />
+            <UserPlus2 className="h-4 w-4 text-gray-600" />
           )}
         </Button>
       </div>
-    </li>
+    </div>
   );
 };

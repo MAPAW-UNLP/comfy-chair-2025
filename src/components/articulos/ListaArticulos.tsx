@@ -1,37 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Articulo } from '@/services/articulos';
 import { ArticuloCard } from './ArticuloCard';
 import { Button } from '@/components/ui/button';
-
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ListaArticulosProps {
   items: Articulo[];
 }
+
+const opcionesFiltro = ['Todos', 'Completos', 'Incompletos'] as const;
 
 export const ListaArticulos = ({ items }: ListaArticulosProps) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [filtro, setFiltro] = useState<'Todos' | 'Completos' | 'Incompletos'>(
     'Todos'
   );
-  const itemsPorPagina = 3;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  // Determina si un articulo está completo
+  const itemsPorPagina = 5;
+
   const estaCompleto = (articulo: Articulo) => {
-    return articulo.revisores && articulo.revisores.length === 3;
+    return articulo.revisores?.length === 3;
   };
 
   // Filtra según selección
@@ -47,13 +37,11 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
     setPaginaActual(1);
   }, [filtro]);
 
-  // Calcula paginación con los artículos fitlrados
   const totalPaginas = Math.ceil(articulosFiltrados.length / itemsPorPagina);
   const indiceInicial = (paginaActual - 1) * itemsPorPagina;
-  const indiceFinal = indiceInicial + itemsPorPagina;
   const articulosVisibles = articulosFiltrados.slice(
     indiceInicial,
-    indiceFinal
+    indiceInicial + itemsPorPagina
   );
 
   const siguientePagina = () => {
@@ -64,117 +52,109 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
     if (paginaActual > 1) setPaginaActual(paginaActual - 1);
   };
 
-  const irAPagina = (num: number) => {
-    setPaginaActual(num);
-  };
+  // Oculta al hacer click afuera
+  useEffect(() => {
+    function cerrarMenu(e: MouseEvent) {
+      const el = menuRef.current;
+      if (!el) return;
+      if (!el.contains(e.target as Node)) setMenuOpen(false);
+    }
+    document.addEventListener('mousedown', cerrarMenu);
+    return () => document.removeEventListener('mousedown', cerrarMenu);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-ring">
-      <div className="bg-gray-900 text-white py-6 shadow-lg">
-        <div className="container mx-auto px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Lista de Artículos</h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="default"
-                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white px-6 py-3 font-medium shadow-lg"
-              >
-                Filtrar por: {filtro} ▼
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white border border-gray-300 shadow-lg">
-              <DropdownMenuItem
-                onClick={() => setFiltro('Todos')}
-                className={`cursor-pointer ${
-                  filtro === 'Todos'
-                    ? 'bg-gray-100 text-gray-900 font-medium'
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                Todos
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFiltro('Completos')}
-                className={`cursor-pointer ${
-                  filtro === 'Completos'
-                    ? 'bg-gray-100 text-gray-900 font-medium'
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                Completos
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFiltro('Incompletos')}
-                className={`cursor-pointer ${
-                  filtro === 'Incompletos'
-                    ? 'bg-gray-100 text-gray-900 font-medium'
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                Incompletos
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <div className="h-screen flex flex-col">
+      {/* Header */}
+      <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-semibold">Lista de artículos</h1>
+
+          {/* Filtros */}
+          <div className="relative" ref={menuRef}>
+            <Button
+              variant="outline"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex items-center gap-2 bg-black text-white border-gray-600 hover:bg-gray-800 px-4 py-2 rounded-full"
+            >
+              Filtrar por: {filtro}
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-44 bg-white text-gray-900 border rounded-lg shadow-lg z-50">
+                {opcionesFiltro.map((opcion, index) => (
+                  <button
+                    key={opcion}
+                    className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+                      filtro === opcion ? 'bg-gray-100 font-medium' : ''
+                    } ${index === 0 ? 'rounded-t-lg' : ''} ${
+                      index === opcionesFiltro.length - 1 ? 'rounded-b-lg' : ''
+                    }`}
+                    onClick={() => {
+                      setFiltro(opcion);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    {opcion}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      <div className="p-8">
-        <ul className="divide-y divide-gray-200">
-          {articulosVisibles.map((articulo) => (
-            <ArticuloCard key={articulo.id} articulo={articulo} />
-          ))}
-        </ul>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
-          Mostrando {articulosVisibles.length} de {articulosFiltrados.length}{' '}
-          artículos
-        </div>
+      {/* Lista de artículos */}
+      <div className="bg-white flex-1 overflow-hidden flex flex-col">
+        {articulosFiltrados.length === 0 ? (
+          <div className="text-center py-12 text-gray-500 flex-1 flex items-center justify-center">
+            No se encontraron artículos
+          </div>
+        ) : (
+          <>
+            {/* Lista */}
+            <div className="divide-y divide-gray-200 flex-1 overflow-y-auto">
+              {articulosVisibles.map((articulo) => (
+                <ArticuloCard key={articulo.id} articulo={articulo} />
+              ))}
+            </div>
 
-        <Pagination className="mt-4">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.preventDefault();
-                  paginaAnterior();
-                }}
-                className={
-                  paginaActual === 1 ? 'opacity-50 pointer-events-none' : ''
-                }
-              />
-            </PaginationItem>
+            {/* Footer */}
+            <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0">
+              <div className="flex justify-center items-center gap-4">
+                {totalPaginas > 1 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={paginaAnterior}
+                    disabled={paginaActual === 1}
+                    className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                )}
 
-            {Array.from({ length: totalPaginas }).map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
-                  href="#"
-                  isActive={paginaActual === i + 1}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                    e.preventDefault();
-                    irAPagina(i + 1);
-                  }}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
+                <p className="text-sm">
+                  Mostrando {articulosVisibles.length} artículos de{' '}
+                  {articulosFiltrados.length}
+                </p>
 
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.preventDefault();
-                  siguientePagina();
-                }}
-                className={
-                  paginaActual === totalPaginas
-                    ? 'opacity-50 pointer-events-none'
-                    : ''
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+                {totalPaginas > 1 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={siguientePagina}
+                    disabled={paginaActual === totalPaginas}
+                    className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
