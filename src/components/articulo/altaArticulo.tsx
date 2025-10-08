@@ -15,6 +15,7 @@ import type { Articulo } from "@/services/newArticle";
 import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 import { UserCombobox } from "@/components/combobox/UserCombobox";
+import { ConferenceCombobox} from "@/components/combobox/ConferenceCombobox";
 
 type AltaArticuloProps = {
   users: User[];
@@ -29,7 +30,7 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   const extraFileRef = useRef<HTMLInputElement>(null);
 
   const [tipoArticulo, setTipoArticulo] = useState<string>("");
-  const [selectedConference, setSelectedConference] = useState<string | null>(null);
+  const [selectedConference, setSelectedConference] = useState<number | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loadingSessions, setLoadingSessions] = useState<boolean>(false);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
@@ -62,8 +63,8 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   };
 
   // Manejo de autores
-  const handleAgregarAutor = (id: string) => {
-    const autor = users.find((u) => String(u.id) === id);
+  const handleAgregarAutor = (id: number) => {
+    const autor = users.find((u) => u.id === id);
     if (autor && !autoresSeleccionados.some((a) => a.id === autor.id)) {
       setAutoresSeleccionados([...autoresSeleccionados, autor]);
     }
@@ -123,6 +124,10 @@ const handleSubmit = async () => {
     errors.push("Debe seleccionar un archivo principal");
   }
   
+  if (tipoArticulo !== "regular" && tipoArticulo !== "poster") {
+    errors.push("Debe seleccionar un tipo de articulo");
+  }
+
   if (tipoArticulo === "regular" && !abstract.trim()) {
     errors.push("El abstract es obligatorio para artículos regulares");
   }
@@ -174,24 +179,10 @@ const handleSubmit = async () => {
       <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Artículo</h2>
       <hr className="bg-slate-100" />
 
-      {/*<Label htmlFor="conferencia">User Combobox</Label>*/}
-      {/*<UserCombobox users={users} />*/}
-      
-      {/* Select de Conferencias */}
+      {/* Combobox de Conferencias */}
       <Label htmlFor="conferencia">Conferencia</Label>
-      <Select onValueChange={(value) => setSelectedConference(value)}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Seleccione una conferencia..." />
-        </SelectTrigger>
-        <SelectContent>
-          {conferences.map((c) => (
-            <SelectItem key={c.id} value={String(c.id)}>
-              {c.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
+      <ConferenceCombobox onValueChange={setSelectedConference} conferences={conferences} />
+ 
       {/* Select de Sesiones */}
       <Label htmlFor="sesion">Sesión</Label>
       <Select
@@ -199,7 +190,7 @@ const handleSubmit = async () => {
         onValueChange={(value) => setSelectedSession(value)}
         disabled={!selectedConference || loadingSessions}
       >
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
           <SelectValue
             placeholder={
               loadingSessions
@@ -240,20 +231,9 @@ const handleSubmit = async () => {
         </Button>
       </div>
 
-      {/* Select de autores */}
+      {/* Combobox de autores */}
       <Label htmlFor="autor">Autores del Artículo</Label>
-      <Select onValueChange={handleAgregarAutor}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Seleccione un autor..." />
-        </SelectTrigger>
-        <SelectContent>
-          {users.map((a) => (
-            <SelectItem key={a.id} value={String(a.id)}>
-              {a.first_name} {a.last_name} ({a.email})
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <UserCombobox onValueChange={handleAgregarAutor} users={users} />
 
       {/* Lista de autores seleccionados (solo renderiza si hay autores) */}
       {autoresSeleccionados?.length > 0 && (
@@ -285,8 +265,8 @@ const handleSubmit = async () => {
         onValueChange={setAutorNotif}
         disabled={autoresSeleccionados.length === 0}
       >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Seleccione un autor..." />
+        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+          <SelectValue placeholder="Seleccione un autor primero..." />
         </SelectTrigger>
         <SelectContent>
           {autoresSeleccionados.map((a) => (
@@ -300,7 +280,7 @@ const handleSubmit = async () => {
       {/* Select tipo de artículo */}
       <Label htmlFor="tipo-articulo">Tipo de Artículo</Label>
       <Select value={tipoArticulo} onValueChange={setTipoArticulo}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
           <SelectValue placeholder="Seleccione un tipo..." />
         </SelectTrigger>
         <SelectContent>

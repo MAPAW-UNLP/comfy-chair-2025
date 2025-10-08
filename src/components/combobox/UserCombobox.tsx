@@ -8,21 +8,21 @@ import type { User } from "@/services/users";
 
 type UserComboboxProps = {
   users: User[];
+  onValueChange?: (userId: number) => void;
 };
 
-export function UserCombobox({ users }: UserComboboxProps) {
+export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
   const [query, setQuery] = React.useState("");
 
-  // Filtramos usuarios según lo que escriba el usuario
   const filteredUsers = users.filter(
     (user) =>
       user.first_name.toLowerCase().includes(query.toLowerCase()) ||
       user.last_name.toLowerCase().includes(query.toLowerCase())
   );
 
-  const selectedUser = users.find((u) => u.id === selectedUserId);
+  const selectedUser = users.find((u) => u.id === selectedUserId) || null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -36,18 +36,20 @@ export function UserCombobox({ users }: UserComboboxProps) {
             !selectedUser ? "text-gray-500" : "text-gray-900"
           )}
         >
-          {selectedUser ? `${selectedUser.first_name} ${selectedUser.last_name}` : "Seleccione un autor..."}
+          {selectedUser
+            ? `${selectedUser.first_name} ${selectedUser.last_name}`
+            : "Seleccione al menos un autor..."}
           <ChevronsUpDown className="opacity-25" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-100 p-0">
+      <PopoverContent className="w-auto max-w-sm p-0">
         <Command>
           <CommandInput
             placeholder="Buscar usuarios..."
             className="h-9"
             value={query}
-            onValueChange={setQuery} // actualizar el query
+            onValueChange={setQuery}
           />
           <CommandList>
             <CommandEmpty>No hay usuarios...</CommandEmpty>
@@ -55,13 +57,14 @@ export function UserCombobox({ users }: UserComboboxProps) {
               {filteredUsers.map((user) => (
                 <CommandItem
                   key={user.id}
-                  value={`${user.first_name} ${user.last_name}`} // valor visible en CommandItem
+                  value={`${user.first_name} ${user.last_name}`}
                   onSelect={() => {
-                    setSelectedUserId(user.id);
+                    setSelectedUserId(null);
                     setOpen(false);
+                    if (onValueChange) onValueChange(user.id);
                   }}
                 >
-                  {user.first_name} {user.last_name}
+                  {user.first_name} {user.last_name} ({user.email})
                   <Check
                     className={cn(
                       "ml-auto",
