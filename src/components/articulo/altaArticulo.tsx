@@ -14,6 +14,7 @@ import type { Session } from "@/services/sessions";
 import type { Articulo } from "@/services/newArticle";
 import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
+import { UserCombobox } from "@/components/combobox/UserCombobox";
 
 type AltaArticuloProps = {
   users: User[];
@@ -173,6 +174,9 @@ const handleSubmit = async () => {
       <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Artículo</h2>
       <hr className="bg-slate-100" />
 
+      {/*<Label htmlFor="conferencia">User Combobox</Label>*/}
+      {/*<UserCombobox users={users} />*/}
+      
       {/* Select de Conferencias */}
       <Label htmlFor="conferencia">Conferencia</Label>
       <Select onValueChange={(value) => setSelectedConference(value)}>
