@@ -1,54 +1,18 @@
-// src/services/articulosService.ts
+import api from '@/services/api';
 
 export interface Articulo {
   id: number;
-  titulo: string;
+  titulo: string;        // mapeado desde title
+  descripcion?: string;  // mapeado desde description
   estado: 'Pendiente' | 'Completo';
 }
 
-// Simula una llamada a una API
-export const fetchArticulos = (): Promise<Articulo[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const data: Articulo[] = [
-        {
-          id: 1,
-          titulo:
-            'Análisis Comparativo de Algoritmos de Aprendizaje Profundo para la Detección de Anomalías en Redes de Telecomunicaciones',
-          estado: 'Pendiente',
-        },
-        {
-          id: 2,
-          titulo:
-            'Optimización de Protocolos de Comunicación en Redes de Sensores Inalámbricos con Consumo Energético Reducido',
-          estado: 'Completo',
-        },
-        {
-          id: 3,
-          titulo:
-            'Evaluación de Técnicas de Minería de Datos Aplicadas a Grandes Volúmenes de Información en Sistemas Financieros',
-          estado: 'Completo',
-        },
-        {
-          id: 4,
-          titulo:
-            'Diseño e Implementación de Sistemas de Seguridad Basados en Blockchain para la Protección de Datos Personales',
-          estado: 'Pendiente',
-        },
-        {
-          id: 5,
-          titulo:
-            'Impacto de la Computación Cuántica en la Criptografía Moderna: Retos y Perspectivas',
-          estado: 'Pendiente',
-        },
-        {
-          id: 6,
-          titulo:
-            'Métodos de Indexación y Recuperación de Información en Bases de Datos Distribuidas de Alta Escalabilidad',
-          estado: 'Pendiente',
-        },
-      ];
-      resolve(data);
-    }, 1500);
-  });
-};
+export async function fetchArticulos(): Promise<Articulo[]> {
+  const { data } = await api.get('articles/'); // GET /api/articles/
+  return (data ?? []).map((a: any) => ({
+    id: a.id,
+    titulo: a.title ?? 'Sin título',
+    descripcion: a.description ?? '',
+    estado: 'Pendiente', // se recalcula en el index según los bids
+  }));
+}
