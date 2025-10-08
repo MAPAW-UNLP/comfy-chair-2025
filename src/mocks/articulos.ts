@@ -7,7 +7,6 @@ export const articulosMock = [
     description: "Este artículo presenta un nuevo framework de deep learning para detección de objetos en tiempo real aplicado a vehículos autónomos, mejorando la precisión en un 15% respecto a métodos anteriores.",
     revisores: ["María González", "Carlos Rodríguez", "Ana Martínez"],
     conferencia: "CVPR 2023",
-    estado: "Aceptado"
   },
   {
     id: 2,
@@ -16,7 +15,6 @@ export const articulosMock = [
     description: "Investigación sobre un sistema de votación electrónica basado en blockchain que garantiza transparencia, seguridad y anonimato en procesos electorales.",
     revisores: ["Laura Chen", "David Kim", "Elena Petrova"],
     conferencia: "IEEE Security & Privacy 2023",
-    estado: "En revisión"
   },
   {
     id: 3,
@@ -25,7 +23,6 @@ export const articulosMock = [
     description: "Exploración de algoritmos híbridos que combinan computación cuántica con machine learning tradicional para resolver problemas de optimización complejos.",
     revisores: ["Sofia Rodríguez", "Facundo Pérez", "Agustina Silva", "Juan García"],
     conferencia: "QIP 2023",
-    estado: "Aceptado con revisiones"
   },
   {
     id: 4,
@@ -34,7 +31,6 @@ export const articulosMock = [
     description: "Desarrollo de modelos de NLP que analizan patrones lingüísticos en redes sociales para la detección temprana de trastornos de salud mental.",
     revisores: ["Facundo Pérez", "Sofia Rodríguez", "Carlos López"],
     conferencia: "ACL 2023",
-    estado: "Aceptado"
   },
   {
     id: 5,
@@ -43,7 +39,6 @@ export const articulosMock = [
     description: "Propuesta de una arquitectura de edge computing escalable para gestionar el gran volumen de datos generados por dispositivos IoT en entornos urbanos inteligentes.",
     revisores: ["Sofia Rodríguez", "María Cedrés", "Roberto Díaz"],
     conferencia: "MobiCom 2023",
-    estado: "En revisión"
   },
   {
     id: 6,
@@ -52,7 +47,6 @@ export const articulosMock = [
     description: "Implementación de modelos de IA explicable para diagnóstico médico que permiten a los profesionales entender las decisiones del sistema.",
     revisores: ["Juan Ignacio Gómez", "Elena Castillo", "Miguel Ángel Reyes"],
     conferencia: "NeurIPS 2023",
-    estado: "Aceptado"
   },
   {
     id: 7,
@@ -61,7 +55,6 @@ export const articulosMock = [
     description: "Estudio sobre aplicaciones de aprendizaje federado en el análisis de datos médicos, preservando la privacidad de los pacientes.",
     revisores: ["Agustina Silva", "Facundo Pérez", "Sofia Rodríguez", "Ana López"],
     conferencia: "ICML 2023",
-    estado: "En revisión"
   },
   {
     id: 8,
@@ -70,6 +63,5 @@ export const articulosMock = [
     description: "Aplicación de técnicas avanzadas de visión por computadora para la reconstrucción 3D de sitios arqueológicos a partir de fotografías.",
     revisores: ["Sofia Cedrés", "María González", "Carlos Rodríguez"],
     conferencia: "ICCV 2023",
-    estado: "Aceptado"
   }
 ];
