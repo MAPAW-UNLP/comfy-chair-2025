@@ -2,6 +2,7 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { Armchair, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Toaster } from '@/components/ui/sonner';
 
 const RootLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,9 +16,8 @@ const RootLayout = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Navbar superior azul */}
+      {/* Navbar superior */}
       <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-        {/* Links - en desktop a la izquierda */}
         <nav className="hidden md:flex gap-2 order-1 md:order-1">
           {links.map((link) => (
             <Link
@@ -30,13 +30,11 @@ const RootLayout = () => {
           ))}
         </nav>
 
-        {/* Título - en desktop a la derecha */}
         <span className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2">
           ComfyChair
           <Armchair />
         </span>
 
-        {/* Botón de menú solo en móvil */}
         <button
           onClick={() => setIsOpen(true)}
           className="md:hidden p-1 rounded hover:bg-gray-700 order-0"
@@ -77,7 +75,9 @@ const RootLayout = () => {
         </main>
       </div>
 
+      {/* Devtools y toasts */}
       <TanStackRouterDevtools />
+      <Toaster richColors position='top-right' />
     </div>
   );
 };

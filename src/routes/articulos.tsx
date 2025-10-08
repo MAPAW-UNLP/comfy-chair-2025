@@ -15,10 +15,12 @@ function RouteComponent() {
     useEffect(() => {
       const fetchArticulos = async () => {
         const data = await getAllArticulos();
-        setArticulos(data);
+        const ordenados = [...data].sort((a, b) => b.id - a.id);
+        setArticulos(ordenados);
       };
       fetchArticulos();
     }, []);
+    
   return (
     /*Comportamiento dinamico del CSS para centrar el mensaje cuando no hay articulos para mostrar, sino rompe las cards*/
     <div className={`flex flex-wrap gap-4 mx-4 justify-center ${articulo.length === 0 ? "min-h-full items-center" : ""}`}>

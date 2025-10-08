@@ -5,20 +5,25 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, CheckCircle2Icon, AlertCircleIcon } from "lucide-react";
+import { X, AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/users";
 import type { Conference } from "@/services/conferences"; 
 import { getSessionsByConference } from "@/services/sessions";
 import type { Session } from "@/services/sessions";
 import type { Articulo } from "@/services/newArticle";
+import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
 
 type AltaArticuloProps = {
   users: User[];
   conferences: Conference[];
 };
 
-export default function AltaArticulo({ users, conferences }: AltaArticuloProps) {
+export default function AltaArticulo({ users, conferences }: AltaArticuloProps) { 
+
+  const navigate = useNavigate();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const extraFileRef = useRef<HTMLInputElement>(null);
 
@@ -36,7 +41,6 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
   const [archivo, setArchivo] = useState<File | null>(null);
   const [archivoExtra, setArchivoExtra] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
@@ -88,7 +92,6 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
 
 const handleSubmit = async () => {
   // Limpiar alertas anteriores
-  setShowSuccessAlert(false);
   setShowErrorAlert(false);
   setValidationErrors([]);
 
@@ -153,7 +156,10 @@ const handleSubmit = async () => {
     const response = await createArticle(article);
     console.log("Artículo creado:", response);
 
-    setShowSuccessAlert(true);
+    toast.success('Artículo subido correctamente !', {
+      duration: 5000,
+    });
+    navigate({ to: '/articulos', replace: true });
   } catch (error) {
     console.error("Error al subir el artículo:", error);
     setShowErrorAlert(true);
@@ -161,7 +167,6 @@ const handleSubmit = async () => {
     setLoading(false);
   }
 };
-
 
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
@@ -226,8 +231,8 @@ const handleSubmit = async () => {
       <div className="grid w-full items-center gap-3">
         <Label htmlFor="DetalleRegular">Artículo</Label>
         <input type="file" ref={fileInputRef} onChange={handleChange} className="hidden" />
-        <Button onClick={handleClick} type="button" className="w-full">
-          Seleccionar archivo...
+        <Button variant="outline" onClick={handleClick} type="button" className={`w-full ${archivo ? "bg-lime-900" : "bg-slate-900"} text-white`}>
+          {archivo ? "Archivo Seleccionado" : "Seleccionar archivo..."}
         </Button>
       </div>
 
@@ -238,9 +243,9 @@ const handleSubmit = async () => {
           <SelectValue placeholder="Seleccione un autor..." />
         </SelectTrigger>
         <SelectContent>
-          {users.map((u) => (
-            <SelectItem key={u.id} value={String(u.id)}>
-              {u.first_name} {u.last_name}
+          {users.map((a) => (
+            <SelectItem key={a.id} value={String(a.id)}>
+              {a.first_name} {a.last_name} ({a.email})
             </SelectItem>
           ))}
         </SelectContent>
@@ -255,7 +260,7 @@ const handleSubmit = async () => {
               className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full"
             >
               <span className="truncate">
-                {a.first_name} {a.last_name}
+                {a.first_name} {a.last_name} ({a.email})
               </span>
               <button
                 type="button"
@@ -282,7 +287,7 @@ const handleSubmit = async () => {
         <SelectContent>
           {autoresSeleccionados.map((a) => (
             <SelectItem key={a.id} value={String(a.id)}>
-              {a.first_name} {a.last_name}
+              {a.first_name} {a.last_name} ({a.email})
             </SelectItem>
           ))}
         </SelectContent>
@@ -305,8 +310,8 @@ const handleSubmit = async () => {
         <div className="grid w-full items-center gap-3">
           <Label htmlFor="DetalleRegular">Fuentes</Label>
           <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
-          <Button onClick={handleExtraFileClick} type="button" className="w-full">
-            Seleccionar archivo...
+          <Button variant="outline" onClick={handleExtraFileClick} type="button" className={`w-full ${archivoExtra ? "bg-lime-900" : "bg-slate-900"} text-white`}>
+           {archivoExtra ? "Archivo Seleccionado" : "Seleccionar archivo..."}
           </Button>
         </div>
       )}
@@ -324,20 +329,9 @@ const handleSubmit = async () => {
       <hr className="bg-slate-100" />
 
       {/* Boton inferior */}
-      <Button onClick={handleSubmit} className="w-full" disabled={loading}>
+      <Button variant="outline" onClick={handleSubmit} className="w-full bg-slate-900 text-white" disabled={loading}>
         {loading ? "Subiendo..." : "Subir"}
       </Button>
-
-      {/* Success Alert */}
-      {showSuccessAlert && (
-        <Alert>
-          <CheckCircle2Icon />
-          <AlertTitle>¡Éxito!</AlertTitle>
-          <AlertDescription>
-            Artículo subido correctamente 🎉
-          </AlertDescription>
-        </Alert>
-      )}
 
       {/* Error Alert */}
       {showErrorAlert && (
