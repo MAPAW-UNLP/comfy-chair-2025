@@ -43,7 +43,7 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
       <hr />
 
       <p>Chair Jose Hernandez</p> {/*a futuro conferencia.chair o parecido*/}
-      <b>0 sesiones disponibles</b> {/*a futuro obtener sesiones*/}
+      {/*<b>0 sesiones</b> {/*a futuro obtener sesiones*/}
     </div>
   );
 }
