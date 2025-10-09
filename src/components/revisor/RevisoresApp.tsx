@@ -122,9 +122,7 @@ export const RevisoresApp = () => {
 
   return (
     <div
-      className="flex flex-col min-h-screen"
-      style={{ backgroundColor: "hsla(0, 0%, 19%, 1.00)" }}
-    >
+      className="flex flex-col min-h-screen bg-primary">
       <h2 className="relative font-semibold text-2xl tracking-tight my-4 text-center text-white">
         {articulo && articulo.title}
       </h2>
