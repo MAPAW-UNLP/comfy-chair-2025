@@ -72,9 +72,7 @@ export const RevisoresApp = () => {
     try {
       await assignReviewerToArticle(revisorId, Number(id))
       setRevisores((prev) =>
-        prev.map((r) =>
-          r.id === revisorId ? { ...r, asignado: true } : r
-        )
+        prev.map((r) => (r.id === revisorId ? { ...r, asignado: true } : r))
       )
       setAsignados((prev) => prev + 1)
       return true
@@ -88,9 +86,7 @@ export const RevisoresApp = () => {
     try {
       await removeReviewerFromArticle(revisorId, Number(id))
       setRevisores((prev) =>
-        prev.map((r) =>
-          r.id === revisorId ? { ...r, asignado: false } : r
-        )
+        prev.map((r) => (r.id === revisorId ? { ...r, asignado: false } : r))
       )
       setAsignados((prev) => Math.max(prev - 1, 0))
     } catch (error) {
@@ -106,48 +102,56 @@ export const RevisoresApp = () => {
     )
   }
 
+  if (revisores.length === 0) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center min-h-screen w-full"
+        style={{ backgroundColor: "hsl(0 0% 75.1%)" }}
+      >
+        <div className="flex flex-col items-center gap-4 bg-white border-2 border-gray-300 rounded-xl p-8 shadow-lg">
+          <p className="text-lg font-bold">
+            No hay revisores disponibles
+          </p>
+          <p className="text-sm text-gray-500 text-center">
+            Parece que aún no se han registrado revisores.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex flex-col min-h-screen bg-primary">
+    <div
+      className="flex flex-col min-h-screen"
+      style={{ backgroundColor: "hsla(0, 0%, 19%, 1.00)" }}
+    >
       <h2 className="relative font-semibold text-2xl tracking-tight my-4 text-center text-white">
         {articulo && articulo.title}
       </h2>
 
-      {revisores.length > 0 ? (
-        <div
-          className="flex flex-col gap-4 py-4 px-6 shadow-inner w-full min-h-screen"
-          style={{ backgroundColor: "hsl(0 0% 75.1%)" }}
-        >
-          {revisores.map((rev) => (
-            <RevisorItem
-              key={rev.id}
-              revisor={rev}
-              asignado={rev.asignado} // <-- usamos el estado guardado
-              onAsignar={() => handleAsignar(rev.id)}
-              onEliminar={() => handleEliminar(rev.id)}
-            />
-          ))}
+      <div
+        className="flex flex-col gap-4 py-4 px-6 shadow-inner w-full min-h-screen"
+        style={{ backgroundColor: "hsl(0 0% 75.1%)" }}
+      >
+        {revisores.map((rev) => (
+          <RevisorItem
+            key={rev.id}
+            revisor={rev}
+            asignado={rev.asignado}
+            onAsignar={() => handleAsignar(rev.id)}
+            onEliminar={() => handleEliminar(rev.id)}
+          />
+        ))}
 
-          <div className="mt-auto text-center">
-            <div
-              className="bg-gray-500 text-white rounded-full px-8 py-2 text-sm font-medium inline-block border border-black"
-              style={{ backgroundColor: "hsla(0, 0%, 19%, 1.00)" }}
-            >
-              Revisores asignados: {asignados} de {maxAsignados}
-            </div>
+        <div className="mt-auto text-center">
+          <div
+            className="bg-gray-500 text-white rounded-full px-8 py-2 text-sm font-medium inline-block border border-black"
+            style={{ backgroundColor: "hsla(0, 0%, 19%, 1.00)" }}
+          >
+            Revisores asignados: {asignados} de {maxAsignados}
           </div>
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="flex flex-col items-center gap-4 bg-white border-2 border-gray-300 rounded-xl p-8 shadow-lg">
-            <p className="text-lg font-semibold text-gray-700">
-              No hay revisores disponibles
-            </p>
-            <p className="text-sm text-gray-500 text-center">
-              Parece que aún no se han registrado revisores.
-            </p>
-          </div>
-        </div>
-      )}
+      </div>
 
       <Dialog open={showMaxDialog} onOpenChange={setShowMaxDialog}>
         <DialogContent>
