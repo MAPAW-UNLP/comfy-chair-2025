@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams } from "@tanstack/react-router"
 import { RevisorItem } from "./RevisorItem"
 import {
@@ -15,6 +15,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export const RevisoresApp = () => {
   const { id } = useParams({ from: "/articulos/$id/revisores" })
@@ -26,6 +28,20 @@ export const RevisoresApp = () => {
   const [showMaxDialog, setShowMaxDialog] = useState(false)
   const maxAsignados = 3
 
+  const [paginaActual, setPaginaActual] = useState(1)
+  const itemsPorPagina = 5
+  const totalPaginas = Math.ceil(revisores.length / itemsPorPagina)
+  const indiceInicial = (paginaActual - 1) * itemsPorPagina
+  const revisoresVisibles = revisores.slice(indiceInicial, indiceInicial + itemsPorPagina)
+
+  const siguientePagina = () => {
+    if (paginaActual < totalPaginas) setPaginaActual(paginaActual + 1)
+  }
+
+  const paginaAnterior = () => {
+    if (paginaActual > 1) setPaginaActual(paginaActual - 1)
+  }
+
   useEffect(() => {
     const fetchRevisores = async () => {
       try {
@@ -35,6 +51,7 @@ export const RevisoresApp = () => {
           ...rev,
           asignado: rev.asignado ?? false,
         }))
+        revisoresConAsignado.sort((a, b) => Number(b.asignado) - Number(a.asignado))
         setRevisores(revisoresConAsignado)
         setAsignados(revisoresConAsignado.filter((r) => r.asignado).length)
       } catch (error) {
@@ -68,7 +85,6 @@ export const RevisoresApp = () => {
       setShowMaxDialog(true)
       return false
     }
-
     try {
       await assignReviewerToArticle(revisorId, Number(id))
       setRevisores((prev) =>
@@ -109,9 +125,7 @@ export const RevisoresApp = () => {
         style={{ backgroundColor: "hsl(0 0% 75.1%)" }}
       >
         <div className="flex flex-col items-center gap-4 bg-white border-2 border-gray-300 rounded-xl p-8 shadow-lg">
-          <p className="text-lg font-bold">
-            No hay revisores disponibles
-          </p>
+          <p className="text-lg font-bold">No hay revisores disponibles</p>
           <p className="text-sm text-gray-500 text-center">
             Parece que aún no se han registrado revisores.
           </p>
@@ -121,31 +135,59 @@ export const RevisoresApp = () => {
   }
 
   return (
-    <div
-      className="flex flex-col min-h-screen bg-primary">
-      <h2 className="relative font-semibold text-2xl tracking-tight my-4 text-center text-white">
-        {articulo && articulo.title}
-      </h2>
+    <div className="h-screen flex flex-col bg-gray-200">
+      <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0 text-center">
+        <h2 className="text-xl font-semibold">
+          {articulo?.title || "Artículo sin título"}
+        </h2>
+      </div>
 
-      <div
-        className="flex flex-col gap-4 py-4 px-6 shadow-inner w-full min-h-screen"
-        style={{ backgroundColor: "hsl(0 0% 75.1%)" }}
-      >
-        {revisores.map((rev) => (
-          <RevisorItem
-            key={rev.id}
-            revisor={rev}
-            asignado={rev.asignado}
-            onAsignar={() => handleAsignar(rev.id)}
-            onEliminar={() => handleEliminar(rev.id)}
-          />
-        ))}
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto divide-y divide-gray-300">
+          {revisoresVisibles.map((rev) => (
+            <RevisorItem
+              key={rev.id}
+              revisor={rev}
+              asignado={rev.asignado}
+              onAsignar={() => handleAsignar(rev.id)}
+              onEliminar={() => handleEliminar(rev.id)}
+            />
+          ))}
+        </div>
 
-        <div className="mt-auto text-center">
-          <div
-            className="bg-gray-500 text-white rounded-full px-8 py-2 text-sm font-medium inline-block border border-black"
-            style={{ backgroundColor: "hsla(0, 0%, 19%, 1.00)" }}
-          >
+        <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0">
+          <div className="flex justify-center items-center gap-4">
+            {totalPaginas > 1 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={paginaAnterior}
+                disabled={paginaActual === 1}
+                className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            )}
+
+            <p className="text-sm">
+              Mostrando {indiceInicial + revisoresVisibles.length} revisores de{" "}
+              {revisores.length}
+            </p>
+
+            {totalPaginas > 1 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={siguientePagina}
+                disabled={paginaActual === totalPaginas}
+                className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          <div className="mt-2 text-center text-sm opacity-80">
             Revisores asignados: {asignados} de {maxAsignados}
           </div>
         </div>
