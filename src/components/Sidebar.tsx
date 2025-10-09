@@ -33,7 +33,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
           <hr />
           <ItemSidebar nombre="Bidding" Icon={ThumbsUp} direccion='/bidding' />
           <hr />
-          <ItemSidebar nombre="Artículos" Icon={FileText} direccion='/articulos'/>
+          <ItemSidebar nombre="Artículos" Icon={FileText} direccion='/articulos/articulos'/>
           <hr />
           <ItemSidebar nombre="Revisiones" Icon={Edit3} direccion='/revisiones' />
           <hr />
