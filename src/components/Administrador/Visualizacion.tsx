@@ -46,39 +46,36 @@ export function Visualizacion({ valorVisualizacion, actualizarVista }: Visualiza
             value={valorSeleccionado}
             onValueChange={setValorSeleccionado}
           >
-            <FieldLabel htmlFor="single blind">
+            <FieldLabel htmlFor="single blind" className='cursor-pointer'>
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Single blind</FieldTitle>
                   <FieldDescription>
-                    El autor puede ver quién revisó su artículo pero el revisor
-                    no puede ver el autor.
+                    El revisor podrá ver el autor de los artículos de esta conferencia, pero el autor no verá a los revisores.
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value="single blind" id="single blind" />
               </Field>
             </FieldLabel>
 
-            <FieldLabel htmlFor="double blind">
+            <FieldLabel htmlFor="double blind" className='cursor-pointer'>
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Double blind</FieldTitle>
                   <FieldDescription>
-                    El autor no puede ver quién revisó su artículo ni el revisor
-                    puede ver el autor.
+                    Ni el revisor ni el autor verán quienes escribieron/revisaron los artículos.
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value="double blind" id="double blind" />
               </Field>
             </FieldLabel>
 
-            <FieldLabel htmlFor="completo">
+            <FieldLabel htmlFor="completo" className='cursor-pointer'>
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Completo</FieldTitle>
                   <FieldDescription>
-                    El autor puede ver quién revisó el artículo y el revisor
-                    puede ver el autor.
+                    Tanto el revisor como el autor verán quienes escribieron/revisaron los artículos.
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value="completo" id="completo" />
