@@ -21,6 +21,7 @@ function RegisterPage() {
     confirmacion: '',
   })
   const [errors, setErrors] = useState<Partial<RegisterFormData>>({})
+  const [formError, setFormError] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (field: keyof RegisterFormData, value: string) => {
@@ -28,6 +29,10 @@ function RegisterPage() {
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev: Partial<RegisterFormData>) => ({ ...prev, [field]: undefined }))
+    }
+    // Clear form error when user starts typing
+    if (formError) {
+      setFormError('')
     }
   }
 
@@ -48,6 +53,7 @@ function RegisterPage() {
     }
 
     setIsLoading(true)
+    setFormError('')
     try {
       const response = await authService.register({
         nombre_completo: formData.nombreCompleto,
@@ -57,11 +63,17 @@ function RegisterPage() {
       })
       // TODO: Store token in localStorage or context
       console.log('Registration successful:', response)
-      navigate({ to: '/ingresar' })
-    } catch (error) {
+      navigate({ to: '/ingresar', search: { redirect: undefined, registered: 'true' } })
+    } catch (error: any) {
       console.error('Registration failed:', error)
-      window.alert('Error al registrarse: ' + error)
-      // Handle API errors here
+      
+      // Check if it's a 5xx server error
+      if (error.response?.status >= 500) {
+        window.alert('Error del servidor. Por favor, intenta nuevamente más tarde.')
+      } else {
+        // For 4xx errors (email already exists, etc.), show a generic form error
+        setFormError('No se pudo crear la cuenta. Por favor, verifica tus datos o intenta nuevamente.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -146,6 +158,12 @@ function RegisterPage() {
               )}
             </div>
 
+            {formError && (
+              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive rounded-md">
+                {formError}
+              </div>
+            )}
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
             </Button>
@@ -153,7 +171,7 @@ function RegisterPage() {
 
           <div className="mt-6 text-center text-sm">
             ¿Ya tienes cuenta?{' '}
-            <Link to="/ingresar" className="text-primary underline">
+            <Link to="/ingresar" search={{ redirect: undefined, registered: undefined }} className="text-primary underline">
               Ingresar
             </Link>
           </div>

@@ -7,6 +7,13 @@ export const axiosInstance = axios.create({
   },
 });
 
+// Navigation callback for handling unauthorized access
+let navigateToLogin: (() => void) | null = null;
+
+export const setNavigateToLogin = (callback: () => void) => {
+  navigateToLogin = callback;
+};
+
 // Add request interceptor to attach JWT token
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -29,7 +36,11 @@ axiosInstance.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      
+      // Use TanStack Router navigation if available
+      if (navigateToLogin) {
+        navigateToLogin();
+      }
     }
     return Promise.reject(error);
   }

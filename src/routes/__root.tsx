@@ -14,7 +14,7 @@ const RootLayout = () => (
       <Link to="/registrarse" className="[&.active]:font-bold">
         Registrarse
       </Link>
-      <Link to="/ingresar" className="[&.active]:font-bold">
+      <Link to="/ingresar" search={{ redirect: undefined }} className="[&.active]:font-bold">
         Ingresar
       </Link>
       <Link to="/panel" className="[&.active]:font-bold">

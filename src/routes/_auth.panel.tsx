@@ -1,41 +1,21 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { createFileRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const Route = createFileRoute('/panel')({
+export const Route = createFileRoute('/_auth/panel')({
   component: PanelPage,
 })
 
 function PanelPage() {
-  const { user, isLoading, logout } = useAuth()
+  const { logout } = useAuth()
   const navigate = useNavigate()
-
-  useEffect(() => {
-    // Redirect to login if not authenticated
-    if (!isLoading && !user) {
-      navigate({ to: '/ingresar' })
-    }
-  }, [user, isLoading, navigate])
+  // Get user from the parent _auth route context
+  const { user } = useRouteContext({ from: '/_auth/panel' })
 
   const handleLogout = () => {
     logout()
-    navigate({ to: '/ingresar' })
-  }
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p>Cargando...</p>
-      </div>
-    )
-  }
-
-  // Don't render if no user (will redirect)
-  if (!user) {
-    return null
+    navigate({ to: '/ingresar', search: { redirect: undefined } })
   }
 
   return (

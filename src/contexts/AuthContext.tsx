@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useRouter } from '@tanstack/react-router';
 import { authService, type User } from '@/services/auth';
 import type { RegisterData } from '@/services/auth';
+import { setNavigateToLogin } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -15,13 +17,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in on mount
-    const currentUser = authService.getCurrentUser();
-    setUser(currentUser);
-    setIsLoading(false);
-  }, []);
+    // Configure navigation callback for API interceptor
+    setNavigateToLogin(() => {
+      setUser(null);
+      router.navigate({ to: '/ingresar', search: { redirect: undefined } });
+    });
+
+    const checkAuth = async () => {
+      // Check if user is logged in on mount
+      const currentUser = await authService.getCurrentUser();
+      setUser(currentUser);
+      setIsLoading(false);
+    };
+    
+    checkAuth();
+  }, [router]);
 
   const login = async (email: string, password: string) => {
     const response = await authService.login({ email, password });

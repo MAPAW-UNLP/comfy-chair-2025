@@ -51,9 +51,9 @@ export const authService = {
   },
 
   // Get current user from localStorage
-  getCurrentUser(): User | null {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+  async getCurrentUser(): Promise<User | null> {
+    const userStr =  await this.fetchCurrentUser();
+    return userStr;
   },
 
   // Check if user is authenticated

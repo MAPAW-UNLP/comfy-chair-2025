@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,17 +8,25 @@ import { loginSchema, type LoginFormData } from '@/lib/validations'
 import { useAuth } from '@/contexts/AuthContext'
 
 export const Route = createFileRoute('/ingresar')({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      redirect: (search.redirect as string) || undefined,
+      registered: (search.registered as string) || undefined,
+    }
+  },
   component: LoginPage,
 })
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { redirect, registered } = Route.useSearch()
+  const { login, user } = useAuth()
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     contraseña: '',
   })
   const [errors, setErrors] = useState<Partial<LoginFormData>>({})
+  const [formError, setFormError] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (field: keyof LoginFormData, value: string) => {
@@ -26,6 +34,10 @@ function LoginPage() {
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev: Partial<LoginFormData>) => ({ ...prev, [field]: undefined }))
+    }
+    // Clear form error when user starts typing
+    if (formError) {
+      setFormError('')
     }
   }
 
@@ -44,20 +56,32 @@ function LoginPage() {
       setErrors(fieldErrors)
       return
     }
-
     setIsLoading(true)
+    setFormError('')
     try {
       await login(formData.email, formData.contraseña)
       console.log('Login successful')
-      navigate({ to: '/panel' })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error)
-      window.alert('Error al ingresar: ' + error)
-      // Handle API errors here
+      
+      // Check if it's a 5xx server error
+      if (error.response?.status >= 500) {
+        window.alert('Error del servidor. Por favor, intenta nuevamente más tarde.')
+      } else {
+        // For 4xx errors (wrong credentials, etc.), show a generic form error
+        setFormError('Email o contraseña incorrectos. Por favor, verifica tus datos.')
+      }
     } finally {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      // Redirect to the original destination or default to panel
+      navigate({ to: redirect || '/panel' })
+    }
+  }, [user, navigate, redirect])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -67,6 +91,11 @@ function LoginPage() {
           <CardDescription>¡Que bueno volver a verte!</CardDescription>
         </CardHeader>
         <CardContent>
+          {registered === 'true' && (
+            <div className="mb-4 p-3 text-sm text-green-800 bg-green-100 border border-green-300 rounded-md">
+              ¡Cuenta creada exitosamente! Por favor, inicia sesión con tus credenciales.
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -95,6 +124,12 @@ function LoginPage() {
                 <p className="text-sm text-destructive">{errors.contraseña}</p>
               )}
             </div>
+
+            {formError && (
+              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive rounded-md">
+                {formError}
+              </div>
+            )}
 
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Ingresando...' : 'Ingresar'}

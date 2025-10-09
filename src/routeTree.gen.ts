@@ -10,19 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegistrarseRouteImport } from './routes/registrarse'
-import { Route as PanelRouteImport } from './routes/panel'
 import { Route as IngresarRouteImport } from './routes/ingresar'
 import { Route as DummyRouteImport } from './routes/dummy'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthPanelRouteImport } from './routes/_auth.panel'
 
 const RegistrarseRoute = RegistrarseRouteImport.update({
   id: '/registrarse',
   path: '/registrarse',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PanelRoute = PanelRouteImport.update({
-  id: '/panel',
-  path: '/panel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IngresarRoute = IngresarRouteImport.update({
@@ -35,47 +31,64 @@ const DummyRoute = DummyRouteImport.update({
   path: '/dummy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPanelRoute = AuthPanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
   '/ingresar': typeof IngresarRoute
-  '/panel': typeof PanelRoute
   '/registrarse': typeof RegistrarseRoute
+  '/panel': typeof AuthPanelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dummy': typeof DummyRoute
   '/ingresar': typeof IngresarRoute
-  '/panel': typeof PanelRoute
   '/registrarse': typeof RegistrarseRoute
+  '/panel': typeof AuthPanelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
   '/dummy': typeof DummyRoute
   '/ingresar': typeof IngresarRoute
-  '/panel': typeof PanelRoute
   '/registrarse': typeof RegistrarseRoute
+  '/_auth/panel': typeof AuthPanelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy' | '/ingresar' | '/panel' | '/registrarse'
+  fullPaths: '/' | '/dummy' | '/ingresar' | '/registrarse' | '/panel'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy' | '/ingresar' | '/panel' | '/registrarse'
-  id: '__root__' | '/' | '/dummy' | '/ingresar' | '/panel' | '/registrarse'
+  to: '/' | '/dummy' | '/ingresar' | '/registrarse' | '/panel'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/dummy'
+    | '/ingresar'
+    | '/registrarse'
+    | '/_auth/panel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
   DummyRoute: typeof DummyRoute
   IngresarRoute: typeof IngresarRoute
-  PanelRoute: typeof PanelRoute
   RegistrarseRoute: typeof RegistrarseRoute
 }
 
@@ -86,13 +99,6 @@ declare module '@tanstack/react-router' {
       path: '/registrarse'
       fullPath: '/registrarse'
       preLoaderRoute: typeof RegistrarseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/panel': {
-      id: '/panel'
-      path: '/panel'
-      fullPath: '/panel'
-      preLoaderRoute: typeof PanelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ingresar': {
@@ -109,6 +115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DummyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -116,14 +129,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/panel': {
+      id: '/_auth/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof AuthPanelRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
+interface AuthRouteChildren {
+  AuthPanelRoute: typeof AuthPanelRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthPanelRoute: AuthPanelRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
   DummyRoute: DummyRoute,
   IngresarRoute: IngresarRoute,
-  PanelRoute: PanelRoute,
   RegistrarseRoute: RegistrarseRoute,
 }
 export const routeTree = rootRouteImport
