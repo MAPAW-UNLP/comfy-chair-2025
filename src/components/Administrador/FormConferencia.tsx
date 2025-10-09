@@ -3,7 +3,6 @@ import Calendario from './Calendario';
 import type { Conferencia } from './AdministradorApp';
 import { Button } from '../ui/button';
 import { Visualizacion } from './Visualizacion';
-import { Separator } from '../ui/separator';
 
 function esFechaValida(fecha1: string, fecha2: string) {
   const f1 = new Date(fecha1);
