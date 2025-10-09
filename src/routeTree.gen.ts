@@ -14,6 +14,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConferenciasAltaConferenciaRouteImport } from './routes/conferencias/alta-conferencia'
 import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
+import { Route as ArticulosArticulosRouteImport } from './routes/articulos/articulos'
+import { Route as ArticulosIdRouteImport } from './routes/articulos/$id'
 import { Route as ConferenciasEditarIdRouteImport } from './routes/conferencias/editar/$id'
 import { Route as ArticulosIdRevisoresRouteImport } from './routes/articulos.$id.revisores'
 
@@ -43,21 +45,33 @@ const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
   path: '/conferencias/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticulosArticulosRoute = ArticulosArticulosRouteImport.update({
+  id: '/articulos/articulos',
+  path: '/articulos/articulos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticulosIdRoute = ArticulosIdRouteImport.update({
+  id: '/articulos/$id',
+  path: '/articulos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConferenciasEditarIdRoute = ConferenciasEditarIdRouteImport.update({
   id: '/conferencias/editar/$id',
   path: '/conferencias/editar/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticulosIdRevisoresRoute = ArticulosIdRevisoresRouteImport.update({
-  id: '/articulos/$id/revisores',
-  path: '/articulos/$id/revisores',
-  getParentRoute: () => rootRouteImport,
+  id: '/revisores',
+  path: '/revisores',
+  getParentRoute: () => ArticulosIdRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/dummy': typeof DummyRoute
+  '/articulos/$id': typeof ArticulosIdRouteWithChildren
+  '/articulos/articulos': typeof ArticulosArticulosRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
   '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
@@ -67,6 +81,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/dummy': typeof DummyRoute
+  '/articulos/$id': typeof ArticulosIdRouteWithChildren
+  '/articulos/articulos': typeof ArticulosArticulosRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
   '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
@@ -77,6 +93,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/dummy': typeof DummyRoute
+  '/articulos/$id': typeof ArticulosIdRouteWithChildren
+  '/articulos/articulos': typeof ArticulosArticulosRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
   '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
@@ -88,6 +106,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/dummy'
+    | '/articulos/$id'
+    | '/articulos/articulos'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/articulos/$id/revisores'
@@ -97,6 +117,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/dummy'
+    | '/articulos/$id'
+    | '/articulos/articulos'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/articulos/$id/revisores'
@@ -106,6 +128,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/dummy'
+    | '/articulos/$id'
+    | '/articulos/articulos'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/articulos/$id/revisores'
@@ -116,9 +140,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   DummyRoute: typeof DummyRoute
+  ArticulosIdRoute: typeof ArticulosIdRouteWithChildren
+  ArticulosArticulosRoute: typeof ArticulosArticulosRoute
   ConferenciasIdRoute: typeof ConferenciasIdRoute
   ConferenciasAltaConferenciaRoute: typeof ConferenciasAltaConferenciaRoute
-  ArticulosIdRevisoresRoute: typeof ArticulosIdRevisoresRoute
   ConferenciasEditarIdRoute: typeof ConferenciasEditarIdRoute
 }
 
@@ -159,6 +184,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenciasIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articulos/articulos': {
+      id: '/articulos/articulos'
+      path: '/articulos/articulos'
+      fullPath: '/articulos/articulos'
+      preLoaderRoute: typeof ArticulosArticulosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articulos/$id': {
+      id: '/articulos/$id'
+      path: '/articulos/$id'
+      fullPath: '/articulos/$id'
+      preLoaderRoute: typeof ArticulosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conferencias/editar/$id': {
       id: '/conferencias/editar/$id'
       path: '/conferencias/editar/$id'
@@ -168,21 +207,34 @@ declare module '@tanstack/react-router' {
     }
     '/articulos/$id/revisores': {
       id: '/articulos/$id/revisores'
-      path: '/articulos/$id/revisores'
+      path: '/revisores'
       fullPath: '/articulos/$id/revisores'
       preLoaderRoute: typeof ArticulosIdRevisoresRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ArticulosIdRoute
     }
   }
 }
+
+interface ArticulosIdRouteChildren {
+  ArticulosIdRevisoresRoute: typeof ArticulosIdRevisoresRoute
+}
+
+const ArticulosIdRouteChildren: ArticulosIdRouteChildren = {
+  ArticulosIdRevisoresRoute: ArticulosIdRevisoresRoute,
+}
+
+const ArticulosIdRouteWithChildren = ArticulosIdRoute._addFileChildren(
+  ArticulosIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   DummyRoute: DummyRoute,
+  ArticulosIdRoute: ArticulosIdRouteWithChildren,
+  ArticulosArticulosRoute: ArticulosArticulosRoute,
   ConferenciasIdRoute: ConferenciasIdRoute,
   ConferenciasAltaConferenciaRoute: ConferenciasAltaConferenciaRoute,
-  ArticulosIdRevisoresRoute: ArticulosIdRevisoresRoute,
   ConferenciasEditarIdRoute: ConferenciasEditarIdRoute,
 }
 export const routeTree = rootRouteImport
