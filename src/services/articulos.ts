@@ -1,27 +1,21 @@
 import type { Estado } from '@/components/articulo/ArticuloCard';
 import api from './api';
-
-export interface Conference {
-  id: number;
-  name: string;
-}
-
-export interface Session {
-  id: number;
-  title: string;
-  deadline: string;
-  conference?: Conference | null;
-}
+import type { Session } from '@/services/sessions';
 
 export interface Articulo {
   id: number;
   title: string;
+  main_file:
   status: Estado;
-  article_type: string;
+  type:
+  abstract?: string;
+  source_file: string;
+  authors: [];
+  corresponding_author: number;
   session?: Session | null;
 }
 
 export const getAllArticulos = async (): Promise<Articulo[]> => {
-  const response = await api.get('/api/articles');
+  const response = await api.get('/api/article');
   return response.data;
 };

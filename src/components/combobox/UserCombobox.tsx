@@ -18,8 +18,9 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
 
   const filteredUsers = users.filter(
     (user) =>
-      user.first_name.toLowerCase().includes(query.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(query.toLowerCase())
+    user.full_name.toLowerCase().includes(query.toLowerCase())
+     /* user.first_name.toLowerCase().includes(query.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(query.toLowerCase())*/
   );
 
   const selectedUser = users.find((u) => u.id === selectedUserId) || null;
@@ -37,7 +38,7 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
           )}
         >
           {selectedUser
-            ? `${selectedUser.first_name} ${selectedUser.last_name}`
+            ? `${selectedUser.full_name} `
             : "Seleccione al menos un autor..."}
           <ChevronsUpDown className="opacity-25" />
         </Button>
@@ -57,14 +58,14 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
               {filteredUsers.map((user) => (
                 <CommandItem
                   key={user.id}
-                  value={`${user.first_name} ${user.last_name}`}
+                  value={`${user.full_name}`}
                   onSelect={() => {
                     setSelectedUserId(null);
                     setOpen(false);
                     if (onValueChange) onValueChange(user.id);
                   }}
                 >
-                  {user.first_name} {user.last_name} ({user.email})
+                  {user.full_name}({user.email})
                   <Check
                     className={cn(
                       "ml-auto",

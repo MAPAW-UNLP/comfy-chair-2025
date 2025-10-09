@@ -27,6 +27,7 @@ function RouteComponent() {
     const fetchConferences = async () => {
       const data = await getAllConferences();
       setConference(data);
+      console.log(data);
     };
     fetchConferences();
   }, []);

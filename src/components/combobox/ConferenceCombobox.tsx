@@ -17,8 +17,8 @@ export function ConferenceCombobox({ conferences, onValueChange }: ConferenceCom
   const [query, setQuery] = React.useState("");
 
   const filteredConferences = conferences.filter(
-    (c) =>
-      c.name.toLowerCase().includes(query.toLowerCase())
+    (c) => 
+      c.title.toLowerCase().includes(query.toLowerCase()) 
   );
 
   const selectedConference = conferences.find((c) => c.id === selectedConferenceId) || null;
@@ -36,7 +36,7 @@ export function ConferenceCombobox({ conferences, onValueChange }: ConferenceCom
           )}
         >
           {selectedConference
-            ? `${selectedConference.name}`
+            ? `${selectedConference.title}`
             : "Seleccione una conferencia..."}
           <ChevronsUpDown className="opacity-25" />
         </Button>
@@ -56,14 +56,14 @@ export function ConferenceCombobox({ conferences, onValueChange }: ConferenceCom
               {filteredConferences.map((c) => (
                 <CommandItem
                   key={c.id}
-                  value={`${c.name}`}
+                  value={`${c.title}`}
                   onSelect={() => {
                     setSelectedConferenceId(c.id);
                     setOpen(false);
                     if (onValueChange) onValueChange(c.id);
                   }}
                 >
-                  {c.name}
+                  {c.title}
                   <Check
                     className={cn(
                       "ml-auto",

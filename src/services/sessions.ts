@@ -1,9 +1,6 @@
-import api from './api';
+import type { Conference } from '@/services/conferences';
 
-export interface Conference {
-  id: number
-  name: string
-}
+import api from './api';
 
 export interface Session {
   id: number
@@ -14,13 +11,13 @@ export interface Session {
 
 // Trae todas las sesiones
 export const getAllSessions = async (): Promise<Session[]> => {
-  const response = await api.get('/api/sessions');
+  const response = await api.get('/api/session');
   return response.data;
 }
 
 // Trae sesiones filtradas por conference_id
 export const getSessionsByConference = async (conferenceId: number): Promise<Session[]> => {
-  const response = await api.get('/api/sessions', {
+  const response = await api.get('/api/session', {
     params: { conference_id: conferenceId } // esto genera ?conference_id=1
   });
   return response.data;

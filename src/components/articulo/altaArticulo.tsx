@@ -83,7 +83,10 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
       setLoadingSessions(true);
       setSelectedSession(null);
       getSessionsByConference(Number(selectedConference))
-        .then((data) => setSessions(data))
+        .then((data) => {
+          console.log(data);
+          setSessions(data);
+        })
         .catch((err) => console.error("Error cargando sesiones:", err))
         .finally(() => setLoadingSessions(false));
     } else {
@@ -150,7 +153,7 @@ const handleSubmit = async () => {
       main_file: archivo!,
       source_file: tipoArticulo === "poster" ? archivoExtra : null,
       status: 'reception',
-      article_type: tipoArticulo,
+      type: tipoArticulo,
       abstract: tipoArticulo === "regular" ? abstract : "",
       authors: autoresSeleccionados.map((a) => a.id),
       notification_author: Number(autorNotif),
@@ -244,7 +247,7 @@ const handleSubmit = async () => {
               className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full"
             >
               <span className="truncate">
-                {a.first_name} {a.last_name} ({a.email})
+                {a.full_name}({a.email})
               </span>
               <button
                 type="button"
@@ -271,7 +274,7 @@ const handleSubmit = async () => {
         <SelectContent>
           {autoresSeleccionados.map((a) => (
             <SelectItem key={a.id} value={String(a.id)}>
-              {a.first_name} {a.last_name} ({a.email})
+              {a.full_name} ({a.email})
             </SelectItem>
           ))}
         </SelectContent>
