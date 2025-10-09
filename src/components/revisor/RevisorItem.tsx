@@ -72,7 +72,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
     <>
       <div className="w-screen flex items-center justify-between py-6 border-b border-black relative left-1/2 right-1/2 -translate-x-1/2 px-8">
         <div className="flex-1 text-center mr-4">
-          <p className="text-2xl font-bold text-gray-900 tracking-wide">
+          <p className="text-2xl font-bold tracking-wide">
             {revisor.nombre_completo}
           </p>
         </div>
