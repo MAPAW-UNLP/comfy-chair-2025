@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Articulo } from '@/services/articulos';
+import type { Article } from '@/services/articulos';
 import { ArticuloCard } from './ArticuloCard';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ListaArticulosProps {
-  items: Articulo[];
+  items: Article[];
 }
 
 const opcionesFiltro = ['Todos', 'Completos', 'Incompletos'] as const;
@@ -20,7 +20,7 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
 
   const itemsPorPagina = 5;
 
-  const estaCompleto = (articulo: Articulo) => {
+  const estaCompleto = (articulo: Article) => {
     return articulo.revisores?.length === 3;
   };
 
@@ -136,7 +136,7 @@ export const ListaArticulos = ({ items }: ListaArticulosProps) => {
                 )}
 
                 <p className="text-sm">
-                  Mostrando {articulosVisibles.length} artículos de{' '}
+                  Mostrando {indiceInicial + articulosVisibles.length} artículos de{' '}
                   {articulosFiltrados.length}
                 </p>
 

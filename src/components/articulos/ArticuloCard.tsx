@@ -1,11 +1,11 @@
-import type { Articulo } from '@/services/articulos';
+import type { Article } from '@/services/articulos';
 import { useNavigate } from '@tanstack/react-router';
 import { UserPlus2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type React from 'react';
 
 interface ArticuloCardProps {
-  articulo: Articulo;
+  articulo: Article;
 }
 
 export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
@@ -20,11 +20,7 @@ export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
 
   const handleRevisorClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate({
-      to: completo
-        ? `/articulos/${id}/revisores`
-        : `/articulos/${id}/revisores-disponibles`,
-    });
+    navigate({ to: `/chairs/articulos/${id}/revisores-disponibles` });
   };
 
   return (
@@ -34,9 +30,7 @@ export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
     >
       {/* Título */}
       <div className="flex-1 pr-4">
-        <h3 className="text-base text-gray-900 leading-tight">
-          {title}
-        </h3>
+        <h3 className="text-base text-gray-900 leading-tight">{title}</h3>
       </div>
 
       <div className="flex flex-col items-center gap-2">

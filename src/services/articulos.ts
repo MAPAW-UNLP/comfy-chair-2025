@@ -1,6 +1,6 @@
 import api from './api';
 
-export interface Articulo {
+export interface Article {
   id: number;
   title: string;
   description: string;
@@ -8,7 +8,7 @@ export interface Articulo {
   revisores?: string[]; // user[];
 }
 
-export const getArticulos = async (): Promise<Articulo[]> => {
+export const getArticulos = async (): Promise<Article[]> => {
   try {
     // console.log('Haciendo request a /articles/articles/');
     const response = await api.get('/articles/articles/');
@@ -26,3 +26,9 @@ export const getArticulos = async (): Promise<Articulo[]> => {
     return [];
   }
 };
+
+export const getArticuloById = async (id: number): Promise<Article> => {
+  const res = await api.get(`/articles/articles/${id}/`)
+  if (!res.status || res.status >= 400) throw new Error("Error al obtener el artículo")
+  return res.data
+}

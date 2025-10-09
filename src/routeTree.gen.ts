@@ -10,21 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DummyRouteImport } from './routes/dummy'
-import { Route as ArticulosRouteImport } from './routes/articulos'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConferenciasAltaConferenciaRouteImport } from './routes/conferencias/alta-conferencia'
 import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
+import { Route as ArticulosArticulosRouteImport } from './routes/articulos/articulos'
+import { Route as ArticulosIdRouteImport } from './routes/articulos/$id'
 import { Route as ConferenciasEditarIdRouteImport } from './routes/conferencias/editar/$id'
+import { Route as ArticulosIdRevisoresRouteImport } from './routes/articulos.$id.revisores'
 
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
   path: '/dummy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArticulosRoute = ArticulosRouteImport.update({
-  id: '/articulos',
-  path: '/articulos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -48,38 +45,59 @@ const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
   path: '/conferencias/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticulosArticulosRoute = ArticulosArticulosRouteImport.update({
+  id: '/articulos/articulos',
+  path: '/articulos/articulos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticulosIdRoute = ArticulosIdRouteImport.update({
+  id: '/articulos/$id',
+  path: '/articulos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConferenciasEditarIdRoute = ConferenciasEditarIdRouteImport.update({
   id: '/conferencias/editar/$id',
   path: '/conferencias/editar/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticulosIdRevisoresRoute = ArticulosIdRevisoresRouteImport.update({
+  id: '/revisores',
+  path: '/revisores',
+  getParentRoute: () => ArticulosIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/articulos': typeof ArticulosRoute
   '/dummy': typeof DummyRoute
+  '/articulos/$id': typeof ArticulosIdRouteWithChildren
+  '/articulos/articulos': typeof ArticulosArticulosRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
+  '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
   '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/articulos': typeof ArticulosRoute
   '/dummy': typeof DummyRoute
+  '/articulos/$id': typeof ArticulosIdRouteWithChildren
+  '/articulos/articulos': typeof ArticulosArticulosRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
+  '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
   '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/articulos': typeof ArticulosRoute
   '/dummy': typeof DummyRoute
+  '/articulos/$id': typeof ArticulosIdRouteWithChildren
+  '/articulos/articulos': typeof ArticulosArticulosRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
+  '/articulos/$id/revisores': typeof ArticulosIdRevisoresRoute
   '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
 }
 export interface FileRouteTypes {
@@ -87,36 +105,43 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/articulos'
     | '/dummy'
+    | '/articulos/$id'
+    | '/articulos/articulos'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
+    | '/articulos/$id/revisores'
     | '/conferencias/editar/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
-    | '/articulos'
     | '/dummy'
+    | '/articulos/$id'
+    | '/articulos/articulos'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
+    | '/articulos/$id/revisores'
     | '/conferencias/editar/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/articulos'
     | '/dummy'
+    | '/articulos/$id'
+    | '/articulos/articulos'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
+    | '/articulos/$id/revisores'
     | '/conferencias/editar/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  ArticulosRoute: typeof ArticulosRoute
   DummyRoute: typeof DummyRoute
+  ArticulosIdRoute: typeof ArticulosIdRouteWithChildren
+  ArticulosArticulosRoute: typeof ArticulosArticulosRoute
   ConferenciasIdRoute: typeof ConferenciasIdRoute
   ConferenciasAltaConferenciaRoute: typeof ConferenciasAltaConferenciaRoute
   ConferenciasEditarIdRoute: typeof ConferenciasEditarIdRoute
@@ -129,13 +154,6 @@ declare module '@tanstack/react-router' {
       path: '/dummy'
       fullPath: '/dummy'
       preLoaderRoute: typeof DummyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/articulos': {
-      id: '/articulos'
-      path: '/articulos'
-      fullPath: '/articulos'
-      preLoaderRoute: typeof ArticulosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -166,6 +184,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenciasIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articulos/articulos': {
+      id: '/articulos/articulos'
+      path: '/articulos/articulos'
+      fullPath: '/articulos/articulos'
+      preLoaderRoute: typeof ArticulosArticulosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articulos/$id': {
+      id: '/articulos/$id'
+      path: '/articulos/$id'
+      fullPath: '/articulos/$id'
+      preLoaderRoute: typeof ArticulosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conferencias/editar/$id': {
       id: '/conferencias/editar/$id'
       path: '/conferencias/editar/$id'
@@ -173,14 +205,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenciasEditarIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articulos/$id/revisores': {
+      id: '/articulos/$id/revisores'
+      path: '/revisores'
+      fullPath: '/articulos/$id/revisores'
+      preLoaderRoute: typeof ArticulosIdRevisoresRouteImport
+      parentRoute: typeof ArticulosIdRoute
+    }
   }
 }
+
+interface ArticulosIdRouteChildren {
+  ArticulosIdRevisoresRoute: typeof ArticulosIdRevisoresRoute
+}
+
+const ArticulosIdRouteChildren: ArticulosIdRouteChildren = {
+  ArticulosIdRevisoresRoute: ArticulosIdRevisoresRoute,
+}
+
+const ArticulosIdRouteWithChildren = ArticulosIdRoute._addFileChildren(
+  ArticulosIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  ArticulosRoute: ArticulosRoute,
   DummyRoute: DummyRoute,
+  ArticulosIdRoute: ArticulosIdRouteWithChildren,
+  ArticulosArticulosRoute: ArticulosArticulosRoute,
   ConferenciasIdRoute: ConferenciasIdRoute,
   ConferenciasAltaConferenciaRoute: ConferenciasAltaConferenciaRoute,
   ConferenciasEditarIdRoute: ConferenciasEditarIdRoute,

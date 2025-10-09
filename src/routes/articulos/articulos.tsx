@@ -1,8 +1,8 @@
-// routes/articulos.tsx
+// routes/articulos/articulos.tsx
 
 import { createFileRoute } from '@tanstack/react-router';
 import { ArticulosApp } from '@/components/articulos/ArticulosApp';
 
-export const Route = createFileRoute('/articulos')({
+export const Route = createFileRoute('/articulos/articulos')({
     component: () => <ArticulosApp />,
 });
