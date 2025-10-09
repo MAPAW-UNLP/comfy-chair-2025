@@ -20,7 +20,7 @@ export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
 
   const handleRevisorClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate({ to: `/chairs/articulos/${id}/revisores` });
+    navigate({ to: `/articulos/${id}/revisores` });
   };
 
   return (
