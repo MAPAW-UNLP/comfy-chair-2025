@@ -15,7 +15,7 @@ export const ArticuloCard = ({ articulo }: ArticuloCardProps) => {
   const completo = revisores.length === 3;
 
   const handleCardClick = () => {
-    navigate({ to: `/articulos/${id}` });
+    navigate({ to: `/articulos/${id}/revisores` });
   };
 
   const handleRevisorClick = (e: React.MouseEvent) => {
