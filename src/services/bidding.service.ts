@@ -1,21 +1,23 @@
 // src/services/bidding.service.ts
 import api from '@/services/api';
 
-export type Interes = 'Interesado' | 'Quizás' | 'No Interesado';
+export type Interes = 'Interesado' | 'Quizás' | 'No Interesado' | 'No_select';
 
 export interface BiddingPreference {
   id: number;
   reviewer: number;
   article: number;
-  choice: Interes | '';
+  choice: Interes; // siempre uno válido
 }
 
-const norm = (x: any): Interes | '' => {
+// --- normalización: backend -> frontend ---
+const norm = (x: any): Interes => {
   const v = (x ?? '').toString().toLowerCase();
   if (v.includes('quiz')) return 'Quizás';
+  if (v === 'no_select' || v.includes('no_select')) return 'No_select';
   if (v.includes('no')) return 'No Interesado';
   if (v.includes('interes')) return 'Interesado';
-  return '';
+  return 'No_select';
 };
 
 // --- utils ---
@@ -31,38 +33,41 @@ function dedupeByArticle(rows: any[]): BiddingPreference[] {
 
 // --- reads ---
 export async function getBidsByReviewer(reviewerId: number): Promise<BiddingPreference[]> {
-  const { data } = await api.get('bids/', { params: { reviewerId } }); // ← barra final
+  const { data } = await api.get('bids/', { params: { reviewerId } }); // DRF: trailing slash
   return dedupeByArticle(data ?? []);
 }
 
 // --- writes (primitivos) ---
 export async function upsertBid(p: { reviewer: number; article: number; value: Interes }) {
   const payload = { reviewer: p.reviewer, article: p.article, choice: p.value };
-  const { data } = await api.post('bidding/', payload); // ← barra final
+  const { data } = await api.post('bidding/', payload); // POST crea o tu view hace upsert
   return { ...data, choice: norm(data.choice) } as BiddingPreference;
 }
 
 export async function updateBid(id: number, value: Interes) {
-  const { data } = await api.put(`bidding/${id}/`, { choice: value }); // ← barra final
+  const { data } = await api.put(`bidding/${id}/`, { choice: value });
   return { ...data, choice: norm(data.choice) } as BiddingPreference;
 }
 
 /**
- * Guardado seguro (PUT si existe / POST si no), evitando duplicados.
- * Devuelve el bid vigente (normalizado) para ese artículo.
+ * Guardado seguro (PUT si existe / POST si no).
+ * Permite también "deseleccionar" usando 'No_select'.
+ * Devuelve el bid vigente normalizado.
  */
 export async function saveBid(params: {
   reviewer: number;
   article: number;
-  value: Interes;
+  value: Interes; // incluye 'No_select'
 }): Promise<BiddingPreference> {
-  // 1) Traer bids del revisor ya deduplicados
   const current = await getBidsByReviewer(params.reviewer);
   const existing = current.find((b) => b.article === params.article);
-
-  // 2) PUT si existe, POST si no
   if (existing) {
     return updateBid(existing.id, params.value);
   }
   return upsertBid(params);
+}
+
+/** Helper opcional: deseleccionar explícitamente un artículo */
+export async function clearBid(reviewer: number, article: number) {
+  return saveBid({ reviewer, article, value: 'No_select' });
 }

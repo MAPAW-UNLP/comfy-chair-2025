@@ -1,19 +1,16 @@
+// src/utils/useCountdown.ts
 import { useEffect, useMemo, useState } from 'react';
 
 export type Countdown = {
-  isOver: boolean;              // ya pasó la fecha
-  msLeft: number;               // milisegundos restantes (>=0)
+  isOver: boolean;
+  msLeft: number;
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
-  display: string;              // "Xd HH:MM:SS" o "HH:MM:SS" si days=0
+  display: string;
 };
 
-/**
- * Calcula cuánto falta para deadline (ISO). Se actualiza cada 1s.
- * Si pasás "2025-11-30T23:59:59Z" se interpreta en UTC (recomendado).
- */
 export function useCountdown(deadlineIso?: string): Countdown {
   const target = useMemo(() => {
     if (!deadlineIso) return NaN;
@@ -24,13 +21,23 @@ export function useCountdown(deadlineIso?: string): Countdown {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    setNow(Date.now()); // primer tick inmediato
+    const id = setInterval(() => setNow(Date.now()), 500);
     return () => clearInterval(id);
   }, []);
 
-  const diff = Number.isNaN(target) ? 0 : Math.max(0, target - now);
+  if (Number.isNaN(target)) {
+    return { isOver: true, msLeft: 0, days: 0, hours: 0, minutes: 0, seconds: 0, display: '00:00:00' };
+  }
 
-  const totalSec = Math.floor(diff / 1000);
+  const diffMs = Math.max(0, target - now);
+  const totalSec = Math.ceil(diffMs / 1000); // ⬅️ clave
+
+  if (totalSec <= 0) {
+    // Nunca mostramos 00:00:00: la UI debe cambiar por isOver
+    return { isOver: true, msLeft: 0, days: 0, hours: 0, minutes: 0, seconds: 0, display: '00:00:00' };
+  }
+
   const days = Math.floor(totalSec / 86400);
   const hours = Math.floor((totalSec % 86400) / 3600);
   const minutes = Math.floor((totalSec % 3600) / 60);
@@ -40,13 +47,5 @@ export function useCountdown(deadlineIso?: string): Countdown {
   const hms = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   const display = days > 0 ? `${days}d ${hms}` : hms;
 
-  return {
-    isOver: diff === 0,
-    msLeft: diff,
-    days,
-    hours,
-    minutes,
-    seconds,
-    display,
-  };
+  return { isOver: false, msLeft: diffMs, days, hours, minutes, seconds, display };
 }

@@ -1,29 +1,53 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { fetchArticulos, type Articulo } from '@/services/articulosServices';
 import { getBidsByReviewer } from '@/services/bidding.service';
 import { useCountdown } from '@/utils/useCountdown';
 import { fetchAssignedArticles, type AssignedArticle } from '@/services/assignments.service';
+import { Button } from '@/components/ui/button';
 
 const REVIEWER_ID = 1; // TODO: tomar del auth real
-const DEADLINE = import.meta.env.VITE_BIDDING_DEADLINE as string | undefined;
+const DEADLINE = (import.meta.env.VITE_BIDDING_DEADLINE as string | undefined) ?? null;
 
 function pad(n: number) {
   return String(n).padStart(2, '0');
 }
 
-function SoftCard(props: { children: React.ReactNode; className?: string }) {
-  return (
-    <div
-      className={`rounded-2xl bg-slate-100/70 px-5 py-4 shadow-sm ring-1 ring-black/5 ${
-        props.className ?? ''
-      }`}
-    >
-      {props.children}
-    </div>
-  );
+function SoftCard(props: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  ariaLabel?: string;
+}) {
+  const base =
+    'rounded-2xl bg-slate-100/70 px-5 py-4 shadow-sm ring-1 ring-black/5 transition';
+  const interactive = props.onClick
+    ? 'cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2'
+    : '';
+
+  if (props.onClick) {
+    return (
+      <button
+        type="button"
+        onClick={props.onClick}
+        disabled={props.disabled}
+        aria-label={props.ariaLabel}
+        className={`${base} ${interactive} ${
+          props.disabled ? 'opacity-50 cursor-not-allowed' : ''
+        } ${props.className ?? ''}`}
+      >
+        {props.children}
+      </button>
+    );
+  }
+
+  return <div className={`${base} ${props.className ?? ''}`}>{props.children}</div>;
 }
 
 export default function Inicio() {
+  const navigate = useNavigate();
+
   // Estado pre-deadline (bidding)
   const [articulos, setArticulos] = useState<Articulo[]>([]);
   const [bids, setBids] = useState<{ article: number; choice?: string }[]>([]);
@@ -33,7 +57,10 @@ export default function Inicio() {
   const [assigned, setAssigned] = useState<AssignedArticle[] | null>(null);
   const [loadingAssigned, setLoadingAssigned] = useState(false);
 
-  const c = useCountdown(DEADLINE);
+  const c = useCountdown(DEADLINE || undefined);
+
+  // ✅ Termina por MINUTO: al llegar a 00:00 pasa a post (sin mostrar 00:00:00)
+  const isOverByMinute = c.isOver || (c.days === 0 && c.hours === 0 && c.minutes === 0);
 
   // Datos de bidding
   useEffect(() => {
@@ -51,15 +78,15 @@ export default function Inicio() {
     })();
   }, []);
 
-  // Cuando termina el bidding, cargamos las asignaciones
+  // Cuando termina el bidding por minuto, cargamos las asignaciones
   useEffect(() => {
-    if (!c.isOver) return;
+    if (!isOverByMinute) return;
     setLoadingAssigned(true);
     fetchAssignedArticles(REVIEWER_ID)
       .then((rows) => setAssigned(rows))
       .catch(() => setAssigned([]))
       .finally(() => setLoadingAssigned(false));
-  }, [c.isOver]);
+  }, [isOverByMinute]);
 
   // Cálculo de métricas pre-deadline
   const total = articulos.length;
@@ -68,15 +95,14 @@ export default function Inicio() {
     [bids]
   );
 
-  // Contador: DD:HH:MM
+  // Contador (solo DD:HH:MM). Si llega a 00:00, ya no se muestra porque isOverByMinute=true
   const dhm = `${pad(c.days)}:${pad(c.hours)}:${pad(c.minutes)}`;
 
-  // ----------------------------- RENDER -----------------------------
   return (
     <div className="mx-auto w-full max-w-md px-4 py-6 md:max-w-2xl">
       <h1 className="mb-4 text-2xl font-semibold">Bienvenido, Revisor</h1>
 
-      {!c.isOver ? (
+      {!isOverByMinute ? (
         // -------- VISTA PRE-DEADLINE --------
         <>
           <div className="grid grid-cols-2 gap-4">
@@ -84,19 +110,25 @@ export default function Inicio() {
             <SoftCard>
               <div className="flex h-full flex-col items-center justify-center">
                 <div className="text-3xl font-semibold tracking-tight">{dhm}</div>
-                 <div className="mt-1 text-[11px] text-slate-400 tracking-wide"> Días <span className="mx-1 text-slate-300">|</span> Horas <span className="mx-1 text-slate-300">|</span> Minutos
+                <div className="mt-1 text-[11px] text-slate-400 tracking-wide">
+                  Días <span className="mx-1 text-slate-300">|</span> Horas
+                  <span className="mx-1 text-slate-300">|</span> Minutos
                 </div>
                 <div className="mt-1 text-sm text-slate-600">Para finalizar</div>
               </div>
             </SoftCard>
 
-            {/* Artículos pendientes */}
-            <SoftCard>
+            {/* Bids completados → BOTÓN a /bidding */}
+            <SoftCard
+              onClick={() => navigate({ to: '/bidding' })}
+              ariaLabel="Ir a la pantalla de bidding"
+              className="focus:ring-offset-2"
+            >
               <div className="flex h-full flex-col items-center justify-center">
                 <div className="text-3xl font-semibold tracking-tight">
                   {completados}/{total}
                 </div>
-                <div className="mt-1 text-sm text-slate-600">Completados</div>
+                <div className="mt-1 text-sm text-slate-600">Bids completados</div>
               </div>
             </SoftCard>
           </div>
@@ -105,45 +137,35 @@ export default function Inicio() {
             <h2 className="mb-2 text-lg font-semibold">Tus Artículos</h2>
             <hr className="mb-4 border-slate-200" />
             {err && <p className="text-sm text-red-600">{err}</p>}
-            <p className="text-slate-600">Pendiente de bidding…</p>
+            <p className="text-slate-600">Bidding en proceso...</p>
+            {err && <p className="text-sm text-red-600">{err}</p>}
+            <Button
+              className="mt-2 w-full py-6 text-base"
+              onClick={() => navigate({ to: '/bidding' })}
+            >
+              Ir al Bidding
+            </Button>
           </section>
         </>
       ) : (
         // -------- VISTA POST-DEADLINE --------
         <>
           <div className="grid grid-cols-2 gap-4">
-            {/* Artículos asignados */}
+            {/* 1) Bidding finalizado (reemplaza al card de asignados) */}
             <SoftCard>
               <div className="flex h-full flex-col items-center justify-center">
-                <div className="text-4xl font-semibold leading-none">
-                  {assigned ? assigned.length : 0}
-                </div>
-                <div className="mt-1 text-xs text-slate-600">Artículos asignados</div>
+                <div className="text-2xl font-semibold leading-none">Bidding</div>
+                <div className="mt-1 text-xs text-slate-600">Finalizado</div>
               </div>
             </SoftCard>
 
-            {/* Revisiones completadas o estado de cierre */}
-            <SoftCard>
+            {/* 2) Bids completados (como pre-deadline pero NO clickeable) */}
+            <SoftCard className="opacity-70 pointer-events-none select-none">
               <div className="flex h-full flex-col items-center justify-center">
-                {assigned && assigned.length > 0 ? (
-                  <>
-                    <div className="text-2xl font-semibold leading-none">
-                      {assigned.filter((a) => a.reviewed).length}/{assigned.length}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-600">
-                      Revisiones completadas
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-2xl font-semibold leading-none">
-                      Bidding
-                    </div>
-                    <div className="mt-1 text-xs text-slate-600">
-                      Finalizado
-                    </div>
-                  </>
-                )}
+                <div className="text-3xl font-semibold tracking-tight">
+                  {completados}/{total}
+                </div>
+                <div className="mt-1 text-sm text-slate-600">Bids completados</div>
               </div>
             </SoftCard>
           </div>

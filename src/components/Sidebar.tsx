@@ -1,4 +1,4 @@
-import { ThumbsUp, FileText, Edit3, RotateCcw, User, X } from 'lucide-react';
+import { Home, ThumbsUp, FileText, Edit3, RotateCcw, User, X } from 'lucide-react';
 import React from 'react';
 import ItemSidebar from './ItemSidebar';
 
@@ -8,6 +8,7 @@ type SidebarProps = {
 };
 
 function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
+  const handleNavigate = () => setSidebarOpen(false);
   return (
     <>
       {sidebarOpen && ( //sidebar overlay
@@ -31,15 +32,18 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
         <ul className="flex flex-col"> {/*TODO: dependiendo el Rol mostrar un item u otro */}
           <hr />
-          <ItemSidebar nombre="Bidding" Icon={ThumbsUp} direccion='/bidding' />
+          <ItemSidebar nombre="Home" Icon={Home} direccion="/" onNavigate={handleNavigate} />
           <hr />
-          <ItemSidebar nombre="Artículos" Icon={FileText} direccion='/articulos'/>
           <hr />
-          <ItemSidebar nombre="Revisiones" Icon={Edit3} direccion='/revisiones' />
+          <ItemSidebar nombre="Bidding" Icon={ThumbsUp} direccion='/bidding' onNavigate={handleNavigate} />
           <hr />
-          <ItemSidebar nombre="Historial" Icon={RotateCcw} direccion='/historial' />
+          <ItemSidebar nombre="Artículos" Icon={FileText} direccion='/articulos' onNavigate={handleNavigate} />
           <hr />
-          <ItemSidebar nombre="Mi perfil" Icon={User} direccion='/miperfil' />
+          <ItemSidebar nombre="Revisiones" Icon={Edit3} direccion='/revisiones' onNavigate={handleNavigate} />
+          <hr />
+          <ItemSidebar nombre="Historial" Icon={RotateCcw} direccion='/historial' onNavigate={handleNavigate} />
+          <hr />
+          <ItemSidebar nombre="Mi perfil" Icon={User} direccion='/miperfil' onNavigate={handleNavigate} />
           <hr />
         </ul>
       </div>
