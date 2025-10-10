@@ -10,23 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DummyRouteImport } from './routes/dummy'
-import { Route as ArticulosRouteImport } from './routes/articulos'
-import { Route as AltaArticuloRouteImport } from './routes/altaArticulo'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArticuloVisualizacionRouteImport } from './routes/articulo/visualizacion'
+import { Route as ArticuloAltaRouteImport } from './routes/articulo/alta'
 
 const DummyRoute = DummyRouteImport.update({
   id: '/dummy',
   path: '/dummy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArticulosRoute = ArticulosRouteImport.update({
-  id: '/articulos',
-  path: '/articulos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AltaArticuloRoute = AltaArticuloRouteImport.update({
-  id: '/altaArticulo',
-  path: '/altaArticulo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,39 +24,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticuloVisualizacionRoute = ArticuloVisualizacionRouteImport.update({
+  id: '/articulo/visualizacion',
+  path: '/articulo/visualizacion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticuloAltaRoute = ArticuloAltaRouteImport.update({
+  id: '/articulo/alta',
+  path: '/articulo/alta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/altaArticulo': typeof AltaArticuloRoute
-  '/articulos': typeof ArticulosRoute
   '/dummy': typeof DummyRoute
+  '/articulo/alta': typeof ArticuloAltaRoute
+  '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/altaArticulo': typeof AltaArticuloRoute
-  '/articulos': typeof ArticulosRoute
   '/dummy': typeof DummyRoute
+  '/articulo/alta': typeof ArticuloAltaRoute
+  '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/altaArticulo': typeof AltaArticuloRoute
-  '/articulos': typeof ArticulosRoute
   '/dummy': typeof DummyRoute
+  '/articulo/alta': typeof ArticuloAltaRoute
+  '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/altaArticulo' | '/articulos' | '/dummy'
+  fullPaths: '/' | '/dummy' | '/articulo/alta' | '/articulo/visualizacion'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/altaArticulo' | '/articulos' | '/dummy'
-  id: '__root__' | '/' | '/altaArticulo' | '/articulos' | '/dummy'
+  to: '/' | '/dummy' | '/articulo/alta' | '/articulo/visualizacion'
+  id: '__root__' | '/' | '/dummy' | '/articulo/alta' | '/articulo/visualizacion'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AltaArticuloRoute: typeof AltaArticuloRoute
-  ArticulosRoute: typeof ArticulosRoute
   DummyRoute: typeof DummyRoute
+  ArticuloAltaRoute: typeof ArticuloAltaRoute
+  ArticuloVisualizacionRoute: typeof ArticuloVisualizacionRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,20 +78,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DummyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articulos': {
-      id: '/articulos'
-      path: '/articulos'
-      fullPath: '/articulos'
-      preLoaderRoute: typeof ArticulosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/altaArticulo': {
-      id: '/altaArticulo'
-      path: '/altaArticulo'
-      fullPath: '/altaArticulo'
-      preLoaderRoute: typeof AltaArticuloRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -99,14 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articulo/visualizacion': {
+      id: '/articulo/visualizacion'
+      path: '/articulo/visualizacion'
+      fullPath: '/articulo/visualizacion'
+      preLoaderRoute: typeof ArticuloVisualizacionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articulo/alta': {
+      id: '/articulo/alta'
+      path: '/articulo/alta'
+      fullPath: '/articulo/alta'
+      preLoaderRoute: typeof ArticuloAltaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AltaArticuloRoute: AltaArticuloRoute,
-  ArticulosRoute: ArticulosRoute,
   DummyRoute: DummyRoute,
+  ArticuloAltaRoute: ArticuloAltaRoute,
+  ArticuloVisualizacionRoute: ArticuloVisualizacionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

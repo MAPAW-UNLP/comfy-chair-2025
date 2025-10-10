@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { Conference } from "@/services/conferences";
+import type { Conference } from "@/services/conferenceServices";
 
 type ConferenceComboboxProps = {
   conferences: Conference[];

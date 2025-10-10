@@ -1,4 +1,4 @@
-import type { Conference } from '@/services/conferences';
+import type { Conference } from '@/services/conferenceServices';
 
 import api from './api';
 
@@ -6,7 +6,8 @@ export interface Session {
   id: number
   title: string
   deadline: string
-  conference?: Conference | null
+  capacity: number
+  conference: Conference | null
 }
 
 // Trae todas las sesiones

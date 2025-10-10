@@ -1,90 +1,95 @@
+/* Componente que representa un formulario para dar de alta un artículo en una sesión de una conferencia */
+
+// Importaciones
 import React, { useEffect, useRef, useState } from "react";
-import { createArticle } from "@/services/newArticle";
+import { createArticle, type Articulo } from "@/services/articleServices";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { X, AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import type { User } from "@/services/users";
-import type { Conference } from "@/services/conferences"; 
-import { getSessionsByConference } from "@/services/sessions";
-import type { Session } from "@/services/sessions";
-import type { Articulo } from "@/services/newArticle";
-import { toast } from 'sonner';
-import { useNavigate } from '@tanstack/react-router';
+import type { User } from "@/services/userServices";
+import type { Conference } from "@/services/conferenceServices";
+import { getSessionsByConference, type Session } from "@/services/sessionServices";
+import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
 import { UserCombobox } from "@/components/combobox/UserCombobox";
-import { ConferenceCombobox} from "@/components/combobox/ConferenceCombobox";
+import { ConferenceCombobox } from "@/components/combobox/ConferenceCombobox";
 
 type AltaArticuloProps = {
   users: User[];
   conferences: Conference[];
 };
 
-export default function AltaArticulo({ users, conferences }: AltaArticuloProps) { 
-
+export default function ArticuloForm({ users, conferences }: AltaArticuloProps) {
   const navigate = useNavigate();
 
+  // Referencias a los inputs de archivos
   const fileInputRef = useRef<HTMLInputElement>(null);
   const extraFileRef = useRef<HTMLInputElement>(null);
 
-  const [tipoArticulo, setTipoArticulo] = useState<string>("");
-  const [selectedConference, setSelectedConference] = useState<number | null>(null);
+  // Estados del formulario
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [loadingSessions, setLoadingSessions] = useState<boolean>(false);
-  const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [selectedConference, setSelectedConference] = useState<number | null>(null);
+  const [titulo, setTitulo] = useState("");
+  const [abstract, setAbstract] = useState("");
+  const [tipoArticulo, setTipoArticulo] = useState("");
   const [autoresSeleccionados, setAutoresSeleccionados] = useState<User[]>([]);
-  const [autorNotif, setAutorNotif] = useState<string>("");
-
-  /*manu*/
-  const [titulo, setTitulo] = useState<string>("");
-  const [abstract, setAbstract] = useState<string>("");
+  const [autorNotif, setAutorNotif] = useState<User | null>(null);
   const [archivo, setArchivo] = useState<File | null>(null);
   const [archivoExtra, setArchivoExtra] = useState<File | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
+
+  // Estados de carga y validación
+  const [loading, setLoading] = useState(false);
+  const [loadingSessions, setLoadingSessions] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
+  // Handlers para archivos
   const handleClick = () => fileInputRef.current?.click();
+  const handleExtraFileClick = () => extraFileRef.current?.click();
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setArchivo(file);
-    }
+    if (file) setArchivo(file);
   };
 
-  const handleExtraFileClick = () => extraFileRef.current?.click();
   const handleExtraFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setArchivoExtra(file);
-    }
+    if (file) setArchivoExtra(file);
   };
 
-  // Manejo de autores
+  // Agregar y eliminar autores
   const handleAgregarAutor = (id: number) => {
     const autor = users.find((u) => u.id === id);
     if (autor && !autoresSeleccionados.some((a) => a.id === autor.id)) {
-      setAutoresSeleccionados([...autoresSeleccionados, autor]);
+      setAutoresSeleccionados((prev) => [...prev, autor]);
     }
   };
 
   const handleEliminarAutor = (id: number) => {
-    setAutoresSeleccionados(autoresSeleccionados.filter((a) => a.id !== id));
-    if (autorNotif === String(id)) {
-      setAutorNotif(""); // limpiar autorNotif si se elimina
+    setAutoresSeleccionados((prev) => prev.filter((a) => a.id !== id));
+    if (autorNotif && autorNotif.id === id) {
+      setAutorNotif(null);
     }
   };
 
-  // Efecto para traer sesiones al cambiar conferencia
+  // Efecto: cargar sesiones cuando cambia la conferencia
   useEffect(() => {
     if (selectedConference) {
       setLoadingSessions(true);
       setSelectedSession(null);
-      getSessionsByConference(Number(selectedConference))
+      getSessionsByConference(selectedConference)
         .then((data) => {
-          console.log(data);
           setSessions(data);
         })
         .catch((err) => console.error("Error cargando sesiones:", err))
@@ -95,102 +100,85 @@ export default function AltaArticulo({ users, conferences }: AltaArticuloProps) 
     }
   }, [selectedConference]);
 
-const handleSubmit = async () => {
-  // Limpiar alertas anteriores
-  setShowErrorAlert(false);
-  setValidationErrors([]);
+  // Manejo del envío
+  const handleSubmit = async () => {
+    setShowErrorAlert(false);
+    setValidationErrors([]);
 
-  // Validaciones
-  const errors: string[] = [];
-  
-  if (!titulo.trim()) {
-    errors.push("El título es obligatorio");
-  }
-  
-  if (!selectedConference) {
-    errors.push("Debe seleccionar una conferencia");
-  }
-  
-  if (!selectedSession) {
-    errors.push("Debe seleccionar una sesión");
-  }
-  
-  if (autoresSeleccionados.length === 0) {
-    errors.push("Debe agregar al menos un autor");
-  }
-  
-  if (!autorNotif) {
-    errors.push("Debe seleccionar un autor de notificación");
-  }
-  
-  if (!archivo) {
-    errors.push("Debe seleccionar un archivo principal");
-  }
-  
-  if (tipoArticulo !== "regular" && tipoArticulo !== "poster") {
-    errors.push("Debe seleccionar un tipo de articulo");
-  }
+    const errors: string[] = [];
 
-  if (tipoArticulo === "regular" && !abstract.trim()) {
-    errors.push("El abstract es obligatorio para artículos regulares");
-  }
-  
-  if (tipoArticulo === "poster" && !archivoExtra) {
-    errors.push("El archivo de fuentes es obligatorio para posters");
-  }
+    if (!titulo.trim()) errors.push("El título es obligatorio");
+    if (!selectedConference) errors.push("Debe seleccionar una conferencia");
+    if (!selectedSession) errors.push("Debe seleccionar una sesión");
+    if (autoresSeleccionados.length === 0) errors.push("Debe agregar al menos un autor");
+    if (!autorNotif) errors.push("Debe seleccionar un autor de notificación");
+    if (!archivo) errors.push("Debe seleccionar un archivo principal");
+    if (tipoArticulo !== "regular" && tipoArticulo !== "poster")
+      errors.push("Debe seleccionar un tipo de artículo");
+    if (tipoArticulo === "regular" && !abstract.trim())
+      errors.push("El abstract es obligatorio para artículos regulares");
+    if (tipoArticulo === "poster" && !archivoExtra)
+      errors.push("El archivo de fuentes es obligatorio para posters");
 
-  if (errors.length > 0) {
-    setValidationErrors(errors);
-    return;
-  }
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    // Construimos el objeto Articulo con la estructura correcta
-    const article: Articulo = {
-      title: titulo,
-      main_file: archivo!,
-      source_file: tipoArticulo === "poster" ? archivoExtra : null,
-      status: 'reception',
-      type: tipoArticulo,
-      abstract: tipoArticulo === "regular" ? abstract : "",
-      authors: autoresSeleccionados.map((a) => a.id),
-      notification_author: Number(autorNotif),
-      session_id: Number(selectedSession),
-    };
+      // 🔧 Corrección: selectedSession y autorNotif pueden ser null, los casteamos
+      const article: Articulo = {
+        title: titulo,
+        main_file: archivo!,
+        source_file: tipoArticulo === "poster" ? archivoExtra : null,
+        status: "reception",
+        type: tipoArticulo,
+        abstract: tipoArticulo === "regular" ? abstract : "",
+        authors: autoresSeleccionados,
+        corresponding_author: autorNotif!,
+        session: selectedSession!,
+      };
 
-    console.log("Datos a enviar:", article);
+      console.log("Datos a enviar:", article);
+      const response = await createArticle(article);
+      console.log("Artículo creado:", response);
 
-    const response = await createArticle(article);
-    console.log("Artículo creado:", response);
-
-    toast.success('Artículo subido correctamente !', {
-      duration: 5000,
-    });
-    navigate({ to: '/articulos', replace: true });
-  } catch (error) {
-    console.error("Error al subir el artículo:", error);
-    setShowErrorAlert(true);
-  } finally {
-    setLoading(false);
-  }
-};
+      toast.success("Artículo subido correctamente!", { duration: 5000 });
+      navigate({ to: "/articulo/visualizacion", replace: true });
+    } catch (error) {
+      console.error("Error al subir el artículo:", error);
+      setShowErrorAlert(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
-      <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Artículo</h2>
+      {/* Título */}
+      <h2 className="text-lg font-bold italic text-slate-500 text-center">
+        Alta de Artículo
+      </h2>
       <hr className="bg-slate-100" />
 
-      {/* Combobox de Conferencias */}
+      {/* Conferencia */}
       <Label htmlFor="conferencia">Conferencia</Label>
-      <ConferenceCombobox onValueChange={setSelectedConference} conferences={conferences} />
- 
-      {/* Select de Sesiones */}
+      <ConferenceCombobox
+        onValueChange={(value) => setSelectedConference(Number(value))}
+        conferences={conferences}
+      />
+
+      {/* Sesión */}
       <Label htmlFor="sesion">Sesión</Label>
       <Select
-        value={selectedSession ?? ""}
-        onValueChange={(value) => setSelectedSession(value)}
+        // 🔧 Debe ser el id, no el título
+        value={selectedSession ? String(selectedSession.id) : ""}
+        onValueChange={(value) => {
+          const sesion = sessions.find((s) => String(s.id) === value);
+          setSelectedSession(sesion || null);
+        }}
         disabled={!selectedConference || loadingSessions}
       >
         <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
@@ -215,31 +203,34 @@ const handleSubmit = async () => {
         </SelectContent>
       </Select>
 
-      {/* Campo de título */}
-      <Label htmlFor="autor">Título</Label>
+      {/* Título */}
+      <Label htmlFor="titulo">Título</Label>
       <Input
-        type="text"
-        id="title"
+        id="titulo"
         placeholder="Título del artículo..."
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
-        />
+      />
 
       {/* Archivo principal */}
       <div className="grid w-full items-center gap-3">
-        <Label htmlFor="DetalleRegular">Artículo</Label>
+        <Label>Artículo</Label>
         <input type="file" ref={fileInputRef} onChange={handleChange} className="hidden" />
-        <Button variant="outline" onClick={handleClick} type="button" className={`w-full ${archivo ? "bg-lime-900" : "bg-slate-900"} text-white`}>
+        <Button
+          variant="outline"
+          onClick={handleClick}
+          type="button"
+          className={`w-full ${archivo ? "bg-lime-900" : "bg-slate-900"} text-white`}
+        >
           {archivo ? "Archivo Seleccionado" : "Seleccionar archivo..."}
         </Button>
       </div>
 
-      {/* Combobox de autores */}
-      <Label htmlFor="autor">Autores del Artículo</Label>
+      {/* Autores */}
+      <Label>Autores del Artículo</Label>
       <UserCombobox onValueChange={handleAgregarAutor} users={users} />
 
-      {/* Lista de autores seleccionados (solo renderiza si hay autores) */}
-      {autoresSeleccionados?.length > 0 && (
+      {autoresSeleccionados.length > 0 && (
         <div className="flex flex-col gap-2 w-full">
           {autoresSeleccionados.map((a) => (
             <div
@@ -247,7 +238,7 @@ const handleSubmit = async () => {
               className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full"
             >
               <span className="truncate">
-                {a.full_name}({a.email})
+                {a.full_name} ({a.email})
               </span>
               <button
                 type="button"
@@ -261,11 +252,14 @@ const handleSubmit = async () => {
         </div>
       )}
 
-      {/* Select de autor de notificación */}
-      <Label htmlFor="autorNotif">Autor de Notificación</Label>
+      {/* Autor de notificación */}
+      <Label>Autor de Notificación</Label>
       <Select
-        value={autorNotif}
-        onValueChange={setAutorNotif}
+        value={autorNotif ? String(autorNotif.id) : ""}
+        onValueChange={(value) => {
+          const autor = autoresSeleccionados.find((a) => String(a.id) === value);
+          setAutorNotif(autor || null);
+        }}
         disabled={autoresSeleccionados.length === 0}
       >
         <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
@@ -280,8 +274,8 @@ const handleSubmit = async () => {
         </SelectContent>
       </Select>
 
-      {/* Select tipo de artículo */}
-      <Label htmlFor="tipo-articulo">Tipo de Artículo</Label>
+      {/* Tipo de artículo */}
+      <Label>Tipo de Artículo</Label>
       <Select value={tipoArticulo} onValueChange={setTipoArticulo}>
         <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
           <SelectValue placeholder="Seleccione un tipo..." />
@@ -295,17 +289,21 @@ const handleSubmit = async () => {
       {/* Campos dinámicos */}
       {tipoArticulo === "poster" && (
         <div className="grid w-full items-center gap-3">
-          <Label htmlFor="DetalleRegular">Fuentes</Label>
+          <Label>Fuentes</Label>
           <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
-          <Button variant="outline" onClick={handleExtraFileClick} type="button" className={`w-full ${archivoExtra ? "bg-lime-900" : "bg-slate-900"} text-white`}>
-           {archivoExtra ? "Archivo Seleccionado" : "Seleccionar archivo..."}
+          <Button
+            variant="outline"
+            onClick={handleExtraFileClick}
+            type="button"
+            className={`w-full ${archivoExtra ? "bg-lime-900" : "bg-slate-900"} text-white`}
+          >
+            {archivoExtra ? "Archivo Seleccionado" : "Seleccionar archivo..."}
           </Button>
         </div>
       )}
 
       {tipoArticulo === "regular" && (
         <Textarea
-          id="DetalleRegular"
           placeholder="Abstract de hasta 300 caracteres..."
           value={abstract}
           maxLength={300}
@@ -315,23 +313,25 @@ const handleSubmit = async () => {
 
       <hr className="bg-slate-100" />
 
-      {/* Boton inferior */}
-      <Button variant="outline" onClick={handleSubmit} className="w-full bg-slate-900 text-white" disabled={loading}>
+      {/* Botón de envío */}
+      <Button
+        variant="outline"
+        onClick={handleSubmit}
+        className="w-full bg-slate-900 text-white"
+        disabled={loading}
+      >
         {loading ? "Subiendo..." : "Subir"}
       </Button>
 
-      {/* Error Alert */}
+      {/* Alertas */}
       {showErrorAlert && (
         <Alert variant="destructive">
           <AlertCircleIcon />
           <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            Hubo un error al subir el artículo.
-          </AlertDescription>
+          <AlertDescription>Hubo un error al subir el artículo.</AlertDescription>
         </Alert>
       )}
 
-      {/* Validation Errors Alert */}
       {validationErrors.length > 0 && (
         <Alert variant="destructive">
           <AlertCircleIcon />

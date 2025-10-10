@@ -1,19 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router'
-import AltaArticulo from '@/components/articulo/altaArticulo';
-import { getAllUsers, type User } from '@/services/users';
-import { getAllConferences, type Conference } from '@/services/conferences';
+import { getAllUsers, type User } from '@/services/userServices';
+import { getAllConferences, type Conference } from '@/services/conferenceServices';
 import { useEffect, useState } from 'react';
+import ArticuloForm from '@/components/articulo/ArticuloForm';
 
-export const Route = createFileRoute('/altaArticulo')({
+//URL de la página
+export const Route = createFileRoute('/articulo/alta')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
+  //Listas de Usuarios y Conferencias
   const [userList, setUser] = useState<User[]>([]);
   const [conferenceList, setConference] = useState<Conference[]>([]);
 
-  // recupera usuarios del server ni bien se abre la pestaña
+  //Recupera usuarios del server ni bien se abre la pestaña
   useEffect(() => {
     const fetchUsers = async () => {
       const data = await getAllUsers();
@@ -22,7 +24,7 @@ function RouteComponent() {
     fetchUsers();
   }, []);
 
-  // recupera conferencias del server ni bien se abre la pestaña
+  //Recupera conferencias del server ni bien se abre la pestaña
   useEffect(() => {
     const fetchConferences = async () => {
       const data = await getAllConferences();
@@ -32,9 +34,11 @@ function RouteComponent() {
     fetchConferences();
   }, []);
 
+  //Cuerpo del Componente
   return (
       <div className="flex flex-wrap gap-4 mx-4 justify-center">
-        <AltaArticulo users={userList} conferences={conferenceList}/>
+        {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
+        <ArticuloForm users={userList} conferences={conferenceList}/>
       </div>
     )
 }

@@ -1,8 +1,4 @@
-/* Componente que representa una tarjeta para visualizar un articulo con su estado y opcione para modificarlo.
-Recibe como props el titulo del articulo, la conferencia a la que fue enviado, su estado (Aceptado, Recibido, Rechazado) y la fecha limite para modificarlo.
-Muestra dos botones: uno con el estado (de color segun el estado) y otro para modificar (solo habilitado si el estado es "Recibido").
-El boton de modificar muestra el tiempo restante hasta el deadline si esta habilitado.
-Al hacer click en los botones se abre un dialogo con mas informacion. */
+/* Componente que representa una tarjeta para visualizar un articulo con su estado y opcioned para modificarlo*/
 
 // Importaciones
 import React, { useEffect, useState } from "react";
@@ -54,6 +50,7 @@ const estadoDescripcion: Record<Estado, string> = {
   rejected: "Lamentablemente, su articulo ha sido rechazado para la conferencia.",
 };
 
+// Convierte la deadline de una conferencia a un string con el tiempo restante
 function formatearTiempo(msRestante: number): string {
   const minutosTotales = Math.floor(msRestante / (1000 * 60));
   const horasTotales = Math.floor(msRestante / (1000 * 60 * 60));
@@ -70,11 +67,10 @@ function formatearTiempo(msRestante: number): string {
   }
 }
 
+//Cuerpo del Componente
 const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion, estado, deadline }) => {
 
   const deadlineDate = deadline ? new Date(deadline) : null;
-
-  // Guarda un string con el tiempo restante para mostrar en el boton
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
 
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
@@ -109,7 +105,7 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 mb-2 bg-white flex flex-col gap-4">
       
-      {/* Titulo y Conferencia */}
+      {/* Titulo, Sesion y Conferencia */}
       <div className="flex-1 flex flex-col justify-center">
         <h2 className="text-lg font-bold italic text-slate-500 text-center">{titulo}</h2>
       </div>
