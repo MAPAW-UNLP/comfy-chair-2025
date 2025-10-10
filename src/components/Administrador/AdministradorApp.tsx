@@ -55,34 +55,39 @@ function AdministradorApp() {
     <div className="flex flex-col justify-start items-center gap-5 mt-3">
       <h1 className="text-3xl font-bold">Conferencias</h1>
 
-      <div className="flex justify-between items-center gap-2 px-5 w-full">
+      <div className="flex justify-center items-center gap-2 px-5 w-full">
         <Buscador confActivas={confActivas} confTerminadas={confTerminadas} setConferencias={setConferencias} verActivas={verActivas} />
-        <Button
-          size={'lg'}
-          onClick={irAltaConferencia}
-          className="cursor-pointer"
-        >
-          <Plus />
-          Conferencia
-        </Button>
       </div>
 
-      <Tabs value={verActivas ? "activas" : "terminadas"} onValueChange={v => setVerActivas(v === "activas")} className="w-full flex items-center">
-        <TabsList className='h-10 shadow'>
-          <TabsTrigger
-            value="activas"
-            className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+      <div className="flex justify-between items-center w-full px-5">
+        <div className="flex-1"></div>
+        <Tabs value={verActivas ? "activas" : "terminadas"} onValueChange={v => setVerActivas(v === "activas")} className="flex items-center">
+          <TabsList className='h-10 shadow'>
+            <TabsTrigger
+              value="activas"
+              className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+            >
+              Activas
+            </TabsTrigger>
+            <TabsTrigger
+              value="terminadas"
+              className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+            >
+              Terminadas
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="flex-1 flex justify-end">
+          <Button
+            size={'sm'}
+            onClick={irAltaConferencia}
+            className="cursor-pointer text-xs"
           >
-            Activas
-          </TabsTrigger>
-          <TabsTrigger
-            value="terminadas"
-            className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
-          >
-            Terminadas
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+            <Plus size={16} />
+            Conferencia
+          </Button>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center gap-3  px-5">
         {conferencias.length > 0 ? (
