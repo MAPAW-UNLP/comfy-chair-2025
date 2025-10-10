@@ -81,7 +81,7 @@ function AdministradorApp() {
           <Button
             size={'sm'}
             onClick={irAltaConferencia}
-            className="cursor-pointer text-xs"
+            className="cursor-pointer text-sm"
           >
             <Plus size={16} />
             Conferencia
@@ -89,7 +89,7 @@ function AdministradorApp() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center gap-3  px-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  justify-center items-center gap-3 w-full px-5">
         {conferencias.length > 0 ? (
           conferencias.map((c) => {
             return <ConferenciaBox key={c.id} conferencia={c} />;
