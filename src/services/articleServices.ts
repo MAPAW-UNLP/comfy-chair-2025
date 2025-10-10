@@ -46,7 +46,7 @@ export async function createArticle(newArticle: ArticuloNuevo) {
   formData.append('type', newArticle.type || '');
   formData.append('abstract', newArticle.abstract || '');
   formData.append('corresponding_author', newArticle.corresponding_author?.toString() || '');
-  formData.append('session', newArticle.session?.toString() || '');
+  formData.append('session_id', newArticle.session?.toString() || '');
 
   // Agregar autores
   newArticle.authors.forEach((authorId) => {
