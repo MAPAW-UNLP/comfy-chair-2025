@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Route } from '@/routes/conferencias/editar/$id';
-import { type Conferencia } from '@/services/conferencias';
-import api from '@/services/api';
+import { type Conferencia, updateConferencia } from '@/services/conferencias';
 import { useNavigate } from '@tanstack/react-router';
 import FormConferencia from './FormConferencia';
 
@@ -15,18 +14,17 @@ function EditarConferencia() {
     setError('');
     setSuccess(false);
     try {
-      await api.put(`/conferencias/${conferenciaInicial.id}/`, conf);
+      await updateConferencia(conferenciaInicial.id, conf);
       setSuccess(true);
       setTimeout(() => {
         navigate({ to: `/conferencias/${conferenciaInicial.id}` });
       }, 800);
     } catch (err: any) {
-      if (
-        err.response?.data?.titulo[0] ==
-        'conferencia with this titulo already exists.'
-      )
-        setError('Ya existe una conferencia con ese título');
-      else setError('Error al guardar la conferencia');
+      if (err.message === 'Ya existe una conferencia con ese título') {
+        setError(err.message);
+      } else {
+        setError('Error al guardar la conferencia');
+      }
     }
   };
 

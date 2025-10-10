@@ -50,3 +50,21 @@ export const deleteConferencia = async (id: string): Promise<void> => {
   await api.delete(`/conferencias/${id}/`);
 }
 
+export const updateConferencia = async (
+  id: string,
+  conferencia: Omit<Conferencia, "id">
+): Promise<Conferencia> => {
+  try {
+    console.log("PUT →", api.defaults.baseURL + `/conferencias/${id}/`, conferencia)
+    const response = await api.put(`/conferencias/${id}/`, conferencia)
+    return response.data
+  } catch (err: any) {
+    // Lanzar un error más específico si el título ya existe
+    if (err.response?.data?.titulo?.[0] === 'conferencia with this titulo already exists.') {
+      throw new Error('Ya existe una conferencia con ese título');
+    }
+    // Re-lanzar el error original para otros casos
+    throw err;
+  }
+}
+
