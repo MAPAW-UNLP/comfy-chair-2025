@@ -4,7 +4,7 @@ import type { Session } from '@/services/sessionServices';
 import type { User } from '@/services/userServices';
 
 export interface Articulo {
-  id?: number;
+  id: number;
   title: string;
   main_file: File;
   status: Estado;
@@ -16,13 +16,26 @@ export interface Articulo {
   session: Session | null;
 }
 
+export interface ArticuloNuevo {
+  title: string;
+  main_file: File;
+  status: string | null;
+  type: string | null;
+  abstract: string;
+  source_file?: File | null;
+  authors: number[];
+  corresponding_author: number | null;
+  session: number | null;
+}
+
 export const getAllArticulos = async (): Promise<Articulo[]> => {
   const response = await api.get('/api/article');
   return response.data;
 };
 
 //Alta de Articulos
-export async function createArticle(newArticle: Articulo) {
+export async function createArticle(newArticle: ArticuloNuevo) {
+  // Crear FormData
   const formData = new FormData();
   formData.append('title', newArticle.title);
   formData.append('main_file', newArticle.main_file);
@@ -30,20 +43,17 @@ export async function createArticle(newArticle: Articulo) {
     formData.append('source_file', newArticle.source_file);
   }
   formData.append('status', newArticle.status || 'reception');
-  formData.append('article_type', newArticle.type || '');
+  formData.append('type', newArticle.type || '');
   formData.append('abstract', newArticle.abstract || '');
-  formData.append(
-    'notification_author',
-    newArticle.corresponding_author?.toString() || ''
-  );
-  formData.append('session_id', newArticle.session?.toString() || '');
+  formData.append('corresponding_author', newArticle.corresponding_author?.toString() || '');
+  formData.append('session', newArticle.session?.toString() || '');
 
   // Agregar autores
   newArticle.authors.forEach((authorId) => {
     formData.append('authors', authorId.toString());
   });
 
-  const response = await fetch('http://127.0.0.1:8000/api/articles/', {
+  const response = await fetch('http://127.0.0.1:8000/api/article/', {
     method: 'POST',
     body: formData,
   });
@@ -55,5 +65,4 @@ export async function createArticle(newArticle: Articulo) {
     throw new Error(`Error al crear el artículo: ${JSON.stringify(errorData)}`);
   }
   return response.json();
-
 }
