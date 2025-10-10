@@ -18,7 +18,7 @@ export const Buscador = ({confActivas, confTerminadas, setConferencias, verActiv
       return
     }
     const valor= query.toLowerCase()
-    const resultado= [...confActivas, ...confTerminadas].filter(conf => conf.titulo.toLowerCase().includes(valor))
+    const resultado= [...confActivas, ...confTerminadas].filter(conf => conf.title.toLowerCase().includes(valor))
     setConferencias(resultado)
   }
 

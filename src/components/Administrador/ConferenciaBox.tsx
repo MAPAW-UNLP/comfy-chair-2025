@@ -17,18 +17,18 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
   }
 
   const irEditarConferencia = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Evita que se active el click del contenedor
+    e.stopPropagation(); 
     navigate({to: `/conferencias/editar/${conferencia.id}`})
   }
   
   return (
-    <div onClick={irUnaConferencia} className="flex flex-col bg-card hover:bg-card/60 w-full p-2 mb-2 rounded-sm gap-2 shadow border border-gray-400 cursor-pointer">
+    <div onClick={irUnaConferencia} className="flex flex-col bg-card hover:bg-card/60 max-w-[400px] sm:max-w-[500px] p-2 mb-2 rounded-sm gap-2 shadow border border-gray-400 cursor-pointer">
 
-      <div className="flex justify-between items-start">
-        <div className="flex flex-col gap-0">
-          <b className='text-xs sm:text-sm md:text-md lg:text-lg'>{conferencia.titulo.toUpperCase()}</b>
+      <div className="flex justify-between items-start w-full">
+        <div className="flex flex-col gap-0  w-[80%]">
+          <b className='text-xs sm:text-sm md:text-md lg:text-lg truncate'>{conferencia.title.toUpperCase()}</b>
           <span className="text-sm">
-            {formatearFecha(conferencia.fecha_ini)}-{formatearFecha(conferencia.fecha_fin)}
+            {formatearFecha(conferencia.start_date)}-{formatearFecha(conferencia.end_date)}
           </span>
         </div>
         <button

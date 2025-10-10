@@ -15,11 +15,11 @@ type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
 export type Conferencia = {
   id: string;
-  titulo: string;
-  descripcion: string;
-  fecha_ini: string;
-  fecha_fin: string;
-  vista: VISTA_CHOICES;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  blind_kind: VISTA_CHOICES;
 };
 
 function AdministradorApp() {
@@ -84,7 +84,7 @@ function AdministradorApp() {
         </TabsList>
       </Tabs>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  justify-center items-center gap-3 w-full px-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center gap-3  px-5">
         {conferencias.length > 0 ? (
           conferencias.map((c) => {
             return <ConferenciaBox key={c.id} conferencia={c} />;

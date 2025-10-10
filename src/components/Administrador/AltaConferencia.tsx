@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createConferencia } from '@/services/conferencias';
 import { useNavigate } from '@tanstack/react-router';
-import { Plus } from 'lucide-react';
 import type { Conferencia } from './AdministradorApp';
 import FormConferencia from './FormConferencia';
 
@@ -21,8 +20,7 @@ function AltaConferencia() {
         navigate({ to: '/admin' });
       }, 800);
     } catch (err: any) {
-      if (err.response?.data?.titulo[0] == "conferencia with this titulo already exists.") setError('Ya existe una conferencia con ese título');
-      else setError('Error al guardar la conferencia');
+      setError(err.message)
     }
   };
 

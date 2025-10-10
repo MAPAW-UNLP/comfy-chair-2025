@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Route } from '@/routes/conferencias/editar/$id';
 import { type Conferencia, updateConferencia } from '@/services/conferencias';
 import { useNavigate } from '@tanstack/react-router';
@@ -20,11 +20,7 @@ function EditarConferencia() {
         navigate({ to: `/conferencias/${conferenciaInicial.id}` });
       }, 800);
     } catch (err: any) {
-      if (err.message === 'Ya existe una conferencia con ese título') {
-        setError(err.message);
-      } else {
-        setError('Error al guardar la conferencia');
-      }
+      setError(err.message)
     }
   };
 

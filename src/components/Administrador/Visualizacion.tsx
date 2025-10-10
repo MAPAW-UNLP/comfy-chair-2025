@@ -14,16 +14,19 @@ type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
 type VisualizacionProp = {
   valorVisualizacion?: VISTA_CHOICES;
-  actualizarVista: (v: VISTA_CHOICES) => void
+  actualizarVista: (v: VISTA_CHOICES) => void;
 };
 
-export function Visualizacion({ valorVisualizacion, actualizarVista }: VisualizacionProp) {
-  const [valorSeleccionado, setValorSeleccionado] = useState<VISTA_CHOICES>('single blind');
+export function Visualizacion({
+  valorVisualizacion,
+  actualizarVista,
+}: VisualizacionProp) {
+  const [valorSeleccionado, setValorSeleccionado] =
+    useState<VISTA_CHOICES>('single blind');
 
-    useEffect(() =>{
-       actualizarVista(valorSeleccionado)
-       console.log(valorSeleccionado)
-    },[valorSeleccionado])
+  useEffect(() => {
+    actualizarVista(valorSeleccionado);
+  }, [valorSeleccionado]);
 
   useEffect(() => {
     if (valorVisualizacion) setValorSeleccionado(valorVisualizacion);
@@ -46,36 +49,39 @@ export function Visualizacion({ valorVisualizacion, actualizarVista }: Visualiza
             value={valorSeleccionado}
             onValueChange={setValorSeleccionado}
           >
-            <FieldLabel htmlFor="single blind" className='cursor-pointer'>
+            <FieldLabel htmlFor="single blind" className="cursor-pointer">
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Single blind</FieldTitle>
                   <FieldDescription>
-                    El revisor podrá ver el autor de los artículos de esta conferencia, pero el autor no verá a los revisores.
+                    El revisor podrá ver el autor de los artículos de esta
+                    conferencia, pero el autor no verá a los revisores.
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value="single blind" id="single blind" />
               </Field>
             </FieldLabel>
 
-            <FieldLabel htmlFor="double blind" className='cursor-pointer'>
+            <FieldLabel htmlFor="double blind" className="cursor-pointer">
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Double blind</FieldTitle>
                   <FieldDescription>
-                    Ni el revisor ni el autor verán quienes escribieron/revisaron los artículos.
+                    Ni el revisor ni el autor verán quienes
+                    escribieron/revisaron los artículos.
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value="double blind" id="double blind" />
               </Field>
             </FieldLabel>
 
-            <FieldLabel htmlFor="completo" className='cursor-pointer'>
+            <FieldLabel htmlFor="completo" className="cursor-pointer">
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>Completo</FieldTitle>
                   <FieldDescription>
-                    Tanto el revisor como el autor verán quienes escribieron/revisaron los artículos.
+                    Tanto el revisor como el autor verán quienes
+                    escribieron/revisaron los artículos.
                   </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value="completo" id="completo" />

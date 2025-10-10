@@ -25,17 +25,16 @@ function FormConferencia({
   setError,
 }: FormConferenciaProps) {
   const [conferencia, setConferencia] = useState<Omit<Conferencia, 'id'>>({
-    titulo: '',
-    descripcion: '',
-    fecha_ini: '',
-    fecha_fin: '',
-    vista: 'single blind',
+    title: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    blind_kind: 'single blind',
   });
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!esFechaValida(conferencia.fecha_ini, conferencia.fecha_fin)) {
-      console.log('aca');
+    if (!esFechaValida(conferencia.start_date, conferencia.end_date)) {
       setError(
         'La fecha de fin debe ser posterior o igual a la fecha de inicio'
       );
@@ -55,17 +54,17 @@ function FormConferencia({
   };
 
   const actualizarFechaInicio = (d: string) =>
-    setConferencia((prev) => ({ ...prev, fecha_ini: d }));
+    setConferencia((prev) => ({ ...prev, start_date: d }));
   const actualizarFechaFin = (d: string) =>
-    setConferencia((prev) => ({ ...prev, fecha_fin: d }));
+    setConferencia((prev) => ({ ...prev, end_date: d }));
 
-  const actualizarVista = (v: Conferencia['vista']) => {
-    setConferencia((prev) => ({ ...prev, vista: v }));
+  const actualizarVista = (v: Conferencia['blind_kind']) => {
+    setConferencia((prev) => ({ ...prev, blind_kind: v }));
   }
 
   const validarFin = (d: Date) => {
-    if (!conferencia.fecha_ini) return false;
-    const [year, month, day] = conferencia.fecha_ini.split('-').map(Number);
+    if (!conferencia.start_date) return false;
+    const [year, month, day] = conferencia.end_date.split('-').map(Number);
     const fechaInicio = new Date(year, month - 1, day);
     return d >= fechaInicio;
   };
@@ -85,8 +84,8 @@ function FormConferencia({
         <input
           className="border rounded px-2 py-1"
           placeholder="Ingrese nombre..."
-          value={conferencia.titulo}
-          name="titulo"
+          value={conferencia.title}
+          name="title"
           onChange={handleChange}
           required
         />
@@ -96,8 +95,8 @@ function FormConferencia({
         <textarea
           className="border rounded px-2 py-1"
           placeholder="Ingrese una descripción..."
-          value={conferencia.descripcion}
-          name="descripcion"
+          value={conferencia.description}
+          name="description"
           onChange={handleChange}
           required
         />
@@ -108,19 +107,19 @@ function FormConferencia({
       </div> */}
 
       {valorConferencia ? (
-        <Visualizacion valorVisualizacion={valorConferencia.vista} actualizarVista={actualizarVista}/>
+        <Visualizacion valorVisualizacion={valorConferencia.blind_kind} actualizarVista={actualizarVista}/>
       ) : (
         <Visualizacion actualizarVista={actualizarVista} />
       )}
 
       <Calendario
         label="Fecha de inicio"
-        date={conferencia.fecha_ini}
+        date={conferencia.start_date}
         setDate={actualizarFechaInicio}
       />
       <Calendario
         label="Fecha de cierre"
-        date={conferencia.fecha_fin}
+        date={conferencia.end_date}
         setDate={actualizarFechaFin}
         validarFin={validarFin}
       />
