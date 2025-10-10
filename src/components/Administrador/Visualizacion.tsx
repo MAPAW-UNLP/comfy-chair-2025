@@ -33,7 +33,7 @@ export function Visualizacion({
   }, [valorVisualizacion]);
 
   return (
-    <div className="w-full max-w-md">
+    <div className="lg:w-1/2">
       <FieldGroup>
         <FieldSet>
           <FieldLabel

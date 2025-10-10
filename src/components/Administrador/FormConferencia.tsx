@@ -60,7 +60,7 @@ function FormConferencia({
 
   const actualizarVista = (v: Conferencia['blind_kind']) => {
     setConferencia((prev) => ({ ...prev, blind_kind: v }));
-  }
+  };
 
   const validarFin = (d: Date) => {
     if (!conferencia.start_date) return false;
@@ -76,57 +76,63 @@ function FormConferencia({
   return (
     <form
       onSubmit={submit}
-      className="mb-3 bg-card rounded-xl shadow border border-gray-200 p-6 flex flex-col gap-4 w-8/10 min-w-[250px]"
-      style={{ maxWidth: 370 }}
+      className="mb-3 bg-card rounded-xl shadow border border-gray-200 p-6 flex flex-col gap-5 w-9/10 lg:w-3/4 lg:max-w-[800px]"
     >
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Nombre de la conferencia</label>
-        <input
-          className="border rounded px-2 py-1"
-          placeholder="Ingrese nombre..."
-          value={conferencia.title}
-          name="title"
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Descripción</label>
-        <textarea
-          className="border rounded px-2 py-1"
-          placeholder="Ingrese una descripción..."
-          value={conferencia.description}
-          name="description"
-          onChange={handleChange}
-          required
-        />
-      </div>
-      {/* <div className="flex flex-col gap-1">
-        <label className="font-semibold">Usuario del Chair general</label>
-        <p>Jose Hernandez</p>
-      </div> */}
+      <div className="flex flex-col lg:flex-row justify-between gap-10 w-full">
+        <div className='flex flex-col gap-5 lg:w-4/10'>
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold">Nombre de la conferencia</label>
+            <input
+              className="border rounded px-2 py-1"
+              placeholder="Ingrese nombre..."
+              value={conferencia.title}
+              name="title"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold">Descripción</label>
+            <textarea
+              className="border rounded px-2 py-1"
+              placeholder="Ingrese una descripción..."
+              value={conferencia.description}
+              name="description"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          {/* <div className="flex flex-col gap-1">
+            <label className="font-semibold">Usuario del Chair general</label>
+            <p>Jose Hernandez</p>
+          </div> */}
 
-      {valorConferencia ? (
-        <Visualizacion valorVisualizacion={valorConferencia.blind_kind} actualizarVista={actualizarVista}/>
-      ) : (
-        <Visualizacion actualizarVista={actualizarVista} />
-      )}
+          <Calendario
+            label="Fecha de inicio"
+            date={conferencia.start_date}
+            setDate={actualizarFechaInicio}
+          />
+          <Calendario
+            label="Fecha de cierre"
+            date={conferencia.end_date}
+            setDate={actualizarFechaFin}
+            validarFin={validarFin}
+          />
+        </div>
 
-      <Calendario
-        label="Fecha de inicio"
-        date={conferencia.start_date}
-        setDate={actualizarFechaInicio}
-      />
-      <Calendario
-        label="Fecha de cierre"
-        date={conferencia.end_date}
-        setDate={actualizarFechaFin}
-        validarFin={validarFin}
-      />
+        {valorConferencia ? (
+          <Visualizacion
+            valorVisualizacion={valorConferencia.blind_kind}
+            actualizarVista={actualizarVista}
+          />
+        ) : (
+          <Visualizacion actualizarVista={actualizarVista} />
+        )}
+      </div>
 
       {children}
 
-      <div className="flex justify-between gap-1">
+      <div className="flex justify-end gap-2">
         <Button
           className="cursor-pointer bg-gray-500 hover:bg-gray-400"
           size={'lg'}
