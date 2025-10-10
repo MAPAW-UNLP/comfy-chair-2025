@@ -5,13 +5,15 @@ type ItemProps = {
   nombre: string;
   Icon: React.ElementType;
   direccion: string;
+  setSidebarOpen:(value: React.SetStateAction<boolean>) => void;
 };
 
-function ItemSidebar({ Icon, nombre, direccion }: ItemProps) {
+function ItemSidebar({ Icon, nombre, direccion, setSidebarOpen }: ItemProps) {
   const navigate= useNavigate();
 
   const goTo = () => {
     navigate({ to: direccion });
+    setSidebarOpen(false)
   }
 
   return (
