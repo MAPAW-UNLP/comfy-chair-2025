@@ -9,16 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DummyRouteImport } from './routes/dummy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArticuloVisualizacionRouteImport } from './routes/articulo/visualizacion'
 import { Route as ArticuloAltaRouteImport } from './routes/articulo/alta'
 
-const DummyRoute = DummyRouteImport.update({
-  id: '/dummy',
-  path: '/dummy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,47 +31,36 @@ const ArticuloAltaRoute = ArticuloAltaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dummy': typeof DummyRoute
   '/articulo/alta': typeof ArticuloAltaRoute
   '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dummy': typeof DummyRoute
   '/articulo/alta': typeof ArticuloAltaRoute
   '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dummy': typeof DummyRoute
   '/articulo/alta': typeof ArticuloAltaRoute
   '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy' | '/articulo/alta' | '/articulo/visualizacion'
+  fullPaths: '/' | '/articulo/alta' | '/articulo/visualizacion'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy' | '/articulo/alta' | '/articulo/visualizacion'
-  id: '__root__' | '/' | '/dummy' | '/articulo/alta' | '/articulo/visualizacion'
+  to: '/' | '/articulo/alta' | '/articulo/visualizacion'
+  id: '__root__' | '/' | '/articulo/alta' | '/articulo/visualizacion'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DummyRoute: typeof DummyRoute
   ArticuloAltaRoute: typeof ArticuloAltaRoute
   ArticuloVisualizacionRoute: typeof ArticuloVisualizacionRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dummy': {
-      id: '/dummy'
-      path: '/dummy'
-      fullPath: '/dummy'
-      preLoaderRoute: typeof DummyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -104,7 +87,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DummyRoute: DummyRoute,
   ArticuloAltaRoute: ArticuloAltaRoute,
   ArticuloVisualizacionRoute: ArticuloVisualizacionRoute,
 }
