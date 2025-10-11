@@ -65,7 +65,7 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
                     if (onValueChange) onValueChange(user.id);
                   }}
                 >
-                  {user.full_name}({user.email})
+                  {user.full_name} ({user.email})
                   <Check
                     className={cn(
                       "ml-auto",

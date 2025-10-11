@@ -10,6 +10,6 @@ export interface User {
 }
 
 export const getAllUsers = async (): Promise<User[]> => {
-  const response = await api.get('/api/user');
+  const response = await api.get('/user/getUsuarios');
   return response.data;
 }
