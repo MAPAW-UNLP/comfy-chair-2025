@@ -31,15 +31,15 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
         <ul className="flex flex-col"> {/*TODO: dependiendo el Rol mostrar un item u otro */}
           <hr />
-          <ItemSidebar nombre="Bidding" Icon={ThumbsUp} direccion='/bidding' />
+          <ItemSidebar nombre="Bidding" Icon={ThumbsUp} direccion='/bidding' setSidebarOpen={setSidebarOpen} />
           <hr />
-          <ItemSidebar nombre="Artículos" Icon={FileText} direccion='/articulos'/>
+          <ItemSidebar nombre="Artículos" Icon={FileText} direccion='/articulos' setSidebarOpen={setSidebarOpen}/>
           <hr />
-          <ItemSidebar nombre="Revisiones" Icon={Edit3} direccion='/revisiones' />
+          <ItemSidebar nombre="Revisiones" Icon={Edit3} direccion='/revisiones' setSidebarOpen={setSidebarOpen}/>
           <hr />
-          <ItemSidebar nombre="Historial" Icon={RotateCcw} direccion='/historial' />
+          <ItemSidebar nombre="Historial" Icon={RotateCcw} direccion='/historial' setSidebarOpen={setSidebarOpen}/>
           <hr />
-          <ItemSidebar nombre="Mi perfil" Icon={User} direccion='/miperfil' />
+          <ItemSidebar nombre="Mi perfil" Icon={User} direccion='/miperfil' setSidebarOpen={setSidebarOpen}/>
           <hr />
         </ul>
       </div>
