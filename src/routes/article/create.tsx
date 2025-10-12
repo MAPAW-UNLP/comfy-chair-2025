@@ -2,10 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { getAllUsers, type User } from '@/services/userServices';
 import { getAllConferences, type Conference } from '@/services/conferenceServices';
 import { useEffect, useState } from 'react';
-import ArticuloForm from '@/components/articulo/ArticuloForm';
+import ArticleForm from '@/components/article/ArticleForm';
 
 //URL de la página
-export const Route = createFileRoute('/articulo/alta')({
+export const Route = createFileRoute('/article/create')({
   component: RouteComponent,
 })
 
@@ -38,7 +38,7 @@ function RouteComponent() {
   return (
       <div className="flex flex-wrap gap-4 mx-4 justify-center">
         {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
-        <ArticuloForm users={userList} conferences={conferenceList}/>
+        <ArticleForm users={userList} conferences={conferenceList}/>
       </div>
     )
 }

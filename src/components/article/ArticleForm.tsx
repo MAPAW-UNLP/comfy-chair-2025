@@ -14,7 +14,7 @@ import type { User } from "@/services/userServices";
 import type { Conference } from "@/services/conferenceServices"; 
 import { getSessionsByConference } from "@/services/sessionServices";
 import type { Session } from "@/services/sessionServices";
-import type { ArticuloNuevo } from "@/services/articleServices";
+import type { ArticleNew } from "@/services/articleServices";
 import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 import { UserCombobox } from "@/components/combobox/UserCombobox";
@@ -151,8 +151,8 @@ const handleSubmit = async () => {
   try {
     setLoading(true);
 
-    // Construimos el objeto Articulo con la estructura correcta
-    const article: ArticuloNuevo = {
+    // Construimos el objeto Article con la estructura correcta
+    const article: ArticleNew = {
       title: titulo,
       main_file: archivo!,
       source_file: tipoArticulo === "poster" ? archivoExtra : null,

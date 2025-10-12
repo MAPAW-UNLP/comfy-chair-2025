@@ -1,27 +1,27 @@
-import {  getAllArticulos } from '@/services/articleServices';
-import type {  Articulo } from '@/services/articleServices';
+import {  getAllArticles } from '@/services/articleServices';
+import type {  Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
-import ArticuloCard from '@/components/articulo/ArticuloCard';
+import ArticleCard from '@/components/article/ArticleCard';
 import { createFileRoute } from '@tanstack/react-router'
 
 //URL de la página
-export const Route = createFileRoute('/articulo/visualizacion')({
+export const Route = createFileRoute('/article/view')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
   //Lista de Articulos
-  const [articulo, setArticulos] = useState<Articulo[]>([]);
+  const [articulo, setArticulos] = useState<Article[]>([]);
 
   //Recupera articulos del server ni bien se abre la app
   useEffect(() => {
-    const fetchArticulos = async () => {
-      const data = await getAllArticulos();
+    const fetchArticles = async () => {
+      const data = await getAllArticles();
       const ordenados = [...data].sort((a, b) => b.id - a.id);
       setArticulos(ordenados);
     };
-    fetchArticulos();
+    fetchArticles();
   }, []);
     
   //Cuerpo del Componente
@@ -37,7 +37,7 @@ function RouteComponent() {
       ) : (
         /*Si hay articulos, mapeo cada uno en un componente ArticuloCard*/
         (articulo.map((article) => (
-          <ArticuloCard
+          <ArticleCard
             key={article.id}
             titulo={article.title}
             sesion={article.session?.title ?? 'Sin sesión'}

@@ -14,8 +14,8 @@ const RootLayout = () => {
   const links = [
     { to: '/', label: 'Home' },
     { to: '/admin', label: 'Admin' },
-    { to: '/articulo/visualizacion', label: 'Mis Articulos' },
-    { to: '/articulo/alta', label: 'Subir Articulo' },
+    { to: '/article/view', label: 'Mis Articulos' },
+    { to: '/article/create', label: 'Subir Articulo' },
     { to: '/conferencias/alta-conferencia', label: 'Conferencias' },
   ];
 

@@ -1,9 +1,9 @@
 import api from './api';
-import type { Estado } from '@/components/articulo/ArticuloCard';
+import type { Estado } from '@/components/article/ArticleCard';
 import type { Session } from '@/services/sessionServices';
 import type { User } from '@/services/userServices';
 
-export interface Articulo {
+export interface Article {
   id: number;
   title: string;
   main_file: File;
@@ -16,7 +16,7 @@ export interface Articulo {
   session: Session | null;
 }
 
-export interface ArticuloNuevo {
+export interface ArticleNew {
   title: string;
   main_file: File;
   status: string | null;
@@ -28,13 +28,13 @@ export interface ArticuloNuevo {
   session: number | null;
 }
 
-export const getAllArticulos = async (): Promise<Articulo[]> => {
+export const getAllArticles = async (): Promise<Article[]> => {
   const response = await api.get('/api/article');
   return response.data;
 };
 
 //Alta de Articulos
-export async function createArticle(newArticle: ArticuloNuevo) {
+export async function createArticle(newArticle: ArticleNew) {
   // Crear FormData
   const formData = new FormData();
   formData.append('title', newArticle.title);

@@ -13,8 +13,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConferenciasAltaConferenciaRouteImport } from './routes/conferencias/alta-conferencia'
 import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
-import { Route as ArticuloVisualizacionRouteImport } from './routes/articulo/visualizacion'
-import { Route as ArticuloAltaRouteImport } from './routes/articulo/alta'
+import { Route as ArticleViewRouteImport } from './routes/article/view'
+import { Route as ArticleCreateRouteImport } from './routes/article/create'
 import { Route as ConferenciasEditarIdRouteImport } from './routes/conferencias/editar/$id'
 
 const AdminRoute = AdminRouteImport.update({
@@ -38,14 +38,14 @@ const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
   path: '/conferencias/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticuloVisualizacionRoute = ArticuloVisualizacionRouteImport.update({
-  id: '/articulo/visualizacion',
-  path: '/articulo/visualizacion',
+const ArticleViewRoute = ArticleViewRouteImport.update({
+  id: '/article/view',
+  path: '/article/view',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticuloAltaRoute = ArticuloAltaRouteImport.update({
-  id: '/articulo/alta',
-  path: '/articulo/alta',
+const ArticleCreateRoute = ArticleCreateRouteImport.update({
+  id: '/article/create',
+  path: '/article/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConferenciasEditarIdRoute = ConferenciasEditarIdRouteImport.update({
@@ -57,8 +57,8 @@ const ConferenciasEditarIdRoute = ConferenciasEditarIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/articulo/alta': typeof ArticuloAltaRoute
-  '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
   '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
@@ -66,8 +66,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/articulo/alta': typeof ArticuloAltaRoute
-  '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
   '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
@@ -76,8 +76,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/articulo/alta': typeof ArticuloAltaRoute
-  '/articulo/visualizacion': typeof ArticuloVisualizacionRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
   '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
   '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
@@ -87,8 +87,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/articulo/alta'
-    | '/articulo/visualizacion'
+    | '/article/create'
+    | '/article/view'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/conferencias/editar/$id'
@@ -96,8 +96,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
-    | '/articulo/alta'
-    | '/articulo/visualizacion'
+    | '/article/create'
+    | '/article/view'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/conferencias/editar/$id'
@@ -105,8 +105,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/articulo/alta'
-    | '/articulo/visualizacion'
+    | '/article/create'
+    | '/article/view'
     | '/conferencias/$id'
     | '/conferencias/alta-conferencia'
     | '/conferencias/editar/$id'
@@ -115,8 +115,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  ArticuloAltaRoute: typeof ArticuloAltaRoute
-  ArticuloVisualizacionRoute: typeof ArticuloVisualizacionRoute
+  ArticleCreateRoute: typeof ArticleCreateRoute
+  ArticleViewRoute: typeof ArticleViewRoute
   ConferenciasIdRoute: typeof ConferenciasIdRoute
   ConferenciasAltaConferenciaRoute: typeof ConferenciasAltaConferenciaRoute
   ConferenciasEditarIdRoute: typeof ConferenciasEditarIdRoute
@@ -152,18 +152,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenciasIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articulo/visualizacion': {
-      id: '/articulo/visualizacion'
-      path: '/articulo/visualizacion'
-      fullPath: '/articulo/visualizacion'
-      preLoaderRoute: typeof ArticuloVisualizacionRouteImport
+    '/article/view': {
+      id: '/article/view'
+      path: '/article/view'
+      fullPath: '/article/view'
+      preLoaderRoute: typeof ArticleViewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/articulo/alta': {
-      id: '/articulo/alta'
-      path: '/articulo/alta'
-      fullPath: '/articulo/alta'
-      preLoaderRoute: typeof ArticuloAltaRouteImport
+    '/article/create': {
+      id: '/article/create'
+      path: '/article/create'
+      fullPath: '/article/create'
+      preLoaderRoute: typeof ArticleCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conferencias/editar/$id': {
@@ -179,8 +179,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  ArticuloAltaRoute: ArticuloAltaRoute,
-  ArticuloVisualizacionRoute: ArticuloVisualizacionRoute,
+  ArticleCreateRoute: ArticleCreateRoute,
+  ArticleViewRoute: ArticleViewRoute,
   ConferenciasIdRoute: ConferenciasIdRoute,
   ConferenciasAltaConferenciaRoute: ConferenciasAltaConferenciaRoute,
   ConferenciasEditarIdRoute: ConferenciasEditarIdRoute,
