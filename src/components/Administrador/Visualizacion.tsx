@@ -47,7 +47,7 @@ export function Visualizacion({
           </FieldDescription>
           <RadioGroup
             value={valorSeleccionado}
-            onValueChange={setValorSeleccionado}
+            onValueChange={(v) => setValorSeleccionado(v as VISTA_CHOICES)}
           >
             <FieldLabel htmlFor="single blind" className="cursor-pointer">
               <Field orientation="horizontal">

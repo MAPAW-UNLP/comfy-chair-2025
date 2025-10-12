@@ -56,7 +56,7 @@ function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
             mode="single"
             selected={realDate}
             captionLayout="dropdown"
-            onSelect={(d) => seleccionarFecha(d)}
+            onSelect={(d) => seleccionarFecha(d!)}
             disabled={(realDate) => realDate < today}
           />
         </PopoverContent>
