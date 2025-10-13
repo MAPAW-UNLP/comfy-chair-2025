@@ -12,7 +12,7 @@ type CalendarioProps = {
   validarFin?: (d: Date) => boolean;
 };
 
-function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
+function CustomCalendar({ label, date, setDate, validarFin }: CalendarioProps) {
   const [open, setOpen] = useState(false);
   const [realDate, setRealDate] = useState(new Date());
   const today = new Date();
@@ -65,4 +65,4 @@ function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
   );
 }
 
-export default Calendario;
+export default CustomCalendar;

@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { createConferencia } from '@/services/conferencias';
+import { createConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
-import type { Conferencia } from './AdministradorApp';
-import FormConferencia from './FormConferencia';
+import type { Conferencia } from './ConferenceApp';
+import FormConferencia from './ConferenceForm';
 
-function AltaConferencia() {
+function ConferenceCreate() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -14,17 +14,17 @@ function AltaConferencia() {
     setError('');
     setSuccess(false);
     try {
-      await createConferencia(conf);
+      await createConference(conf);
       setSuccess(true);
       setTimeout(() => {
-        navigate({ to: '/admin' });
+        navigate({ to: '/conferencias/view' });
       }, 800);
     } catch (err: any) {
       setError(err.message)
     }
   };
 
-  const agregarSesion = () => {};
+  // const agregarSesion = () => {};
 
   return (
     <div className="w-full flex flex-col items-center gap-4 mt-3">
@@ -49,4 +49,4 @@ function AltaConferencia() {
   );
 }
 
-export default AltaConferencia;
+export default ConferenceCreate;

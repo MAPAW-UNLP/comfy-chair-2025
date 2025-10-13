@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Route } from '@/routes/conferencias/$id';
-import { Edit, Plus, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { deleteConferencia } from '@/services/conferencias';
+import { deleteConference } from '@/services/conferenceServices';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
   return `${day}/${month}/${year}`;
 }
 
-function UnaConferencia() {
+function AConference() {
   const conferencia = Route.useLoaderData();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -20,10 +20,10 @@ function UnaConferencia() {
     navigate({ to: `/conferencias/editar/${conferencia.id}` });
   };
 
-  const agregarSesion = () => {};
+  // const agregarSesion = () => {};
 
   const goToHome = () => {
-    navigate({ to: '/admin' });
+    navigate({ to: '/conferencias/view' });
   };
 
   const handleEliminarConferencia = () => {
@@ -33,8 +33,8 @@ function UnaConferencia() {
   const confirmarEliminar = async () => {
     setDeleting(true);
     try {
-      await deleteConferencia(conferencia.id);
-      navigate({ to: '/admin' }); // Redirigir después de eliminar
+      await deleteConference(conferencia.id);
+      navigate({ to: '/conferencias/view' }); // Redirigir después de eliminar
     } catch (error) {
       console.error('Error al eliminar conferencia:', error);
       alert('Error al eliminar la conferencia');
@@ -139,4 +139,4 @@ function UnaConferencia() {
   );
 }
 
-export default UnaConferencia;
+export default AConference;

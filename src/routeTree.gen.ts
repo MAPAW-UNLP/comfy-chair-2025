@@ -9,30 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ConferenciasAltaConferenciaRouteImport } from './routes/conferencias/alta-conferencia'
+import { Route as ConferenciasViewRouteImport } from './routes/conferencias/view'
+import { Route as ConferenciasCreateRouteImport } from './routes/conferencias/create'
 import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
 import { Route as ArticleViewRouteImport } from './routes/article/view'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
-import { Route as ConferenciasEditarIdRouteImport } from './routes/conferencias/editar/$id'
+import { Route as ConferenciasEditIdRouteImport } from './routes/conferencias/edit/$id'
 
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConferenciasAltaConferenciaRoute =
-  ConferenciasAltaConferenciaRouteImport.update({
-    id: '/conferencias/alta-conferencia',
-    path: '/conferencias/alta-conferencia',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const ConferenciasViewRoute = ConferenciasViewRouteImport.update({
+  id: '/conferencias/view',
+  path: '/conferencias/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenciasCreateRoute = ConferenciasCreateRouteImport.update({
+  id: '/conferencias/create',
+  path: '/conferencias/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
   id: '/conferencias/$id',
   path: '/conferencias/$id',
@@ -48,89 +47,82 @@ const ArticleCreateRoute = ArticleCreateRouteImport.update({
   path: '/article/create',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConferenciasEditarIdRoute = ConferenciasEditarIdRouteImport.update({
-  id: '/conferencias/editar/$id',
-  path: '/conferencias/editar/$id',
+const ConferenciasEditIdRoute = ConferenciasEditIdRouteImport.update({
+  id: '/conferencias/edit/$id',
+  path: '/conferencias/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
-  '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
-  '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
+  '/conferencias/create': typeof ConferenciasCreateRoute
+  '/conferencias/view': typeof ConferenciasViewRoute
+  '/conferencias/edit/$id': typeof ConferenciasEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
-  '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
-  '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
+  '/conferencias/create': typeof ConferenciasCreateRoute
+  '/conferencias/view': typeof ConferenciasViewRoute
+  '/conferencias/edit/$id': typeof ConferenciasEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
   '/conferencias/$id': typeof ConferenciasIdRoute
-  '/conferencias/alta-conferencia': typeof ConferenciasAltaConferenciaRoute
-  '/conferencias/editar/$id': typeof ConferenciasEditarIdRoute
+  '/conferencias/create': typeof ConferenciasCreateRoute
+  '/conferencias/view': typeof ConferenciasViewRoute
+  '/conferencias/edit/$id': typeof ConferenciasEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/article/create'
     | '/article/view'
     | '/conferencias/$id'
-    | '/conferencias/alta-conferencia'
-    | '/conferencias/editar/$id'
+    | '/conferencias/create'
+    | '/conferencias/view'
+    | '/conferencias/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/article/create'
     | '/article/view'
     | '/conferencias/$id'
-    | '/conferencias/alta-conferencia'
-    | '/conferencias/editar/$id'
+    | '/conferencias/create'
+    | '/conferencias/view'
+    | '/conferencias/edit/$id'
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/article/create'
     | '/article/view'
     | '/conferencias/$id'
-    | '/conferencias/alta-conferencia'
-    | '/conferencias/editar/$id'
+    | '/conferencias/create'
+    | '/conferencias/view'
+    | '/conferencias/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
   ArticleCreateRoute: typeof ArticleCreateRoute
   ArticleViewRoute: typeof ArticleViewRoute
   ConferenciasIdRoute: typeof ConferenciasIdRoute
-  ConferenciasAltaConferenciaRoute: typeof ConferenciasAltaConferenciaRoute
-  ConferenciasEditarIdRoute: typeof ConferenciasEditarIdRoute
+  ConferenciasCreateRoute: typeof ConferenciasCreateRoute
+  ConferenciasViewRoute: typeof ConferenciasViewRoute
+  ConferenciasEditIdRoute: typeof ConferenciasEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -138,11 +130,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conferencias/alta-conferencia': {
-      id: '/conferencias/alta-conferencia'
-      path: '/conferencias/alta-conferencia'
-      fullPath: '/conferencias/alta-conferencia'
-      preLoaderRoute: typeof ConferenciasAltaConferenciaRouteImport
+    '/conferencias/view': {
+      id: '/conferencias/view'
+      path: '/conferencias/view'
+      fullPath: '/conferencias/view'
+      preLoaderRoute: typeof ConferenciasViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conferencias/create': {
+      id: '/conferencias/create'
+      path: '/conferencias/create'
+      fullPath: '/conferencias/create'
+      preLoaderRoute: typeof ConferenciasCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conferencias/$id': {
@@ -166,11 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conferencias/editar/$id': {
-      id: '/conferencias/editar/$id'
-      path: '/conferencias/editar/$id'
-      fullPath: '/conferencias/editar/$id'
-      preLoaderRoute: typeof ConferenciasEditarIdRouteImport
+    '/conferencias/edit/$id': {
+      id: '/conferencias/edit/$id'
+      path: '/conferencias/edit/$id'
+      fullPath: '/conferencias/edit/$id'
+      preLoaderRoute: typeof ConferenciasEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -178,12 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
   ArticleCreateRoute: ArticleCreateRoute,
   ArticleViewRoute: ArticleViewRoute,
   ConferenciasIdRoute: ConferenciasIdRoute,
-  ConferenciasAltaConferenciaRoute: ConferenciasAltaConferenciaRoute,
-  ConferenciasEditarIdRoute: ConferenciasEditarIdRoute,
+  ConferenciasCreateRoute: ConferenciasCreateRoute,
+  ConferenciasViewRoute: ConferenciasViewRoute,
+  ConferenciasEditIdRoute: ConferenciasEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

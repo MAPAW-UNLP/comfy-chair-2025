@@ -17,7 +17,7 @@ type VisualizacionProp = {
   actualizarVista: (v: VISTA_CHOICES) => void;
 };
 
-export function Visualizacion({
+export function ConferenceView({
   valorVisualizacion,
   actualizarVista,
 }: VisualizacionProp) {

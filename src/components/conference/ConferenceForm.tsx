@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Calendario from './Calendario';
-import type { Conferencia } from './AdministradorApp';
+import Calendario from './CustomCalendar';
+import type { Conferencia } from './ConferenceApp';
 import { Button } from '../ui/button';
-import { Visualizacion } from './Visualizacion';
+import { ConferenceView } from './ConferenceView';
 
 function esFechaValida(fecha1: string, fecha2: string) {
   const f1 = new Date(fecha1);
@@ -18,7 +18,7 @@ type FormConferenciaProps = {
   setError: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function FormConferencia({
+function ConferenceForm({
   handleSubmit,
   children,
   valorConferencia,
@@ -121,12 +121,12 @@ function FormConferencia({
         </div>
 
         {valorConferencia ? (
-          <Visualizacion
+          <ConferenceView
             valorVisualizacion={valorConferencia.blind_kind}
             actualizarVista={actualizarVista}
           />
         ) : (
-          <Visualizacion actualizarVista={actualizarVista} />
+          <ConferenceView actualizarVista={actualizarVista} />
         )}
       </div>
 
@@ -155,4 +155,4 @@ function FormConferencia({
   );
 }
 
-export default FormConferencia;
+export default ConferenceForm;

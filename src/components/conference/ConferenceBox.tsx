@@ -1,7 +1,7 @@
 import React from 'react';
-import type { Conferencia } from './AdministradorApp';
+import type { Conferencia } from './ConferenceApp';
 import { useNavigate} from '@tanstack/react-router';
-import { formatearFecha } from './UnaConferencia';
+import { formatearFecha } from './AConference';
 import { Edit } from 'lucide-react';
 
 type ConferenciaBoxProps = {
@@ -9,7 +9,7 @@ type ConferenciaBoxProps = {
 };
 
 
-function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
+function ConferenceBox({ conferencia }: ConferenciaBoxProps) {
     const navigate= useNavigate()
 
   const irUnaConferencia= () =>{ 
@@ -48,4 +48,4 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
   );
 }
 
-export default ConferenciaBox;
+export default ConferenceBox;

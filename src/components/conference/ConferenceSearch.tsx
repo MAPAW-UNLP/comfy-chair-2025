@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import type { Conferencia } from './AdministradorApp';
+import type { Conferencia } from './ConferenceApp';
 
 type BuscadorProps= {
   confActivas:Conferencia[];
@@ -9,7 +9,7 @@ type BuscadorProps= {
   verActivas: boolean;
 }
 
-export const Buscador = ({confActivas, confTerminadas, setConferencias, verActivas}: BuscadorProps) => {
+export const ConferenceSearch = ({confActivas, confTerminadas, setConferencias, verActivas}: BuscadorProps) => {
   const [query, setQuery] = useState('');
 
   const buscar= ()=>{

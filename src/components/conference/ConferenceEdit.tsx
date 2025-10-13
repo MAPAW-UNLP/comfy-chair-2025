@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import { Route } from '@/routes/conferencias/editar/$id';
-import { type Conferencia, updateConferencia } from '@/services/conferencias';
+import { Route } from '@/routes/conferencias/edit/$id';
+import { type Conference, updateConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
-import FormConferencia from './FormConferencia';
+import FormConferencia from './ConferenceForm';
 
-function EditarConferencia() {
-  const conferenciaInicial = Route.useLoaderData() as Conferencia;
+function ConferenceEdit() {
+  const conferenciaInicial = Route.useLoaderData() as Conference;
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (conf: Omit<Conferencia, 'id'>) => {
+  const handleSubmit = async (conf: Omit<Conference, 'id'>) => {
     setError('');
     setSuccess(false);
     try {
-      await updateConferencia(conferenciaInicial.id, conf);
+      await updateConference(conferenciaInicial.id, conf);
       setSuccess(true);
       setTimeout(() => {
         navigate({ to: `/conferencias/${conferenciaInicial.id}` });
@@ -40,4 +40,4 @@ function EditarConferencia() {
   );
 }
 
-export default EditarConferencia;
+export default ConferenceEdit;

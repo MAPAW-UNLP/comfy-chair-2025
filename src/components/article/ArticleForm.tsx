@@ -172,7 +172,7 @@ const handleSubmit = async () => {
     toast.success('Artículo subido correctamente !', {
       duration: 5000,
     });
-    navigate({ to: '/articulo/visualizacion', replace: true });
+    navigate({ to: '/article/view', replace: true });
   } catch (error) {
     console.error("Error al subir el artículo:", error);
     setError(String(error));

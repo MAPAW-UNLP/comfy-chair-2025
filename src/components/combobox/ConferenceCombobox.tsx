@@ -13,7 +13,7 @@ type ConferenceComboboxProps = {
 
 export function ConferenceCombobox({ conferences, onValueChange }: ConferenceComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [selectedConferenceId, setSelectedConferenceId] = React.useState<number | null>(null);
+  const [selectedConferenceId, setSelectedConferenceId] = React.useState<string | null>(null);
   const [query, setQuery] = React.useState("");
 
   const filteredConferences = conferences.filter(
@@ -60,7 +60,7 @@ export function ConferenceCombobox({ conferences, onValueChange }: ConferenceCom
                   onSelect={() => {
                     setSelectedConferenceId(c.id);
                     setOpen(false);
-                    if (onValueChange) onValueChange(c.id);
+                    if (onValueChange) onValueChange(Number(c.id));
                   }}
                 >
                   {c.title}

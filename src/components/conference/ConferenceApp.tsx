@@ -1,15 +1,12 @@
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
-import ConferenciaBox from './ConferenciaBox';
+import ConferenciaBox from './ConferenceBox';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  getConferenciasActivas,
-  getConferenciasTerminadas,
-} from '@/services/conferencias';
-import { Route } from '@/routes/admin';
+import { getActiveConferences, getFinishedConferences } from '@/services/conferenceServices';
+import { Route } from '@/routes/conferencias/view';
 import { useEffect, useState } from 'react';
-import { Buscador } from './Buscador';
+import { ConferenceSearch } from './ConferenceSearch';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
@@ -22,7 +19,7 @@ export type Conferencia = {
   blind_kind: VISTA_CHOICES;
 };
 
-function AdministradorApp() {
+function ConferenceApp() {
   const conferenciasInicial = Route.useLoaderData();
   const [conferencias, setConferencias] = useState<Conferencia[]>(conferenciasInicial);
   const [verActivas, setVerActivas] = useState<boolean>(true);
@@ -31,13 +28,13 @@ function AdministradorApp() {
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
-    navigate({ to: '/conferencias/alta-conferencia' });
+    navigate({ to: '/conferencias/create' });
   };
 
   useEffect(() => {
     const actualizarConferencias = async () => {
-      setConfActivas(await getConferenciasActivas())
-      setConfTerminadas(await getConferenciasTerminadas())
+      setConfActivas(await getActiveConferences())
+      setConfTerminadas(await getFinishedConferences())
     };
 
     actualizarConferencias();
@@ -56,7 +53,7 @@ function AdministradorApp() {
       <h1 className="text-3xl font-bold">Conferencias</h1>
 
       <div className="flex justify-center items-center gap-2 px-5 w-full">
-        <Buscador confActivas={confActivas} confTerminadas={confTerminadas} setConferencias={setConferencias} verActivas={verActivas} />
+        <ConferenceSearch confActivas={confActivas} confTerminadas={confTerminadas} setConferencias={setConferencias} verActivas={verActivas} />
       </div>
 
       <div className="flex justify-between items-center w-full px-5">
@@ -102,4 +99,4 @@ function AdministradorApp() {
   );
 }
 
-export default AdministradorApp;
+export default ConferenceApp;
