@@ -1,5 +1,5 @@
-import {  getAllArticles } from '@/services/articleServices';
-import type {  Article } from '@/services/articleServices';
+import { getAllArticles } from '@/services/articleServices';
+import type { Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
 import ArticleCard from '@/components/article/ArticleCard';
 import { createFileRoute } from '@tanstack/react-router'
@@ -39,10 +39,10 @@ function RouteComponent() {
         (articulo.map((article) => (
           <ArticleCard
             key={article.id}
-            titulo={article.title}
-            sesion={article.session?.title ?? 'Sin sesión'}
-            conferencia={article.session?.conference?.title ?? 'Sin conferencia'}
-            estado={article.status ?? 'Sin estado'}
+            title={article.title}
+            session={article.session?.title ?? 'Sin sesión'}
+            conference={article.session?.conference?.title ?? 'Sin conferencia'}
+            state={article.status ?? 'Sin estado'}
             deadline={article.session?.deadline ?? 'Sin fecha límite'}
           />
         )))

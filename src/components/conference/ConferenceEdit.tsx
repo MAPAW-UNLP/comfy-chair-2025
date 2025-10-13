@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Route } from '@/routes/conference/edit/$id';
 import { type Conference, updateConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
-import FormConferencia from './ConferenceForm';
+import ConferenceForm from './ConferenceForm';
 
 function ConferenceEdit() {
   const conferenciaInicial = Route.useLoaderData() as Conference;
@@ -26,7 +26,7 @@ function ConferenceEdit() {
 
   return (
     <div className="w-full flex flex-col items-center justify-start gap-4 mt-3">
-      <FormConferencia
+      <ConferenceForm
         handleSubmit={handleSubmit}
         valorConferencia={conferenciaInicial}
         setError={setError}
@@ -35,7 +35,7 @@ function ConferenceEdit() {
         {success && (
           <div className="text-green-600 text-sm">Guardado correctamente</div>
         )}
-      </FormConferencia>
+      </ConferenceForm>
     </div>
   );
 }

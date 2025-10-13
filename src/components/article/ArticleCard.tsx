@@ -9,11 +9,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 export type Estado = "reception" | "bidding" | "assignment" | "review" | "selection" | "accepted" | "rejected";
 
 // Lo que espera recibir el componente
-export interface ArticuloCardProps {
-  titulo: string;
-  sesion: string;
-  conferencia: string
-  estado: Estado;
+export interface ArticleCardProps {
+  title: string;
+  session: string;
+  conference: string
+  state: Estado;
   deadline: string;
 }
 
@@ -68,14 +68,14 @@ function formatearTiempo(msRestante: number): string {
 }
 
 //Cuerpo del Componente
-const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion, estado, deadline }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ title, conference, session, state, deadline }) => {
 
   const deadlineDate = deadline ? new Date(deadline) : null;
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
 
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
   useEffect(() => {
-    if (estado !== "reception") return;
+    if (state !== "reception") return;
 
     const actualizarTiempo = () => { 
       const ahora = new Date().getTime();
@@ -99,7 +99,7 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
     const interval = setInterval(actualizarTiempo, 1000 * 60 * 5); // actualiza cada 5 minutos
     return () => clearInterval(interval);
 
-  }, [estado, deadline]);
+  }, [state, deadline]);
 
   // Renderizado del componente
   return (
@@ -107,11 +107,11 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
       
       {/* Titulo, Sesion y Conferencia */}
       <div className="flex-1 flex flex-col justify-center">
-        <h2 className="text-lg font-bold italic text-slate-500 text-center">{titulo}</h2>
+        <h2 className="text-lg font-bold italic text-slate-500 text-center">{title}</h2>
       </div>
       <hr className="bg-slate-100"/>
-      <p className="text-md text-slate-500"><b>Sesion:</b> {sesion}</p>
-      <p className="text-md text-slate-500"><b>Conferencia:</b> {conferencia}</p>
+      <p className="text-md text-slate-500"><b>Sesion:</b> {session}</p>
+      <p className="text-md text-slate-500"><b>Conferencia:</b> {conference}</p>
       
       {/* Contenedor de los dos botones */}
       <div className="flex gap-2 mt-auto">
@@ -121,15 +121,15 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
           <span className="text-sm text-slate-900 font-medium text-start">Estado</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className={`${estadoColor[estado]} text-white w-full`}>
-                {estadoTexto[estado]}
+              <Button variant="outline" className={`${estadoColor[state]} text-white w-full`}>
+                {estadoTexto[state]}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Detalle del Estado</DialogTitle>
                 <DialogDescription>
-                  {estadoDescripcion[estado]}
+                  {estadoDescripcion[state]}
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
@@ -141,8 +141,8 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
           <span className="text-sm text-slate-900 font-medium text-start">Modificar</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" disabled={estado !== "reception"} className={`w-full ${estado === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
-                {estado === "reception" ? tiempoRestante || "..." : "No Disponible"}
+              <Button variant="outline" disabled={state !== "reception"} className={`w-full ${state === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
+                {state === "reception" ? tiempoRestante || "..." : "No Disponible"}
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -166,4 +166,4 @@ const ArticuloCard: React.FC<ArticuloCardProps> = ({ titulo, conferencia, sesion
   );
 };
 
-export default ArticuloCard;
+export default ArticleCard;

@@ -17,14 +17,14 @@ export const getAllConferencesGrupo1 = async (): Promise<Conference[]> => {
 }
 
 export const getAllConferences = async (): Promise<Conference[]> => {
-  const response = await api.get('/conferencias/');
+  const response = await api.get('/api/conference/');
   console.log(response.data);
   return response.data;
 };
 
 export const getActiveConferences = async (): Promise<Conference[]> => {
   try {
-    const response = await api.get('/conferencias/activas/');
+    const response = await api.get('/api/conference/activas/');
     return response.data;
   } catch (err) {
     console.warn('Backend no disponible, devolviendo lista vacía.');
@@ -33,13 +33,13 @@ export const getActiveConferences = async (): Promise<Conference[]> => {
 };
 
 export const getFinishedConferences = async (): Promise<Conference[]> => {
-  const response = await api.get('/conferencias/terminadas/');
+  const response = await api.get('/api/conference/terminadas/');
   console.log(response.data);
   return response.data;
 };
 
 export const getConference = async (id: string): Promise<Conference> => {
-  const response = await api.get(`/conferencias/${id}/`);
+  const response = await api.get(`/api/conference/${id}/`);
   return response.data;
 };
 
@@ -47,7 +47,7 @@ export const createConference = async (
   conferencia: Omit<Conference, 'id'>
 ): Promise<Conference> => {
   try {
-    const response = await api.post('/conferencias/', conferencia);
+    const response = await api.post('/api/conference/', conferencia);
 
     return response.data;
   } catch (err: any) {
@@ -72,7 +72,7 @@ export const createConference = async (
 };
 
 export const deleteConference = async (id: string): Promise<void> => {
-  await api.delete(`/conferencias/${id}/`);
+  await api.delete(`/api/conference/${id}/`);
 };
 
 export const updateConference = async (
@@ -80,7 +80,7 @@ export const updateConference = async (
   conferencia: Omit<Conference, 'id'>
 ): Promise<Conference> => {
   try {
-    const response = await api.put(`/conferencias/${id}/`, conferencia);
+    const response = await api.put(`/api/conference/${id}/`, conferencia);
     return response.data;
   } catch (err: any) {
     if (

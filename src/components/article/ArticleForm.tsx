@@ -20,12 +20,12 @@ import { useNavigate } from '@tanstack/react-router';
 import { UserCombobox } from "@/components/combobox/UserCombobox";
 import { ConferenceCombobox} from "@/components/combobox/ConferenceCombobox";
 
-type AltaArticuloProps = {
+type ArticleFormProps = {
   users: User[];
   conferences: Conference[];
 };
 
-export default function AltaArticulo({ users, conferences }: AltaArticuloProps) { 
+export default function ArticleForm({ users, conferences }: ArticleFormProps) { 
 
   //Debug
   const [error, setError] = useState<string>("");

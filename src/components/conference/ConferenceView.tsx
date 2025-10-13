@@ -1,18 +1,10 @@
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSet,
-  FieldTitle,
-} from '@/components/ui/field';
+import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldTitle } from '@/components/ui/field';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useEffect, useState } from 'react';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
-type VisualizacionProp = {
+type ConferenceViewProp = {
   valorVisualizacion?: VISTA_CHOICES;
   actualizarVista: (v: VISTA_CHOICES) => void;
 };
@@ -20,7 +12,7 @@ type VisualizacionProp = {
 export function ConferenceView({
   valorVisualizacion,
   actualizarVista,
-}: VisualizacionProp) {
+}: ConferenceViewProp) {
   const [valorSeleccionado, setValorSeleccionado] =
     useState<VISTA_CHOICES>('single blind');
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { createConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
-import type { Conferencia } from './ConferenceApp';
-import FormConferencia from './ConferenceForm';
+import type { Conference } from './ConferenceApp';
+import ConferenceForm from './ConferenceForm';
 
 function ConferenceCreate() {
   const [error, setError] = useState('');
@@ -10,7 +10,7 @@ function ConferenceCreate() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (conf: Omit<Conferencia, 'id'>) => {
+  const handleSubmit = async (conf: Omit<Conference, 'id'>) => {
     setError('');
     setSuccess(false);
     try {
@@ -28,7 +28,7 @@ function ConferenceCreate() {
 
   return (
     <div className="w-full flex flex-col items-center gap-4 mt-3">
-      <FormConferencia handleSubmit={handleSubmit} setError={setError}>
+      <ConferenceForm handleSubmit={handleSubmit} setError={setError}>
         {/* <div className="mt-2">
           <h3 className="font-semibold mb-2">Sesiones</h3>
           <Button
@@ -44,7 +44,7 @@ function ConferenceCreate() {
         {success && (
           <div className="text-green-600 text-sm">Guardado correctamente</div>
         )}
-      </FormConferencia>
+      </ConferenceForm>
     </div>
   );
 }

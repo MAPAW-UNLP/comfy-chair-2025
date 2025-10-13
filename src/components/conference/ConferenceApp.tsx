@@ -1,7 +1,7 @@
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
-import ConferenciaBox from './ConferenceBox';
+import ConferenceBox from './ConferenceBox';
 import { useNavigate } from '@tanstack/react-router';
 import { getActiveConferences, getFinishedConferences } from '@/services/conferenceServices';
 import { Route } from '@/routes/conference/view';
@@ -10,7 +10,7 @@ import { ConferenceSearch } from './ConferenceSearch';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
-export type Conferencia = {
+export type Conference = {
   id: string;
   title: string;
   description: string;
@@ -21,10 +21,10 @@ export type Conferencia = {
 
 function ConferenceApp() {
   const conferenciasInicial = Route.useLoaderData();
-  const [conferencias, setConferencias] = useState<Conferencia[]>(conferenciasInicial);
+  const [conferencias, setConferencias] = useState<Conference[]>(conferenciasInicial);
   const [verActivas, setVerActivas] = useState<boolean>(true);
-  const [confActivas, setConfActivas]= useState<Conferencia[]>([]);
-  const [confTerminadas, setConfTerminadas]= useState<Conferencia[]>([]);
+  const [confActivas, setConfActivas]= useState<Conference[]>([]);
+  const [confTerminadas, setConfTerminadas]= useState<Conference[]>([]);
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
@@ -89,7 +89,7 @@ function ConferenceApp() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  justify-center items-center gap-3 w-full px-5">
         {conferencias.length > 0 ? (
           conferencias.map((c) => {
-            return <ConferenciaBox key={c.id} conferencia={c} />;
+            return <ConferenceBox key={c.id} conferencia={c} />;
           })
         ) : (
           <p>Aún no hay conferencias disponibles.</p>
