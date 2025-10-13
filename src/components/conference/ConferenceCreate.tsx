@@ -17,7 +17,7 @@ function ConferenceCreate() {
       await createConference(conf);
       setSuccess(true);
       setTimeout(() => {
-        navigate({ to: '/conferencias/view' });
+        navigate({ to: '/conference/view' });
       }, 800);
     } catch (err: any) {
       setError(err.message)

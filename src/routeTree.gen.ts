@@ -10,31 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ConferenciasViewRouteImport } from './routes/conferencias/view'
-import { Route as ConferenciasCreateRouteImport } from './routes/conferencias/create'
-import { Route as ConferenciasIdRouteImport } from './routes/conferencias/$id'
+import { Route as ConferenceViewRouteImport } from './routes/conference/view'
+import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
+import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
 import { Route as ArticleViewRouteImport } from './routes/article/view'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
-import { Route as ConferenciasEditIdRouteImport } from './routes/conferencias/edit/$id'
+import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConferenciasViewRoute = ConferenciasViewRouteImport.update({
-  id: '/conferencias/view',
-  path: '/conferencias/view',
+const ConferenceViewRoute = ConferenceViewRouteImport.update({
+  id: '/conference/view',
+  path: '/conference/view',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConferenciasCreateRoute = ConferenciasCreateRouteImport.update({
-  id: '/conferencias/create',
-  path: '/conferencias/create',
+const ConferenceCreateRoute = ConferenceCreateRouteImport.update({
+  id: '/conference/create',
+  path: '/conference/create',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConferenciasIdRoute = ConferenciasIdRouteImport.update({
-  id: '/conferencias/$id',
-  path: '/conferencias/$id',
+const ConferenceIdRoute = ConferenceIdRouteImport.update({
+  id: '/conference/$id',
+  path: '/conference/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticleViewRoute = ArticleViewRouteImport.update({
@@ -47,9 +47,9 @@ const ArticleCreateRoute = ArticleCreateRouteImport.update({
   path: '/article/create',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConferenciasEditIdRoute = ConferenciasEditIdRouteImport.update({
-  id: '/conferencias/edit/$id',
-  path: '/conferencias/edit/$id',
+const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
+  id: '/conference/edit/$id',
+  path: '/conference/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -57,29 +57,29 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
-  '/conferencias/$id': typeof ConferenciasIdRoute
-  '/conferencias/create': typeof ConferenciasCreateRoute
-  '/conferencias/view': typeof ConferenciasViewRoute
-  '/conferencias/edit/$id': typeof ConferenciasEditIdRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
-  '/conferencias/$id': typeof ConferenciasIdRoute
-  '/conferencias/create': typeof ConferenciasCreateRoute
-  '/conferencias/view': typeof ConferenciasViewRoute
-  '/conferencias/edit/$id': typeof ConferenciasEditIdRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
-  '/conferencias/$id': typeof ConferenciasIdRoute
-  '/conferencias/create': typeof ConferenciasCreateRoute
-  '/conferencias/view': typeof ConferenciasViewRoute
-  '/conferencias/edit/$id': typeof ConferenciasEditIdRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,38 +87,38 @@ export interface FileRouteTypes {
     | '/'
     | '/article/create'
     | '/article/view'
-    | '/conferencias/$id'
-    | '/conferencias/create'
-    | '/conferencias/view'
-    | '/conferencias/edit/$id'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/article/create'
     | '/article/view'
-    | '/conferencias/$id'
-    | '/conferencias/create'
-    | '/conferencias/view'
-    | '/conferencias/edit/$id'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/conference/edit/$id'
   id:
     | '__root__'
     | '/'
     | '/article/create'
     | '/article/view'
-    | '/conferencias/$id'
-    | '/conferencias/create'
-    | '/conferencias/view'
-    | '/conferencias/edit/$id'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArticleCreateRoute: typeof ArticleCreateRoute
   ArticleViewRoute: typeof ArticleViewRoute
-  ConferenciasIdRoute: typeof ConferenciasIdRoute
-  ConferenciasCreateRoute: typeof ConferenciasCreateRoute
-  ConferenciasViewRoute: typeof ConferenciasViewRoute
-  ConferenciasEditIdRoute: typeof ConferenciasEditIdRoute
+  ConferenceIdRoute: typeof ConferenceIdRoute
+  ConferenceCreateRoute: typeof ConferenceCreateRoute
+  ConferenceViewRoute: typeof ConferenceViewRoute
+  ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,25 +130,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conferencias/view': {
-      id: '/conferencias/view'
-      path: '/conferencias/view'
-      fullPath: '/conferencias/view'
-      preLoaderRoute: typeof ConferenciasViewRouteImport
+    '/conference/view': {
+      id: '/conference/view'
+      path: '/conference/view'
+      fullPath: '/conference/view'
+      preLoaderRoute: typeof ConferenceViewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conferencias/create': {
-      id: '/conferencias/create'
-      path: '/conferencias/create'
-      fullPath: '/conferencias/create'
-      preLoaderRoute: typeof ConferenciasCreateRouteImport
+    '/conference/create': {
+      id: '/conference/create'
+      path: '/conference/create'
+      fullPath: '/conference/create'
+      preLoaderRoute: typeof ConferenceCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conferencias/$id': {
-      id: '/conferencias/$id'
-      path: '/conferencias/$id'
-      fullPath: '/conferencias/$id'
-      preLoaderRoute: typeof ConferenciasIdRouteImport
+    '/conference/$id': {
+      id: '/conference/$id'
+      path: '/conference/$id'
+      fullPath: '/conference/$id'
+      preLoaderRoute: typeof ConferenceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/article/view': {
@@ -165,11 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conferencias/edit/$id': {
-      id: '/conferencias/edit/$id'
-      path: '/conferencias/edit/$id'
-      fullPath: '/conferencias/edit/$id'
-      preLoaderRoute: typeof ConferenciasEditIdRouteImport
+    '/conference/edit/$id': {
+      id: '/conference/edit/$id'
+      path: '/conference/edit/$id'
+      fullPath: '/conference/edit/$id'
+      preLoaderRoute: typeof ConferenceEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -179,10 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArticleCreateRoute: ArticleCreateRoute,
   ArticleViewRoute: ArticleViewRoute,
-  ConferenciasIdRoute: ConferenciasIdRoute,
-  ConferenciasCreateRoute: ConferenciasCreateRoute,
-  ConferenciasViewRoute: ConferenciasViewRoute,
-  ConferenciasEditIdRoute: ConferenciasEditIdRoute,
+  ConferenceIdRoute: ConferenceIdRoute,
+  ConferenceCreateRoute: ConferenceCreateRoute,
+  ConferenceViewRoute: ConferenceViewRoute,
+  ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

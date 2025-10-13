@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import ConferenciaBox from './ConferenceBox';
 import { useNavigate } from '@tanstack/react-router';
 import { getActiveConferences, getFinishedConferences } from '@/services/conferenceServices';
-import { Route } from '@/routes/conferencias/view';
+import { Route } from '@/routes/conference/view';
 import { useEffect, useState } from 'react';
 import { ConferenceSearch } from './ConferenceSearch';
 
@@ -28,7 +28,7 @@ function ConferenceApp() {
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
-    navigate({ to: '/conferencias/create' });
+    navigate({ to: '/conference/create' });
   };
 
   useEffect(() => {

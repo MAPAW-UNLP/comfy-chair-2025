@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Route } from '@/routes/conferencias/$id';
+import { Route } from '@/routes/conference/$id';
 import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
@@ -17,13 +17,13 @@ function AConference() {
   const [deleting, setDeleting] = useState(false);
 
   const irEditarConferencia = () => {
-    navigate({ to: `/conferencias/editar/${conferencia.id}` });
+    navigate({ to: `/conference/edit/${conferencia.id}` });
   };
 
   // const agregarSesion = () => {};
 
   const goToHome = () => {
-    navigate({ to: '/conferencias/view' });
+    navigate({ to: '/conference/view' });
   };
 
   const handleEliminarConferencia = () => {
@@ -34,7 +34,7 @@ function AConference() {
     setDeleting(true);
     try {
       await deleteConference(conferencia.id);
-      navigate({ to: '/conferencias/view' }); // Redirigir después de eliminar
+      navigate({ to: '/conference/view' }); // Redirigir después de eliminar
     } catch (error) {
       console.error('Error al eliminar conferencia:', error);
       alert('Error al eliminar la conferencia');

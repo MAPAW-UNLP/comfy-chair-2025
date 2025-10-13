@@ -13,7 +13,7 @@ const RootLayout = () => {
   // Lista de páginas principales de la aplicación
   const links = [
     { to: '/', label: 'Home' },
-    { to: '/conferencias/view', label: 'Conferencias' },
+    { to: '/conference/view', label: 'Conferencias' },
     { to: '/article/view', label: 'Articulos' },
     { to: '/article/create', label: 'Subir Articulo' },
   ];

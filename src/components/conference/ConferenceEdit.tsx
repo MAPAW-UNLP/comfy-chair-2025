@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Route } from '@/routes/conferencias/edit/$id';
+import { Route } from '@/routes/conference/edit/$id';
 import { type Conference, updateConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
 import FormConferencia from './ConferenceForm';
@@ -17,7 +17,7 @@ function ConferenceEdit() {
       await updateConference(conferenciaInicial.id, conf);
       setSuccess(true);
       setTimeout(() => {
-        navigate({ to: `/conferencias/${conferenciaInicial.id}` });
+        navigate({ to: `/conference/${conferenciaInicial.id}` });
       }, 800);
     } catch (err: any) {
       setError(err.message)
