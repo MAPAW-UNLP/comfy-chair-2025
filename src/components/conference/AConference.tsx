@@ -92,12 +92,12 @@ function AConference() {
         </div>
 
         <div className='flex justify-between items-center'>
-          <Button variant={"secondary"} className='cursor-pointer' onClick={goToHome}>Volver al inicio</Button>
+          <Button variant={"secondary"} className='cursor-pointer bg-slate-900 text-white hover:bg-slate-700' onClick={goToHome}>Volver al inicio</Button>
 
           <Button
             variant="destructive"
             onClick={handleEliminarConferencia}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
           >
             <Trash2 size={16} />
             Eliminar conferencia
@@ -126,7 +126,7 @@ function AConference() {
               <Button
                 variant="destructive"
                 onClick={confirmarEliminar}
-                className="cursor-pointer"
+                className="cursor-pointer bg-red-900 text-white hover:bg-red-700"
                 disabled={deleting}
               >
                 {deleting ? 'Eliminando...' : 'Eliminar'}

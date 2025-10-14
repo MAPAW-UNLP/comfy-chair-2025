@@ -146,7 +146,7 @@ function ConferenceForm({
           type="submit"
           variant={'secondary'}
           size={'lg'}
-          className="cursor-pointer"
+          className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700"
         >
           Guardar
         </Button>

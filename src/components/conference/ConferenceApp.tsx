@@ -78,7 +78,7 @@ function ConferenceApp() {
           <Button
             size={'sm'}
             onClick={irAltaConferencia}
-            className="cursor-pointer text-sm"
+            className="cursor-pointer text-sm bg-slate-900 hover:bg-slate-700 text-white"
           >
             <Plus size={16} />
             Conferencia

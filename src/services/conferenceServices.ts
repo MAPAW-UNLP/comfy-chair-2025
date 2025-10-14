@@ -24,7 +24,7 @@ export const getAllConferences = async (): Promise<Conference[]> => {
 
 export const getActiveConferences = async (): Promise<Conference[]> => {
   try {
-    const response = await api.get('/api/conference/activas/');
+    const response = await api.get('/api/conference/active/');
     return response.data;
   } catch (err) {
     console.warn('Backend no disponible, devolviendo lista vacía.');
@@ -33,7 +33,7 @@ export const getActiveConferences = async (): Promise<Conference[]> => {
 };
 
 export const getFinishedConferences = async (): Promise<Conference[]> => {
-  const response = await api.get('/api/conference/terminadas/');
+  const response = await api.get('/api/conference/finished/');
   console.log(response.data);
   return response.data;
 };
