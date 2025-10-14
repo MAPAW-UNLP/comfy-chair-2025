@@ -1,34 +1,34 @@
 import { useState } from 'react';
-import { createConferencia } from '@/services/conferencias';
+import { createConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
-import type { Conferencia } from './AdministradorApp';
-import FormConferencia from './FormConferencia';
+import type { Conference } from './ConferenceApp';
+import ConferenceForm from './ConferenceForm';
 
-function AltaConferencia() {
+function ConferenceCreate() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (conf: Omit<Conferencia, 'id'>) => {
+  const handleSubmit = async (conf: Omit<Conference, 'id'>) => {
     setError('');
     setSuccess(false);
     try {
-      await createConferencia(conf);
+      await createConference(conf);
       setSuccess(true);
       setTimeout(() => {
-        navigate({ to: '/admin' });
+        navigate({ to: '/conference/view' });
       }, 800);
     } catch (err: any) {
       setError(err.message)
     }
   };
 
-  const agregarSesion = () => {};
+  // const agregarSesion = () => {};
 
   return (
     <div className="w-full flex flex-col items-center gap-4 mt-3">
-      <FormConferencia handleSubmit={handleSubmit} setError={setError}>
+      <ConferenceForm handleSubmit={handleSubmit} setError={setError}>
         {/* <div className="mt-2">
           <h3 className="font-semibold mb-2">Sesiones</h3>
           <Button
@@ -44,9 +44,9 @@ function AltaConferencia() {
         {success && (
           <div className="text-green-600 text-sm">Guardado correctamente</div>
         )}
-      </FormConferencia>
+      </ConferenceForm>
     </div>
   );
 }
 
-export default AltaConferencia;
+export default ConferenceCreate;

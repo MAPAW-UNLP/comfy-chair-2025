@@ -1,23 +1,23 @@
 import { useState } from 'react';
-import { Route } from '@/routes/conferencias/editar/$id';
-import { type Conferencia, updateConferencia } from '@/services/conferencias';
+import { Route } from '@/routes/conference/edit/$id';
+import { type Conference, updateConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
-import FormConferencia from './FormConferencia';
+import ConferenceForm from './ConferenceForm';
 
-function EditarConferencia() {
-  const conferenciaInicial = Route.useLoaderData() as Conferencia;
+function ConferenceEdit() {
+  const conferenciaInicial = Route.useLoaderData() as Conference;
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (conf: Omit<Conferencia, 'id'>) => {
+  const handleSubmit = async (conf: Omit<Conference, 'id'>) => {
     setError('');
     setSuccess(false);
     try {
-      await updateConferencia(conferenciaInicial.id, conf);
+      await updateConference(conferenciaInicial.id, conf);
       setSuccess(true);
       setTimeout(() => {
-        navigate({ to: `/conferencias/${conferenciaInicial.id}` });
+        navigate({ to: `/conference/${conferenciaInicial.id}` });
       }, 800);
     } catch (err: any) {
       setError(err.message)
@@ -26,7 +26,7 @@ function EditarConferencia() {
 
   return (
     <div className="w-full flex flex-col items-center justify-start gap-4 mt-3">
-      <FormConferencia
+      <ConferenceForm
         handleSubmit={handleSubmit}
         valorConferencia={conferenciaInicial}
         setError={setError}
@@ -35,9 +35,9 @@ function EditarConferencia() {
         {success && (
           <div className="text-green-600 text-sm">Guardado correctamente</div>
         )}
-      </FormConferencia>
+      </ConferenceForm>
     </div>
   );
 }
 
-export default EditarConferencia;
+export default ConferenceEdit;

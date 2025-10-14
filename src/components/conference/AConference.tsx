@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { Route } from '@/routes/conferencias/$id';
-import { Edit, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Route } from '@/routes/conference/$id';
+import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { deleteConferencia } from '@/services/conferencias';
+import { deleteConference } from '@/services/conferenceServices';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
   return `${day}/${month}/${year}`;
 }
 
-function UnaConferencia() {
+function AConference() {
   const conferencia = Route.useLoaderData();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const irEditarConferencia = () => {
-    navigate({ to: `/conferencias/editar/${conferencia.id}` });
+    navigate({ to: `/conference/edit/${conferencia.id}` });
   };
 
-  const agregarSesion = () => {};
+  // const agregarSesion = () => {};
 
   const goToHome = () => {
-    navigate({ to: '/admin' });
+    navigate({ to: '/conference/view' });
   };
 
   const handleEliminarConferencia = () => {
@@ -33,8 +33,8 @@ function UnaConferencia() {
   const confirmarEliminar = async () => {
     setDeleting(true);
     try {
-      await deleteConferencia(conferencia.id);
-      navigate({ to: '/admin' }); // Redirigir después de eliminar
+      await deleteConference(conferencia.id);
+      navigate({ to: '/conference/view' }); // Redirigir después de eliminar
     } catch (error) {
       console.error('Error al eliminar conferencia:', error);
       alert('Error al eliminar la conferencia');
@@ -92,12 +92,12 @@ function UnaConferencia() {
         </div>
 
         <div className='flex justify-between items-center'>
-          <Button variant={"secondary"} className='cursor-pointer' onClick={goToHome}>Volver al inicio</Button>
+          <Button variant={"secondary"} className='cursor-pointer bg-slate-900 text-white hover:bg-slate-700' onClick={goToHome}>Volver al inicio</Button>
 
           <Button
             variant="destructive"
             onClick={handleEliminarConferencia}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
           >
             <Trash2 size={16} />
             Eliminar conferencia
@@ -126,7 +126,7 @@ function UnaConferencia() {
               <Button
                 variant="destructive"
                 onClick={confirmarEliminar}
-                className="cursor-pointer"
+                className="cursor-pointer bg-red-900 text-white hover:bg-red-700"
                 disabled={deleting}
               >
                 {deleting ? 'Eliminando...' : 'Eliminar'}
@@ -139,4 +139,4 @@ function UnaConferencia() {
   );
 }
 
-export default UnaConferencia;
+export default AConference;

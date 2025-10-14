@@ -1,26 +1,18 @@
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSet,
-  FieldTitle,
-} from '@/components/ui/field';
+import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldTitle } from '@/components/ui/field';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useEffect, useState } from 'react';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
-type VisualizacionProp = {
+type ConferenceViewProp = {
   valorVisualizacion?: VISTA_CHOICES;
   actualizarVista: (v: VISTA_CHOICES) => void;
 };
 
-export function Visualizacion({
+export function ConferenceView({
   valorVisualizacion,
   actualizarVista,
-}: VisualizacionProp) {
+}: ConferenceViewProp) {
   const [valorSeleccionado, setValorSeleccionado] =
     useState<VISTA_CHOICES>('single blind');
 
@@ -47,7 +39,7 @@ export function Visualizacion({
           </FieldDescription>
           <RadioGroup
             value={valorSeleccionado}
-            onValueChange={setValorSeleccionado}
+            onValueChange={(v) => setValorSeleccionado(v as VISTA_CHOICES)}
           >
             <FieldLabel htmlFor="single blind" className="cursor-pointer">
               <Field orientation="horizontal">

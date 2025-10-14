@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import type { Conferencia } from './AdministradorApp';
+import type { Conference } from './ConferenceApp';
 
-type BuscadorProps= {
-  confActivas:Conferencia[];
-  confTerminadas: Conferencia[];
-  setConferencias: React.Dispatch<React.SetStateAction<Conferencia[]>>;
+type ConferenceSearchProps= {
+  confActivas:Conference[];
+  confTerminadas: Conference[];
+  setConferencias: React.Dispatch<React.SetStateAction<Conference[]>>;
   verActivas: boolean;
 }
 
-export const Buscador = ({confActivas, confTerminadas, setConferencias, verActivas}: BuscadorProps) => {
+export const ConferenceSearch = ({confActivas, confTerminadas, setConferencias, verActivas}: ConferenceSearchProps) => {
   const [query, setQuery] = useState('');
 
   const buscar= ()=>{

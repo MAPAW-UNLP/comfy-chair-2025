@@ -5,14 +5,14 @@ import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
 import { Label } from '@/components/ui/label';
 import { Button } from '../ui/button';
 
-type CalendarioProps = {
+type CustomCalendarProps = {
   label: string;
   date?: string;
   setDate: (d: string) => void;
   validarFin?: (d: Date) => boolean;
 };
 
-function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
+function CustomCalendar({ label, date, setDate, validarFin }: CustomCalendarProps) {
   const [open, setOpen] = useState(false);
   const [realDate, setRealDate] = useState(new Date());
   const today = new Date();
@@ -56,7 +56,7 @@ function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
             mode="single"
             selected={realDate}
             captionLayout="dropdown"
-            onSelect={(d) => seleccionarFecha(d)}
+            onSelect={(d) => seleccionarFecha(d!)}
             disabled={(realDate) => realDate < today}
           />
         </PopoverContent>
@@ -65,4 +65,4 @@ function Calendario({ label, date, setDate, validarFin }: CalendarioProps) {
   );
 }
 
-export default Calendario;
+export default CustomCalendar;

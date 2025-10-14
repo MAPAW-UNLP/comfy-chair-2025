@@ -1,24 +1,24 @@
 import React from 'react';
-import type { Conferencia } from './AdministradorApp';
+import type { Conference } from './ConferenceApp';
 import { useNavigate} from '@tanstack/react-router';
-import { formatearFecha } from './UnaConferencia';
+import { formatearFecha } from './AConference';
 import { Edit } from 'lucide-react';
 
-type ConferenciaBoxProps = {
-  conferencia: Conferencia;
+type ConferenceBoxProps = {
+  conferencia: Conference;
 };
 
 
-function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
+function ConferenceBox({ conferencia }: ConferenceBoxProps) {
     const navigate= useNavigate()
 
   const irUnaConferencia= () =>{ 
-    navigate({to: `/conferencias/${conferencia.id}`})
+    navigate({to: `/conference/${conferencia.id}`})
   }
 
   const irEditarConferencia = (e: React.MouseEvent) => {
     e.stopPropagation(); 
-    navigate({to: `/conferencias/editar/${conferencia.id}`})
+    navigate({to: `/conference/edit/${conferencia.id}`})
   }
   
   return (
@@ -48,4 +48,4 @@ function ConferenciaBox({ conferencia }: ConferenciaBoxProps) {
   );
 }
 
-export default ConferenciaBox;
+export default ConferenceBox;

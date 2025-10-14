@@ -2,7 +2,7 @@ import api from './api';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
-export interface Conferencia {
+export interface Conference {
   id: string;
   title: string;
   description: string;
@@ -11,34 +11,43 @@ export interface Conferencia {
   blind_kind: VISTA_CHOICES;
 }
 
-export const getAllConferencias = async (): Promise<Conferencia[]> => {
-  const response = await api.get('/conferencias/');
+export const getAllConferencesGrupo1 = async (): Promise<Conference[]> => {
+  const response = await api.get('/api/conference');
+  return response.data;
+}
+
+export const getAllConferences = async (): Promise<Conference[]> => {
+  const response = await api.get('/api/conference/');
   console.log(response.data);
   return response.data;
 };
 
-export const getConferenciasActivas = async (): Promise<Conferencia[]> => {
-  const response = await api.get('/conferencias/activas/');
-  console.log(response.data);
-  return response.data;
-};
-
-export const getConferenciasTerminadas = async (): Promise<Conferencia[]> => {
-  const response = await api.get('/conferencias/terminadas/');
-  console.log(response.data);
-  return response.data;
-};
-
-export const getConferencia = async (id: string): Promise<Conferencia> => {
-  const response = await api.get(`/conferencias/${id}/`);
-  return response.data;
-};
-
-export const createConferencia = async (
-  conferencia: Omit<Conferencia, 'id'>
-): Promise<Conferencia> => {
+export const getActiveConferences = async (): Promise<Conference[]> => {
   try {
-    const response = await api.post('/conferencias/', conferencia);
+    const response = await api.get('/api/conference/active/');
+    return response.data;
+  } catch (err) {
+    console.warn('Backend no disponible, devolviendo lista vacía.');
+    return []; 
+  }
+};
+
+export const getFinishedConferences = async (): Promise<Conference[]> => {
+  const response = await api.get('/api/conference/finished/');
+  console.log(response.data);
+  return response.data;
+};
+
+export const getConference = async (id: string): Promise<Conference> => {
+  const response = await api.get(`/api/conference/${id}/`);
+  return response.data;
+};
+
+export const createConference = async (
+  conferencia: Omit<Conference, 'id'>
+): Promise<Conference> => {
+  try {
+    const response = await api.post('/api/conference/', conferencia);
 
     return response.data;
   } catch (err: any) {
@@ -62,16 +71,16 @@ export const createConferencia = async (
   }
 };
 
-export const deleteConferencia = async (id: string): Promise<void> => {
-  await api.delete(`/conferencias/${id}/`);
+export const deleteConference = async (id: string): Promise<void> => {
+  await api.delete(`/api/conference/${id}/`);
 };
 
-export const updateConferencia = async (
+export const updateConference = async (
   id: string,
-  conferencia: Omit<Conferencia, 'id'>
-): Promise<Conferencia> => {
+  conferencia: Omit<Conference, 'id'>
+): Promise<Conference> => {
   try {
-    const response = await api.put(`/conferencias/${id}/`, conferencia);
+    const response = await api.put(`/api/conference/${id}/`, conferencia);
     return response.data;
   } catch (err: any) {
     if (

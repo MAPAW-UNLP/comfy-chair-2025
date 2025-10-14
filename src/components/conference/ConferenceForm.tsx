@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Calendario from './Calendario';
-import type { Conferencia } from './AdministradorApp';
+import CustomCalendar from './CustomCalendar';
+import type { Conference } from './ConferenceApp';
 import { Button } from '../ui/button';
-import { Visualizacion } from './Visualizacion';
+import { ConferenceView } from './ConferenceView';
 
 function esFechaValida(fecha1: string, fecha2: string) {
   const f1 = new Date(fecha1);
@@ -11,20 +11,20 @@ function esFechaValida(fecha1: string, fecha2: string) {
   return f2 >= f1;
 }
 
-type FormConferenciaProps = {
-  handleSubmit: (conf: Omit<Conferencia, 'id'>) => Promise<void>;
+type ConferenceFormProps = {
+  handleSubmit: (conf: Omit<Conference, 'id'>) => Promise<void>;
   children: React.ReactNode;
-  valorConferencia?: Omit<Conferencia, 'id'>;
+  valorConferencia?: Omit<Conference, 'id'>;
   setError: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function FormConferencia({
+function ConferenceForm({
   handleSubmit,
   children,
   valorConferencia,
   setError,
-}: FormConferenciaProps) {
-  const [conferencia, setConferencia] = useState<Omit<Conferencia, 'id'>>({
+}: ConferenceFormProps) {
+  const [conferencia, setConferencia] = useState<Omit<Conference, 'id'>>({
     title: '',
     description: '',
     start_date: '',
@@ -58,7 +58,7 @@ function FormConferencia({
   const actualizarFechaFin = (d: string) =>
     setConferencia((prev) => ({ ...prev, end_date: d }));
 
-  const actualizarVista = (v: Conferencia['blind_kind']) => {
+  const actualizarVista = (v: Conference['blind_kind']) => {
     setConferencia((prev) => ({ ...prev, blind_kind: v }));
   };
 
@@ -107,12 +107,12 @@ function FormConferencia({
             <p>Jose Hernandez</p>
           </div> */}
 
-          <Calendario
+          <CustomCalendar
             label="Fecha de inicio"
             date={conferencia.start_date}
             setDate={actualizarFechaInicio}
           />
-          <Calendario
+          <CustomCalendar
             label="Fecha de cierre"
             date={conferencia.end_date}
             setDate={actualizarFechaFin}
@@ -121,12 +121,12 @@ function FormConferencia({
         </div>
 
         {valorConferencia ? (
-          <Visualizacion
+          <ConferenceView
             valorVisualizacion={valorConferencia.blind_kind}
             actualizarVista={actualizarVista}
           />
         ) : (
-          <Visualizacion actualizarVista={actualizarVista} />
+          <ConferenceView actualizarVista={actualizarVista} />
         )}
       </div>
 
@@ -146,7 +146,7 @@ function FormConferencia({
           type="submit"
           variant={'secondary'}
           size={'lg'}
-          className="cursor-pointer"
+          className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700"
         >
           Guardar
         </Button>
@@ -155,4 +155,4 @@ function FormConferencia({
   );
 }
 
-export default FormConferencia;
+export default ConferenceForm;
