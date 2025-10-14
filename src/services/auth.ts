@@ -1,69 +1,70 @@
 import {axiosInstance} from './api'
-
-export interface RegisterData {
-  nombre_completo: string;
-  afiliacion: string;
-  email: string;
-  password: string;
-}
-
-export interface LoginData {
-  email: string;
-  password: string;
-}
+import type { RegisterFormData, LoginFormData } from '@/lib/validations'
 
 export interface User {
-  id: number;
-  email: string;
-  nombre_completo: string;
-  afiliacion: string;
+  id: string
+  email: string
+  full_name: string
+  affiliation: string
 }
 
-export interface LoginResponse {
-  status: string;
-  token: string;
-  user: User;
+export interface AuthResponse {
+  status?: string
+  token: string
+  user: User
 }
 
 export const authService = {
-  // Register a new user
-  async register(data: RegisterData): Promise<User> {
-    const response = await axiosInstance.post('/users/registro/', data);
-    return response.data;
+  register: async (data: RegisterFormData): Promise<AuthResponse> => {
+    const response = await axiosInstance.post('/user/registro/', {
+      full_name: data.fullName,
+      affiliation: data.affiliation,
+      email: data.email,
+      password: data.password
+    })
+    // Don't store token - user needs to log in after registration
+    return response.data
   },
 
-  // Login user
-  async login(data: LoginData): Promise<LoginResponse> {
-    const response = await axiosInstance.post<LoginResponse>('/users/login/', data);
-    const { token, user } = response.data;
+  login: async (data: LoginFormData): Promise<AuthResponse> => {
+    const response = await axiosInstance.post('/user/login/', {
+      email: data.email,
+      password: data.password
+    })
+    // Store token immediately after successful login
+    localStorage.setItem('authToken', response.data.token)
+    return response.data
+  },
+
+  verifyToken: async (token: string): Promise<AuthResponse> => {
+    const response = await axiosInstance.get('/user/getUsuario/')
+    return {
+      token: token,
+      user: {
+        id: response.data.id,
+        email: response.data.email,
+        full_name: response.data.full_name,
+        affiliation: response.data.affiliation
+      }
+    }
+  },
+
+  getCurrentUser: async (): Promise<User | null> => {
+    const token = localStorage.getItem('authToken')
+    if (!token) {
+      return null
+    }
     
-    // Store token and user in localStorage
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    
-    return response.data;
+    try {
+      const response = await authService.verifyToken(token)
+      return response.user
+    } catch {
+      localStorage.removeItem('authToken')
+      return null
+    }
   },
 
-  // Logout user
-  logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-  },
-
-  // Get current user from localStorage
-  async getCurrentUser(): Promise<User | null> {
-    const userStr =  await this.fetchCurrentUser();
-    return userStr;
-  },
-
-  // Check if user is authenticated
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('authToken');
-  },
-
-  // Fetch current user from backend (validates token)
-  async fetchCurrentUser(): Promise<User> {
-    const response = await axiosInstance.get<User>('/users/getUsuario/');
-    return response.data;
-  },
-};
+  logout: () => {
+    localStorage.removeItem('authToken')
+  }
+}

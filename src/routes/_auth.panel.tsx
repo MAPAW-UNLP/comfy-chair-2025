@@ -15,7 +15,7 @@ function PanelPage() {
 
   const handleLogout = () => {
     logout()
-    navigate({ to: '/ingresar', search: { redirect: undefined } })
+    navigate({ to: '/ingresar', search: { redirect: undefined, registered: undefined } })
   }
 
   return (
@@ -34,7 +34,7 @@ function PanelPage() {
 
             <div className="border-b pb-4">
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Nombre Completo</h3>
-              <p className="text-lg">{user.nombre_completo}</p>
+              <p className="text-lg">{user.full_name}</p>
             </div>
 
             <div className="border-b pb-4">
@@ -44,7 +44,7 @@ function PanelPage() {
 
             <div className="border-b pb-4">
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Afiliación</h3>
-              <p className="text-lg">{user.afiliacion}</p>
+              <p className="text-lg">{user.affiliation}</p>
             </div>
           </div>
 

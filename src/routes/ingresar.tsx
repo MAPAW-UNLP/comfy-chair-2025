@@ -23,7 +23,7 @@ function LoginPage() {
   const { login, user } = useAuth()
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
-    contraseña: '',
+    password: '',
   })
   const [errors, setErrors] = useState<Partial<LoginFormData>>({})
   const [formError, setFormError] = useState<string>('')
@@ -48,7 +48,7 @@ function LoginPage() {
     const result = loginSchema.safeParse(formData)
     if (!result.success) {
       const fieldErrors: Partial<LoginFormData> = {}
-      result.error.issues.forEach((error: any) => {
+      result.error.issues.forEach((error) => {
         if (error.path[0]) {
           fieldErrors[error.path[0] as keyof LoginFormData] = error.message
         }
@@ -59,13 +59,14 @@ function LoginPage() {
     setIsLoading(true)
     setFormError('')
     try {
-      await login(formData.email, formData.contraseña)
+      await login(formData.email, formData.password)
       console.log('Login successful')
-    } catch (error: any) {
+    } catch (error) {
       console.error('Login failed:', error)
       
       // Check if it's a 5xx server error
-      if (error.response?.status >= 500) {
+      const axiosError = error as { response?: { status?: number } }
+      if (axiosError.response?.status && axiosError.response.status >= 500) {
         window.alert('Error del servidor. Por favor, intenta nuevamente más tarde.')
       } else {
         // For 4xx errors (wrong credentials, etc.), show a generic form error
@@ -81,7 +82,7 @@ function LoginPage() {
       // Redirect to the original destination or default to panel
       navigate({ to: redirect || '/panel' })
     }
-  }, [user, navigate, redirect])
+  }, [user, navigate, redirect, isLoading])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -112,16 +113,16 @@ function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contraseña">Contraseña</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input
-                id="contraseña"
+                id="password"
                 type="password"
-                value={formData.contraseña}
-                onChange={(e) => handleInputChange('contraseña', e.target.value)}
-                className={errors.contraseña ? 'border-destructive' : ''}
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className={errors.password ? 'border-destructive' : ''}
               />
-              {errors.contraseña && (
-                <p className="text-sm text-destructive">{errors.contraseña}</p>
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password}</p>
               )}
             </div>
 

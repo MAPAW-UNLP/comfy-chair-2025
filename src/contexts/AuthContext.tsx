@@ -1,14 +1,14 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import { authService, type User } from '@/services/auth';
-import type { RegisterData } from '@/services/auth';
+import type { RegisterFormData } from '@/lib/validations';
 import { setNavigateToLogin } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  register: (data: RegisterFormData) => Promise<void>;
   logout: () => void;
 }
 
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Configure navigation callback for API interceptor
     setNavigateToLogin(() => {
       setUser(null);
-      router.navigate({ to: '/ingresar', search: { redirect: undefined } });
+      router.navigate({ to: '/ingresar', search: { redirect: undefined, registered: undefined } });
     });
 
     const checkAuth = async () => {
@@ -41,10 +41,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(response.user);
   };
 
-  const register = async (data: RegisterData) => {
+  const register = async (data: RegisterFormData) => {
     await authService.register(data);
-    // After registration, auto-login
-    await login(data.email, data.password);
+    // Don't set user - let them log in manually after registration
   };
 
   const logout = () => {

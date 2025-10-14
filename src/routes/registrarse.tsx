@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { registerSchema, type RegisterFormData } from '@/lib/validations'
-import { authService } from '@/services/auth'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const Route = createFileRoute('/registrarse')({
   component: RegisterPage,
@@ -13,12 +13,13 @@ export const Route = createFileRoute('/registrarse')({
 
 function RegisterPage() {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [formData, setFormData] = useState<RegisterFormData>({
-    nombreCompleto: '',
-    afiliacion: '',
+    fullName: '',
+    affiliation: '',
     email: '',
-    contraseña: '',
-    confirmacion: '',
+    password: '',
+    confirmation: '',
   })
   const [errors, setErrors] = useState<Partial<RegisterFormData>>({})
   const [formError, setFormError] = useState<string>('')
@@ -43,7 +44,7 @@ function RegisterPage() {
     const result = registerSchema.safeParse(formData)
     if (!result.success) {
       const fieldErrors: Partial<RegisterFormData> = {}
-      result.error.issues.forEach((error: any) => {
+      result.error.issues.forEach((error) => {
         if (error.path[0]) {
           fieldErrors[error.path[0] as keyof RegisterFormData] = error.message
         }
@@ -55,20 +56,15 @@ function RegisterPage() {
     setIsLoading(true)
     setFormError('')
     try {
-      const response = await authService.register({
-        nombre_completo: formData.nombreCompleto,
-        afiliacion: formData.afiliacion,
-        email: formData.email,
-        password: formData.contraseña,
-      })
-      // TODO: Store token in localStorage or context
-      console.log('Registration successful:', response)
+      await register(formData)
+      console.log('Registration successful')
       navigate({ to: '/ingresar', search: { redirect: undefined, registered: 'true' } })
-    } catch (error: any) {
+    } catch (error) {
       console.error('Registration failed:', error)
       
       // Check if it's a 5xx server error
-      if (error.response?.status >= 500) {
+      const axiosError = error as { response?: { status?: number } }
+      if (axiosError.response?.status && axiosError.response.status >= 500) {
         window.alert('Error del servidor. Por favor, intenta nuevamente más tarde.')
       } else {
         // For 4xx errors (email already exists, etc.), show a generic form error
@@ -89,30 +85,30 @@ function RegisterPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nombreCompleto">Nombre completo</Label>
+              <Label htmlFor="fullName">Nombre completo</Label>
               <Input
-                id="nombreCompleto"
+                id="fullName"
                 type="text"
-                value={formData.nombreCompleto}
-                onChange={(e) => handleInputChange('nombreCompleto', e.target.value)}
-                className={errors.nombreCompleto ? 'border-destructive' : ''}
+                value={formData.fullName}
+                onChange={(e) => handleInputChange('fullName', e.target.value)}
+                className={errors.fullName ? 'border-destructive' : ''}
               />
-              {errors.nombreCompleto && (
-                <p className="text-sm text-destructive">{errors.nombreCompleto}</p>
+              {errors.fullName && (
+                <p className="text-sm text-destructive">{errors.fullName}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="afiliacion">Afiliación</Label>
+              <Label htmlFor="affiliation">Afiliación</Label>
               <Input
-                id="afiliacion"
+                id="affiliation"
                 type="text"
-                value={formData.afiliacion}
-                onChange={(e) => handleInputChange('afiliacion', e.target.value)}
-                className={errors.afiliacion ? 'border-destructive' : ''}
+                value={formData.affiliation}
+                onChange={(e) => handleInputChange('affiliation', e.target.value)}
+                className={errors.affiliation ? 'border-destructive' : ''}
               />
-              {errors.afiliacion && (
-                <p className="text-sm text-destructive">{errors.afiliacion}</p>
+              {errors.affiliation && (
+                <p className="text-sm text-destructive">{errors.affiliation}</p>
               )}
             </div>
 
@@ -131,30 +127,30 @@ function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contraseña">Contraseña</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input
-                id="contraseña"
+                id="password"
                 type="password"
-                value={formData.contraseña}
-                onChange={(e) => handleInputChange('contraseña', e.target.value)}
-                className={errors.contraseña ? 'border-destructive' : ''}
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className={errors.password ? 'border-destructive' : ''}
               />
-              {errors.contraseña && (
-                <p className="text-sm text-destructive">{errors.contraseña}</p>
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmacion">Confirmación</Label>
+              <Label htmlFor="confirmation">Confirmación</Label>
               <Input
-                id="confirmacion"
+                id="confirmation"
                 type="password"
-                value={formData.confirmacion}
-                onChange={(e) => handleInputChange('confirmacion', e.target.value)}
-                className={errors.confirmacion ? 'border-destructive' : ''}
+                value={formData.confirmation}
+                onChange={(e) => handleInputChange('confirmation', e.target.value)}
+                className={errors.confirmation ? 'border-destructive' : ''}
               />
-              {errors.confirmacion && (
-                <p className="text-sm text-destructive">{errors.confirmacion}</p>
+              {errors.confirmation && (
+                <p className="text-sm text-destructive">{errors.confirmation}</p>
               )}
             </div>
 
