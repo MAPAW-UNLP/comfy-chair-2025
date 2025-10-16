@@ -1,6 +1,6 @@
 import type { Conference } from '@/services/conferenceServices';
 
-import api from './api';
+import { axiosInstance as api } from './api';
 
 export interface Session {
   id: number
