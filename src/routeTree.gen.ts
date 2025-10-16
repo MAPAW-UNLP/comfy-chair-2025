@@ -94,30 +94,33 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bidding'
     | '/article/create'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
-    | '/bidding' | '/conference/edit/$id'
+    | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bidding'
     | '/article/create'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
-    | '/bidding' | '/conference/edit/$id'
+    | '/conference/edit/$id'
   id:
     | '__root__'
     | '/'
+    | '/bidding'
     | '/article/create'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
-    | '/bidding' | '/conference/edit/$id'
+    | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
