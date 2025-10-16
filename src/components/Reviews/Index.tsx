@@ -120,7 +120,7 @@ export default function Inicio() {
 
             {/* Bids completados → BOTÓN a /bidding */}
             <SoftCard
-              onClick={() => navigate({ to: '/bidding' })}
+              onClick={() => navigate({ to: '/reviewer/bidding' })}
               ariaLabel="Ir a la pantalla de bidding"
               className="focus:ring-offset-2"
             >
@@ -141,7 +141,7 @@ export default function Inicio() {
             {err && <p className="text-sm text-red-600">{err}</p>}
             <Button
               className="mt-2 w-full py-6 text-base"
-              onClick={() => navigate({ to: '/bidding' })}
+              onClick={() => navigate({ to: '/reviewer/bidding' })}
             >
               Ir al Bidding
             </Button>

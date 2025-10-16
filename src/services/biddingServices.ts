@@ -33,19 +33,19 @@ function dedupeByArticle(rows: any[]): BiddingPreference[] {
 
 // --- reads ---
 export async function getBidsByReviewer(reviewerId: number): Promise<BiddingPreference[]> {
-  const { data } = await api.get('bids/', { params: { reviewerId } }); // DRF: trailing slash
+  const { data } = await api.get('/api/bids/', { params: { reviewerId } }); // DRF: trailing slash
   return dedupeByArticle(data ?? []);
 }
 
 // --- writes (primitivos) ---
 export async function upsertBid(p: { reviewer: number; article: number; value: Interes }) {
   const payload = { reviewer: p.reviewer, article: p.article, choice: p.value };
-  const { data } = await api.post('bidding/', payload); // POST crea o tu view hace upsert
+  const { data } = await api.post('/api/bidding/', payload); // POST crea o tu view hace upsert
   return { ...data, choice: norm(data.choice) } as BiddingPreference;
 }
 
 export async function updateBid(id: number, value: Interes) {
-  const { data } = await api.put(`bidding/${id}/`, { choice: value });
+  const { data } = await api.put(`/api/bidding/${id}/`, { choice: value });
   return { ...data, choice: norm(data.choice) } as BiddingPreference;
 }
 
