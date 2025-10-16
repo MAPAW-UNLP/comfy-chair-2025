@@ -16,7 +16,7 @@ export interface AuthResponse {
 
 export const authService = {
   register: async (data: RegisterFormData): Promise<AuthResponse> => {
-    const response = await axiosInstance.post('/user/registro/', {
+    const response = await axiosInstance.post('/user/register/', {
       full_name: data.fullName,
       affiliation: data.affiliation,
       email: data.email,
@@ -37,7 +37,7 @@ export const authService = {
   },
 
   verifyToken: async (token: string): Promise<AuthResponse> => {
-    const response = await axiosInstance.get('/user/getUsuario/')
+    const response = await axiosInstance.get('/user/getUser/')
     return {
       token: token,
       user: {
