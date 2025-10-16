@@ -1,4 +1,4 @@
-// src/services/bidding.service.ts
+// src/services/biddingService.ts
 import api from '@/services/api';
 
 export type Interes = 'Interesado' | 'Quizás' | 'No Interesado' | 'No_select';
