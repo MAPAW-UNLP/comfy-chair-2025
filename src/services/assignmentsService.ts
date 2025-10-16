@@ -1,4 +1,4 @@
-// src/services/assignments.service.ts
+// src/services/assignmentsService.ts
 import api from '@/services/api';
 
 export interface AssignedArticle {
