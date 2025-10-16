@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { loginSchema, type LoginFormData } from '@/lib/validations'
 import { useAuth } from '@/contexts/AuthContext'
 
-export const Route = createFileRoute('/ingresar')({
+export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>) => {
     return {
       redirect: (search.redirect as string) || undefined,
@@ -139,7 +139,7 @@ function LoginPage() {
 
           <div className="mt-6 text-center text-sm">
             ¿No tienes una cuenta?{' '}
-            <Link to="/registrarse" className="text-primary underline">
+            <Link to="/register" search={{ redirect: undefined, registered: undefined }} className="text-primary underline">
               Registrarse
             </Link>
           </div>

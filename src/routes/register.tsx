@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { registerSchema, type RegisterFormData } from '@/lib/validations'
 import { useAuth } from '@/contexts/AuthContext'
 
-export const Route = createFileRoute('/registrarse')({
+export const Route = createFileRoute('/register')({
   component: RegisterPage,
 })
 
@@ -58,7 +58,7 @@ function RegisterPage() {
     try {
       await register(formData)
       console.log('Registration successful')
-      navigate({ to: '/ingresar', search: { redirect: undefined, registered: 'true' } })
+      navigate({ to: '/login', search: { redirect: undefined, registered: 'true' } })
     } catch (error) {
       console.error('Registration failed:', error)
       
@@ -167,7 +167,7 @@ function RegisterPage() {
 
           <div className="mt-6 text-center text-sm">
             ¿Ya tienes cuenta?{' '}
-            <Link to="/ingresar" search={{ redirect: undefined, registered: undefined }} className="text-primary underline">
+            <Link to="/login" search={{ redirect: undefined, registered: undefined }} className="text-primary underline">
               Ingresar
             </Link>
           </div>

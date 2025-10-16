@@ -9,26 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegistrarseRouteImport } from './routes/registrarse'
-import { Route as IngresarRouteImport } from './routes/ingresar'
-import { Route as DummyRouteImport } from './routes/dummy'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthPanelRouteImport } from './routes/_auth.panel'
+import { Route as ConferenceViewRouteImport } from './routes/conference/view'
+import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
+import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
+import { Route as ArticleViewRouteImport } from './routes/article/view'
+import { Route as ArticleCreateRouteImport } from './routes/article/create'
+import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
+import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 
-const RegistrarseRoute = RegistrarseRouteImport.update({
-  id: '/registrarse',
-  path: '/registrarse',
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IngresarRoute = IngresarRouteImport.update({
-  id: '/ingresar',
-  path: '/ingresar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DummyRoute = DummyRouteImport.update({
-  id: '/dummy',
-  path: '/dummy',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -40,79 +40,147 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthPanelRoute = AuthPanelRouteImport.update({
-  id: '/panel',
-  path: '/panel',
+const ConferenceViewRoute = ConferenceViewRouteImport.update({
+  id: '/conference/view',
+  path: '/conference/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenceCreateRoute = ConferenceCreateRouteImport.update({
+  id: '/conference/create',
+  path: '/conference/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenceIdRoute = ConferenceIdRouteImport.update({
+  id: '/conference/$id',
+  path: '/conference/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleViewRoute = ArticleViewRouteImport.update({
+  id: '/article/view',
+  path: '/article/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleCreateRoute = ArticleCreateRouteImport.update({
+  id: '/article/create',
+  path: '/article/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthDashboardRoute = AuthDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthRoute,
+} as any)
+const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
+  id: '/conference/edit/$id',
+  path: '/conference/edit/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dummy': typeof DummyRoute
-  '/ingresar': typeof IngresarRoute
-  '/registrarse': typeof RegistrarseRoute
-  '/panel': typeof AuthPanelRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dummy': typeof DummyRoute
-  '/ingresar': typeof IngresarRoute
-  '/registrarse': typeof RegistrarseRoute
-  '/panel': typeof AuthPanelRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
-  '/dummy': typeof DummyRoute
-  '/ingresar': typeof IngresarRoute
-  '/registrarse': typeof RegistrarseRoute
-  '/_auth/panel': typeof AuthPanelRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/_auth/dashboard': typeof AuthDashboardRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dummy' | '/ingresar' | '/registrarse' | '/panel'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/article/create'
+    | '/article/view'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dummy' | '/ingresar' | '/registrarse' | '/panel'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/article/create'
+    | '/article/view'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/conference/edit/$id'
   id:
     | '__root__'
     | '/'
     | '/_auth'
-    | '/dummy'
-    | '/ingresar'
-    | '/registrarse'
-    | '/_auth/panel'
+    | '/login'
+    | '/register'
+    | '/_auth/dashboard'
+    | '/article/create'
+    | '/article/view'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
-  DummyRoute: typeof DummyRoute
-  IngresarRoute: typeof IngresarRoute
-  RegistrarseRoute: typeof RegistrarseRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  ArticleCreateRoute: typeof ArticleCreateRoute
+  ArticleViewRoute: typeof ArticleViewRoute
+  ConferenceIdRoute: typeof ConferenceIdRoute
+  ConferenceCreateRoute: typeof ConferenceCreateRoute
+  ConferenceViewRoute: typeof ConferenceViewRoute
+  ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/registrarse': {
-      id: '/registrarse'
-      path: '/registrarse'
-      fullPath: '/registrarse'
-      preLoaderRoute: typeof RegistrarseRouteImport
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ingresar': {
-      id: '/ingresar'
-      path: '/ingresar'
-      fullPath: '/ingresar'
-      preLoaderRoute: typeof IngresarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dummy': {
-      id: '/dummy'
-      path: '/dummy'
-      fullPath: '/dummy'
-      preLoaderRoute: typeof DummyRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -129,22 +197,64 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/panel': {
-      id: '/_auth/panel'
-      path: '/panel'
-      fullPath: '/panel'
-      preLoaderRoute: typeof AuthPanelRouteImport
+    '/conference/view': {
+      id: '/conference/view'
+      path: '/conference/view'
+      fullPath: '/conference/view'
+      preLoaderRoute: typeof ConferenceViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conference/create': {
+      id: '/conference/create'
+      path: '/conference/create'
+      fullPath: '/conference/create'
+      preLoaderRoute: typeof ConferenceCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conference/$id': {
+      id: '/conference/$id'
+      path: '/conference/$id'
+      fullPath: '/conference/$id'
+      preLoaderRoute: typeof ConferenceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/view': {
+      id: '/article/view'
+      path: '/article/view'
+      fullPath: '/article/view'
+      preLoaderRoute: typeof ArticleViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/create': {
+      id: '/article/create'
+      path: '/article/create'
+      fullPath: '/article/create'
+      preLoaderRoute: typeof ArticleCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/dashboard': {
+      id: '/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/conference/edit/$id': {
+      id: '/conference/edit/$id'
+      path: '/conference/edit/$id'
+      fullPath: '/conference/edit/$id'
+      preLoaderRoute: typeof ConferenceEditIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
 interface AuthRouteChildren {
-  AuthPanelRoute: typeof AuthPanelRoute
+  AuthDashboardRoute: typeof AuthDashboardRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthPanelRoute: AuthPanelRoute,
+  AuthDashboardRoute: AuthDashboardRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -152,9 +262,14 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
-  DummyRoute: DummyRoute,
-  IngresarRoute: IngresarRoute,
-  RegistrarseRoute: RegistrarseRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  ArticleCreateRoute: ArticleCreateRoute,
+  ArticleViewRoute: ArticleViewRoute,
+  ConferenceIdRoute: ConferenceIdRoute,
+  ConferenceCreateRoute: ConferenceCreateRoute,
+  ConferenceViewRoute: ConferenceViewRoute,
+  ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

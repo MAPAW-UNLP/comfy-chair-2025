@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Configure navigation callback for API interceptor
     setNavigateToLogin(() => {
       setUser(null);
-      router.navigate({ to: '/ingresar', search: { redirect: undefined, registered: undefined } });
+      router.navigate({ to: '/login', search: { redirect: undefined, registered: undefined } });
     });
 
     const checkAuth = async () => {

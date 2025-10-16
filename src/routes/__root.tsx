@@ -18,12 +18,11 @@ const RootLayout = () => {
     { to: '/conference/view', label: 'Conferencias' },
     { to: '/article/view', label: 'Articulos' },
     { to: '/article/create', label: 'Subir Articulo' },
+    { to: '/login', label: 'Ingresar' },
   ];
 
   return (
     <AuthProvider>
-
-    // Contenedor principal que ocupa toda la pantalla verticalmente
     <div className="flex flex-col h-screen">
 
       {/* Navbar superior */}

@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const Route = createFileRoute('/_auth/panel')({
+export const Route = createFileRoute('/_auth/dashboard')({
   component: PanelPage,
 })
 
@@ -11,11 +11,11 @@ function PanelPage() {
   const { logout } = useAuth()
   const navigate = useNavigate()
   // Get user from the parent _auth route context
-  const { user } = useRouteContext({ from: '/_auth/panel' })
+  const { user } = useRouteContext({ from: '/_auth/dashboard' })
 
   const handleLogout = () => {
     logout()
-    navigate({ to: '/ingresar', search: { redirect: undefined, registered: undefined } })
+    navigate({ to: '/login', search: { redirect: undefined, registered: undefined } })
   }
 
   return (

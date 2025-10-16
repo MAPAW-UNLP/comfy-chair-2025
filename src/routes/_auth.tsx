@@ -9,10 +9,10 @@ export const Route = createFileRoute('/_auth')({
     if (!user) {
       // Redirect to login if not authenticated
       throw redirect({
-        to: '/ingresar',
+        to: '/login',
         search: {
           // Store the redirect location so we can send them back after login
-          redirect: location.href,
+          redirect: location.href as string,
         },
       })
     }
