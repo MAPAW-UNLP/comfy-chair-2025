@@ -9,15 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DummyRouteImport } from './routes/dummy'
 import { Route as BiddingRouteImport } from './routes/bidding'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConferenceViewRouteImport } from './routes/conference/view'
+import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
+import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
+import { Route as ArticleViewRouteImport } from './routes/article/view'
+import { Route as ArticleCreateRouteImport } from './routes/article/create'
+import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 
-const DummyRoute = DummyRouteImport.update({
-  id: '/dummy',
-  path: '/dummy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BiddingRoute = BiddingRouteImport.update({
   id: '/bidding',
   path: '/bidding',
@@ -28,46 +28,111 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConferenceViewRoute = ConferenceViewRouteImport.update({
+  id: '/conference/view',
+  path: '/conference/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenceCreateRoute = ConferenceCreateRouteImport.update({
+  id: '/conference/create',
+  path: '/conference/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenceIdRoute = ConferenceIdRouteImport.update({
+  id: '/conference/$id',
+  path: '/conference/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleViewRoute = ArticleViewRouteImport.update({
+  id: '/article/view',
+  path: '/article/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleCreateRoute = ArticleCreateRouteImport.update({
+  id: '/article/create',
+  path: '/article/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
+  id: '/conference/edit/$id',
+  path: '/conference/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bidding': typeof BiddingRoute
-  '/dummy': typeof DummyRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bidding': typeof BiddingRoute
-  '/dummy': typeof DummyRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bidding': typeof BiddingRoute
-  '/dummy': typeof DummyRoute
+  '/article/create': typeof ArticleCreateRoute
+  '/article/view': typeof ArticleViewRoute
+  '/conference/$id': typeof ConferenceIdRoute
+  '/conference/create': typeof ConferenceCreateRoute
+  '/conference/view': typeof ConferenceViewRoute
+  '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bidding' | '/dummy'
+  fullPaths:
+    | '/'
+    | '/article/create'
+    | '/article/view'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/bidding' | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bidding' | '/dummy'
-  id: '__root__' | '/' | '/bidding' | '/dummy'
+  to:
+    | '/'
+    | '/article/create'
+    | '/article/view'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/bidding' | '/conference/edit/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/article/create'
+    | '/article/view'
+    | '/conference/$id'
+    | '/conference/create'
+    | '/conference/view'
+    | '/bidding' | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BiddingRoute: typeof BiddingRoute
-  DummyRoute: typeof DummyRoute
+  ArticleCreateRoute: typeof ArticleCreateRoute
+  ArticleViewRoute: typeof ArticleViewRoute
+  ConferenceIdRoute: typeof ConferenceIdRoute
+  ConferenceCreateRoute: typeof ConferenceCreateRoute
+  ConferenceViewRoute: typeof ConferenceViewRoute
+  ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dummy': {
-      id: '/dummy'
-      path: '/dummy'
-      fullPath: '/dummy'
-      preLoaderRoute: typeof DummyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/bidding': {
       id: '/bidding'
       path: '/bidding'
@@ -82,13 +147,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conference/view': {
+      id: '/conference/view'
+      path: '/conference/view'
+      fullPath: '/conference/view'
+      preLoaderRoute: typeof ConferenceViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conference/create': {
+      id: '/conference/create'
+      path: '/conference/create'
+      fullPath: '/conference/create'
+      preLoaderRoute: typeof ConferenceCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conference/$id': {
+      id: '/conference/$id'
+      path: '/conference/$id'
+      fullPath: '/conference/$id'
+      preLoaderRoute: typeof ConferenceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/view': {
+      id: '/article/view'
+      path: '/article/view'
+      fullPath: '/article/view'
+      preLoaderRoute: typeof ArticleViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/create': {
+      id: '/article/create'
+      path: '/article/create'
+      fullPath: '/article/create'
+      preLoaderRoute: typeof ArticleCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conference/edit/$id': {
+      id: '/conference/edit/$id'
+      path: '/conference/edit/$id'
+      fullPath: '/conference/edit/$id'
+      preLoaderRoute: typeof ConferenceEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BiddingRoute: BiddingRoute,
-  DummyRoute: DummyRoute,
+  ArticleCreateRoute: ArticleCreateRoute,
+  ArticleViewRoute: ArticleViewRoute,
+  ConferenceIdRoute: ConferenceIdRoute,
+  ConferenceCreateRoute: ConferenceCreateRoute,
+  ConferenceViewRoute: ConferenceViewRoute,
+  ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
