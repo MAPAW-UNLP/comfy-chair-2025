@@ -1,4 +1,5 @@
-import api from './api';
+import { axiosInstance as api } from './api';
+
 import type { Estado } from '@/components/article/ArticleCard';
 import type { Session } from '@/services/sessionServices';
 import type { User } from '@/services/userServices';

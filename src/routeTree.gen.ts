@@ -9,14 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
 import { Route as ArticleViewRouteImport } from './routes/article/view'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
+import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -47,6 +65,11 @@ const ArticleCreateRoute = ArticleCreateRouteImport.update({
   path: '/article/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthDashboardRoute = AuthDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthRoute,
+} as any)
 const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
   id: '/conference/edit/$id',
   path: '/conference/edit/$id',
@@ -55,6 +78,9 @@ const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard': typeof AuthDashboardRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
   '/conference/$id': typeof ConferenceIdRoute
@@ -64,6 +90,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard': typeof AuthDashboardRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
   '/conference/$id': typeof ConferenceIdRoute
@@ -74,6 +103,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/_auth/dashboard': typeof AuthDashboardRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/view': typeof ArticleViewRoute
   '/conference/$id': typeof ConferenceIdRoute
@@ -85,6 +118,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
     | '/article/create'
     | '/article/view'
     | '/conference/$id'
@@ -94,6 +130,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
     | '/article/create'
     | '/article/view'
     | '/conference/$id'
@@ -103,6 +142,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_auth'
+    | '/login'
+    | '/register'
+    | '/_auth/dashboard'
     | '/article/create'
     | '/article/view'
     | '/conference/$id'
@@ -113,6 +156,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   ArticleCreateRoute: typeof ArticleCreateRoute
   ArticleViewRoute: typeof ArticleViewRoute
   ConferenceIdRoute: typeof ConferenceIdRoute
@@ -123,6 +169,27 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -165,6 +232,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/dashboard': {
+      id: '/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthDashboardRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/conference/edit/$id': {
       id: '/conference/edit/$id'
       path: '/conference/edit/$id'
@@ -175,8 +249,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthRouteChildren {
+  AuthDashboardRoute: typeof AuthDashboardRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthDashboardRoute: AuthDashboardRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   ArticleCreateRoute: ArticleCreateRoute,
   ArticleViewRoute: ArticleViewRoute,
   ConferenceIdRoute: ConferenceIdRoute,
