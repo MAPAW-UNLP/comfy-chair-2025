@@ -1,5 +1,7 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { AuthProvider } from '@/contexts/AuthContext';
+
 import { Armchair, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
@@ -17,11 +19,11 @@ const RootLayout = () => {
     { to: '/article/view', label: 'Articulos' },
     { to: '/article/create', label: 'Subir Articulo' },
     { to: '/bidding', label: 'Bidding' },
+    { to: '/login', label: 'Ingresar' },
   ];
 
   return (
-
-    // Contenedor principal que ocupa toda la pantalla verticalmente
+    <AuthProvider>
     <div className="flex flex-col h-screen">
 
       {/* Navbar superior */}
@@ -90,6 +92,7 @@ const RootLayout = () => {
       <Toaster richColors position='top-right' />
 
     </div>
+    </AuthProvider>
   );
 };
 
