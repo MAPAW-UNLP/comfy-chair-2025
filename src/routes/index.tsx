@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Inicio from "@/components/Reviews/Index";
+import Inicio from "@/components/reviews/Index";
 
 function Index() {
   return (

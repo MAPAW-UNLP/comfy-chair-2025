@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
-import { fetchArticulos, type Articulo } from '@/services/articulosServices';
+import { getAllArticles, type Article } from '@/services/articleServices';
 import {
   getBidsByReviewer,
   saveBid,
   type BiddingPreference,
-} from '@/services/bidding.service';
+} from '@/services/biddingServices';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -44,7 +44,7 @@ function mapLocalToChoice(v: InteresLocal): 'Interesado' | 'Quizás' | 'No Inter
 }
 
 export default function BiddingPage() {
-  const [articulos, setArticulos] = useState<Articulo[]>([]);
+  const [articulos, setArticulos] = useState<Article[]>([]);
   const [bids, setBids] = useState<BiddingPreference[]>([]);
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [seleccion, setSeleccion] = useState<Record<number, InteresLocal>>({});
@@ -66,7 +66,7 @@ export default function BiddingPage() {
     (async () => {
       try {
         const [arts, userBids] = await Promise.all([
-          fetchArticulos(),
+          getAllArticles(),
           getBidsByReviewer(REVIEWER_ID),
         ]);
         setArticulos(arts);
@@ -243,7 +243,7 @@ export default function BiddingPage() {
           return (
             <article key={a.id} className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-black/5">
               <header className="flex items-start justify-between gap-3">
-                <h2 className="text-base font-semibold leading-6">{a.titulo}</h2>
+                <h2 className="text-base font-semibold leading-6">{a.title}</h2>
                 <button
                   type="button"
                   className="rounded p-1 hover:bg-gray-100"
@@ -258,7 +258,7 @@ export default function BiddingPage() {
 
               {isOpen && (
                 <p className="mb-4 text-sm leading-6 text-gray-700">
-                  {a.descripcion?.trim() || 'Descripción no disponible por el momento.'}
+                  {a.abstract?.trim() || 'Descripción no disponible por el momento.'}
                 </p>
               )}
 

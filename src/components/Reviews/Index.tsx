@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { fetchArticulos, type Articulo } from '@/services/articulosServices';
-import { getBidsByReviewer } from '@/services/bidding.service';
+import { getAllArticles, type Article } from '@/services/articleServices';
+import { getBidsByReviewer } from '@/services/biddingServices';
 import { useCountdown } from '@/utils/useCountdown';
-import { fetchAssignedArticles, type AssignedArticle } from '@/services/assignments.service';
+import { fetchAssignedArticles, type AssignedArticle } from '@/services/assignmentsServices';
 import { Button } from '@/components/ui/button';
 
 const REVIEWER_ID = 1; // TODO: tomar del auth real
@@ -49,7 +49,7 @@ export default function Inicio() {
   const navigate = useNavigate();
 
   // Estado pre-deadline (bidding)
-  const [articulos, setArticulos] = useState<Articulo[]>([]);
+  const [articulos, setArticulos] = useState<Article[]>([]);
   const [bids, setBids] = useState<{ article: number; choice?: string }[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
@@ -67,7 +67,7 @@ export default function Inicio() {
     (async () => {
       try {
         const [arts, userBids] = await Promise.all([
-          fetchArticulos(),
+          getAllArticles(),
           getBidsByReviewer(REVIEWER_ID),
         ]);
         setArticulos(arts);
