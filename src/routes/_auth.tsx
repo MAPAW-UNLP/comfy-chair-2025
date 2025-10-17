@@ -13,6 +13,7 @@ export const Route = createFileRoute('/_auth')({
         search: {
           // Store the redirect location so we can send them back after login
           redirect: location.href as string,
+          registered: undefined,
         },
       })
     }

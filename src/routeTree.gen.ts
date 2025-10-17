@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ReviewerBiddingRouteImport } from './routes/reviewer/bidding'
 import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
@@ -38,6 +39,11 @@ const AuthRoute = AuthRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewerBiddingRoute = ReviewerBiddingRouteImport.update({
+  id: '/reviewer/bidding',
+  path: '/reviewer/bidding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConferenceViewRoute = ConferenceViewRouteImport.update({
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
+  '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
+  '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
+  '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/reviewer/bidding'
     | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/reviewer/bidding'
     | '/conference/edit/$id'
   id:
     | '__root__'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/reviewer/bidding'
     | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   ConferenceIdRoute: typeof ConferenceIdRoute
   ConferenceCreateRoute: typeof ConferenceCreateRoute
   ConferenceViewRoute: typeof ConferenceViewRoute
+  ReviewerBiddingRoute: typeof ReviewerBiddingRoute
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviewer/bidding': {
+      id: '/reviewer/bidding'
+      path: '/reviewer/bidding'
+      fullPath: '/reviewer/bidding'
+      preLoaderRoute: typeof ReviewerBiddingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conference/view': {
@@ -269,6 +289,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConferenceIdRoute: ConferenceIdRoute,
   ConferenceCreateRoute: ConferenceCreateRoute,
   ConferenceViewRoute: ConferenceViewRoute,
+  ReviewerBiddingRoute: ReviewerBiddingRoute,
   ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport
