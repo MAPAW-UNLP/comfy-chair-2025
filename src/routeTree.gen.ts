@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReviewerBiddingRouteImport } from './routes/reviewer/bidding'
+import { Route as ReviewerAssignedRouteImport } from './routes/reviewer/assigned'
 import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
@@ -44,6 +45,11 @@ const IndexRoute = IndexRouteImport.update({
 const ReviewerBiddingRoute = ReviewerBiddingRouteImport.update({
   id: '/reviewer/bidding',
   path: '/reviewer/bidding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewerAssignedRoute = ReviewerAssignedRouteImport.update({
+  id: '/reviewer/assigned',
+  path: '/reviewer/assigned',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConferenceViewRoute = ConferenceViewRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
+  '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
+  '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
+  '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/reviewer/assigned'
     | '/reviewer/bidding'
     | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/reviewer/assigned'
     | '/reviewer/bidding'
     | '/conference/edit/$id'
   id:
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/reviewer/assigned'
     | '/reviewer/bidding'
     | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
@@ -176,6 +188,7 @@ export interface RootRouteChildren {
   ConferenceIdRoute: typeof ConferenceIdRoute
   ConferenceCreateRoute: typeof ConferenceCreateRoute
   ConferenceViewRoute: typeof ConferenceViewRoute
+  ReviewerAssignedRoute: typeof ReviewerAssignedRoute
   ReviewerBiddingRoute: typeof ReviewerBiddingRoute
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
@@ -215,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/reviewer/bidding'
       fullPath: '/reviewer/bidding'
       preLoaderRoute: typeof ReviewerBiddingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviewer/assigned': {
+      id: '/reviewer/assigned'
+      path: '/reviewer/assigned'
+      fullPath: '/reviewer/assigned'
+      preLoaderRoute: typeof ReviewerAssignedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conference/view': {
@@ -289,6 +309,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConferenceIdRoute: ConferenceIdRoute,
   ConferenceCreateRoute: ConferenceCreateRoute,
   ConferenceViewRoute: ConferenceViewRoute,
+  ReviewerAssignedRoute: ReviewerAssignedRoute,
   ReviewerBiddingRoute: ReviewerBiddingRoute,
   ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
