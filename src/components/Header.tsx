@@ -1,46 +1,28 @@
-import React, { useState } from "react";
-import { Menu, Armchair } from "lucide-react";
-import { useNavigate, useMatchRoute } from "@tanstack/react-router";
-import Sidebar from "./Sidebar";
+import React, { useState } from 'react';
+import { Menu } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import Sidebar from './Sidebar';
 
 function Header() {
   const navigate = useNavigate();
-  const matchRoute = useMatchRoute();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isRevisoresPage = matchRoute({ to: "/articulos/$id/revisores" });
-
   const goHome = () => {
-    navigate({ to: "/" });
+    navigate({ to: '/' }); //TODO: Dependiendo el rol, ir a home del rol
   };
 
   return (
-    <div className="flex justify-between items-center bg-primary w-full h-20 text-white px-4">
+    <div className="flex justify-between items-center bg-primary w-full h-20 text-white p-3">
       <div className="cursor-pointer" onClick={() => setSidebarOpen(true)}>
         <Menu className="w-6 h-6" />
       </div>
 
-      <div
-        className="flex-1 text-center flex flex-col items-center leading-tight cursor-pointer"
-        onClick={!isRevisoresPage ? goHome : undefined}
-      >
-        {!isRevisoresPage ? (
-          <p className="text-2xl italic">ComfyChair</p>
-        ) : (
-          <>
-            <p className="text-2xl font-semibold">Revisores disponibles</p>
-            <p className="text-sm text-gray-200">para el artículo:</p>
-          </>
-        )}
+      <div className="cursor-pointer mr-5" onClick={goHome}>
+        <p className="text-2xl italic">ComfyChair</p>
       </div>
 
-      {isRevisoresPage ? (
-        <div className="cursor-pointer" onClick={goHome}>
-          <Armchair className="w-7 h-7 text-white hover:text-gray-300 transition-colors" />
-        </div>
-      ) : (
-        <div className="w-7 h-7" />
-      )}
+      <div> {/*Icono de usuario ?*/}</div>
+
 
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     </div>

@@ -2,16 +2,16 @@ import api from './api';
 
 export interface Revisor {
   id: number;
-  nombre_completo: string;
+  full_name: string;
   email: string;
-  interes: 'interesado' | 'quizas' | 'no_interesado' | 'ninguno';
-  asignado?: boolean;
+  interest: 'interesado' | 'quizas' | 'no_interesado' | 'ninguno';
+  assigned?: boolean;
 }
 
 export const getRevisoresByArticulo = async (
   articuloId: number
 ): Promise<Revisor[]> => {
-  const response = await api.get(`/chairs/articulos/${articuloId}/revisores-disponibles/`);
+  const response = await api.get(`chairs/articles/${articuloId}/available-reviewers/`);
   return response.data;
 };
 

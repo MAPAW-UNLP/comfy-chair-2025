@@ -40,7 +40,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
   }, [asignado])
 
   const getEstadoColor = () => {
-    switch (revisor.interes) {
+    switch (revisor.interest) {
       case "interesado":
         return { backgroundColor: "hsla(141, 81%, 66%, 1.00)" }
       case "quizas":
@@ -73,7 +73,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
       <div className="w-screen flex items-center justify-between py-6 border-b border-black relative left-1/2 right-1/2 -translate-x-1/2 px-8">
         <div className="flex-1 text-center mr-4">
           <p className="text-2xl font-bold tracking-wide">
-            {revisor.nombre_completo}
+            {revisor.full_name}
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
             className="mb-3 h-9 w-26 flex items-center justify-center rounded-md text-sm font-bold text-black border border-black"
             style={getEstadoColor()}
           >
-            {interesMap[revisor.interes] || "No indicó"}
+            {interesMap[revisor.interest] || "No indicó"}
           </span>
 
           {isAsignado ? (
@@ -108,7 +108,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
           <DialogHeader>
             <DialogTitle>Revisor asignado</DialogTitle>
             <DialogDescription>
-              El revisor <b>{revisor.nombre_completo}</b> fue asignado con éxito.
+              El revisor <b>{revisor.full_name}</b> fue asignado con éxito.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
@@ -119,7 +119,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
           <DialogHeader>
             <DialogTitle>Revisor eliminado</DialogTitle>
             <DialogDescription>
-              El revisor <b>{revisor.nombre_completo}</b> fue eliminado.
+              El revisor <b>{revisor.full_name}</b> fue eliminado.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
