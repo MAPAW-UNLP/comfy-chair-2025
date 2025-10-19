@@ -2,15 +2,48 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { AuthProvider } from '@/contexts/AuthContext';
 
-import { Armchair, Menu, X } from 'lucide-react';
+import { Armchair, Menu, X, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
+
+// Componente para el menú desplegable Chairs
+const ChairsDropdown = ({ isOpen, onToggle, onClose, className = "" }: {
+  isOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  className?: string;
+}) => (
+  <div className={`relative ${className}`}>
+    <button
+      onClick={onToggle}
+      className="px-3 py-1 rounded-md hover:bg-gray-400 flex items-center gap-1 w-full md:w-auto"
+    >
+      Chairs
+      <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+    </button>
+    
+    {isOpen && (
+      <div className="absolute top-full left-0 mt-1 bg-slate-800 rounded-md shadow-lg z-50 min-w-[150px]">
+        <Link
+          to="/articulos/articulos"
+          className="block px-4 py-2 text-sm hover:bg-gray-700 rounded-md"
+          onClick={onClose}
+        >
+          Artículos
+        </Link>
+      </div>
+    )}
+  </div>
+);
 
 // Definición del componente principal (layout raíz)
 const RootLayout = () => {
 
   // Estado para controlar si el menú lateral móvil está abierto o cerrado
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Estado para controlar si el menú desplegable Chairs está abierto
+  const [isChairsMenuOpen, setIsChairsMenuOpen] = useState(false);
 
   // Lista de páginas principales de la aplicación
   const links = [
@@ -36,6 +69,12 @@ const RootLayout = () => {
               {link.label}
             </Link>
           ))}
+          
+          <ChairsDropdown
+            isOpen={isChairsMenuOpen}
+            onToggle={() => setIsChairsMenuOpen(!isChairsMenuOpen)}
+            onClose={() => setIsChairsMenuOpen(false)}
+          />
         </nav>
 
         {/* Nombre de la app + ícono */}
@@ -74,6 +113,19 @@ const RootLayout = () => {
                 {link.label}
               </Link>
             ))}
+
+            {/* Menú desplegable de los Chairs */}            
+            <div className="px-4 mx-2">
+              <ChairsDropdown
+                isOpen={isChairsMenuOpen}
+                onToggle={() => setIsChairsMenuOpen(!isChairsMenuOpen)}
+                onClose={() => {
+                  setIsChairsMenuOpen(false);
+                  setIsOpen(false);
+                }}
+                className="w-full"
+              />
+            </div>
           </nav>
 
         </aside>
