@@ -7,7 +7,7 @@ import {
   removeReviewerFromArticle,
   type Revisor,
 } from "@/services/revisor"
-import { getArticuloById, type Article } from "@/services/articulos"
+import { getArticleById, type Article } from "@/services/articles"
 import {
   Dialog,
   DialogContent,
@@ -49,7 +49,7 @@ export const RevisoresApp = () => {
         const data = await getRevisoresByArticulo(Number(id))
         const revisoresConAsignado = (data ?? []).map((rev: Revisor) => ({
           ...rev,
-          asignado: rev.asignado ?? false,
+          asignado: rev.assigned ?? false,
         }))
         revisoresConAsignado.sort((a, b) => Number(b.asignado) - Number(a.asignado))
         setRevisores(revisoresConAsignado)
@@ -68,7 +68,7 @@ export const RevisoresApp = () => {
     const fetchArticulo = async () => {
       try {
         setLoadingArticulo(true)
-        const data = await getArticuloById(Number(id))
+        const data = await getArticleById(Number(id))
         setArticulo(data)
       } catch (error) {
         console.error("Error al traer artículo:", error)
@@ -148,7 +148,7 @@ export const RevisoresApp = () => {
             <RevisorItem
               key={rev.id}
               revisor={rev}
-              asignado={rev.asignado}
+              asignado={rev.assigned}
               onAsignar={() => handleAsignar(rev.id)}
               onEliminar={() => handleEliminar(rev.id)}
             />
