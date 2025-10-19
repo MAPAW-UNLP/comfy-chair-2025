@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { getArticulos, type Article } from '@/services/articulos';
-import { ListaArticulos } from './ListaArticulos';
-// import { articulosMock } from '@/mocks/articulos';
+import { getArticulos, type Article } from '@/services/articles';
+import { ArticleList } from './ArticleList';
 
 
-export const ArticulosApp = () => {
+export const ArticlesApp = () => {
   const [articulos, setArticulos] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -14,7 +13,6 @@ export const ArticulosApp = () => {
         setLoading(true);
         const data = await getArticulos();
         setArticulos(data);
-        // setArticulos(articulosMock);
       } catch (error) {
         console.error('Error fetching articulos:', error);
         setArticulos([]);
@@ -31,7 +29,7 @@ export const ArticulosApp = () => {
 
   return (
     <div>
-      <ListaArticulos items={articulos} />
+      <ArticleList items={articulos} />
     </div>
   );
 };

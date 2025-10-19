@@ -6,7 +6,7 @@ export interface Article {
   title: string;
   description: string;
   autores?: string[]; // user[];
-  revisores?: Revisor[];
+  reviewers?: Revisor[];
 }
 
 export const getArticulos = async (): Promise<Article[]> => {
@@ -20,7 +20,7 @@ export const getArticulos = async (): Promise<Article[]> => {
   }
 };
 
-export const getArticuloById = async (id: number): Promise<Article> => {
+export const getArticleById = async (id: number): Promise<Article> => {
   const res = await api.get(`/articles/articles/${id}/`)
   if (!res.status || res.status >= 400) throw new Error("Error al obtener el artículo")
   return res.data
