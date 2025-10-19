@@ -14,7 +14,7 @@ export const ArticleCard = ({ article }: ArticleCardProps) => {
   const iscomplete = reviewers.length === 3;
 
   const handleCardClick = () => {
-    navigate({ to: `/articulos/${id}/revisores` });
+    navigate({ to: `/articles/${id}/reviewers` });
   };
 
   return (
