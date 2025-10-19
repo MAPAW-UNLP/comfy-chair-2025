@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Article } from '@/services/articles';
-import { ArticleCard } from './ArticleCard';
+import { ArticleListItem } from './ArticleListItem';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -114,7 +114,7 @@ export const ArticleList = ({ items }: ArticleListProps) => {
             {/* Lista */}
             <div className="divide-y divide-gray-400 flex-1 overflow-y-auto">
               {visibleArticles.map((articulo) => (
-                <ArticleCard key={articulo.id} article={articulo} />
+                <ArticleListItem key={articulo.id} article={articulo} />
               ))}
             </div>
 

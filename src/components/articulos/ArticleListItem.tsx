@@ -1,11 +1,11 @@
 import type { Article } from '@/services/articles';
 import { useNavigate } from '@tanstack/react-router';
 
-interface ArticleCardProps {
+interface ArticleListItemProps {
   article: Article;
 }
 
-export const ArticleCard = ({ article }: ArticleCardProps) => {
+export const ArticleListItem = ({ article }: ArticleListItemProps) => {
   const { id, title, reviewers = [] } = article;
   console.log('Artículo:', title, '| Revisores:', reviewers, '| Cantidad:', reviewers.length);
 
@@ -14,7 +14,7 @@ export const ArticleCard = ({ article }: ArticleCardProps) => {
   const iscomplete = reviewers.length === 3;
 
   const handleCardClick = () => {
-    navigate({ to: `/articles/${id}/reviewers` });
+    navigate({ to: `/articulos/${id}/revisores` });
   };
 
   return (
