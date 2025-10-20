@@ -71,26 +71,24 @@ export const RevisorItem: React.FC<RevisorProps> = ({
   return (
     <>
       <div className="w-screen flex items-center justify-between py-6 border-b border-black relative left-1/2 right-1/2 -translate-x-1/2 px-8">
-        <div className="flex-1 text-center mr-4">
-          <p className="text-2xl font-bold tracking-wide">
+        <div className="flex-1 text-center mr-4 flex flex-col items-center">
+          <p className="text-xl font-bold tracking-wide">
             {revisor.full_name}
           </p>
-        </div>
-
-        <div className="flex flex-col items-center min-w-[160px]">
           <span
-            className="mb-3 h-9 w-26 flex items-center justify-center rounded-md text-sm font-bold text-black border border-black"
+            className="mt-2 h-9 w-30 flex items-center justify-center rounded-md text-sm font-bold text-black border border-black"
             style={getEstadoColor()}
           >
             {interesMap[revisor.interest] || "No indicó"}
           </span>
+        </div>
 
           {isAsignado ? (
             <button
               onClick={handleEliminarClick}
               className="flex items-center gap-2 bg-red-600 text-white px-5 py-1 rounded-lg text-lg font-bold hover:bg-red-700 border border-black transition"
             >
-              <Trash2 size={20} /> Eliminar
+              <Trash2 size={20} /> Desasignar
             </button>
           ) : (
             <button
@@ -101,7 +99,6 @@ export const RevisorItem: React.FC<RevisorProps> = ({
             </button>
           )}
         </div>
-      </div>
 
       <Dialog open={showAsignadoDialog} onOpenChange={setShowAsignadoDialog}>
         <DialogContent>
