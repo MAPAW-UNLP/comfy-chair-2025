@@ -94,7 +94,7 @@ function ConferenceForm({
           <div className="flex flex-col gap-2">
             <label className="font-semibold">Descripción</label>
             <textarea
-              className="border rounded px-2 py-1"
+              className="border rounded px-2 py-1 min-h-16"
               placeholder="Ingrese una descripción..."
               value={conferencia.description}
               name="description"
