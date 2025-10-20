@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "@tanstack/react-router"
 import { RevisorItem } from "./RevisorItem"
 import {
@@ -135,76 +135,75 @@ export const RevisoresApp = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-200">
-      <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0 text-center">
-        <h2 className="text-xl font-semibold">
-          {articulo?.title || "Artículo sin título"}
-        </h2>
-      </div>
-
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto divide-y divide-gray-300">
-          {revisoresVisibles.map((rev) => (
-            <RevisorItem
-              key={rev.id}
-              revisor={rev}
-              asignado={rev.assigned}
-              onAsignar={() => handleAsignar(rev.id)}
-              onEliminar={() => handleEliminar(rev.id)}
-            />
-          ))}
-        </div>
-
-        <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0">
-          <div className="flex justify-center items-center gap-4">
-            {totalPaginas > 1 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={paginaAnterior}
-                disabled={paginaActual === 1}
-                className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-            )}
-
-            <p className="text-sm">
-              Mostrando {indiceInicial + revisoresVisibles.length} revisores de{" "}
-              {revisores.length}
-            </p>
-
-            {totalPaginas > 1 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={siguientePagina}
-                disabled={paginaActual === totalPaginas}
-                className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-
-          <div className="mt-2 text-center text-sm opacity-80">
-            Revisores asignados: {asignados} de {maxAsignados}
-          </div>
-        </div>
-      </div>
-
-      <Dialog open={showMaxDialog} onOpenChange={setShowMaxDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-red-600">
-              No se pueden asignar más revisores
-            </DialogTitle>
-            <DialogDescription>
-              El máximo permitido es <b>{maxAsignados}</b> revisores.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+  <div className="h-screen flex flex-col bg-gray-200">
+    <div
+      className="text-white py-4 px-6 flex-shrink-0 text-center"
+      style={{ backgroundColor: 'var(--ring)' }}
+    >
+      <h2 className="text-xl font-semibold">
+        {articulo?.title || "Artículo sin título"}
+      </h2>
     </div>
-  )
+    <div className="flex-1 px-4">
+      {revisoresVisibles.map((rev) => (
+        <RevisorItem
+          key={rev.id}
+          revisor={rev}
+          asignado={rev.assigned}
+          onAsignar={() => handleAsignar(rev.id)}
+          onEliminar={() => handleEliminar(rev.id)}
+        />
+      ))}
+    </div>
+    <div className="bg-slate-800 text-white py-4 px-6 flex-shrink-0 sticky bottom-0">
+      <div className="flex justify-center items-center gap-4">
+        {totalPaginas > 1 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={paginaAnterior}
+            disabled={paginaActual === 1}
+            className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
+
+        <p className="text-sm">
+          Mostrando {indiceInicial + revisoresVisibles.length} revisores de {revisores.length}
+        </p>
+
+        {totalPaginas > 1 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={siguientePagina}
+            disabled={paginaActual === totalPaginas}
+            className="bg-transparent border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 p-2"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      <div className="mt-2 text-center text-sm opacity-80">
+        Revisores asignados: {asignados} de {maxAsignados}
+      </div>
+    </div>
+
+    <Dialog open={showMaxDialog} onOpenChange={setShowMaxDialog}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-red-600">
+            No se pueden asignar más revisores
+          </DialogTitle>
+          <DialogDescription>
+            El máximo permitido es <b>{maxAsignados}</b> revisores.
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  </div>
+)
+
 }
