@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 import { UserCombobox } from "@/components/combobox/UserCombobox";
 import { ConferenceCombobox} from "@/components/combobox/ConferenceCombobox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 type ArticleFormProps = {
   users: User[];
@@ -240,14 +241,38 @@ const handleSubmit = async () => {
         onChange={(e) => setAbstract(e.target.value)}
       />
 
+      {/* RadioGroup tipo de artículo */}
+      <Label htmlFor="tipo-articulo">Tipo</Label>
+      <RadioGroup defaultValue="regular" onValueChange={setTipoArticulo} className="flex flex-row">
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="regular" id="regular" />
+          <Label htmlFor="regular">Regular</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="poster" id="poster" />
+          <Label htmlFor="poster">Poster</Label>
+        </div>
+      </RadioGroup>
+
       {/* Archivo principal */}
       <div className="grid w-full items-center gap-3">
         <Label htmlFor="DetalleRegular">Artículo</Label>
         <input type="file" ref={fileInputRef} onChange={handleChange} className="hidden" />
         <Button variant="outline" onClick={handleClick} type="button" className={`w-full ${archivo ? "bg-lime-900" : "bg-slate-900"} text-white`}>
-          {archivo ? "Archivo Seleccionado" : "Seleccionar archivo..."}
+          {archivo ? archivo.name : "Seleccionar archivo..."}
         </Button>
       </div>
+
+      {/* Archivo fuentes */}
+      {tipoArticulo === "poster" && (
+        <div className="grid w-full items-center gap-3">
+          <Label htmlFor="DetalleRegular">Fuentes</Label>
+          <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
+          <Button variant="outline" onClick={handleExtraFileClick} type="button" className={`w-full ${archivoExtra ? "bg-lime-900" : "bg-slate-900"} text-white`}>
+           {archivoExtra ? archivoExtra.name : "Seleccionar archivo..."}
+          </Button>
+        </div>
+      )}
 
       {/* Combobox de autores */}
       <Label htmlFor="autor">Autores del Artículo</Label>
@@ -294,29 +319,6 @@ const handleSubmit = async () => {
           ))}
         </SelectContent>
       </Select>
-
-      {/* Select tipo de artículo */}
-      <Label htmlFor="tipo-articulo">Tipo de Artículo</Label>
-      <Select value={tipoArticulo} onValueChange={setTipoArticulo}>
-        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
-          <SelectValue placeholder="Seleccione un tipo..." />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="regular">Regular</SelectItem>
-          <SelectItem value="poster">Poster</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {/* Campos dinámicos */}
-      {tipoArticulo === "poster" && (
-        <div className="grid w-full items-center gap-3">
-          <Label htmlFor="DetalleRegular">Fuentes</Label>
-          <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
-          <Button variant="outline" onClick={handleExtraFileClick} type="button" className={`w-full ${archivoExtra ? "bg-lime-900" : "bg-slate-900"} text-white`}>
-           {archivoExtra ? "Archivo Seleccionado" : "Seleccionar archivo..."}
-          </Button>
-        </div>
-      )}
 
       <hr className="bg-slate-100" />
 

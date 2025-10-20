@@ -4,12 +4,15 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ClipboardEditIcon, EyeIcon } from "lucide-react";
+import { useNavigate } from '@tanstack/react-router';
 
 // Tipos de estado posibles
 export type Estado = "reception" | "bidding" | "assignment" | "review" | "selection" | "accepted" | "rejected";
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
+  id: number;
   title: string;
   session: string;
   conference: string
@@ -52,6 +55,11 @@ const estadoDescripcion: Record<Estado, string> = {
 
 // Convierte la deadline de una conferencia a un string con el tiempo restante
 function formatearTiempo(msRestante: number): string {
+
+  if (!Number.isFinite(msRestante) || msRestante <= 0) {
+    return "invalido";
+  }
+
   const minutosTotales = Math.floor(msRestante / (1000 * 60));
   const horasTotales = Math.floor(msRestante / (1000 * 60 * 60));
   const diasTotales = Math.floor(msRestante / (1000 * 60 * 60 * 24));
@@ -68,10 +76,15 @@ function formatearTiempo(msRestante: number): string {
 }
 
 //Cuerpo del Componente
-const ArticleCard: React.FC<ArticleCardProps> = ({ title, conference, session, state, deadline }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, session, state, deadline }) => {
 
+  const navigate = useNavigate();
   const deadlineDate = deadline ? new Date(deadline) : null;
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
+
+  const navigateEditArticle = () => {
+    navigate({ to: `/article/edit/${id}` });
+  };
 
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
   useEffect(() => {
@@ -89,7 +102,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ title, conference, session, s
       const diferencia = limite - ahora;
 
       if (diferencia <= 0) {
-        setTiempoRestante("Expirado");
+        setTiempoRestante("invalido");
       } else {
         setTiempoRestante(formatearTiempo(diferencia));
       }
@@ -110,8 +123,28 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ title, conference, session, s
         <h2 className="text-lg font-bold italic text-slate-500 text-center">{title}</h2>
       </div>
       <hr className="bg-slate-100"/>
-      <p className="text-md text-slate-500"><b>Sesion:</b> {session}</p>
-      <p className="text-md text-slate-500"><b>Conferencia:</b> {conference}</p>
+      <div className="flex flex-row">
+        <div className="basis-3/4">
+          <p className="text-md text-slate-500"><b>Sesion:</b> {session}</p>
+          <p className="text-md text-slate-500"><b>Conferencia:</b> {conference}</p>
+        </div>
+        <div className="flex flex-row basis-1/4 items-center">
+          <ClipboardEditIcon onClick={navigateEditArticle} className={`basis-1/2 ${state !== "reception" || tiempoRestante === "invalido" ? 'invisible' : 'visible'}`}/>
+          <Dialog>
+            <DialogTrigger asChild>
+              <EyeIcon className="basis-1/2"/>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Detalle del Articulo</DialogTitle>
+                <DialogDescription>
+                  Desarrollar componente para ver el detalle del articulo...
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
       
       {/* Contenedor de los dos botones */}
       <div className="flex gap-2 mt-auto">
@@ -121,15 +154,15 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ title, conference, session, s
           <span className="text-sm text-slate-900 font-medium text-start">Estado</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className={`${estadoColor[state]} text-white w-full`}>
-                {estadoTexto[state]}
+              <Button variant="outline" className={`${estadoColor[state] ?? "bg-slate-900"} text-white w-full`}>
+                {estadoTexto[state] ?? "Desconocido"}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Detalle del Estado</DialogTitle>
                 <DialogDescription>
-                  {estadoDescripcion[state]}
+                  {estadoDescripcion[state] ?? "Ocurrió un error al obtener el estado del artículo."}
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
@@ -141,21 +174,19 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ title, conference, session, s
           <span className="text-sm text-slate-900 font-medium text-start">Modificar</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" disabled={state !== "reception"} className={`w-full ${state === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
-                {state === "reception" ? tiempoRestante || "..." : "No Disponible"}
+              <Button variant="outline" disabled={state !== "reception" || tiempoRestante === "invalido"} className={`w-full ${state === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
+                {state === "reception" && tiempoRestante !== "invalido" ? tiempoRestante || "..." : "No Disponible"}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Modificar Articulo</DialogTitle>
                 <DialogDescription>
-                  <span>
-                    Tienes tiempo de modificar tu articulo hasta el dia:
-                    <br/>
-                    {/*TODO FIX: por alguna razon interpreta la Date de la base de datos como zona horaria UTC y al parsearse a la
-                      hora de argentina UTC-3 muestra 3 horas menos, se parsea a hora UTC para que muestre la fecha y hota reales*/}
-                    <b>{deadlineDate?.toLocaleString("es-AR", { timeZone: "UTC", dateStyle: "full", timeStyle: "short" })}</b>
-                  </span>
+                      Tienes tiempo de modificar tu artículo hasta el día:
+                      <br />
+                      {/* TODO FIX: por alguna razón interpreta la Date de la base de datos como zona horaria UTC y al parsearse a la
+                          hora de argentina UTC-3 muestra 3 horas menos, se parsea a hora UTC para que muestre la fecha y hora reales */}
+                      <b>{deadlineDate?.toLocaleString("es-AR", { timeZone: "UTC", dateStyle: "full", timeStyle: "short"})}</b>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
