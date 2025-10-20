@@ -39,11 +39,6 @@ function ConferenceBox({ conferencia }: ConferenceBoxProps) {
           <Edit className="w-4 h-4 cursor-pointer" />
         </button>
       </div>
-
-      <hr />
-
-      <p>Chair Jose Hernandez</p> {/*a futuro conferencia.chair o parecido*/}
-      {/*<b>0 sesiones</b> {/*a futuro obtener sesiones*/}
     </div>
   );
 }

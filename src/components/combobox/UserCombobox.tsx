@@ -9,9 +9,10 @@ import type { User } from "@/services/userServices";
 type UserComboboxProps = {
   users: User[];
   onValueChange?: (userId: number) => void;
+  isChair?: boolean;
 };
 
-export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
+export function UserCombobox({ users, onValueChange, isChair = false }: UserComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
   const [query, setQuery] = React.useState("");
@@ -39,7 +40,7 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
         >
           {selectedUser
             ? `${selectedUser.full_name} `
-            : "Seleccione al menos un autor..."}
+            : `Seleccione al menos un ${isChair ? "chair" : "autor"}...`}
           <ChevronsUpDown className="opacity-25" />
         </Button>
       </PopoverTrigger>

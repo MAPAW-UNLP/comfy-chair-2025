@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Route } from '@/routes/conference/$id';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteConference } from '@/services/conferenceServices';
+import type { User } from '@/services/userServices';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -15,12 +16,13 @@ function AConference() {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [chairs, setChairs]= useState<User[]>([])
 
   const irEditarConferencia = () => {
     navigate({ to: `/conference/edit/${conferencia.id}` });
   };
 
-  // const agregarSesion = () => {};
+  const agregarSesion = () => {};
 
   const goToHome = () => {
     navigate({ to: '/conference/view' });
@@ -48,6 +50,10 @@ function AConference() {
     setShowDeleteModal(false);
   };
 
+  useEffect(() =>{
+    //obtener users de una conferencia
+  },[])
+
   return (
     <>
       <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
@@ -73,21 +79,21 @@ function AConference() {
         <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
           <h2 className="text-1xl font-bold">Descripción</h2>
           <p className="break-words">{conferencia.description}</p>
-          <h2 className="text-1xl font-bold">Chair general</h2>
-          <p>Jose Hernandez</p> {/*conferencia.chair*/}
+          <h2 className="text-1xl font-bold">Chairs</h2>
+          <p>Obtener chairs</p> 
         </div>
 
         <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
           <div className="flex justify-between">
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
-            {/* <Button
+            <Button
               size={'sm'}
               onClick={agregarSesion}
               className="cursor-pointer"
             >
               <Plus />
               Nueva sesión
-            </Button> */}
+            </Button>
           </div>
         </div>
 
