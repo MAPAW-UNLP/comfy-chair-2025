@@ -6,18 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ClipboardEditIcon, EyeIcon } from "lucide-react";
 import { useNavigate } from '@tanstack/react-router';
+import type { Article } from "@/services/articleServices";
+import ArticleDetail from "./ArticleDetail";
+
 
 // Tipos de estado posibles
 export type Estado = "reception" | "bidding" | "assignment" | "review" | "selection" | "accepted" | "rejected";
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
-  id: number;
-  title: string;
-  session: string;
-  conference: string
-  state: Estado;
-  deadline: string;
+  article: Article;
 }
 
 // Colores asociados a cada estado
@@ -76,19 +74,19 @@ function formatearTiempo(msRestante: number): string {
 }
 
 //Cuerpo del Componente
-const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, session, state, deadline }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
   const navigate = useNavigate();
-  const deadlineDate = deadline ? new Date(deadline) : null;
+  const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
 
   const navigateEditArticle = () => {
-    navigate({ to: `/article/edit/${id}` });
+    navigate({ to: `/article/edit/${article.id}` });
   };
 
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
   useEffect(() => {
-    if (state !== "reception") return;
+    if (article.status !== "reception") return;
 
     const actualizarTiempo = () => { 
       const ahora = new Date().getTime();
@@ -112,7 +110,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, sessio
     const interval = setInterval(actualizarTiempo, 1000 * 60 * 5); // actualiza cada 5 minutos
     return () => clearInterval(interval);
 
-  }, [state, deadline]);
+  }, [article.status, article.session?.deadline]);
 
   // Renderizado del componente
   return (
@@ -120,16 +118,16 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, sessio
       
       {/* Titulo, Sesion y Conferencia */}
       <div className="flex-1 flex flex-col justify-center">
-        <h2 className="text-lg font-bold italic text-slate-500 text-center">{title}</h2>
+        <h2 className="text-lg font-bold italic text-slate-500 text-center">{article.title}</h2>
       </div>
       <hr className="bg-slate-100"/>
       <div className="flex flex-row">
         <div className="basis-3/4">
-          <p className="text-md text-slate-500"><b>Sesion:</b> {session}</p>
-          <p className="text-md text-slate-500"><b>Conferencia:</b> {conference}</p>
+          <p className="text-md text-slate-500"><b>Sesion:</b> {article.session?.title}</p>
+          <p className="text-md text-slate-500"><b>Conferencia:</b> {article.session?.conference?.title}</p>
         </div>
         <div className="flex flex-row basis-1/4 items-center">
-          <ClipboardEditIcon onClick={navigateEditArticle} className={`basis-1/2 ${state !== "reception" || tiempoRestante === "invalido" ? 'invisible' : 'visible'}`}/>
+          <ClipboardEditIcon onClick={navigateEditArticle} className={`basis-1/2 ${article.status !== "reception" || tiempoRestante === "invalido" ? 'invisible' : 'visible'}`}/>
           <Dialog>
             <DialogTrigger asChild>
               <EyeIcon className="basis-1/2"/>
@@ -138,7 +136,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, sessio
               <DialogHeader>
                 <DialogTitle>Detalle del Articulo</DialogTitle>
                 <DialogDescription>
-                  Desarrollar componente para ver el detalle del articulo...
+                  <ArticleDetail article={article} />
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
@@ -154,15 +152,15 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, sessio
           <span className="text-sm text-slate-900 font-medium text-start">Estado</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className={`${estadoColor[state] ?? "bg-slate-900"} text-white w-full`}>
-                {estadoTexto[state] ?? "Desconocido"}
+              <Button variant="outline" className={`${estadoColor[article.status] ?? "bg-slate-900"} text-white w-full`}>
+                {estadoTexto[article.status] ?? "Desconocido"}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Detalle del Estado</DialogTitle>
                 <DialogDescription>
-                  {estadoDescripcion[state] ?? "Ocurrió un error al obtener el estado del artículo."}
+                  {estadoDescripcion[article.status] ?? "Ocurrió un error al obtener el estado del artículo."}
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
@@ -174,8 +172,8 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ id, title, conference, sessio
           <span className="text-sm text-slate-900 font-medium text-start">Modificar</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" disabled={state !== "reception" || tiempoRestante === "invalido"} className={`w-full ${state === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
-                {state === "reception" && tiempoRestante !== "invalido" ? tiempoRestante || "..." : "No Disponible"}
+              <Button variant="outline" disabled={article.status !== "reception" || tiempoRestante === "invalido"} className={`w-full ${article.status === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
+                {article.status === "reception" && tiempoRestante !== "invalido" ? tiempoRestante || "..." : "No Disponible"}
               </Button>
             </DialogTrigger>
             <DialogContent>

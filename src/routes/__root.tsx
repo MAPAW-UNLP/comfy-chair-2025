@@ -89,7 +89,7 @@ const RootLayout = () => {
       <TanStackRouterDevtools />
 
       {/* Componente global de notificaciones tipo toast */}
-      <Toaster richColors position='top-right' />
+      <Toaster position='top-right' />
 
     </div>
     </AuthProvider>

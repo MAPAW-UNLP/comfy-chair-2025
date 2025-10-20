@@ -36,15 +36,8 @@ function RouteComponent() {
         </div>)
       ) : (
         /*Si hay articulos, mapeo cada uno en un componente ArticuloCard*/
-        (articulo.map((article) => (
-          <ArticleCard
-            id={article.id}
-            title={article.title}
-            session={article.session?.title ?? 'Sin sesión'}
-            conference={article.session?.conference?.title ?? 'Sin conferencia'}
-            state={article.status ?? 'Sin estado'}
-            deadline={article.session?.deadline ?? 'Sin fecha límite'}
-          />
+        (articulo.map((a) => (
+          <ArticleCard article={a}/>
         )))
       )}
     </div>
