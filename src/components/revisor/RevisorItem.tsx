@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import type { Revisor } from "@/services/revisor"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog"
+import { toast } from "sonner"
 
 interface RevisorProps {
   revisor: Revisor
@@ -32,8 +26,6 @@ export const RevisorItem: React.FC<RevisorProps> = ({
   onEliminar,
 }) => {
   const [isAsignado, setIsAsignado] = useState(asignado)
-  const [showAsignadoDialog, setShowAsignadoDialog] = useState(false)
-  const [showEliminadoDialog, setShowEliminadoDialog] = useState(false)
 
   useEffect(() => {
     setIsAsignado(asignado)
@@ -57,7 +49,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
     const exito = await onAsignar()
     if (exito) {
       setIsAsignado(true)
-      setShowAsignadoDialog(true)
+      toast.success(`Revisor ${revisor.full_name} asignado con éxito`)
     }
   }
 
@@ -65,7 +57,7 @@ export const RevisorItem: React.FC<RevisorProps> = ({
     if (!onEliminar) return
     await onEliminar()
     setIsAsignado(false)
-    setShowEliminadoDialog(true)
+    toast.error(`Revisor ${revisor.full_name} fue desasignado`)
   }
 
   return (
@@ -83,44 +75,22 @@ export const RevisorItem: React.FC<RevisorProps> = ({
           </span>
         </div>
 
-          {isAsignado ? (
-            <button
-              onClick={handleEliminarClick}
-              className="flex items-center gap-2 bg-red-600 text-white px-5 py-1 rounded-lg text-lg font-bold hover:bg-red-700 border border-black transition"
-            >
-              <Trash2 size={20} /> Desasignar
-            </button>
-          ) : (
-            <button
-              onClick={handleAsignar}
-              className="flex items-center gap-2 bg-green-600 text-white px-5 py-1 rounded-lg text-lg font-bold hover:bg-green-700 border border-black transition"
-            >
-              <Plus size={20} /> Asignar
-            </button>
-          )}
-        </div>
-
-      <Dialog open={showAsignadoDialog} onOpenChange={setShowAsignadoDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Revisor asignado</DialogTitle>
-            <DialogDescription>
-              El revisor <b>{revisor.full_name}</b> fue asignado con éxito.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showEliminadoDialog} onOpenChange={setShowEliminadoDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Revisor eliminado</DialogTitle>
-            <DialogDescription>
-              El revisor <b>{revisor.full_name}</b> fue eliminado.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+        {isAsignado ? (
+          <button
+            onClick={handleEliminarClick}
+            className="flex items-center gap-2 bg-red-600 text-white px-2 py-0.5 rounded-lg text-lg font-bold hover:bg-red-700 border border-black transition"
+          >
+            <Trash2 size={20} /> Desasignar
+          </button>
+        ) : (
+          <button
+            onClick={handleAsignar}
+            className="flex items-center gap-2 bg-green-600 text-white px-2 py-0.5 rounded-lg text-lg font-bold hover:bg-green-700 border border-black transition"
+          >
+            <Plus size={20} /> Asignar
+          </button>
+        )}
+      </div>
     </>
   )
 }
