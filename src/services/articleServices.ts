@@ -46,12 +46,12 @@ export async function createArticle(newArticle: ArticleNew) {
   formData.append('status', newArticle.status || 'reception');
   formData.append('type', newArticle.type || '');
   formData.append('abstract', newArticle.abstract || '');
-  formData.append('corresponding_author', newArticle.corresponding_author?.toString() || '');
+  formData.append('corresponding_author_id', newArticle.corresponding_author?.toString() || '');
   formData.append('session_id', newArticle.session?.toString() || '');
 
   // Agregar autores
   newArticle.authors.forEach((authorId) => {
-    formData.append('authors', authorId.toString());
+    formData.append('authors_ids', authorId.toString());
   });
 
   const response = await fetch('http://127.0.0.1:8000/api/article/', {

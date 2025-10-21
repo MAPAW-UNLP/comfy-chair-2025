@@ -33,6 +33,7 @@ export default function ArticleForm({ users, conferences }: ArticleFormProps) {
   // -------------------
   // Estados principales
   // -------------------
+  const [error, setError] = useState<string | null>(null); // Error general
   const [errors, setErrors] = useState<Partial<ArticleFormData>>({}); // Errores por campo para validación
   const [tipoArticulo, setTipoArticulo] = useState<string>("regular"); // Tipo de artículo (regular / poster)
   const [selectedConference, setSelectedConference] = useState<number | null>(null); // Conferencia seleccionada
@@ -158,6 +159,7 @@ export default function ArticleForm({ users, conferences }: ArticleFormProps) {
       navigate({ to: '/article/view', replace: true });
     } catch (error) {
       console.error("Error al subir el artículo:", error);
+      setError((error as Error).message);
       setShowErrorAlert(true);
     } finally {
       setLoading(false);
@@ -281,7 +283,7 @@ export default function ArticleForm({ users, conferences }: ArticleFormProps) {
             Error
           </AlertTitle>
           <AlertDescription>
-              Hubo un error al subir el artículo
+              Hubo un error al subir el artículo {error}
           </AlertDescription>
         </Alert>
       )}

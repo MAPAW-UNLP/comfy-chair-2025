@@ -23,8 +23,8 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
         <p><b>Conferencia: </b>{article.session?.conference?.title}</p>
         <p><b>Tipo: </b>{article.type}</p>
         <p><b>Estado: </b>{article.status}</p>
-        <p><b>Autor de Notificación: </b>@{article.corresponding_author?.email}</p>
-        <p><b>Autores: </b>{article.authors?.map((author, index) => (<span key={index}>@{author?.email}{index < article.authors.length - 1 ? ", " : ""}</span>))}</p>
+        <p><b>Autor de Notificación: </b>{article.corresponding_author?.email}</p>
+        <p><b>Autores: </b>{article.authors?.map((author, index) => (<span key={index}>{author?.email}{index < article.authors.length - 1 ? ", " : ""}</span>))}</p>
         <p><b>Abstract: </b>{article.abstract}</p>
       </div>
       <hr className="my-2"/>
