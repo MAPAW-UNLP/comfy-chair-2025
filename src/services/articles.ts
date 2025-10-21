@@ -1,5 +1,5 @@
 import api from './api';
-import type { Revisor } from './revisor';
+import type { Revisor } from './reviewer';
 
 export interface Article {
   id: number;
