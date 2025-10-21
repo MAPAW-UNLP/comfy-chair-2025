@@ -11,7 +11,7 @@ export interface Revisor {
 export const getRevisoresByArticulo = async (
   articuloId: number
 ): Promise<Revisor[]> => {
-  const response = await api.get(`chairs/articulos/${articuloId}/revisores-disponibles/`);
+  const response = await api.get(`chairs/articles/${articuloId}/available-reviewers/`);
   return response.data;
 };
 

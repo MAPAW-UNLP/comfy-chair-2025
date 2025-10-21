@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { Toaster } from '@/components/ui/sonner';
 
 const RootLayout = () => (
   <div className='bg-background'>
@@ -8,6 +9,7 @@ const RootLayout = () => (
     <hr />
     <Outlet />
     <TanStackRouterDevtools />
+    <Toaster richColors position='top-right' />
   </div>
 );
 
