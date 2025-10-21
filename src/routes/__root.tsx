@@ -18,6 +18,7 @@ const RootLayout = () => {
     { to: '/conference/view', label: 'Conferencias' },
     { to: '/article/view', label: 'Articulos' },
     { to: '/article/create', label: 'Subir Articulo' },
+    { to: '/article/select', label: 'Asignar Revisor' },
     { to: '/reviewer/bidding', label: 'Bidding' },
     { to: '/login', label: 'Ingresar' },
   ];

@@ -7,9 +7,9 @@ import {
   getReviewersByArticle,
   assignReviewerToArticle,
   removeReviewerFromArticle,
-  type Reviewer,
-} from "@/services/reviewer"
-import { getArticleById, type Article } from "@/services/articles"
+  type ReviewerInfo,
+} from "@/services/reviewerServices"
+import { getArticleById, type Article } from "@/services/articleServices"
 import {
   Dialog,
   DialogContent,
@@ -20,10 +20,16 @@ import {
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-export const ReviewerApp = () => {
-  const { id } = useParams({ from: "/articulos/$id/revisores" })
+type CompleteReviewerInfo = Omit<ReviewerInfo, "email" | "interest"> & {
+  email: string
+  interest: "interesado" | "quizas" | "no_interesado" | "ninguno"
+  assigned?: boolean
+}
 
-  const [reviewers, setReviewers] = useState<Reviewer[]>([])
+export const ReviewerApp = () => {
+  const { id } = useParams({ from: "/article/assign/$id" })
+
+  const [reviewers, setReviewers] = useState<CompleteReviewerInfo[]>([])
   const [article, setArticle] = useState<Article | null>(null)
   const [assignedCount, setAssignedCount] = useState<number>(0)
   const [loadingReviewers, setLoadingReviewers] = useState(true)
@@ -51,10 +57,12 @@ export const ReviewerApp = () => {
       try {
         setLoadingReviewers(true)
         const data = await getReviewersByArticle(Number(id))
-        const reviewersWithAssigned = (data ?? []).map((rev: Reviewer) => ({
+
+        const reviewersWithAssigned = (data ?? []).map((rev) => ({
           ...rev,
           assigned: rev.assigned ?? false,
-        }))
+        })) as CompleteReviewerInfo[]
+
         reviewersWithAssigned.sort((a, b) => Number(b.assigned) - Number(a.assigned))
         setReviewers(reviewersWithAssigned)
         setAssignedCount(reviewersWithAssigned.filter((r) => r.assigned).length)

@@ -1,20 +1,19 @@
-import type { Article } from '@/services/articles';
+import type { Article } from '@/services/articleServices';
 import { useNavigate } from '@tanstack/react-router';
 
 interface ArticleCardProps {
   article: Article;
+  assignedCount: number;
 }
 
-export const ArticleCard = ({ article }: ArticleCardProps) => {
-  const { id, title, reviewers = [] } = article;
-  console.log('Artículo:', title, '| Revisores:', reviewers, '| Cantidad:', reviewers.length);
+export const ArticleCard = ({ article, assignedCount }: ArticleCardProps) => {
+  const { id, title } = article;
+  const isComplete = assignedCount === 3;
 
   const navigate = useNavigate();
 
-  const iscomplete = reviewers.length === 3;
-
   const handleCardClick = () => {
-    navigate({ to: `/articulos/${id}/revisores` });
+    navigate({ to: `/article/assign/${id}` });
   };
 
   return (
@@ -27,18 +26,17 @@ export const ArticleCard = ({ article }: ArticleCardProps) => {
         <h3 className="text-base text-gray-900 leading-tight">{title}</h3>
       </div>
 
+      
       <div className="flex flex-col items-center gap-2">
-        {/* Estado */}
         <span
           className={`px-3 py-1 rounded-full text-xs font-medium ${
-            iscomplete
+            isComplete
             ? 'bg-green-100 text-green-700'
             : 'bg-gray-100 text-gray-700'
             }`}
         >
-          {iscomplete ? 'Completo' : 'Incompleto'}
+          {isComplete ? 'Completo' : 'Incompleto'}
         </span>
-
       </div>
     </div>
   );

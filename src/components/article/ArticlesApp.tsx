@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getArticulos, type Article } from '@/services/articles';
+import { getAllArticles, type Article } from '@/services/articleServices';
 import { ArticleList } from './ArticleList';
 
 
@@ -11,7 +11,7 @@ export const ArticlesApp = () => {
     const fetchArticulos = async () => {
       try {
         setLoading(true);
-        const data = await getArticulos();
+        const data = await getAllArticles();
         setArticulos(data);
       } catch (error) {
         console.error('Error fetching articulos:', error);

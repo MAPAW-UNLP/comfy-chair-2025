@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from "react"
 import { Plus, Trash2 } from "lucide-react"
-import type { Reviewer } from "@/services/reviewer"
+import type { ReviewerInfo } from "@/services/reviewerServices"
 import { toast } from "sonner"
 
+type ReviewerWithInterest = ReviewerInfo & {
+  email: string;
+  interest: "interesado" | "quizas" | "no_interesado" | "ninguno";
+};
+
 interface RevisorProps {
-  reviewer: Reviewer
+  reviewer: ReviewerWithInterest;
   assigned?: boolean
   onAssign?: () => boolean | Promise<boolean>
   onRemove?: () => void | Promise<void>
