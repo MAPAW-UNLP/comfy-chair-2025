@@ -1,6 +1,6 @@
 import api from './api';
 
-export interface Revisor {
+export interface Reviewer {
   id: number;
   full_name: string;
   email: string;
@@ -8,9 +8,9 @@ export interface Revisor {
   assigned?: boolean;
 }
 
-export const getRevisoresByArticulo = async (
+export const getReviewersByArticle = async (
   articuloId: number
-): Promise<Revisor[]> => {
+): Promise<Reviewer[]> => {
   const response = await api.get(`chairs/articles/${articuloId}/available-reviewers/`);
   return response.data;
 };
