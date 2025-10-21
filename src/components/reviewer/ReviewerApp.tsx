@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-export const ReviewersApp = () => {
+export const ReviewerApp = () => {
   const { id } = useParams({ from: "/articulos/$id/revisores" })
 
   const [reviewers, setReviewers] = useState<Reviewer[]>([])

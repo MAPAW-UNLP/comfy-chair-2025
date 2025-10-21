@@ -11,12 +11,12 @@ export interface Reviewer {
 export const getReviewersByArticle = async (
   articuloId: number
 ): Promise<Reviewer[]> => {
-  const response = await api.get(`chairs/articles/${articuloId}/available-reviewers/`);
+  const response = await api.get(`/api/articles/${articuloId}/available-reviewers/`);
   return response.data;
 };
 
 export const assignReviewerToArticle = async (reviewerId: number, articleId: number) => {
-  const response = await api.post('/chairs/new/', {
+  const response = await api.post('/api/new/', {
     reviewer: reviewerId,
     article: articleId,
     reviewed: false,
@@ -25,6 +25,6 @@ export const assignReviewerToArticle = async (reviewerId: number, articleId: num
 };
 
 export const removeReviewerFromArticle = async (reviewerId: number, articleId: number) => {
-  const response = await api.delete(`/chairs/reviews/${reviewerId}/${articleId}/delete/`);
+  const response = await api.delete(`/api/reviews/${reviewerId}/${articleId}/delete/`);
   return response.data;
 };
