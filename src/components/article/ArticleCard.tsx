@@ -6,12 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ClipboardEditIcon, EyeIcon } from "lucide-react";
 import { useNavigate } from '@tanstack/react-router';
-import type { Article } from "@/services/articleServices";
+import type { Article, Status } from "@/services/articleServices";
 import ArticleDetail from "./ArticleDetail";
-
-
-// Tipos de estado posibles
-export type Estado = "reception" | "bidding" | "assignment" | "review" | "selection" | "accepted" | "rejected";
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
@@ -19,7 +15,7 @@ export interface ArticleCardProps {
 }
 
 // Colores asociados a cada estado
-const estadoColor: Record<Estado, string> = {
+const estadoColor: Record<Status, string> = {
   accepted: "bg-lime-900",
   reception: "bg-slate-900",
   bidding: "bg-slate-900",
@@ -30,7 +26,7 @@ const estadoColor: Record<Estado, string> = {
 };
 
 // Textos asociados a cada estado
-const estadoTexto: Record<Estado, string> = {
+const estadoTexto: Record<Status, string> = {
   accepted: "Aceptado",
   reception: "Recibido",
   bidding: "Bidding",
@@ -41,7 +37,7 @@ const estadoTexto: Record<Estado, string> = {
 };
 
 // Descripciones asociadas a cada estado
-const estadoDescripcion: Record<Estado, string> = {
+const estadoDescripcion: Record<Status, string> = {
   accepted: "Su articulo ha sido aceptado para la conferencia. ¡Felicitaciones!",
   reception: "Su articulo ha sido recibido y está pendiente de revisión.",
   bidding: "Su articulo está en proceso de bidding.",

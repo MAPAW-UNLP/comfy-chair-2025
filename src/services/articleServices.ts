@@ -1,15 +1,18 @@
 import { axiosInstance as api } from './api';
 
-import type { Estado } from '@/components/article/ArticleCard';
 import type { Session } from '@/services/sessionServices';
 import type { User } from '@/services/userServices';
+
+export type Type = "regular" | "poster";
+
+export type Status = "reception" | "bidding" | "assignment" | "review" | "selection" | "accepted" | "rejected";
 
 export interface Article {
   id: number;
   title: string;
   main_file: File;
-  status: Estado;
-  type: string | null;
+  status: Status;
+  type: Type;
   abstract: string;
   source_file?: File | null;
   authors: User[];
