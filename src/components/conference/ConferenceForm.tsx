@@ -3,7 +3,7 @@ import CustomCalendar from './CustomCalendar';
 import type { Conference } from './ConferenceApp';
 import { Button } from '../ui/button';
 import { ConferenceView } from './ConferenceView';
-import { getAllUsers, type User } from '@/services/userServices';
+import { getCommonUsers, type User } from '@/services/userServices';
 import { UserCombobox } from '../combobox/UserCombobox';
 import { X } from 'lucide-react';
 
@@ -97,7 +97,7 @@ function ConferenceForm({
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data = await getAllUsers();
+      const data = await getCommonUsers();
       setUsers(data);
     };
     fetchUsers();

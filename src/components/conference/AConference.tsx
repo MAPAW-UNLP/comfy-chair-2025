@@ -4,7 +4,7 @@ import { Edit, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteConference } from '@/services/conferenceServices';
-import type { User } from '@/services/userServices';
+import { getUserById, type User } from '@/services/userServices';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -50,9 +50,30 @@ function AConference() {
     setShowDeleteModal(false);
   };
 
-  useEffect(() =>{
-    //obtener users de una conferencia
-  },[])
+  useEffect(() => {
+    let isCancelled = false;
+
+    const getChairs = async () => {
+      const chairsIds = conferencia.chairs;
+      const users: User[] = [];
+
+      for (const ch of chairsIds!) {
+        const user = await getUserById(ch);
+        users.push(user);
+      }
+
+      if (!isCancelled) {
+        setChairs(users);
+      }
+    };
+
+    getChairs();
+
+    return () => {
+      //Cancelo el seteo de chairs del efecto anterior si cambia conferencia
+      isCancelled = true;
+    };
+  }, [conferencia]);
 
   return (
     <>
@@ -80,7 +101,10 @@ function AConference() {
           <h2 className="text-1xl font-bold">Descripción</h2>
           <p className="break-words">{conferencia.description}</p>
           <h2 className="text-1xl font-bold">Chairs</h2>
-          <p>Obtener chairs</p> 
+          {chairs.map(ch =>{
+            return <p key={ch.id}>{ch.full_name}</p> 
+          })}
+          
         </div>
 
         <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
@@ -97,7 +121,7 @@ function AConference() {
           </div>
         </div>
 
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-center mt-5'>
           <Button variant={"secondary"} className='cursor-pointer bg-slate-900 text-white hover:bg-slate-700' onClick={goToHome}>Volver al inicio</Button>
 
           <Button

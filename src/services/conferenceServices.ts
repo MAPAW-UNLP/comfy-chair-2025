@@ -1,16 +1,6 @@
+import type { Conference } from '@/components/conference/ConferenceApp';
 import { axiosInstance as api } from './api';
 import type { User } from './userServices';
-
-type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
-
-export interface Conference {
-  id: string;
-  title: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  blind_kind: VISTA_CHOICES;
-}
 
 export const getAllConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/');
@@ -30,7 +20,6 @@ export const getActiveConferences = async (): Promise<Conference[]> => {
 
 export const getFinishedConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/finished/');
-  console.log(response.data);
   return response.data;
 };
 

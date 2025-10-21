@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Route } from '@/routes/conference/edit/$id';
 import {
-  type Conference,
   updateConference,
 } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
 import ConferenceForm from './ConferenceForm';
-import type { User } from '@/services/userServices';
+import { getUserById, type User } from '@/services/userServices';
+import type { Conference } from './ConferenceApp';
 
 function ConferenceEdit() {
   const conferenciaInicial = Route.useLoaderData() as Conference;
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [chairs, setChairs]= useState<User[]>([])
+  const [chairs, setChairs] = useState<User[]>([]);
   const navigate = useNavigate();
 
   const handleSubmit = async (conf: Omit<Conference, 'id'>, chairs: User[]) => {
     setError('');
     setSuccess(false);
     try {
+      console.log('CHAIRS, ', chairs);
       await updateConference(conferenciaInicial.id, conf, chairs);
       setSuccess(true);
       setTimeout(() => {
@@ -30,8 +31,30 @@ function ConferenceEdit() {
   };
 
   useEffect(() => {
-    //obtener users de una conferencia
-  }, []);
+    let isCancelled = false;
+
+    const getChairs = async () => {
+      const chairsIds = conferenciaInicial.chairs;
+      const users: User[] = [];
+
+      for (const ch of chairsIds) {
+        const user = await getUserById(ch);
+        users.push(user);
+      }
+
+      if (!isCancelled) {
+        setChairs(users);
+      }
+    };
+
+    getChairs();
+
+    return () => {
+      //Cancelo el seteo de chairs del efecto anterior si cambia conferenciaInicial.
+      isCancelled = true;
+    };
+  }, [conferenciaInicial]);
+
 
   return (
     <div className="w-full flex flex-col items-center justify-start gap-4 mt-3">

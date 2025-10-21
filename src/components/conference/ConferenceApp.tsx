@@ -3,7 +3,10 @@ import { Plus } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import ConferenceBox from './ConferenceBox';
 import { useNavigate } from '@tanstack/react-router';
-import { getActiveConferences, getFinishedConferences } from '@/services/conferenceServices';
+import {
+  getActiveConferences,
+  getFinishedConferences,
+} from '@/services/conferenceServices';
 import { Route } from '@/routes/conference/view';
 import { useEffect, useState } from 'react';
 import { ConferenceSearch } from './ConferenceSearch';
@@ -17,14 +20,16 @@ export type Conference = {
   start_date: string;
   end_date: string;
   blind_kind: VISTA_CHOICES;
+  chairs?: number[];
 };
 
 function ConferenceApp() {
   const conferenciasInicial = Route.useLoaderData();
-  const [conferencias, setConferencias] = useState<Conference[]>(conferenciasInicial);
+  const [conferencias, setConferencias] =
+    useState<Conference[]>(conferenciasInicial);
   const [verActivas, setVerActivas] = useState<boolean>(true);
-  const [confActivas, setConfActivas]= useState<Conference[]>([]);
-  const [confTerminadas, setConfTerminadas]= useState<Conference[]>([]);
+  const [confActivas, setConfActivas] = useState<Conference[]>([]);
+  const [confTerminadas, setConfTerminadas] = useState<Conference[]>([]);
   const navigate = useNavigate();
 
   const irAltaConferencia = async () => {
@@ -33,33 +38,42 @@ function ConferenceApp() {
 
   useEffect(() => {
     const actualizarConferencias = async () => {
-      setConfActivas(await getActiveConferences())
-      setConfTerminadas(await getFinishedConferences())
+      setConfActivas(await getActiveConferences());
+      setConfTerminadas(await getFinishedConferences());
     };
 
     actualizarConferencias();
   }, [verActivas]);
 
-  useEffect(() =>{
-    if (verActivas) setConferencias(confActivas)
-  },[confActivas])
+  useEffect(() => {
+    if (verActivas) setConferencias(confActivas);
+  }, [confActivas]);
 
-  useEffect(() =>{
-    if (!verActivas) setConferencias(confTerminadas)
-  },[confTerminadas])
+  useEffect(() => {
+    if (!verActivas) setConferencias(confTerminadas);
+  }, [confTerminadas]);
 
   return (
     <div className="flex flex-col justify-start items-center gap-5 mt-3">
       <h1 className="text-3xl font-bold">Conferencias</h1>
 
       <div className="flex justify-center items-center gap-2 px-5 w-full">
-        <ConferenceSearch confActivas={confActivas} confTerminadas={confTerminadas} setConferencias={setConferencias} verActivas={verActivas} />
+        <ConferenceSearch
+          confActivas={confActivas}
+          confTerminadas={confTerminadas}
+          setConferencias={setConferencias}
+          verActivas={verActivas}
+        />
       </div>
 
-      <div className="flex justify-between items-center w-full px-5">
+      <div className="flex flex-col sm:flex-row justify-between items-center w-full px-5 gap-2">
         <div className="flex-1"></div>
-        <Tabs value={verActivas ? "activas" : "terminadas"} onValueChange={v => setVerActivas(v === "activas")} className="flex items-center">
-          <TabsList className='h-10 shadow'>
+        <Tabs
+          value={verActivas ? 'activas' : 'terminadas'}
+          onValueChange={(v) => setVerActivas(v === 'activas')}
+          className="flex items-center"
+        >
+          <TabsList className="h-10 shadow">
             <TabsTrigger
               value="activas"
               className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
