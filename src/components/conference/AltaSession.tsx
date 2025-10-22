@@ -36,6 +36,7 @@ export default function AltaSession({
         deadline: data.deadline?.toISOString(),
         capacity: data.capacity,
         conference_id: conferenceId,
+        chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
         // Aquí puedes agregar los campos de selection_method, percentage y threshold
         // cuando el backend los soporte
       };

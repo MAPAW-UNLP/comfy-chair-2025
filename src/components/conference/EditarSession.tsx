@@ -36,6 +36,7 @@ export default function EditarSession({
     capacity: session.capacity,
     selectionMethod: "mejores", // Valor por defecto
     threshold: -1, // Valor por defecto
+    chairs: [], // TODO: cargar chairs desde session cuando el backend lo soporte
   };
 
   const handleSubmit = async (data: SessionFormData) => {
@@ -47,6 +48,7 @@ export default function EditarSession({
         deadline: data.deadline?.toISOString(),
         capacity: data.capacity,
         conference_id: session.conference?.id,
+        chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
         // Aquí puedes agregar los campos de selection_method, percentage y threshold
         // cuando el backend los soporte
       };
