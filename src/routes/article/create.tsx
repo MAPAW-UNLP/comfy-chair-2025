@@ -36,7 +36,7 @@ function RouteComponent() {
 
   //Cuerpo del Componente
   return (
-      <div className="flex flex-wrap gap-4 mx-4 justify-center">
+      <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
         {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
         <ArticleForm users={userList} conferences={conferenceList}/>
       </div>

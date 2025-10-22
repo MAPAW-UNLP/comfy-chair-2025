@@ -26,7 +26,7 @@ function RouteComponent() {
     
   //Cuerpo del Componente
   return (
-    <div className={`flex flex-wrap gap-4 mx-4 justify-center ${articulo.length === 0 ? "min-h-full items-center" : ""}`}>
+    <div className={`flex flex-wrap gap-4 mx-4 my-4 justify-center ${articulo.length === 0 ? "min-h-full items-center" : ""}`}>
       {articulo.length === 0 ? (
         /*Si no hay articulos, muestro un mensaje*/
         (<div className="flex flex-col items-center justify-center w-full">
