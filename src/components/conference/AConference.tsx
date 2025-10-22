@@ -5,6 +5,10 @@ import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteConference } from '@/services/conferenceServices';
 import { getUserById, type User } from '@/services/userServices';
+import AltaSession from './AltaSession';
+import { getSessionsByConference } from '@/services/sessionServices';
+import type { Session } from '@/services/sessionServices';
+import SessionCard from './SessionCard';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -17,12 +21,24 @@ function AConference() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [chairs, setChairs]= useState<User[]>([])
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(false);
 
   const irEditarConferencia = () => {
     navigate({ to: `/conference/edit/${conferencia.id}` });
   };
 
-  const agregarSesion = () => {};
+  const fetchSessions = async () => {
+    try {
+      setLoadingSessions(true);
+      const data = await getSessionsByConference(Number(conferencia.id));
+      setSessions(data);
+    } catch (error) {
+      console.error('Error al cargar las sesiones:', error);
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
 
   const goToHome = () => {
     navigate({ to: '/conference/view' });
@@ -68,6 +84,7 @@ function AConference() {
     };
 
     getChairs();
+    fetchSessions(); // Cargar sesiones al montar el componente
 
     return () => {
       //Cancelo el seteo de chairs del efecto anterior si cambia conferencia
@@ -107,18 +124,41 @@ function AConference() {
           
         </div>
 
-        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
-          <div className="flex justify-between">
+        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
+          <div className="flex justify-between items-center">
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
-            <Button
-              size={'sm'}
-              onClick={agregarSesion}
-              className="cursor-pointer"
-            >
-              <Plus />
-              Nueva sesión
-            </Button>
+            <AltaSession
+              conferenceId={Number(conferencia.id)}
+              onSessionCreated={fetchSessions}
+              trigger={
+                <Button size={'sm'} className="cursor-pointer">
+                  <Plus />
+                  Nueva sesión
+                </Button>
+              }
+            />
           </div>
+
+          {/* Lista de sesiones */}
+          {loadingSessions ? (
+            <div className="text-center py-4 text-muted-foreground">
+              Cargando sesiones...
+            </div>
+          ) : sessions.length === 0 ? (
+            <div className="text-center py-4 text-muted-foreground">
+              No hay sesiones creadas aún. Creá la primera sesión.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {sessions.map((session) => (
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  onSessionUpdated={fetchSessions}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className='flex justify-between items-center mt-5'>
