@@ -7,7 +7,7 @@ export const Route = createFileRoute('/article/edit/$id')({
 
 function RouteComponent() {
   return (
-    <div>
+    <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center items-center">
       <span>Desarrollar componente para poder editar el articulo... </span>
       <Button variant={"outline"} className='bg-slate-900 text-white' onClick={() => window.history.back()}>
         Volver
