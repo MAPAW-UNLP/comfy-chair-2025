@@ -184,6 +184,7 @@ export default function SessionForm({
           users={users}
           onValueChange={handleAddChair}
           isChair={true}
+          backgroundWhite={true}
         />
         <div className="max-h-[150px] overflow-auto flex flex-col gap-2">
           {chairs.map((ch) => (
