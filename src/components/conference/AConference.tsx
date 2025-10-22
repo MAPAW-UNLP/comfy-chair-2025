@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Route } from '@/routes/conference/$id';
-import { Edit, Plus, Trash2 } from 'lucide-react';
+import { Edit, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteConference } from '@/services/conferenceServices';
@@ -23,6 +23,9 @@ function AConference() {
   const [chairs, setChairs]= useState<User[]>([])
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const irEditarConferencia = () => {
     navigate({ to: `/conference/edit/${conferencia.id}` });
@@ -37,6 +40,28 @@ function AConference() {
       console.error('Error al cargar las sesiones:', error);
     } finally {
       setLoadingSessions(false);
+    }
+  };
+
+  const updateScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -400, behavior: 'smooth' });
+      setTimeout(updateScrollButtons, 300);
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+      setTimeout(updateScrollButtons, 300);
     }
   };
 
@@ -92,6 +117,14 @@ function AConference() {
     };
   }, [conferencia]);
 
+  // Actualizar botones de scroll cuando cambien las sesiones
+  useEffect(() => {
+    updateScrollButtons();
+    // También actualizar al redimensionar la ventana
+    window.addEventListener('resize', updateScrollButtons);
+    return () => window.removeEventListener('resize', updateScrollButtons);
+  }, [sessions]);
+
   return (
     <>
       <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
@@ -139,7 +172,7 @@ function AConference() {
             />
           </div>
 
-          {/* Lista de sesiones */}
+          {/* Lista de sesiones con carrusel */}
           {loadingSessions ? (
             <div className="text-center py-4 text-muted-foreground">
               Cargando sesiones...
@@ -149,14 +182,45 @@ function AConference() {
               No hay sesiones creadas aún. Creá la primera sesión.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sessions.map((session) => (
-                <SessionCard
-                  key={session.id}
-                  session={session}
-                  onSessionUpdated={fetchSessions}
-                />
-              ))}
+            <div className="relative">
+              {/* Botón izquierdo */}
+              {canScrollLeft && (
+                <button
+                  onClick={scrollLeft}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full p-2 shadow-lg"
+                  aria-label="Scroll izquierda"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              )}
+
+              {/* Contenedor con scroll horizontal */}
+              <div
+                ref={scrollContainerRef}
+                onScroll={updateScrollButtons}
+                className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide pb-2"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {sessions.map((session) => (
+                  <div key={session.id} className="flex-shrink-0 w-[350px]">
+                    <SessionCard
+                      session={session}
+                      onSessionUpdated={fetchSessions}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Botón derecho */}
+              {canScrollRight && (
+                <button
+                  onClick={scrollRight}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full p-2 shadow-lg"
+                  aria-label="Scroll derecha"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              )}
             </div>
           )}
         </div>
