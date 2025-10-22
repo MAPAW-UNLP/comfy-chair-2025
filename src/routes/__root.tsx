@@ -18,6 +18,7 @@ const RootLayout = () => {
     { to: '/conference/view', label: 'Conferencias' },
     { to: '/article/view', label: 'Articulos' },
     { to: '/article/create', label: 'Subir Articulo' },
+    { to: '/article/select', label: 'Asignar Revisor' },
     { to: '/reviewer/bidding', label: 'Bidding' },
     { to: '/login', label: 'Ingresar' },
   ];
@@ -79,7 +80,7 @@ const RootLayout = () => {
         </aside>
 
         {/* Área principal donde se renderizan las páginas hijas */}
-        <main className="flex-1 p-4 overflow-auto">
+        <main className="flex-1 overflow-auto">
           <Outlet /> {/* Outlet es el “espacio” donde TanStack Router inyecta la página actual */}
         </main>
 

@@ -18,10 +18,15 @@ import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
 import { Route as ArticleViewRouteImport } from './routes/article/view'
+import { Route as ArticleSelectRouteImport } from './routes/article/select'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
+<<<<<<< HEAD
 import { Route as ArticleEditIdRouteImport } from './routes/article/edit/$id'
+=======
+import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
+>>>>>>> origin/main
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -67,6 +72,11 @@ const ArticleViewRoute = ArticleViewRouteImport.update({
   path: '/article/view',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticleSelectRoute = ArticleSelectRouteImport.update({
+  id: '/article/select',
+  path: '/article/select',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArticleCreateRoute = ArticleCreateRouteImport.update({
   id: '/article/create',
   path: '/article/create',
@@ -82,9 +92,15 @@ const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
   path: '/conference/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+<<<<<<< HEAD
 const ArticleEditIdRoute = ArticleEditIdRouteImport.update({
   id: '/article/edit/$id',
   path: '/article/edit/$id',
+=======
+const ArticleAssignIdRoute = ArticleAssignIdRouteImport.update({
+  id: '/article/assign/$id',
+  path: '/article/assign/$id',
+>>>>>>> origin/main
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -94,12 +110,17 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/article/create': typeof ArticleCreateRoute
+  '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
+<<<<<<< HEAD
   '/article/edit/$id': typeof ArticleEditIdRoute
+=======
+  '/article/assign/$id': typeof ArticleAssignIdRoute
+>>>>>>> origin/main
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
@@ -108,12 +129,17 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/article/create': typeof ArticleCreateRoute
+  '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
+<<<<<<< HEAD
   '/article/edit/$id': typeof ArticleEditIdRoute
+=======
+  '/article/assign/$id': typeof ArticleAssignIdRoute
+>>>>>>> origin/main
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
@@ -124,12 +150,17 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/article/create': typeof ArticleCreateRoute
+  '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
+<<<<<<< HEAD
   '/article/edit/$id': typeof ArticleEditIdRoute
+=======
+  '/article/assign/$id': typeof ArticleAssignIdRoute
+>>>>>>> origin/main
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
@@ -140,12 +171,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/article/create'
+    | '/article/select'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/bidding'
+<<<<<<< HEAD
     | '/article/edit/$id'
+=======
+    | '/article/assign/$id'
+>>>>>>> origin/main
     | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,12 +190,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/article/create'
+    | '/article/select'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/bidding'
+<<<<<<< HEAD
     | '/article/edit/$id'
+=======
+    | '/article/assign/$id'
+>>>>>>> origin/main
     | '/conference/edit/$id'
   id:
     | '__root__'
@@ -169,12 +210,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/_auth/dashboard'
     | '/article/create'
+    | '/article/select'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/bidding'
+<<<<<<< HEAD
     | '/article/edit/$id'
+=======
+    | '/article/assign/$id'
+>>>>>>> origin/main
     | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
@@ -184,12 +230,17 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ArticleCreateRoute: typeof ArticleCreateRoute
+  ArticleSelectRoute: typeof ArticleSelectRoute
   ArticleViewRoute: typeof ArticleViewRoute
   ConferenceIdRoute: typeof ConferenceIdRoute
   ConferenceCreateRoute: typeof ConferenceCreateRoute
   ConferenceViewRoute: typeof ConferenceViewRoute
   ReviewerBiddingRoute: typeof ReviewerBiddingRoute
+<<<<<<< HEAD
   ArticleEditIdRoute: typeof ArticleEditIdRoute
+=======
+  ArticleAssignIdRoute: typeof ArticleAssignIdRoute
+>>>>>>> origin/main
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
@@ -258,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleViewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/article/select': {
+      id: '/article/select'
+      path: '/article/select'
+      fullPath: '/article/select'
+      preLoaderRoute: typeof ArticleSelectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/article/create': {
       id: '/article/create'
       path: '/article/create'
@@ -279,11 +337,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenceEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+<<<<<<< HEAD
     '/article/edit/$id': {
       id: '/article/edit/$id'
       path: '/article/edit/$id'
       fullPath: '/article/edit/$id'
       preLoaderRoute: typeof ArticleEditIdRouteImport
+=======
+    '/article/assign/$id': {
+      id: '/article/assign/$id'
+      path: '/article/assign/$id'
+      fullPath: '/article/assign/$id'
+      preLoaderRoute: typeof ArticleAssignIdRouteImport
+>>>>>>> origin/main
       parentRoute: typeof rootRouteImport
     }
   }
@@ -305,12 +371,17 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ArticleCreateRoute: ArticleCreateRoute,
+  ArticleSelectRoute: ArticleSelectRoute,
   ArticleViewRoute: ArticleViewRoute,
   ConferenceIdRoute: ConferenceIdRoute,
   ConferenceCreateRoute: ConferenceCreateRoute,
   ConferenceViewRoute: ConferenceViewRoute,
   ReviewerBiddingRoute: ReviewerBiddingRoute,
+<<<<<<< HEAD
   ArticleEditIdRoute: ArticleEditIdRoute,
+=======
+  ArticleAssignIdRoute: ArticleAssignIdRoute,
+>>>>>>> origin/main
   ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport
