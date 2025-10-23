@@ -26,9 +26,10 @@ import { articleSchema, type ArticleFormData } from '@/lib/validations';
 type ArticleFormProps = {
   users: User[];
   conferences: Conference[];
+  editMode ?: boolean;
 };
 
-export default function ArticleForm({ users, conferences }: ArticleFormProps) {
+export default function ArticleForm({ users, conferences, editMode }: ArticleFormProps) {
 
   // -------------------
   // Estados principales
@@ -106,7 +107,25 @@ export default function ArticleForm({ users, conferences }: ArticleFormProps) {
   }, [selectedConference]);
 
   // -------------------
-  // Manejo de submit
+  // Manejo del boton de confirmación (submit o update)
+  // -------------------
+  const handleConfirm = async () => {
+    if (editMode) {
+      await handleUpdate();
+    } else {
+      await handleSubmit();
+    }
+  }; 
+
+  // -------------------
+  // Manejo del boton de cancelación
+  // -------------------
+  const handleCancel = () => {
+    navigate({ to: '/article/view', replace: true });
+  }
+
+  // -------------------
+  // Manejo de create
   // -------------------
   const handleSubmit = async () => {
     setShowErrorAlert(false);
@@ -167,12 +186,23 @@ export default function ArticleForm({ users, conferences }: ArticleFormProps) {
   };
 
   // -------------------
+  // Manejo del update
+  // -------------------
+  const handleUpdate = async () => {
+    // TODO: manu :)
+  }; 
+
+  // -------------------
   // Renderizado
   // -------------------
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
 
-      <h2 className="text-lg font-bold italic text-slate-500 text-center">Alta de Artículo</h2>
+      {/* Titulo del Form */}
+      <h2 className="text-lg font-bold italic text-slate-500 text-center">
+        {!editMode ? "Alta de Artículo" : "Editar Artículo"}
+      </h2>
+
       <hr className="bg-slate-100" />
 
       {/* Combobox de Conferencias */}
@@ -270,11 +300,16 @@ export default function ArticleForm({ users, conferences }: ArticleFormProps) {
 
       <hr className="bg-slate-100" />
 
-      {/* Botón de submit */}
-      <Button variant="outline" onClick={handleSubmit} className="w-full bg-slate-900 text-white" disabled={loading}>
-        {loading ? "Subiendo..." : "Subir"}
-      </Button>
-
+      {/* Botones inferiores */}
+      <div className="flex flex-row gap-2">
+        <Button variant="outline" onClick={handleCancel} className="flex-1 bg-zinc-500 text-white" disabled={loading}>
+          Cancelar
+        </Button>
+        <Button variant="outline" onClick={handleConfirm} className="flex-1 bg-slate-900 text-white" disabled={loading}>
+          {loading ? editMode ? "Guardando..." : "Subiendo..." : editMode ? "Guardar" : "Subir"}
+        </Button>
+      </div>
+        
       {/* Alert de error */}
       {showErrorAlert && (
         <Alert variant="destructive">
