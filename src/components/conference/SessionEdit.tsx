@@ -1,19 +1,19 @@
 /* Componente para editar una sesión existente */
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import SessionForm, { type SessionFormData } from "./SessionForm";
-import { toast } from "sonner";
-import { axiosInstance as api } from "@/services/api";
-import type { Session } from "@/services/sessionServices";
-import { Edit } from "lucide-react";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import SessionForm, { type SessionFormData } from './SessionForm';
+import { toast } from 'sonner';
+import { axiosInstance as api } from '@/services/api';
+import type { Session } from '@/services/sessionServices';
+import { Edit } from 'lucide-react';
 
 type EditarSessionProps = {
   session: Session;
@@ -34,7 +34,7 @@ export default function EditarSession({
     title: session.title,
     deadline: new Date(session.deadline),
     capacity: session.capacity,
-    selectionMethod: "mejores", // Valor por defecto
+    selectionMethod: 'mejores', // Valor por defecto
     threshold: -1, // Valor por defecto
     chairs: [], // TODO: cargar chairs desde session cuando el backend lo soporte
   };
@@ -49,19 +49,21 @@ export default function EditarSession({
         capacity: data.capacity,
         conference_id: session.conference?.id,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
-        threshold_percentage: data.selectionMethod === "corte_fijo" ? data.percentage : 50,
-        improvement_threshold: data.selectionMethod === "mejores" ? data.threshold : 0,
+        threshold_percentage:
+          data.selectionMethod === 'corte_fijo' ? data.percentage : 50,
+        improvement_threshold:
+          data.selectionMethod === 'mejores' ? data.threshold : 0,
       };
 
       await api.put(`/api/session/${session.id}/`, sessionData);
 
-      toast.success("Sesión actualizada exitosamente");
+      toast.success('Sesión actualizada exitosamente');
       setOpen(false);
       onSessionUpdated?.();
     } catch (error: any) {
-      console.error("Error al actualizar la sesión:", error);
+      console.error('Error al actualizar la sesión:', error);
       toast.error(
-        error.response?.data?.message || "Error al actualizar la sesión"
+        error.response?.data?.message || 'Error al actualizar la sesión'
       );
     } finally {
       setIsLoading(false);
@@ -74,14 +76,25 @@ export default function EditarSession({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      {/* Trigger del modal */}
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="ghost" size="icon" className="cursor-pointer">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="cursor-pointer"
+            onClick={(e) => e.stopPropagation()} // evita que el click del botón abra redirect
+          >
             <Edit className="h-4 w-4" />
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+
+      {/* Contenido del modal */}
+      <DialogContent
+        className="max-w-md"
+        onClick={(e) => e.stopPropagation()} // evita que clicks dentro del modal disparen redirect
+      >
         <DialogHeader>
           <DialogTitle>Editar Sesión</DialogTitle>
         </DialogHeader>

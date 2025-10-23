@@ -1,12 +1,13 @@
 /* Componente que muestra una tarjeta de sesión con sus artículos */
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import type { Session } from "@/services/sessionServices";
-import EditarSession from "./SessionEdit";
-import { Calendar } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import type { Session } from '@/services/sessionServices';
+import EditarSession from './SessionEdit';
+import { Calendar } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 
 type SessionCardProps = {
   session: Session;
@@ -20,24 +21,32 @@ export default function SessionCard({
   const navigate = useNavigate();
   const formatDate = (dateString: string) => {
     try {
-      return format(new Date(dateString), "dd/MM/yyyy", { locale: es });
+      return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
     } catch {
       return dateString;
     }
   };
 
   const goToASession = () => {
-    navigate({to: `/conference/session/${session.id}`});
-  }
+    navigate({ to: `/conference/session/${session.id}` });
+  };
 
   return (
-    <Card className="w-full max-w-sm cursor-pointer hover:bg-gray-100" onClick={goToASession}>
+    <Card
+      className="w-full max-w-sm cursor-pointer hover:bg-gray-50"
+      onClick={goToASession}
+    >
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
         <div className="space-y-1 flex-1">
           <div className="text-xs text-muted-foreground">Sesión</div>
           <CardTitle className="text-xl">{session.title}</CardTitle>
         </div>
-        <EditarSession session={session} onSessionUpdated={onSessionUpdated} />
+        <div onClick={(e) => e.stopPropagation()}>
+          <EditarSession
+            session={session}
+            onSessionUpdated={onSessionUpdated}
+          />
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Deadline */}

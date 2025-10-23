@@ -3,12 +3,13 @@ import { Route } from '@/routes/conference/$id';
 import { Edit, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { deleteConference } from '@/services/conferenceServices';
 import { getUserById, type User } from '@/services/userServices';
 import AltaSession from './SessionCreate';
 import { getSessionsByConference } from '@/services/sessionServices';
 import type { Session } from '@/services/sessionServices';
 import SessionCard from './SessionCard';
+import ModalEliminar from './ModalEliminar';
+import { deleteConference } from '@/services/conferenceServices';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -19,8 +20,7 @@ function AConference() {
   const conferencia = Route.useLoaderData();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [chairs, setChairs]= useState<User[]>([])
+  const [chairs, setChairs] = useState<User[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,8 @@ function AConference() {
 
   const updateScrollButtons = () => {
     if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
       setCanScrollLeft(scrollLeft > 0);
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
     }
@@ -73,22 +74,9 @@ function AConference() {
     setShowDeleteModal(true);
   };
 
-  const confirmarEliminar = async () => {
-    setDeleting(true);
-    try {
-      await deleteConference(conferencia.id);
-      navigate({ to: '/conference/view' }); // Redirigir después de eliminar
-    } catch (error) {
-      console.error('Error al eliminar conferencia:', error);
-      alert('Error al eliminar la conferencia');
-    } finally {
-      setDeleting(false);
-      setShowDeleteModal(false);
-    }
-  };
-
-  const cancelarEliminar = () => {
-    setShowDeleteModal(false);
+  const onDelete = async() => {
+    await deleteConference(conferencia.id);
+    navigate({ to: '/conference/view' });
   };
 
   useEffect(() => {
@@ -130,9 +118,12 @@ function AConference() {
       <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
         <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
           <div className="flex justify-between items-center">
-            <h1 className="text-lg sm:text-2xl font-bold">
-              {conferencia.title.toUpperCase()}
-            </h1>
+            <div className="flex flex-col ">
+              <span className="text-sm font-medium">Conferencia</span>
+              <h1 className="text-lg sm:text-2xl font-bold">
+                {conferencia.title.toUpperCase()}
+              </h1>
+            </div>
             <div
               onClick={irEditarConferencia}
               className="cursor-pointer rounded hover:bg-gray-200 p-1"
@@ -151,10 +142,9 @@ function AConference() {
           <h2 className="text-1xl font-bold">Descripción</h2>
           <p className="break-words">{conferencia.description}</p>
           <h2 className="text-1xl font-bold">Chairs</h2>
-          {chairs.map(ch =>{
-            return <p key={ch.id}>{ch.full_name}</p> 
+          {chairs.map((ch) => {
+            return <p key={ch.id}>{ch.full_name}</p>;
           })}
-          
         </div>
 
         <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
@@ -211,7 +201,7 @@ function AConference() {
                 ))}
               </div>
 
-              {/* Botón derecho */} 
+              {/* Botón derecho */}
               {canScrollRight && (
                 <button
                   onClick={scrollRight}
@@ -225,8 +215,14 @@ function AConference() {
           )}
         </div>
 
-        <div className='flex justify-between items-center mt-5'>
-          <Button variant={"secondary"} className='cursor-pointer bg-slate-900 text-white hover:bg-slate-700' onClick={goToHome}>Volver al inicio</Button>
+        <div className="flex justify-between items-center mt-5 m-2">
+          <Button
+            variant={'secondary'}
+            className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700"
+            onClick={goToHome}
+          >
+            Volver al inicio
+          </Button>
 
           <Button
             variant="destructive"
@@ -239,35 +235,14 @@ function AConference() {
         </div>
       </div>
 
-      {/* Modal de confirmación */}
+      {/* Modal de confirmación para eliminar*/}
       {showDeleteModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border-2 border-gray-300">
-            <h3 className="text-lg font-bold mb-4">Confirmar eliminación</h3>
-            <p className="mb-6">
-              ¿Estás seguro que deseas eliminar la conferencia "
-              {conferencia.title}"? Esta acción no se puede deshacer.
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={cancelarEliminar}
-                className="cursor-pointer"
-                disabled={deleting}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={confirmarEliminar}
-                className="cursor-pointer bg-red-900 text-white hover:bg-red-700"
-                disabled={deleting}
-              >
-                {deleting ? 'Eliminando...' : 'Eliminar'}
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ModalEliminar
+          onDelete={onDelete}
+          title={conferencia.title}
+          isConference={true}
+          cerrar={() => setShowDeleteModal(false)}
+        />
       )}
     </>
   );
