@@ -1,23 +1,20 @@
 /* Componente que muestra una sesión individual */
 
 import { useState, useEffect } from "react";
-import { useParams } from "@tanstack/react-router";
 import { axiosInstance as api } from "@/services/api";
 import type { Session } from "@/services/sessionServices";
-import SessionCard from "./SessionCard";
 import { Loader2 } from "lucide-react";
+import { Route } from "@/routes/conference/session/$id";
 
 function ASession() {
-  const params = useParams({ strict: false }) as { sessionId?: string };
-  const sessionId = params.sessionId;
-  const [session, setSession] = useState<Session | null>(null);
+  const sessionInicial = Route.useLoaderData();
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(sessionInicial);
 
   const fetchSession = async () => {
-    if (!sessionId) return;
     try {
       setLoading(true);
-      const response = await api.get(`/api/session/${sessionId}/`);
+      const response = await api.get(`/api/session/${sessionInicial.id}/`);
       setSession(response.data);
     } catch (error) {
       console.error("Error al cargar la sesión:", error);
@@ -27,10 +24,8 @@ function ASession() {
   };
 
   useEffect(() => {
-    if (sessionId) {
-      fetchSession();
-    }
-  }, [sessionId]);
+    fetchSession();
+  }, []);
 
   if (loading) {
     return (
@@ -40,17 +35,10 @@ function ASession() {
     );
   }
 
-  if (!session) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-muted-foreground">Sesión no encontrada</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto py-8">
-      <SessionCard session={session} onSessionUpdated={fetchSession} />
+    <div className="">
+      {session && session.title}
+      <p>Falta esta view</p>
     </div>
   );
 }

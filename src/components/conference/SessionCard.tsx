@@ -6,6 +6,7 @@ import { es } from "date-fns/locale";
 import type { Session } from "@/services/sessionServices";
 import EditarSession from "./SessionEdit";
 import { Calendar } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 type SessionCardProps = {
   session: Session;
@@ -16,6 +17,7 @@ export default function SessionCard({
   session,
   onSessionUpdated,
 }: SessionCardProps) {
+  const navigate = useNavigate();
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), "dd/MM/yyyy", { locale: es });
@@ -24,8 +26,12 @@ export default function SessionCard({
     }
   };
 
+  const goToASession = () => {
+    navigate({to: `/conference/session/${session.id}`});
+  }
+
   return (
-    <Card className="w-full max-w-sm cursor-pointer hover:bg-gray-100">
+    <Card className="w-full max-w-sm cursor-pointer hover:bg-gray-100" onClick={goToASession}>
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
         <div className="space-y-1 flex-1">
           <div className="text-xs text-muted-foreground">Sesión</div>

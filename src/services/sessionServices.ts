@@ -23,3 +23,9 @@ export const getSessionsByConference = async (conferenceId: number): Promise<Ses
   });
   return response.data;
 }
+
+//Trae una sesion por su ID
+export const getSession= async (sessionId: string): Promise<Session> => {
+  const response = await api.get(`/api/session/${sessionId}/`);
+  return response.data;
+}
