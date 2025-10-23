@@ -8,6 +8,9 @@ export interface Session {
   deadline: string
   capacity: number
   conference: Conference | null
+  threshold_percentage: number
+  improvement_threshold: number
+  chairs?: number[] // Array de IDs de usuarios
 }
 
 // Trae todas las sesiones

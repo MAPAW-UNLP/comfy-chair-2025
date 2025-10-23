@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { axiosInstance as api } from '@/services/api';
 import { deleteSession, type Session } from '@/services/sessionServices';
-import { Edit, Loader2, Trash2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { Route } from '@/routes/conference/session/$id';
 import { formatearFecha } from './AConference';
 import { Button } from '../ui/button';
 import ModalEliminar from './ModalEliminar';
 import { useNavigate } from '@tanstack/react-router';
+import EditarSession from './EditarSession';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -28,8 +29,6 @@ function ASession() {
       setLoading(false);
     }
   };
-
-  const goToEditSession = () => {};
 
   useEffect(() => {
     console.log('A ver la sesion, ', sessionInicial);
@@ -67,12 +66,10 @@ function ASession() {
               {session!.title.toUpperCase()}
             </h1>
           </div>
-          <div
-            onClick={goToEditSession}
-            className="cursor-pointer rounded hover:bg-gray-200 p-1"
-          >
-            <Edit size={'15'} />
-          </div>
+          <EditarSession 
+            session={session!} 
+            onSessionUpdated={fetchSession}
+          />
         </div>
         <p className="text-sm">Deadline {formatearFecha(session!.deadline)}</p>
       </div>
