@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteConference } from '@/services/conferenceServices';
 import { getUserById, type User } from '@/services/userServices';
-import AltaSession from './AltaSession';
+import AltaSession from './SessionCreate';
 import { getSessionsByConference } from '@/services/sessionServices';
 import type { Session } from '@/services/sessionServices';
 import SessionCard from './SessionCard';

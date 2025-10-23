@@ -1,4 +1,4 @@
-import type { Conference } from '@/services/conferenceServices';
+import type { Conference } from '@/components/conference/ConferenceApp';
 
 import { axiosInstance as api } from './api';
 

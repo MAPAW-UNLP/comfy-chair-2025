@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { getSessionsByConference } from "@/services/sessionServices";
 import type { Session } from "@/services/sessionServices";
 import SessionCard from "./SessionCard";
-import AltaSession from "./AltaSession";
+import AltaSession from "./SessionCreate";
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2 } from "lucide-react";
 

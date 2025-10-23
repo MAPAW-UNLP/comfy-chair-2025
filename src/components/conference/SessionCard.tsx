@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Session } from "@/services/sessionServices";
-import EditarSession from "./EditarSession";
+import EditarSession from "./SessionEdit";
 import { Calendar } from "lucide-react";
 
 type SessionCardProps = {
