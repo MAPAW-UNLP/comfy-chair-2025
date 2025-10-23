@@ -45,12 +45,12 @@ export default function EditarSession({
       // Preparar los datos para enviar al backend
       const sessionData = {
         title: data.title,
-        deadline: data.deadline?.toISOString(),
+        deadline: data.deadline?.toISOString().split('T')[0], // Solo la fecha (YYYY-MM-DD)
         capacity: data.capacity,
         conference_id: session.conference?.id,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
-        // Aquí puedes agregar los campos de selection_method, percentage y threshold
-        // cuando el backend los soporte
+        threshold_percentage: data.selectionMethod === "corte_fijo" ? data.percentage : 50,
+        improvement_threshold: data.selectionMethod === "mejores" ? data.threshold : 0,
       };
 
       await api.put(`/api/session/${session.id}/`, sessionData);
