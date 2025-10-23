@@ -100,7 +100,7 @@ function ConferenceApp() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  justify-center items-center gap-3 w-full px-5">
+      <div className="flex flex-col items-center sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 w-full px-5">
         {conferencias.length > 0 ? (
           conferencias.map((c) => {
             return <ConferenceBox key={c.id} conferencia={c} />;

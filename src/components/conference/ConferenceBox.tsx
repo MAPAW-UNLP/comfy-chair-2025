@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { Conference } from './ConferenceApp';
 import { useNavigate} from '@tanstack/react-router';
 import { formatearFecha } from './AConference';
@@ -20,9 +20,13 @@ function ConferenceBox({ conferencia }: ConferenceBoxProps) {
     e.stopPropagation(); 
     navigate({to: `/conference/edit/${conferencia.id}`})
   }
+
+  useEffect(() =>{
+    console.log(conferencia);
+  },[])
   
   return (
-    <div onClick={irUnaConferencia} className="flex flex-col bg-card hover:bg-card/60 max-w-[400px] sm:max-w-[500px] p-2 mb-2 rounded-sm gap-2 shadow border border-gray-400 cursor-pointer">
+    <div onClick={irUnaConferencia} className="flex flex-col bg-card hover:bg-card/60 max-w-[400px] p-4 mb-2 rounded-sm gap-2 shadow border border-gray-400 cursor-pointer">
 
       <div className="flex justify-between items-start w-full">
         <div className="flex flex-col gap-0  w-[80%]">

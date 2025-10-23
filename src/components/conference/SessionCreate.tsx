@@ -59,11 +59,11 @@ export default function AltaSession({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} >
       <DialogTrigger asChild>
         {trigger || <Button>Alta Sesión</Button>}
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Alta Sesión</DialogTitle>
         </DialogHeader>

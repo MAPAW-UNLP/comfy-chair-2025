@@ -187,7 +187,7 @@ function AConference() {
               {canScrollLeft && (
                 <button
                   onClick={scrollLeft}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full p-2 shadow-lg"
+                  className="cursor-pointer absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full p-2 shadow-lg"
                   aria-label="Scroll izquierda"
                 >
                   <ChevronLeft className="w-6 h-6" />
@@ -211,11 +211,11 @@ function AConference() {
                 ))}
               </div>
 
-              {/* Botón derecho */}
+              {/* Botón derecho */} 
               {canScrollRight && (
                 <button
                   onClick={scrollRight}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full p-2 shadow-lg"
+                  className="cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full p-2 shadow-lg"
                   aria-label="Scroll derecha"
                 >
                   <ChevronRight className="w-6 h-6" />

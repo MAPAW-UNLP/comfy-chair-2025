@@ -76,7 +76,7 @@ export default function EditarSession({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="cursor-pointer">
             <Edit className="h-4 w-4" />
           </Button>
         )}

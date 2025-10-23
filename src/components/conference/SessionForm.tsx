@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { CalendarIcon, X } from "lucide-react";
-import { UserCombobox } from "@/components/combobox/UserCombobox";
-import { getCommonUsers, type User } from "@/services/userServices";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { CalendarIcon, X } from 'lucide-react';
+import { UserCombobox } from '@/components/combobox/UserCombobox';
+import { getCommonUsers, type User } from '@/services/userServices';
 
 // Tipos
-type SelectionMethod = "corte_fijo" | "mejores";
+type SelectionMethod = 'corte_fijo' | 'mejores';
 
 export type SessionFormData = {
   title: string;
@@ -35,20 +39,24 @@ export default function SessionForm({
   onSubmit,
   onCancel,
   isLoading = false,
-  submitButtonText = "Guardar",
+  submitButtonText = 'Guardar',
 }: SessionFormProps) {
   // Estados del formulario
-  const [title, setTitle] = useState<string>(initialData?.title || "");
-  const [deadline, setDeadline] = useState<Date | undefined>(initialData?.deadline);
-  const [capacity, setCapacity] = useState<string>(initialData?.capacity?.toString() || "");
+  const [title, setTitle] = useState<string>(initialData?.title || '');
+  const [deadline, setDeadline] = useState<Date | undefined>(
+    initialData?.deadline
+  );
+  const [capacity, setCapacity] = useState<string>(
+    initialData?.capacity?.toString() || ''
+  );
   const [selectionMethod, setSelectionMethod] = useState<SelectionMethod>(
-    initialData?.selectionMethod || "corte_fijo"
+    initialData?.selectionMethod || 'corte_fijo'
   );
   const [percentage, setPercentage] = useState<string>(
-    initialData?.percentage?.toString() || "50"
+    initialData?.percentage?.toString() || '50'
   );
   const [threshold, setThreshold] = useState<string>(
-    initialData?.threshold?.toString() || "-1"
+    initialData?.threshold?.toString() || '-1'
   );
   const [chairs, setChairs] = useState<User[]>(initialData?.chairs || []);
   const [users, setUsers] = useState<User[]>([]);
@@ -99,7 +107,7 @@ export default function SessionForm({
     };
 
     // Agregar el campo correspondiente según el método de selección
-    if (selectionMethod === "corte_fijo") {
+    if (selectionMethod === 'corte_fijo') {
       const percentageNum = parseInt(percentage);
       if (isNaN(percentageNum) || percentageNum <= 0 || percentageNum > 100) {
         return;
@@ -117,7 +125,10 @@ export default function SessionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-3 max-w-md max-h-[80vh] overflow-auto px-5"
+    >
       {/* Nombre de la sesión */}
       <div className="flex flex-col gap-2">
         <label className="font-semibold">Nombre de la sesión</label>
@@ -143,7 +154,7 @@ export default function SessionForm({
               <div className="flex items-center">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {deadline ? (
-                  format(deadline, "dd/MM/yyyy", { locale: es })
+                  format(deadline, 'dd/MM/yyyy', { locale: es })
                 ) : (
                   <span className="text-gray-500">dd/mm/aaaa</span>
                 )}
@@ -164,15 +175,18 @@ export default function SessionForm({
 
       {/* Cupo de artículos aceptados */}
       <div className="flex flex-col gap-2">
-        <label className="font-semibold" htmlFor="capacity">Cupo de artículos aceptados</label>
+        <label className="font-semibold" htmlFor="capacity">
+          Cupo de artículos aceptados
+        </label>
         <input
-          className="border rounded px-2 py-1 bg-white"
+          className="no-spinner border rounded px-2 py-1 bg-white"
           id="capacity"
           type="number"
           placeholder="Ingresá el cupo..."
           value={capacity}
           onChange={(e) => setCapacity(e.target.value)}
           min="1"
+          max="999"
           required
         />
       </div>
@@ -210,23 +224,32 @@ export default function SessionForm({
       {/* Método de Selección */}
       <div className="flex flex-col gap-2">
         <label className="font-semibold">Método de Selección</label>
-        <RadioGroup value={selectionMethod} onValueChange={(value) => setSelectionMethod(value as SelectionMethod)}>
+        <RadioGroup
+          value={selectionMethod}
+          onValueChange={(value) =>
+            setSelectionMethod(value as SelectionMethod)
+          }
+        >
           {/* Corte fijo */}
           <div className="p-3 rounded border-2 border-gray-300 bg-gray-50 hover:bg-gray-100">
             <div className="flex items-center gap-2">
-              <RadioGroupItem value="corte_fijo" id="corte_fijo" className="border-2 border-black" />
+              <RadioGroupItem
+                value="corte_fijo"
+                id="corte_fijo"
+                className="border-2 border-black"
+              />
               <label htmlFor="corte_fijo" className="cursor-pointer">
                 Corte fijo
               </label>
             </div>
-            {selectionMethod === "corte_fijo" && (
+            {selectionMethod === 'corte_fijo' && (
               <div className="mt-3 ml-6 flex flex-col gap-2">
                 <label htmlFor="percentage" className="text-sm text-gray-600">
                   Porcentaje
                 </label>
                 <div className="flex items-center gap-2">
                   <input
-                    className="border rounded px-2 py-1 w-24 bg-white"
+                    className="no-spinner border rounded px-2 py-1 w-24 bg-white"
                     id="percentage"
                     type="number"
                     value={percentage}
@@ -243,22 +266,28 @@ export default function SessionForm({
           {/* Mejores */}
           <div className="p-3 rounded border-2 border-gray-300 bg-gray-50 hover:bg-gray-100">
             <div className="flex items-center gap-2">
-              <RadioGroupItem value="mejores" id="mejores" className="border-2 border-black" />
+              <RadioGroupItem
+                value="mejores"
+                id="mejores"
+                className="border-2 border-black"
+              />
               <label htmlFor="mejores" className="cursor-pointer">
                 Mejores
               </label>
             </div>
-            {selectionMethod === "mejores" && (
+            {selectionMethod === 'mejores' && (
               <div className="mt-3 ml-6 flex flex-col gap-2">
                 <label htmlFor="threshold" className="text-sm text-gray-600">
                   Umbral
                 </label>
                 <input
-                  className="border rounded px-2 py-1 w-24 bg-white"
+                  className="no-spinner border rounded px-2 py-1 w-24 bg-white"
                   id="threshold"
                   type="number"
                   value={threshold}
                   onChange={(e) => setThreshold(e.target.value)}
+                  min="-3"
+                  max="3"
                 />
               </div>
             )}
@@ -284,7 +313,7 @@ export default function SessionForm({
           size="lg"
           className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700 border-2 border-slate-950 shadow-md"
         >
-          {isLoading ? "Guardando..." : submitButtonText}
+          {isLoading ? 'Guardando...' : submitButtonText}
         </Button>
       </div>
     </form>

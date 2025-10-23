@@ -25,7 +25,7 @@ export default function SessionCard({
   };
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm cursor-pointer hover:bg-gray-100">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
         <div className="space-y-1 flex-1">
           <div className="text-xs text-muted-foreground">Sesión</div>
