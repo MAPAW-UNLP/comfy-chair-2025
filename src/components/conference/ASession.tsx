@@ -10,6 +10,7 @@ import { Button } from '../ui/button';
 import ModalEliminar from './ModalEliminar';
 import { useNavigate } from '@tanstack/react-router';
 import EditarSession from './EditarSession';
+// import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -85,7 +86,20 @@ function ASession() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
         <h2 className="text-1xl font-bold">Artículos</h2>
-        <div>Supongo que aca va el carrusel tambien</div>
+        {/* TODO: Cargar artículos desde el backend */}
+        {/* Ejemplo de cómo usar el carrusel cuando tengas los artículos: */}
+        {/* 
+        <CarouselContainer>
+          {articles.map((article) => (
+            <CarouselItem key={article.id} width="350px">
+              <ArticleCard article={article} />
+            </CarouselItem>
+          ))}
+        </CarouselContainer>
+        */}
+        <div className="text-center py-4 text-muted-foreground">
+          No hay artículos asignados
+        </div>
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-5 m-2 gap-3">
         <Button
