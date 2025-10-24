@@ -218,7 +218,7 @@ export default function SessionForm({
                 </label>
               </div>
               <p className="text-sm text-gray-600 mt-2 ml-6">
-                Se aceptarán los artículos cuya calificación sea mayor o igual al porcentaje indicado del total de puntos posibles.
+                Se aceptarán los artículos en orden decreciente de puntaje hasta completar el porcentaje indicado.
               </p>
               {selectionMethod === 'corte_fijo' && (
                 <div className="mt-3 ml-6 flex flex-col gap-2">
@@ -254,7 +254,7 @@ export default function SessionForm({
                 </label>
               </div>
               <p className="text-sm text-gray-600 mt-2 ml-6">
-                Se aceptarán los artículos cuya calificación sea mayor al umbral indicado.
+                Se aceptarán todos los artículos cuya calificación sea superior al umbral indicado.
               </p>
               {selectionMethod === 'mejores' && (
                 <div className="mt-3 ml-6 flex flex-col gap-2">
