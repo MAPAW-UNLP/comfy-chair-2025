@@ -122,147 +122,161 @@ export default function SessionForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-3 max-w-md max-h-[80vh] overflow-auto px-5"
+      className="flex flex-col gap-3 max-h-[80vh] overflow-auto px-5"
     >
-      {/* Nombre de la sesión */}
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Nombre de la sesión</label>
-        <input
-          className="border rounded px-2 py-1 bg-white"
-          id="title"
-          placeholder="Ingresá el nombre..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
+      <div className="flex flex-col lg:flex-row justify-between gap-6 w-full">
+        {/* Columna Izquierda */}
+        <div className="flex flex-col gap-3 lg:w-1/2">
+          {/* Nombre de la sesión */}
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold">Nombre de la sesión</label>
+            <input
+              className="border rounded px-2 py-1 bg-white"
+              id="title"
+              placeholder="Ingresá el nombre..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
 
-      {/* Deadline */}
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Deadline</label>
-        <CustomCalendar date={deadline} setDate={setDeadline} />
-      </div>
+          {/* Deadline */}
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold">Deadline</label>
+            <CustomCalendar date={deadline} setDate={setDeadline} />
+          </div>
 
-      {/* Cupo de artículos aceptados */}
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold" htmlFor="capacity">
-          Cupo de artículos aceptados
-        </label>
-        <input
-          className="no-spinner border rounded px-2 py-1 bg-white"
-          id="capacity"
-          type="number"
-          placeholder="Ingresá el cupo..."
-          value={capacity}
-          onChange={(e) => setCapacity(e.target.value)}
-          min="1"
-          max="999"
-          required
-        />
-      </div>
+          {/* Cupo de artículos aceptados */}
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold" htmlFor="capacity">
+              Cupo de artículos aceptados
+            </label>
+            <input
+              className="no-spinner border rounded px-2 py-1 bg-white"
+              id="capacity"
+              type="number"
+              placeholder="Ingresá el cupo..."
+              value={capacity}
+              onChange={(e) => setCapacity(e.target.value)}
+              min="1"
+              max="999"
+              required
+            />
+          </div>
 
-      {/* Chairs */}
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Chairs</label>
-        <UserCombobox
-          users={users}
-          onValueChange={handleAddChair}
-          isChair={true}
-          backgroundWhite={true}
-        />
-        <div className="max-h-[150px] overflow-auto flex flex-col gap-2">
-          {chairs.map((ch) => (
-            <div
-              key={ch.id}
-              className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full"
-            >
-              <span className="truncate">
-                {ch.full_name} ({ch.email})
-              </span>
-              <button
-                type="button"
-                onClick={() => handleDeleteChair(ch.id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                <X size={16} />
-              </button>
+          {/* Chairs */}
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold">Chairs</label>
+            <UserCombobox
+              users={users}
+              onValueChange={handleAddChair}
+              isChair={true}
+              backgroundWhite={true}
+            />
+            <div className="max-h-[150px] overflow-auto flex flex-col gap-2">
+              {chairs.map((ch) => (
+                <div
+                  key={ch.id}
+                  className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full"
+                >
+                  <span className="truncate">
+                    {ch.full_name} ({ch.email})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteChair(ch.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
 
-      {/* Método de Selección */}
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold">Método de Selección</label>
-        <RadioGroup
-          value={selectionMethod}
-          onValueChange={(value) =>
-            setSelectionMethod(value as SelectionMethod)
-          }
-        >
-          {/* Corte fijo */}
-          <div className="p-3 rounded border-2 border-gray-300 bg-gray-50 hover:bg-gray-100">
-            <div className="flex items-center gap-2">
-              <RadioGroupItem
-                value="corte_fijo"
-                id="corte_fijo"
-                className="border-2 border-black"
-              />
-              <label htmlFor="corte_fijo" className="cursor-pointer">
-                Corte fijo
-              </label>
-            </div>
-            {selectionMethod === 'corte_fijo' && (
-              <div className="mt-3 ml-6 flex flex-col gap-2">
-                <label htmlFor="percentage" className="text-sm text-gray-600">
-                  Porcentaje
+        {/* Columna Derecha - Método de Selección */}
+        <div className="flex flex-col gap-2 lg:w-1/2">
+          <label className="font-semibold">Método de Selección</label>
+          <p className="text-sm text-gray-600 mb-2">
+            Seleccione el método de selección de artículos.
+          </p>
+          <RadioGroup
+            value={selectionMethod}
+            onValueChange={(value) =>
+              setSelectionMethod(value as SelectionMethod)
+            }
+          >
+            {/* Corte fijo */}
+            <div className="p-4 rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50">
+              <div className="flex items-center gap-2">
+                <RadioGroupItem
+                  value="corte_fijo"
+                  id="corte_fijo"
+                  className="border-2 border-black"
+                />
+                <label htmlFor="corte_fijo" className="cursor-pointer font-semibold">
+                  Corte fijo
                 </label>
-                <div className="flex items-center gap-2">
+              </div>
+              <p className="text-sm text-gray-600 mt-2 ml-6">
+                Se aceptarán los artículos cuya calificación sea mayor o igual al porcentaje indicado del total de puntos posibles.
+              </p>
+              {selectionMethod === 'corte_fijo' && (
+                <div className="mt-3 ml-6 flex flex-col gap-2">
+                  <label htmlFor="percentage" className="text-sm font-medium text-gray-700">
+                    Porcentaje
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      className="no-spinner border rounded px-2 py-1 w-24 bg-white"
+                      id="percentage"
+                      type="number"
+                      value={percentage}
+                      onChange={(e) => setPercentage(e.target.value)}
+                      min="1"
+                      max="100"
+                    />
+                    <span className="text-sm text-gray-600">%</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Mejores */}
+            <div className="p-4 rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50">
+              <div className="flex items-center gap-2">
+                <RadioGroupItem
+                  value="mejores"
+                  id="mejores"
+                  className="border-2 border-black"
+                />
+                <label htmlFor="mejores" className="cursor-pointer font-semibold">
+                  Mejores
+                </label>
+              </div>
+              <p className="text-sm text-gray-600 mt-2 ml-6">
+                Se aceptarán los artículos cuya calificación sea mayor al umbral indicado.
+              </p>
+              {selectionMethod === 'mejores' && (
+                <div className="mt-3 ml-6 flex flex-col gap-2">
+                  <label htmlFor="threshold" className="text-sm font-medium text-gray-700">
+                    Umbral
+                  </label>
                   <input
                     className="no-spinner border rounded px-2 py-1 w-24 bg-white"
-                    id="percentage"
+                    id="threshold"
                     type="number"
-                    value={percentage}
-                    onChange={(e) => setPercentage(e.target.value)}
-                    min="1"
-                    max="100"
+                    value={threshold}
+                    onChange={(e) => setThreshold(e.target.value)}
+                    min="-3"
+                    max="3"
                   />
-                  <span className="text-sm text-gray-600">%</span>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Mejores */}
-          <div className="p-3 rounded border-2 border-gray-300 bg-gray-50 hover:bg-gray-100">
-            <div className="flex items-center gap-2">
-              <RadioGroupItem
-                value="mejores"
-                id="mejores"
-                className="border-2 border-black"
-              />
-              <label htmlFor="mejores" className="cursor-pointer">
-                Mejores
-              </label>
+              )}
             </div>
-            {selectionMethod === 'mejores' && (
-              <div className="mt-3 ml-6 flex flex-col gap-2">
-                <label htmlFor="threshold" className="text-sm text-gray-600">
-                  Umbral
-                </label>
-                <input
-                  className="no-spinner border rounded px-2 py-1 w-24 bg-white"
-                  id="threshold"
-                  type="number"
-                  value={threshold}
-                  onChange={(e) => setThreshold(e.target.value)}
-                  min="-3"
-                  max="3"
-                />
-              </div>
-            )}
-          </div>
-        </RadioGroup>
+          </RadioGroup>
+        </div>
       </div>
 
       {/* Botones */}

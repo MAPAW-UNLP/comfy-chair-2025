@@ -9,7 +9,7 @@ import { formatearFecha } from './AConference';
 import { Button } from '../ui/button';
 import ModalEliminar from './ModalEliminar';
 import { useNavigate } from '@tanstack/react-router';
-import EditarSession from './EditarSession';
+import EditarSession from './SessionEdit';
 // import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 
 function ASession() {

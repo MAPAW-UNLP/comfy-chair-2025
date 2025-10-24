@@ -29,15 +29,20 @@ export default function EditarSession({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Determinar el método de selección basado en los valores del backend
+  // Si improvement_threshold está entre -3 y 3 (no es 0), es "mejores"
+  // Si threshold_percentage está entre 1 y 100, es "corte_fijo"
+  const isThresholdMethod = session.improvement_threshold !== 0;
+
   // Datos iniciales del formulario
   const initialData: Partial<SessionFormData> = {
     title: session.title,
-    deadline: new Date(session.deadline),
+    deadline: session.deadline ? new Date(session.deadline) : undefined,
     capacity: session.capacity,
-    selectionMethod: session.threshold_percentage ? 'corte_fijo' : 'mejores',
-    percentage: session.threshold_percentage ?? null,
-    threshold: session.improvement_threshold ?? null,
-    chairs: [], // TODO: cargar desde backend cuando esté listo
+    selectionMethod: isThresholdMethod ? 'mejores' : 'corte_fijo',
+    percentage: session.threshold_percentage ?? undefined,
+    threshold: session.improvement_threshold ?? undefined,
+    chairs: [], // TODO: cargar chairs desde session cuando el backend lo soporte
   };
 
   const handleSubmit = async (data: SessionFormData) => {
@@ -50,10 +55,8 @@ export default function EditarSession({
         capacity: data.capacity,
         conference_id: session.conference?.id,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
-        threshold_percentage:
-          data.selectionMethod === 'corte_fijo' ? data.percentage : null,
-        improvement_threshold:
-          data.selectionMethod === 'mejores' ? data.threshold : null,
+        threshold_percentage: data.selectionMethod === 'corte_fijo' ? data.percentage : 50,
+        improvement_threshold: data.selectionMethod === 'mejores' ? data.threshold : 0,
       };
       await updateSession(session.id.toString(), sessionData, session.conference!.id);
 
@@ -92,7 +95,7 @@ export default function EditarSession({
 
       {/* Contenido del modal */}
       <DialogContent
-        className="max-w-md"
+        className="max-w-4xl"
         onClick={(e) => e.stopPropagation()} // evita que clicks dentro del modal disparen redirect
       >
         <DialogHeader>
