@@ -42,7 +42,7 @@ function RouteComponent() {
           </h1>
         </div>
       ) : (
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div className="grid sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 justify-center">
           {articulo.map((a) => (
             <ArticleCard key={a.id} article={a} />
           ))}
