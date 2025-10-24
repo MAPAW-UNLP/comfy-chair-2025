@@ -5,17 +5,14 @@ import { useNavigate } from '@tanstack/react-router';
 import ConferenceForm from './ConferenceForm';
 import { getUserById, type User } from '@/services/userServices';
 import type { Conference } from './ConferenceApp';
+import { toast } from 'sonner';
 
 function ConferenceEdit() {
   const conferenciaInicial = Route.useLoaderData() as Conference;
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
   const [chairs, setChairs] = useState<User[]>([]);
   const navigate = useNavigate();
 
   const handleSubmit = async (conf: Omit<Conference, 'id'>, chairs: User[]) => {
-    setError('');
-    setSuccess(false);
     const updatedConf = { ...conf };
 
     if (updatedConf.start_date === conferenciaInicial.start_date) {
@@ -26,12 +23,10 @@ function ConferenceEdit() {
     }
     try {
       await updateConference(conferenciaInicial.id, updatedConf, chairs);
-      setSuccess(true);
-      setTimeout(() => {
+      toast.success('Conferencia actualizada correctamente');
         navigate({ to: `/conference/${conferenciaInicial.id}` });
-      }, 800);
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -65,14 +60,8 @@ function ConferenceEdit() {
       <ConferenceForm
         handleSubmit={handleSubmit}
         valorConferencia={conferenciaInicial}
-        setError={setError}
         valorChairs={chairs}
-      >
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {success && (
-          <div className="text-green-600 text-sm">Guardado correctamente</div>
-        )}
-      </ConferenceForm>
+      />
     </div>
   );
 }

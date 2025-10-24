@@ -6,6 +6,7 @@ import { ConferenceView } from './ConferenceView';
 import { getCommonUsers, type User } from '@/services/userServices';
 import { UserCombobox } from '../combobox/UserCombobox';
 import { X } from 'lucide-react';
+import { toast } from 'sonner';
 
 function esFechaValida(fecha1: string, fecha2: string) {
   const f1 = new Date(fecha1);
@@ -16,18 +17,14 @@ function esFechaValida(fecha1: string, fecha2: string) {
 
 type ConferenceFormProps = {
   handleSubmit: (conf: Omit<Conference, 'id'>, chairs: User[]) => Promise<void>;
-  children: React.ReactNode;
   valorConferencia?: Omit<Conference, 'id'>;
   valorChairs?: User[];
-  setError: React.Dispatch<React.SetStateAction<string>>;
 };
 
 function ConferenceForm({
   handleSubmit,
-  children,
   valorConferencia,
   valorChairs,
-  setError,
 }: ConferenceFormProps) {
   const [conferencia, setConferencia] = useState<Omit<Conference, 'id'>>({
     title: '',
@@ -42,7 +39,7 @@ function ConferenceForm({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!esFechaValida(conferencia.start_date, conferencia.end_date)) {
-      setError(
+      toast.error(
         'La fecha de fin debe ser posterior o igual a la fecha de inicio'
       );
       return;
@@ -77,14 +74,14 @@ function ConferenceForm({
   };
 
   const handleAddChair = (userId: number) => {
-    const chair = users.find(u => u.id === userId);
-    if (chair && !chairs.some(ch => ch.id === chair.id)) {
+    const chair = users.find((u) => u.id === userId);
+    if (chair && !chairs.some((ch) => ch.id === chair.id)) {
       setChairs([...chairs, chair]);
     }
   };
 
   const handleDeleteChair = (userId: number) => {
-    setChairs(chairs.filter(ch => ch.id !== userId));
+    setChairs(chairs.filter((ch) => ch.id !== userId));
   };
 
   useEffect(() => {
@@ -184,8 +181,6 @@ function ConferenceForm({
           <ConferenceView actualizarVista={actualizarVista} />
         )}
       </div>
-
-      {children}
 
       <div className="flex justify-end gap-2">
         <Button
