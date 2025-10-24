@@ -14,8 +14,8 @@ export type SessionFormData = {
   deadline: Date | undefined;
   capacity: number;
   selectionMethod: SelectionMethod;
-  percentage?: number; // Para corte fijo
-  threshold?: number; // Para mejores
+  percentage?: number | undefined; // Para corte fijo
+  threshold?: number | undefined; // Para mejores
   chairs: User[]; // Lista de chairs
 };
 
@@ -61,8 +61,6 @@ export default function SessionForm({
       setUsers(data);
     };
     fetchUsers();
-
-    console.log(' for SessionForm:', initialData);
   }, []);
 
   // Manejo de chairs

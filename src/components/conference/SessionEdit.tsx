@@ -11,38 +11,36 @@ import {
 import { Button } from '@/components/ui/button';
 import SessionForm, { type SessionFormData } from './SessionForm';
 import { toast } from 'sonner';
-import { axiosInstance as api } from '@/services/api';
 import { updateSession, type Session } from '@/services/sessionServices';
 import { Edit } from 'lucide-react';
+import type { User } from '@/services/userServices';
 
 type EditarSessionProps = {
   session: Session;
   onSessionUpdated?: () => void;
   trigger?: React.ReactNode;
+  chairs?: User[]
 };
 
 export default function EditarSession({
   session,
   onSessionUpdated,
   trigger,
+  chairs
 }: EditarSessionProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Determinar el método de selección basado en los valores del backend
-  // Si improvement_threshold está entre -3 y 3 (no es 0), es "mejores"
-  // Si threshold_percentage está entre 1 y 100, es "corte_fijo"
-  const isThresholdMethod = session.improvement_threshold !== 0;
 
   // Datos iniciales del formulario
   const initialData: Partial<SessionFormData> = {
     title: session.title,
     deadline: session.deadline ? new Date(session.deadline) : undefined,
     capacity: session.capacity,
-    selectionMethod: isThresholdMethod ? 'mejores' : 'corte_fijo',
+    selectionMethod: session.threshold_percentage ? 'corte_fijo' : 'mejores',
     percentage: session.threshold_percentage ?? undefined,
     threshold: session.improvement_threshold ?? undefined,
-    chairs: [], // TODO: cargar chairs desde session cuando el backend lo soporte
+    chairs: chairs, 
   };
 
   const handleSubmit = async (data: SessionFormData) => {
@@ -55,9 +53,10 @@ export default function EditarSession({
         capacity: data.capacity,
         conference_id: session.conference?.id,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
-        threshold_percentage: data.selectionMethod === 'corte_fijo' ? data.percentage : 50,
-        improvement_threshold: data.selectionMethod === 'mejores' ? data.threshold : 0,
+        threshold_percentage: data.selectionMethod === 'corte_fijo' ? data.percentage : undefined,
+        improvement_threshold: data.selectionMethod === 'mejores' ? data.threshold : undefined,
       };
+
       await updateSession(session.id.toString(), sessionData, session.conference!.id);
 
       toast.success('Sesión actualizada exitosamente');

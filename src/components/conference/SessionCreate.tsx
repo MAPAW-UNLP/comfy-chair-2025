@@ -36,9 +36,9 @@ export default function AltaSession({
         capacity: data.capacity,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
         threshold_percentage:
-          data.selectionMethod === 'corte_fijo' ? data.percentage : null,
+          data.selectionMethod === 'corte_fijo' ? data.percentage : undefined,
         improvement_threshold:
-          data.selectionMethod === 'mejores' ? data.threshold : null,
+          data.selectionMethod === 'mejores' ? data.threshold : undefined,
       };
       console.log('Creating session with data:', sessionData);
       await createSession(sessionData, conferenceId);

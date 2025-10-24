@@ -26,6 +26,7 @@ export const getSessionsByConference = async (
   const response = await api.get('/api/session', {
     params: { conference_id: conferenceId }, // esto genera ?conference_id=1
   });
+    console.log('Sesiones obtenidas:', response.data);
   return response.data;
 };
 
@@ -73,6 +74,7 @@ export const updateSession = async (
   conference_id: string
 ): Promise<Session> => {
   try {
+    console.log('Updating session with data:', sessionData);
     const response = await api.put(`/api/session/${sessionId}/`, {
       ...sessionData,
       conference_id,
