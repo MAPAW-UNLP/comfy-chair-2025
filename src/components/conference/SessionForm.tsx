@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { CalendarIcon, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { UserCombobox } from '@/components/combobox/UserCombobox';
 import { getCommonUsers, type User } from '@/services/userServices';
+import CustomCalendar from './CustomCalendar';
 
 // Tipos
 type SelectionMethod = 'corte_fijo' | 'mejores';
@@ -147,32 +140,7 @@ export default function SessionForm({
       {/* Deadline */}
       <div className="flex flex-col gap-2">
         <label className="font-semibold">Deadline</label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              className="border rounded px-2 py-1 text-left bg-white flex items-center justify-between hover:bg-gray-50"
-            >
-              <div className="flex items-center">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {deadline ? (
-                  format(deadline, 'dd/MM/yyyy', { locale: es })
-                ) : (
-                  <span className="text-gray-500">dd/mm/aaaa</span>
-                )}
-              </div>
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={deadline}
-              onSelect={setDeadline}
-              initialFocus
-              locale={es}
-            />
-          </PopoverContent>
-        </Popover>
+        <CustomCalendar date={deadline} setDate={setDeadline} />
       </div>
 
       {/* Cupo de artículos aceptados */}

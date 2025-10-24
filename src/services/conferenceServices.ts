@@ -29,7 +29,7 @@ export const getConference = async (id: string): Promise<Conference> => {
 };
 
 const errorMessages: Record<string, string> = {
-  'conferencia with this title already exists.':
+  'conference with this title already exists.':
     'Ya existe una conferencia con ese título',
   'Ensure this field has no more than 300 characters.':
     'La descripción no debe tener más de 300 caracteres',
@@ -41,7 +41,9 @@ const errorMessages: Record<string, string> = {
 
 const handleConferenceError = (err: any, isCreate: boolean) => {
   const message = err.response?.data;
+  console.log('Handling conference error:', message);
   const posibleError = message?.title?.[0] || message?.description?.[0] || message?.chairs?.[0];
+  console.log('Posible error:', posibleError);
   if (posibleError && errorMessages[posibleError]) {
     if (errorMessages[posibleError] === 'Se requiere al menos un chair para crear/editar la conferencia.') {
       if (isCreate) throw new Error('Se requiere al menos un chair para crear la conferencia.');

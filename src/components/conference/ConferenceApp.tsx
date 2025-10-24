@@ -90,9 +90,9 @@ function ConferenceApp() {
         </Tabs>
         <div className="flex-1 flex justify-end">
           <Button
-            size={'sm'}
+            size={'lg'}
             onClick={irAltaConferencia}
-            className="cursor-pointer text-sm bg-slate-900 hover:bg-slate-700 text-white"
+            className="cursor-pointer text-md "
           >
             <Plus size={16} />
             Conferencia

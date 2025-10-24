@@ -1,67 +1,42 @@
-import { useEffect, useState } from 'react';
-import { ChevronDownIcon } from 'lucide-react';
 import { Calendar } from '../ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
-import { Label } from '@/components/ui/label';
-import { Button } from '../ui/button';
+import { CalendarIcon } from 'lucide-react';
+import { es } from 'date-fns/locale';
+import { format } from 'date-fns';
 
 type CustomCalendarProps = {
-  label: string;
-  date?: string;
-  setDate: (d: string) => void;
-  validarFin?: (d: Date) => boolean;
+  date?: Date;
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 };
 
-function CustomCalendar({ label, date, setDate, validarFin }: CustomCalendarProps) {
-  const [open, setOpen] = useState(false);
-  const [realDate, setRealDate] = useState(new Date());
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const seleccionarFecha = (d: Date) => {
-    if (validarFin && !validarFin(d)) return;
-    setRealDate(d);
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    if (realDate) setDate(realDate.toISOString().split('T')[0]);
-  }, [realDate]);
-
-  useEffect(() => {
-    if (date) {
-      const [year, month, day] = date.split('-').map(Number);
-      setRealDate(new Date(year, month - 1, day));
-    }
-  }, [date]);
-
+function CustomCalendar({ date, setDate }: CustomCalendarProps) {
   return (
-    <div className="flex flex-col gap-3">
-      <Label className="px-1 text-md"  >
-        {label}
-      </Label>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            id="date"
-            className="w-48 justify-between font-normal"
-          >
-            {realDate?.toLocaleDateString('es-AR')}
-            <ChevronDownIcon />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={realDate}
-            captionLayout="dropdown"
-            onSelect={(d) => seleccionarFecha(d!)}
-            disabled={(realDate) => realDate < today}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="border rounded px-2 py-1 text-left bg-white flex items-center justify-between hover:bg-gray-50"
+        >
+          <div className="flex items-center">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date ? (
+              format(date, 'dd/MM/yyyy', { locale: es })
+            ) : (
+              <span className="text-gray-500">dd/mm/aaaa</span>
+            )}
+          </div>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(d) => setDate(d)}
+          locale={es}
+          disabled={{ before: new Date() }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }
 

@@ -15,6 +15,11 @@ function esFechaValida(fecha1: string, fecha2: string) {
   return f2 >= f1;
 }
 
+function parseDateSinOffset(fecha: string): Date {
+  const [year, month, day] = fecha.split('-').map(Number);
+  return new Date(year, month - 1, day); // mes empieza en 0
+}
+
 type ConferenceFormProps = {
   handleSubmit: (conf: Omit<Conference, 'id'>, chairs: User[]) => Promise<void>;
   valorConferencia?: Omit<Conference, 'id'>;
@@ -35,6 +40,8 @@ function ConferenceForm({
   });
   const [chairs, setChairs] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [start_date, setStartDate] = useState<Date | undefined>(undefined);
+  const [end_date, setEndDate] = useState<Date | undefined>(undefined);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,20 +64,8 @@ function ConferenceForm({
     }));
   };
 
-  const actualizarFechaInicio = (d: string) =>
-    setConferencia((prev) => ({ ...prev, start_date: d }));
-  const actualizarFechaFin = (d: string) =>
-    setConferencia((prev) => ({ ...prev, end_date: d }));
-
   const actualizarVista = (v: Conference['blind_kind']) => {
     setConferencia((prev) => ({ ...prev, blind_kind: v }));
-  };
-
-  const validarFin = (d: Date) => {
-    if (!conferencia.start_date) return false;
-    const [year, month, day] = conferencia.end_date.split('-').map(Number);
-    const fechaInicio = new Date(year, month - 1, day);
-    return d >= fechaInicio;
   };
 
   const handleAddChair = (userId: number) => {
@@ -85,7 +80,23 @@ function ConferenceForm({
   };
 
   useEffect(() => {
-    if (valorConferencia) setConferencia(valorConferencia);
+    setConferencia((prev) => ({
+      ...prev,
+      start_date: start_date
+        ? start_date.toISOString().split('T')[0]
+        : undefined,
+      end_date: end_date ? end_date.toISOString().split('T')[0] : undefined,
+    }));
+  }, [start_date, end_date]);
+
+  useEffect(() => {
+    if (valorConferencia) {
+      setConferencia(valorConferencia);
+      if (valorConferencia.start_date)
+        setStartDate(parseDateSinOffset(valorConferencia.start_date));
+      if (valorConferencia.end_date)
+        setEndDate(parseDateSinOffset(valorConferencia.end_date));
+    }
   }, [valorConferencia]);
 
   useEffect(() => {
@@ -159,17 +170,15 @@ function ConferenceForm({
             </div>
           </div>
 
-          <CustomCalendar
-            label="Fecha de inicio"
-            date={conferencia.start_date}
-            setDate={actualizarFechaInicio}
-          />
-          <CustomCalendar
-            label="Fecha de cierre"
-            date={conferencia.end_date}
-            setDate={actualizarFechaFin}
-            validarFin={validarFin}
-          />
+          <div className='flex flex-col gap-2'>
+            <label htmlFor="start_date">Fecha de inicio</label>
+            <CustomCalendar date={start_date} setDate={setStartDate} />
+          </div>
+
+          <div className='flex flex-col gap-2'>
+            <label htmlFor="end_date">Fecha de cierre</label>
+            <CustomCalendar date={end_date} setDate={setEndDate} />
+          </div>
         </div>
 
         {valorConferencia ? (
