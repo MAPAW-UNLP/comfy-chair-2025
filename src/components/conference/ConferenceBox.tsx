@@ -32,9 +32,6 @@ function ConferenceBox({ conferencia }: ConferenceBoxProps) {
       }
     }
 
-
-    console.log(conferencia);
-
     fetchSesiones()
   }, []);
 

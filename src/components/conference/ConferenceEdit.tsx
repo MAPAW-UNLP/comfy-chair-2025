@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Route } from '@/routes/conference/edit/$id';
-import {
-  updateConference,
-} from '@/services/conferenceServices';
+import { updateConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
 import ConferenceForm from './ConferenceForm';
 import { getUserById, type User } from '@/services/userServices';
@@ -18,9 +16,16 @@ function ConferenceEdit() {
   const handleSubmit = async (conf: Omit<Conference, 'id'>, chairs: User[]) => {
     setError('');
     setSuccess(false);
+    const updatedConf = { ...conf };
+
+    if (updatedConf.start_date === conferenciaInicial.start_date) {
+      delete updatedConf.start_date;
+    } 
+    if (updatedConf.end_date === conferenciaInicial.end_date) {
+      delete  updatedConf.end_date;
+    }
     try {
-      console.log('CHAIRS, ', chairs);
-      await updateConference(conferenciaInicial.id, conf, chairs);
+      await updateConference(conferenciaInicial.id, updatedConf, chairs);
       setSuccess(true);
       setTimeout(() => {
         navigate({ to: `/conference/${conferenciaInicial.id}` });
@@ -54,7 +59,6 @@ function ConferenceEdit() {
       isCancelled = true;
     };
   }, [conferenciaInicial]);
-
 
   return (
     <div className="w-full flex flex-col items-center justify-start gap-4 mt-3">

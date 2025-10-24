@@ -1,17 +1,16 @@
 /* Componente para dar de alta una sesión en una conferencia */
-
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import SessionForm, { type SessionFormData } from "./SessionForm";
-import { toast } from "sonner";
-import { axiosInstance as api } from "@/services/api";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import SessionForm, { type SessionFormData } from './SessionForm';
+import { toast } from 'sonner';
+import { createSession } from '@/services/sessionServices';
 
 type AltaSessionProps = {
   conferenceId: number;
@@ -35,20 +34,20 @@ export default function AltaSession({
         title: data.title,
         deadline: data.deadline?.toISOString().split('T')[0], // Solo la fecha (YYYY-MM-DD)
         capacity: data.capacity,
-        conference_id: conferenceId,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
-        threshold_percentage: data.selectionMethod === "corte_fijo" ? data.percentage : 50,
-        improvement_threshold: data.selectionMethod === "mejores" ? data.threshold : 0,
+        threshold_percentage:
+          data.selectionMethod === 'corte_fijo' ? data.percentage : null,
+        improvement_threshold:
+          data.selectionMethod === 'mejores' ? data.threshold : null,
       };
+      console.log('Creating session with data:', sessionData);
+      await createSession(sessionData, conferenceId);
 
-      await api.post("/api/session/", sessionData);
-
-      toast.success("Sesión creada exitosamente");
+      toast.success('Sesión creada exitosamente');
       setOpen(false);
       onSessionCreated?.();
     } catch (error: any) {
-      console.error("Error al crear la sesión:", error);
-      toast.error(error.response?.data?.message || "Error al crear la sesión");
+      toast.error(error.message || 'Error al crear la sesión');
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +58,7 @@ export default function AltaSession({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen} >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || <Button>Alta Sesión</Button>}
       </DialogTrigger>

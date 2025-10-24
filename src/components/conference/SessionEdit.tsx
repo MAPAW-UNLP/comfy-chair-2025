@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import SessionForm, { type SessionFormData } from './SessionForm';
 import { toast } from 'sonner';
 import { axiosInstance as api } from '@/services/api';
-import type { Session } from '@/services/sessionServices';
+import { updateSession, type Session } from '@/services/sessionServices';
 import { Edit } from 'lucide-react';
 
 type EditarSessionProps = {
@@ -34,9 +34,10 @@ export default function EditarSession({
     title: session.title,
     deadline: new Date(session.deadline),
     capacity: session.capacity,
-    selectionMethod: 'mejores', // Valor por defecto
-    threshold: -1, // Valor por defecto
-    chairs: [], // TODO: cargar chairs desde session cuando el backend lo soporte
+    selectionMethod: session.threshold_percentage ? 'corte_fijo' : 'mejores',
+    percentage: session.threshold_percentage ?? null,
+    threshold: session.improvement_threshold ?? null,
+    chairs: [], // TODO: cargar desde backend cuando esté listo
   };
 
   const handleSubmit = async (data: SessionFormData) => {
@@ -50,12 +51,11 @@ export default function EditarSession({
         conference_id: session.conference?.id,
         chairs: data.chairs.map((ch) => ch.id), // Enviar solo los IDs de los chairs
         threshold_percentage:
-          data.selectionMethod === 'corte_fijo' ? data.percentage : 50,
+          data.selectionMethod === 'corte_fijo' ? data.percentage : null,
         improvement_threshold:
-          data.selectionMethod === 'mejores' ? data.threshold : 0,
+          data.selectionMethod === 'mejores' ? data.threshold : null,
       };
-
-      await api.put(`/api/session/${session.id}/`, sessionData);
+      await updateSession(session.id.toString(), sessionData, session.conference!.id);
 
       toast.success('Sesión actualizada exitosamente');
       setOpen(false);
@@ -63,7 +63,7 @@ export default function EditarSession({
     } catch (error: any) {
       console.error('Error al actualizar la sesión:', error);
       toast.error(
-        error.response?.data?.message || 'Error al actualizar la sesión'
+        error.message || 'Error al actualizar la sesión'
       );
     } finally {
       setIsLoading(false);

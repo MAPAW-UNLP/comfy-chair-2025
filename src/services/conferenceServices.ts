@@ -35,12 +35,18 @@ const errorMessages: Record<string, string> = {
     'La descripción no debe tener más de 300 caracteres',
   'Ensure this field has no more than 50 characters.':
     'El título no debe tener más de 50 caracteres',
+  'Se requiere al menos un chair para crear/editar la conferencia.':
+    'Se requiere al menos un chair para crear/editar la conferencia.',
 };
 
-const handleConferenceError = (err: any) => {
+const handleConferenceError = (err: any, isCreate: boolean) => {
   const message = err.response?.data;
-  const posibleError = message?.title?.[0] || message?.description?.[0];
+  const posibleError = message?.title?.[0] || message?.description?.[0] || message?.chairs?.[0];
   if (posibleError && errorMessages[posibleError]) {
+    if (errorMessages[posibleError] === 'Se requiere al menos un chair para crear/editar la conferencia.') {
+      if (isCreate) throw new Error('Se requiere al menos un chair para crear la conferencia.');
+      else throw new Error('Se requiere al menos un chair para editar la conferencia.');
+    }
     throw new Error(errorMessages[posibleError]);
   }
   console.error(err);
@@ -59,7 +65,7 @@ export const createConference = async (
 
     return response.data;
   } catch (err) {
-    handleConferenceError(err);
+    handleConferenceError(err, true);
     throw err;
   }
 };
@@ -70,13 +76,13 @@ export const updateConference = async (
   chairs: User[]
 ): Promise<Conference> => {
   try {
-    const response = await api.put(`/api/conference/${id}/`, {
+    const response = await api.patch(`/api/conference/${id}/`, {
       ...conferencia,
       chairs: chairs.map(user => user.id),
     });
     return response.data;
   } catch (err) {
-    handleConferenceError(err);
+    handleConferenceError(err, false);
     throw err;
   }
 };

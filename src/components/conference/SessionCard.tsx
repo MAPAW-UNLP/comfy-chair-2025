@@ -7,7 +7,6 @@ import type { Session } from '@/services/sessionServices';
 import EditarSession from './SessionEdit';
 import { Calendar } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
 
 type SessionCardProps = {
   session: Session;

@@ -17,8 +17,8 @@ export type Conference = {
   id: string;
   title: string;
   description: string;
-  start_date: string;
-  end_date: string;
+  start_date?: string;
+  end_date?: string;
   blind_kind: VISTA_CHOICES;
   chairs?: number[];
 };

@@ -68,6 +68,8 @@ export default function SessionForm({
       setUsers(data);
     };
     fetchUsers();
+
+    console.log(' for SessionForm:', initialData);
   }, []);
 
   // Manejo de chairs
