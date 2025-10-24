@@ -62,7 +62,7 @@ export default function AltaSession({
       <DialogTrigger asChild>
         {trigger || <Button>Alta Sesión</Button>}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-[90vw] sm:max-w-[90vw] md:max-w-[90vw]">
         <DialogHeader>
           <DialogTitle>Alta Sesión</DialogTitle>
         </DialogHeader>

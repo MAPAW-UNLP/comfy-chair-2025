@@ -77,9 +77,9 @@ export default function EditarSession({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} >
       {/* Trigger del modal */}
-      <DialogTrigger asChild>
+      <DialogTrigger asChild >
         {trigger || (
           <Button
             variant="ghost"
@@ -94,7 +94,7 @@ export default function EditarSession({
 
       {/* Contenido del modal */}
       <DialogContent
-        className="max-w-4xl"
+        className="max-w-[90vw] sm:max-w-[90vw] md:max-w-[90vw]"
         onClick={(e) => e.stopPropagation()} // evita que clicks dentro del modal disparen redirect
       >
         <DialogHeader>
