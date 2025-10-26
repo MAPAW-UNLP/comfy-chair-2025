@@ -3,7 +3,7 @@ import { axiosInstance as api } from './api';
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
 export interface Conference {
-  id: string;
+  id: number;
   title: string;
   description: string;
   start_date: string;
