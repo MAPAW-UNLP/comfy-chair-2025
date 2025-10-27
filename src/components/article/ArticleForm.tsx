@@ -52,6 +52,8 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
   const [archivoExtra, setArchivoExtra] = useState<File | null>(null); // Archivo extra (para poster)
   const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null);
   const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null);
+  const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null);
+  const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // Estado de carga del submit
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false); // Mostrar alert de error
 
@@ -69,7 +71,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
     setSelectedSession(article.session?.id ? String(article.session.id) : null);
     setAutoresSeleccionados(article.authors);
     setAutorNotif(String(article.corresponding_author?.id ?? ""));
-    // Manejo del archivo ya existente: el backend normalmente devuelve una URL o nombre
+    // Manejo de los archivos ya existentes: el backend normalmente devuelve una URL o nombre
     // No podemos asignar un File al input por razones de seguridad, así que guardamos
     // la URL/nombre para mostrarlo y permitir descargarlo.
     const mf: any = article.main_file;
@@ -88,6 +90,26 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
         // si no hay url, intentar usar nombre si viene como string
         setExistingMainFileName(typeof mf === 'string' ? mf : null);
       }
+    }
+
+    // Manejo del archivo de fuentes (source_file) si existe
+    const sf: any = article.source_file;
+    if (sf) {
+      const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
+      setExistingSourceFileUrl(urlS);
+      if (urlS) {
+        try {
+          const parts = urlS.split('/');
+          setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
+        } catch (_) {
+          setExistingSourceFileName(String(sf));
+        }
+      } else {
+        setExistingSourceFileName(typeof sf === 'string' ? sf : null);
+      }
+    } else {
+      setExistingSourceFileUrl(null);
+      setExistingSourceFileName(null);
     }
   }
 }, [editMode, article]);
@@ -183,7 +205,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       file: archivo ? archivo.name : existingMainFileName ?? "",
       authors: autoresSeleccionados.length > 0 ? "ok" : "",
       correspondingAuthor: autorNotif ?? "",
-      sourcesFile: tipoArticulo === "poster" ? (archivoExtra ? archivoExtra.name : existingMainFileName ?? "") : "ok",
+  sourcesFile: tipoArticulo === "poster" ? (archivoExtra ? archivoExtra.name : existingSourceFileName ?? "") : "ok",
     };
 
     const result = articleSchema.safeParse(formDataForValidation);
@@ -337,9 +359,9 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
 
       {/* RadioGroup tipo de artículo */}
       <Label htmlFor="tipo-articulo">Tipo</Label>
-      <RadioGroup defaultValue="regular" onValueChange={setTipoArticulo} className="flex flex-row gap-4">
+      <RadioGroup value={tipoArticulo} onValueChange={setTipoArticulo} className="flex flex-row gap-4">
         <div className="flex items-center space-x-2">
-          <RadioGroupItem value="regular" id="regular" />
+          <RadioGroupItem value={"regular"} id="regular" />
           <Label htmlFor="regular">Regular</Label>
         </div>
         <div className="flex items-center space-x-2">
@@ -369,8 +391,12 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
           <Label htmlFor="DetalleRegular">Fuentes {errors.sourcesFile && <p className="text-destructive">{errors.sourcesFile}</p>}</Label>
           <input type="file" ref={extraFileRef} onChange={handleExtraFileChange} className="hidden" />
           <Button variant="outline" onClick={handleExtraFileClick} type="button" className={`w-full ${archivoExtra ? "bg-lime-900" : "bg-slate-900"} text-white`}>
-            {archivoExtra ? archivoExtra.name : "Seleccionar archivo..."}
+            {archivoExtra ? archivoExtra.name : existingSourceFileName ? existingSourceFileName : "Seleccionar archivo..."}
           </Button>
+          {/* Mostrar enlace al archivo de fuentes existente en modo edición */}
+          {!archivoExtra && existingSourceFileUrl && (
+            <a href={existingSourceFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">Ver fuentes actuales</a>
+          )}
         </div>
       )}
 
