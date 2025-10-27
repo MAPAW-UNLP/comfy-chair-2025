@@ -62,17 +62,6 @@ export default function SessionCard({
           </div>
           <div className="text-2xl font-bold">{session.capacity}</div>
         </div>
-
-        {/* Artículos - Por ahora vacío, se puede agregar después */}
-        <div className="space-y-2">
-          <div className="text-sm font-semibold">Artículos</div>
-          <div className="flex gap-2 flex-wrap">
-            {/* Aquí irían los artículos cuando estén disponibles */}
-            <div className="text-xs text-muted-foreground">
-              No hay artículos asignados
-            </div>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );

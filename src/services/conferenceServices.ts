@@ -4,7 +4,6 @@ import type { User } from './userServices';
 
 export const getAllConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/');
-  console.log(response.data);
   return response.data;
 };
 
@@ -41,9 +40,7 @@ const errorMessages: Record<string, string> = {
 
 const handleConferenceError = (err: any, isCreate: boolean) => {
   const message = err.response?.data;
-  console.log('Handling conference error:', message);
   const posibleError = message?.title?.[0] || message?.description?.[0] || message?.chairs?.[0];
-  console.log('Posible error:', posibleError);
   if (posibleError && errorMessages[posibleError]) {
     if (errorMessages[posibleError] === 'Se requiere al menos un chair para crear/editar la conferencia.') {
       if (isCreate) throw new Error('Se requiere al menos un chair para crear la conferencia.');

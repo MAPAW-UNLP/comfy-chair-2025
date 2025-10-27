@@ -68,7 +68,6 @@ function ASession() {
   useEffect(() => {
     const fetchArticles = async () => {
       const response = await getArticleBySessionId(session!.id);
-      console.log('Artículos cargados:', response);
       setArticles(response);
     };
 
