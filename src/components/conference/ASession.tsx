@@ -11,6 +11,12 @@ import ModalEliminar from './ModalEliminar';
 import { useNavigate } from '@tanstack/react-router';
 import EditarSession from './SessionEdit';
 import { getAllUsers, type User } from '@/services/userServices';
+import {
+  getArticleBySessionId,
+  type Article,
+} from '@/services/articleServices';
+import { CarouselContainer, CarouselItem } from '../ui/carousel-container';
+import ArticleCard from '../article/ArticleCard';
 // import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 
 function ASession() {
@@ -19,6 +25,7 @@ function ASession() {
   const [session, setSession] = useState<Session | null>(sessionInicial);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [chairs, setChairs] = useState<User[] | []>([]);
+  const [articles, setArticles] = useState<Article[] | []>([]);
   const navigate = useNavigate();
 
   const fetchSession = async () => {
@@ -33,26 +40,6 @@ function ASession() {
     }
   };
 
-  useEffect(() => {
-    fetchSession();
-  }, []);
-
-  useEffect(() => {
-    const fetchChairs = async () => {
-      const data = await getAllUsers();
-      setChairs(data.filter((user) => session?.chairs.includes(user.id)));
-    };
-    fetchChairs();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
   const goToConferencia = () => {
     navigate({ to: `/conference/${session!.conference?.id}` });
   };
@@ -65,6 +52,36 @@ function ASession() {
     await deleteSession(String(session!.id));
     navigate({ to: `/conference/${session!.conference?.id}` });
   };
+
+  useEffect(() => {
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    const fetchChairs = async () => {
+      const data = await getAllUsers();
+      setChairs(data.filter((user) => session?.chairs.includes(user.id)));
+    };
+    fetchChairs();
+  }, []);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      const response = await getArticleBySessionId(session!.id);
+      console.log('Artículos cargados:', response);
+      setArticles(response);
+    };
+
+    if (session) fetchArticles();
+  }, [session]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
@@ -98,20 +115,25 @@ function ASession() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
         <h2 className="text-1xl font-bold">Artículos</h2>
-        {/* TODO: Cargar artículos desde el backend */}
-        {/* Ejemplo de cómo usar el carrusel cuando tengas los artículos: */}
-        {/* 
-        <CarouselContainer>
-          {articles.map((article) => (
-            <CarouselItem key={article.id} width="350px">
-              <ArticleCard article={article} />
-            </CarouselItem>
-          ))}
-        </CarouselContainer>
-        */}
-        <div className="text-center py-4 text-muted-foreground">
-          No hay artículos asignados
-        </div>
+        {articles.length > 0 ? (
+          <CarouselContainer>
+            {articles.map((article) => (
+              <CarouselItem key={article.id} width="350px">
+                <ArticleCard
+                  title={article.title}
+                  session={session!.title}
+                  conference={session!.conference!.title}
+                  state={article.status}
+                  deadline={session?.deadline!}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContainer>
+        ) : (
+          <div className="text-center py-4 text-muted-foreground">
+            No hay artículos asignados
+          </div>
+        )}
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-5 m-2 gap-3">
         <Button
