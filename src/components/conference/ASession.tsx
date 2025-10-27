@@ -76,7 +76,7 @@ function ASession() {
               {session!.title.toUpperCase()}
             </h1>
           </div>
-          <EditarSession session={session!} onSessionUpdated={fetchSession} chairs={chairs}/>
+          <EditarSession session={session!} onSessionUpdated={fetchSession} />
         </div>
         <p className="text-sm">Deadline {formatearFecha(session!.deadline)}</p>
       </div>

@@ -1,6 +1,6 @@
 /* Componente para editar una sesión existente */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -13,23 +13,22 @@ import SessionForm, { type SessionFormData } from './SessionForm';
 import { toast } from 'sonner';
 import { updateSession, type Session } from '@/services/sessionServices';
 import { Edit } from 'lucide-react';
-import type { User } from '@/services/userServices';
+import { getAllUsers, type User } from '@/services/userServices';
 
 type EditarSessionProps = {
   session: Session;
   onSessionUpdated?: () => void;
   trigger?: React.ReactNode;
-  chairs?: User[]
 };
 
 export default function EditarSession({
   session,
   onSessionUpdated,
   trigger,
-  chairs
 }: EditarSessionProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [chairs, setChairs] = useState<User[] | []>([]);
 
 
   // Datos iniciales del formulario
@@ -75,6 +74,14 @@ export default function EditarSession({
   const handleCancel = () => {
     setOpen(false);
   };
+
+    useEffect(() => {
+      const fetchChairs = async () => {
+        const data = await getAllUsers();
+        setChairs(data.filter((user) => session?.chairs!.includes(user.id)));
+      };
+      fetchChairs();
+    }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen} >
