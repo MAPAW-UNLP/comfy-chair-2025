@@ -233,8 +233,20 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       };
 
       // Only attach files if user selected new ones
-      if (archivo) updated.main_file = archivo;
-      if (archivoExtra) updated.source_file = archivoExtra;
+      /*if (archivo) updated.main_file = archivo;
+      if (archivoExtra) updated.source_file = archivoExtra;*/
+
+      // Archivos
+      if (archivo) {
+        updated.main_file = archivo;
+      }
+
+      // Si el artículo es regular, forzamos null para eliminar fuente previa
+      if (tipoArticulo === "regular") {
+        updated.source_file = null;
+      } else if (archivoExtra) {
+        updated.source_file = archivoExtra;
+      }
 
       const response = await import('@/services/articleServices').then(mod => mod.updateArticle(article.id, updated));
 

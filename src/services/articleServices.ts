@@ -93,7 +93,14 @@ export async function updateArticle(id: number, updated: ArticleUpdate) {
   if (updated.title !== undefined) formData.append('title', updated.title as string);
   if (updated.main_file !== undefined && updated.main_file !== null) formData.append('main_file', updated.main_file);
   // If main_file is explicitly null we won't append it (backend should keep existing file)
-  if (updated.source_file !== undefined && updated.source_file !== null) formData.append('source_file', updated.source_file);
+  if (updated.source_file !== undefined) {
+  if (updated.source_file === null) {
+    // Si es null, forzamos que el backend elimine el archivo
+    formData.append('source_file', '');
+    } else {
+      formData.append('source_file', updated.source_file);
+    }
+  }
   if (updated.status !== undefined) formData.append('status', updated.status ?? '');
   if (updated.type !== undefined) formData.append('type', updated.type ?? '');
   if (updated.abstract !== undefined) formData.append('abstract', updated.abstract ?? '');
