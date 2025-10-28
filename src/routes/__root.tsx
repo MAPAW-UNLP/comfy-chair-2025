@@ -2,7 +2,7 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { AuthProvider } from '@/contexts/AuthContext';
 
-import { Armchair, Menu, X } from 'lucide-react';
+import { Armchair, Menu, X, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -23,13 +23,27 @@ const RootLayout = () => {
     { to: '/login', label: 'Ingresar' },
   ];
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '/'; // fallback al home si no hay historial
+    }
+  };
+
   return (
     <AuthProvider>
     <div className="flex flex-col h-screen">
 
       {/* Navbar superior */}
       <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-
+        <button
+            onClick={handleBack}
+            className="p-2 rounded-md hover:bg-slate-700 flex items-center justify-center"
+            title="Volver"
+          >
+            <ArrowLeft size={20} />
+        </button>
         {/* Navegación visible solo en pantallas medianas en adelante */}
         <nav className="hidden md:flex gap-2 order-1 md:order-1">
           {links.map((link) => (
