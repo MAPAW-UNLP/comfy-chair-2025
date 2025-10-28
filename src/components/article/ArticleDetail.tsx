@@ -28,6 +28,17 @@ const tipoTexto: Record<Type, string> = {
   poster: "Poster",
 };
 
+const handleDownload = async (url: string, filename: string) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.download = filename; // nombre personalizado
+  link.click();
+};
+
+const API_BASE = import.meta.env.VITE_API_URL;
+
 //Cuerpo del Componente
 const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
 
@@ -48,14 +59,14 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
       <hr className="my-2"/>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col basis-1/2 gap-1">
-          <span className="text-sm text-slate-900 font-medium text-start">Articulo</span>
-          <Button variant="outline" className="bg-slate-900 text-white">
+          <span className="text-sm text-slate-900 font-medium text-start">Articulo</span> 
+          <Button variant="outline" className="bg-slate-900 text-white" onClick={() => handleDownload(`${API_BASE}/api/article/${article.id}/download_main/`,"Archivo principal")}>
             Descargar
           </Button>
         </div>
         <div className={`flex flex-col basis-1/2 gap-1 ${article.type !== "poster" ? 'invisible' : 'visible'}`}>
           <span className="text-sm text-slate-900 font-medium text-start">Fuentes</span>
-            <Button variant="outline" className="bg-slate-900 text-white">
+            <Button variant="outline" className="bg-slate-900 text-white" onClick={() => handleDownload(`${API_BASE}/api/article/${article.id}/download_source/`,"Fuentes")}>
               Descargar
             </Button>
         </div>
