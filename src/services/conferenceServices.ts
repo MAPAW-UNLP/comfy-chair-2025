@@ -11,10 +11,12 @@ export interface Conference {
   blind_kind: VISTA_CHOICES;
 }
 
+// Obtener todas las conferencias que no han finalizado
 export const getAllConferencesGrupo1 = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference');
-  return response.data;
-}
+  const now = new Date();
+  return response.data.filter((conf: Conference) => new Date(conf.end_date) >= now);
+};
 
 export const getAllConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/');
