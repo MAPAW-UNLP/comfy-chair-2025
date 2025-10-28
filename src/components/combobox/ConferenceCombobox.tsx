@@ -8,12 +8,12 @@
 
  type ConferenceComboboxProps = {
   conferences: Conference[];
-  /** id de conferencia seleccionado (controlado) */
   value?: number | null;
+  disabled?: boolean;
   onValueChange?: (conferenceId: number | null) => void;
 };
 
-  export function ConferenceCombobox({ conferences, value, onValueChange }: ConferenceComboboxProps) {
+  export function ConferenceCombobox({ conferences, value, disabled, onValueChange }: ConferenceComboboxProps) {
     const [open, setOpen] = React.useState(false);
     const [selectedConferenceId, setSelectedConferenceId] = React.useState<number | null>(null);
     const [query, setQuery] = React.useState("");
@@ -36,11 +36,12 @@
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={disabled}
             variant="outline"
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "justify-between font-normal text-sm",
+              "justify-between bg-white font-normal",
               !selectedConference ? "text-gray-500" : "text-gray-900"
             )}
           >

@@ -205,7 +205,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       file: archivo ? archivo.name : existingMainFileName ?? "",
       authors: autoresSeleccionados.length > 0 ? "ok" : "",
       correspondingAuthor: autorNotif ?? "",
-  sourcesFile: tipoArticulo === "poster" ? (archivoExtra ? archivoExtra.name : existingSourceFileName ?? "") : "ok",
+      sourcesFile: tipoArticulo === "poster" ? (archivoExtra ? archivoExtra.name : existingSourceFileName ?? "") : "ok",
     };
 
     const result = articleSchema.safeParse(formDataForValidation);
@@ -343,8 +343,8 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       <hr className="bg-slate-100" />
 
       {/* Combobox de Conferencias */}
-  <Label htmlFor="conferencia">Conferencia {errors.conference && <p className="text-destructive">{errors.conference}</p>}</Label>
-  <ConferenceCombobox value={selectedConference} onValueChange={setSelectedConference} conferences={conferences} />
+      <Label htmlFor="conferencia">Conferencia {errors.conference && <p className="text-destructive">{errors.conference}</p>}</Label>
+      <ConferenceCombobox value={selectedConference} onValueChange={setSelectedConference} conferences={conferences} disabled={editMode} />
       
       {/* Select de Sesiones */}
       <Label htmlFor="sesion">Sesión {errors.session && <p className="text-destructive">{errors.session}</p>}</Label>
