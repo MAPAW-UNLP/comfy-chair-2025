@@ -11,6 +11,7 @@ import SessionCard from './SessionCard';
 import ModalEliminar from './ModalEliminar';
 import { deleteConference } from '@/services/conferenceServices';
 import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
+import { toast } from 'sonner';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -51,6 +52,7 @@ function AConference() {
 
   const onDelete = async() => {
     await deleteConference(conferencia.id);
+    toast.warning('Conferencia eliminada');
     navigate({ to: '/conference/view' });
   };
 

@@ -17,6 +17,7 @@ import {
 } from '@/services/articleServices';
 import { CarouselContainer, CarouselItem } from '../ui/carousel-container';
 import ArticleCard from '../article/ArticleCard';
+import { toast } from 'sonner';
 // import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 
 function ASession() {
@@ -50,6 +51,7 @@ function ASession() {
 
   const onDelete = async () => {
     await deleteSession(String(session!.id));
+    toast.warning('Sesión eliminada');
     navigate({ to: `/conference/${session!.conference?.id}` });
   };
 
