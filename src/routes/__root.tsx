@@ -61,7 +61,7 @@ const RootLayout = () => {
                       <Link to="/article/select" className="block px-3 py-2 hover:bg-gray-600 rounded-t-md">
                         Artículos
                       </Link>
-                      <Link to="/chairs/selection" className="block px-3 py-2 hover:bg-gray-600 rounded-b-md">
+                      <Link to="/chairs/selection/session-list" className="block px-3 py-2 hover:bg-gray-600 rounded-b-md">
                         Selección
                       </Link>
                     </div>
@@ -124,7 +124,7 @@ const RootLayout = () => {
                           Artículos
                         </Link>
                         <Link
-                          to="/chairs/selection"
+                          to="/chairs/selection/session-list"
                           className="px-4 py-2 rounded-md hover:bg-gray-600 text-gray-300"
                           onClick={() => setIsOpen(false)}
                         >

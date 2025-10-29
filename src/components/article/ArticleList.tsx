@@ -7,7 +7,6 @@ import { getReviewersByArticle } from '@/services/reviewerServices';
 
 interface ArticleListProps {
   items: Article[];
-  showSelectionIndicators?: boolean;
 }
 
 interface ArticleWithAssignedCount extends Article {
@@ -16,7 +15,7 @@ interface ArticleWithAssignedCount extends Article {
 
 const filterOptions = ['Sin Filtros', 'Completos', 'Incompletos'] as const;
 
-export const ArticleList = ({ items, showSelectionIndicators = false }: ArticleListProps) => {
+export const ArticleList = ({ items }: ArticleListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState<'Sin Filtros' | 'Completos' | 'Incompletos'>('Sin Filtros');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -77,70 +76,48 @@ export const ArticleList = ({ items, showSelectionIndicators = false }: ArticleL
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Header - Solo mostrar filtro si NO es vista de selección */}
-      {!showSelectionIndicators && (
-        <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: 'var(--ring)' }}>
-          <div className="relative" ref={menuRef}>
-            <Button
-              variant="outline"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center gap-2 bg-white text-black border-gray-300 hover:bg-gray-100 px-4 py-2 rounded-full shadow-sm"
-            >
-              Todos los artículos - {filter}
-              <ChevronDown className="w-4 h-4" />
-            </Button>
+      {/* Header */}
+      <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: 'var(--ring)' }}>
+        <div className="relative" ref={menuRef}>
+          <Button
+            variant="outline"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex items-center gap-2 bg-white text-black border-gray-300 hover:bg-gray-100 px-4 py-2 rounded-full shadow-sm"
+          >
+            Todos los artículos - {filter}
+            <ChevronDown className="w-4 h-4" />
+          </Button>
 
-            {menuOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white text-gray-900 border rounded-lg shadow-lg z-50">
-                {filterOptions.map((opcion, index) => (
-                  <button
-                    key={opcion}
-                    className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${filter === opcion ? 'bg-gray-100 font-medium' : ''} ${index === 0 ? 'rounded-t-lg' : ''} ${index === filterOptions.length - 1 ? 'rounded-b-lg' : ''}`}
-                    onClick={() => {
-                      setFilter(opcion);
-                      setMenuOpen(false);
-                    }}
-                  >
-                    {opcion}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-44 bg-white text-gray-900 border rounded-lg shadow-lg z-50">
+              {filterOptions.map((opcion, index) => (
+                <button
+                  key={opcion}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${filter === opcion ? 'bg-gray-100 font-medium' : ''} ${index === 0 ? 'rounded-t-lg' : ''} ${index === filterOptions.length - 1 ? 'rounded-b-lg' : ''}`}
+                  onClick={() => {
+                    setFilter(opcion);
+                    setMenuOpen(false);
+                  }}
+                >
+                  {opcion}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-
-      {showSelectionIndicators && (
-        <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: 'var(--muted-foreground)' }}>
-          <h2 className="text-lg font-semibold">
-            {filteredArticles.length === 0 ? 'No se encontraron resultados' : 'Resultados de la Selección'}
-          </h2>
-        </div>
-      )}
+      </div>
 
       {/* Lista de artículos */}
       <div className="flex-1 overflow-hidden flex flex-col" style={{ backgroundColor: 'var(--sidebar-border)' }}>
         {filteredArticles.length === 0 ? (
           <div className="text-center py-12 text-gray-500 flex-1 flex items-center justify-center">
-            {showSelectionIndicators ? 'No se encontraron resultados' : 'No se encontraron artículos'}
+            No se encontraron artículos
           </div>
         ) : (
           <>
             <div className="divide-y divide-gray-400 flex-1 overflow-y-auto">
               {visibleArticles.map((articulo) => (
-                <div key={articulo.id} className="relative">
-                  <ArticleCard article={articulo} assignedCount={articulo.assignedCount} />
-
-                  {/*Indicador de selección */}
-                  {showSelectionIndicators && (
-                    <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold ${articulo.status === 'accepted'
-                      ? 'bg-green-100 text-green-600'
-                      : 'bg-red-100 text-red-600'
-                      }`}>
-                      {articulo.status === 'accepted' ? 'ACEPTADO' : 'RECHAZADO'}
-                    </div>
-                  )}
-                </div>
+                <ArticleCard key={articulo.id} article={articulo} assignedCount={articulo.assignedCount} />
               ))}
             </div>
 

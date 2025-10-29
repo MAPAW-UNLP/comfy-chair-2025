@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { getAllSessions } from '@/services/sessionServices';
 
-interface SessionListProps {
-  onSessionSelect: (sessionId: number, sessionTitle: string) => void;
-}
-
-export const SessionList = ({ onSessionSelect }: SessionListProps) => {
+export const SessionList = () => {
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +22,14 @@ export const SessionList = ({ onSessionSelect }: SessionListProps) => {
     fetchSessions();
   }, []);
 
+
+  const handleSessionClick = (sessionId: number) => {
+    navigate({
+      to: '/chairs/selection/articles-session',
+      search: { sessionId: String(sessionId) }
+    });
+  };
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -36,7 +42,7 @@ export const SessionList = ({ onSessionSelect }: SessionListProps) => {
     <div className="h-screen flex flex-col">
       {/* Header */}
       <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: 'var(--ring)' }}>
-        <h1 className="text-xl font-semibold">Selecciona una Sesión</h1>
+        <h1 className="text-xl font-semibold">Sesiones de la Conferencia</h1>
       </div>
 
       {/* Lista de sesiones */}
@@ -46,16 +52,24 @@ export const SessionList = ({ onSessionSelect }: SessionListProps) => {
             No se encontraron sesiones
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="space-y-4">
+          <div className="flex-1 overflow-y-auto">
+            <div className="divide-y divide-gray-400">
               {sessions.map((session) => (
-                <div 
-                  key={session.id} 
-                  className="p-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => onSessionSelect(session.id, session.title)}
+                <div
+                  key={session.id}
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer w-full"
+                  onClick={() => handleSessionClick(session.id)}
                 >
-                  <h3 className="font-semibold text-lg text-gray-900">{session.title}</h3>
-                  <p className="text-gray-600 mt-1">Capacidad: {session.capacity || 'No definida'} artículos</p>
+                    {/* Título */}
+                    <div className="flex-1 pr-4">
+                        <h3 className="text-base text-gray-900 leading-tight">{session.title}</h3>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-2">
+                        <span className="text-sm text-gray-500">
+                            Ver Artículos
+                        </span>
+                    </div>
                 </div>
               ))}
             </div>
