@@ -15,12 +15,13 @@ const RootLayout = () => {
   // Lista de páginas principales de la aplicación
   const links = [
     { to: '/', label: 'Home' },
-    { to: '/conference/view', label: 'Conferencias' },
-    { to: '/article/view', label: 'Articulos' },
-    { to: '/article/create', label: 'Subir Articulo' },
-    { to: '/chairs/articles', label: 'Chairs' },
-    { to: '/reviewer/bidding', label: 'Bidding' },
-    { to: '/login', label: 'Ingresar' },
+    //{ to: '/conference/view', label: 'Conferencias' },
+    //{ to: '/article/view', label: 'Articulos' },
+    //{ to: '/article/create', label: 'Subir Articulo' },
+    { to: '/article/select', label: 'Articulos' },
+    { to: '/chairs/selection', label: 'Seleccionar' },
+    //{ to: '/reviewer/bidding', label: 'Bidding' },
+    //{ to: '/login', label: 'Ingresar' },
   ];
 
   const handleBack = () => {
@@ -76,11 +77,13 @@ const RootLayout = () => {
             })}
           </nav>
 
-          {/* Nombre de la app + ícono */}
+          {/*
+          {/* Nombre de la app + ícono 
           <span className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2">
             ComfyChair
             <Armchair />
           </span>
+          */}
 
           {/* Botón colapsable (solo se muestra en móvil) */}
           <button onClick={() => setIsOpen(true)} className="md:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}
