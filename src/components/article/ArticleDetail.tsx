@@ -60,7 +60,7 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
       <div className="flex flex-row gap-4">
         <div className="flex flex-col basis-1/2 gap-1">
           <span className="text-sm text-slate-900 font-medium text-start">Articulo</span> 
-          <Button variant="outline" className="bg-slate-900 text-white" onClick={() => handleDownload(`${API_BASE}/api/article/${article.id}/download_main/`,"Archivo principal")}>
+          <Button variant="outline" className="bg-slate-900 text-white" onClick={() => handleDownload(`${API_BASE}/api/article/${article.id}/download_main/`,"Articulo")}>
             Descargar
           </Button>
         </div>
