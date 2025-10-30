@@ -1,10 +1,14 @@
+// src/features/reviewer/AssignedArticles.tsx
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { fetchAssignedArticles } from "@/services/assignmentsServices";
-import { hasOwnReview } from "@/services/reviewerServices";
+import {
+  getOwnReviewByArticle,
+  hasPublishedReview,
+} from "@/services/reviewerServices";
 import { useAuth } from "@/contexts/AuthContext";
 
-type ReviewStatus = "pending" | "completed";
+type ReviewStatus = "pending" | "draft" | "completed";
 
 interface UiRow {
   id: number;
@@ -27,6 +31,12 @@ const STATUS_UI = {
     badgeClass:
       "text-rose-700 bg-rose-50 ring-1 ring-rose-200 dark:text-rose-200 dark:bg-rose-900/30 dark:ring-rose-800",
     cta: "Revisar" as const,
+  },
+  draft: {
+    label: "Borrador",
+    badgeClass:
+      "text-amber-700 bg-amber-50 ring-1 ring-amber-200 dark:text-amber-200 dark:bg-amber-900/30 dark:ring-amber-800",
+    cta: "Editar borrador" as const, // 👈 distintivo
   },
   completed: {
     label: "Completo",
@@ -87,21 +97,45 @@ export default function AssignedArticlesView() {
 
   const navigate = useNavigate();
   const { user } = useAuth();
-  const reviewerId = Number(user?.id ?? 1); // por ahora fallback
+  const reviewerId = Number(user?.id ?? 1); // fallback simple si aún no está el auth real
 
-  // --- Escucha evento global para actualizar estado tras guardar revisión ---
+  // --- helper para calcular estado (pendiente/draft/completed) ---
+  const computeStatusFor = useCallback(
+    async (articleId: number): Promise<ReviewStatus> => {
+      try {
+        // primero vemos si está publicada
+        const published = await hasPublishedReview(articleId);
+        if (published) return "completed";
+        // si no está publicada, puede haber borrador
+        const own = await getOwnReviewByArticle(articleId, reviewerId);
+        return own ? "draft" : "pending";
+      } catch {
+        return "pending";
+      }
+    },
+    [reviewerId]
+  );
+
+  // --- Recalcular estado tras guardar revisión (usamos el detalle del evento si viene) ---
   useEffect(() => {
-    const handleReviewUpdated = (e: any) => {
-      const updatedId = e.detail.articleId;
+    const handleReviewUpdated = async (e: any) => {
+      const updatedId = Number(e.detail?.articleId ?? 0);
+      const stateHint: "draft" | "sent" | "sent_edited" | undefined = e.detail?.state;
+      if (!updatedId) return;
+
+      // si nos pasaron el estado, lo mapeamos directo; si no, recalculamos
+      let status: ReviewStatus | null = null;
+      if (stateHint === "draft") status = "draft";
+      if (stateHint === "sent" || stateHint === "sent_edited") status = "completed";
+      if (!status) status = await computeStatusFor(updatedId);
+
       setData((prev) =>
-        prev.map((a) =>
-          a.id === updatedId ? { ...a, status: "completed" } : a
-        )
+        prev.map((a) => (a.id === updatedId ? { ...a, status: status! } : a))
       );
     };
     window.addEventListener("review-updated", handleReviewUpdated);
     return () => window.removeEventListener("review-updated", handleReviewUpdated);
-  }, []);
+  }, [computeStatusFor]);
 
   // --- Detectar seleccionado por query param ---
   useEffect(() => {
@@ -129,16 +163,7 @@ export default function AssignedArticlesView() {
     }
   }, [loading, selectedId]);
 
-  // --- Lógica de carga (igual que Index) ---
-  const computeStatusFor = useCallback(async (articleId: number): Promise<ReviewStatus> => {
-    try {
-      const hasReview = await hasOwnReview(articleId);
-      return hasReview ? "completed" : "pending";
-    } catch {
-      return "pending";
-    }
-  }, []);
-
+  // --- Carga inicial ---
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -146,7 +171,7 @@ export default function AssignedArticlesView() {
         setLoading(true);
         const assigned = await fetchAssignedArticles(reviewerId);
         const rows: UiRow[] = await Promise.all(
-          assigned.map(async (a) => ({
+          assigned.map(async (a: any) => ({
             id: a.id,
             title: a.title,
             status: await computeStatusFor(a.id),
