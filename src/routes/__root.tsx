@@ -19,7 +19,7 @@ const RootLayout = () => {
     //{ to: '/article/view', label: 'Articulos' },
     //{ to: '/article/create', label: 'Subir Articulo' },
     { to: '/article/select', label: 'Articulos' },
-    { to: '/chairs/selection', label: 'Seleccionar' },
+    { to: '/chairs/selection/session-list', label: 'Seleccionar' },
     //{ to: '/reviewer/bidding', label: 'Bidding' },
     //{ to: '/login', label: 'Ingresar' },
   ];
