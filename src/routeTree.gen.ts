@@ -17,12 +17,13 @@ import { Route as ReviewerBiddingRouteImport } from './routes/reviewer/bidding'
 import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
-import { Route as ChairsSelectionRouteImport } from './routes/chairs/selection'
 import { Route as ArticleViewRouteImport } from './routes/article/view'
 import { Route as ArticleSelectRouteImport } from './routes/article/select'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
+import { Route as ChairsSelectionSessionListRouteImport } from './routes/chairs/selection/session-list'
+import { Route as ChairsSelectionArticlesSessionRouteImport } from './routes/chairs/selection/articles-session'
 import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -64,11 +65,6 @@ const ConferenceIdRoute = ConferenceIdRouteImport.update({
   path: '/conference/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChairsSelectionRoute = ChairsSelectionRouteImport.update({
-  id: '/chairs/selection',
-  path: '/chairs/selection',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ArticleViewRoute = ArticleViewRouteImport.update({
   id: '/article/view',
   path: '/article/view',
@@ -94,6 +90,18 @@ const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
   path: '/conference/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChairsSelectionSessionListRoute =
+  ChairsSelectionSessionListRouteImport.update({
+    id: '/chairs/selection/session-list',
+    path: '/chairs/selection/session-list',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ChairsSelectionArticlesSessionRoute =
+  ChairsSelectionArticlesSessionRouteImport.update({
+    id: '/chairs/selection/articles-session',
+    path: '/chairs/selection/articles-session',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ArticleAssignIdRoute = ArticleAssignIdRouteImport.update({
   id: '/article/assign/$id',
   path: '/article/assign/$id',
@@ -108,12 +116,13 @@ export interface FileRoutesByFullPath {
   '/article/create': typeof ArticleCreateRoute
   '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
-  '/chairs/selection': typeof ChairsSelectionRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+  '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
+  '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
@@ -124,12 +133,13 @@ export interface FileRoutesByTo {
   '/article/create': typeof ArticleCreateRoute
   '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
-  '/chairs/selection': typeof ChairsSelectionRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+  '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
+  '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
@@ -142,12 +152,13 @@ export interface FileRoutesById {
   '/article/create': typeof ArticleCreateRoute
   '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
-  '/chairs/selection': typeof ChairsSelectionRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+  '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
+  '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
@@ -160,12 +171,13 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/article/select'
     | '/article/view'
-    | '/chairs/selection'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/bidding'
     | '/article/assign/$id'
+    | '/chairs/selection/articles-session'
+    | '/chairs/selection/session-list'
     | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,12 +188,13 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/article/select'
     | '/article/view'
-    | '/chairs/selection'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/bidding'
     | '/article/assign/$id'
+    | '/chairs/selection/articles-session'
+    | '/chairs/selection/session-list'
     | '/conference/edit/$id'
   id:
     | '__root__'
@@ -193,12 +206,13 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/article/select'
     | '/article/view'
-    | '/chairs/selection'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/bidding'
     | '/article/assign/$id'
+    | '/chairs/selection/articles-session'
+    | '/chairs/selection/session-list'
     | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
@@ -210,12 +224,13 @@ export interface RootRouteChildren {
   ArticleCreateRoute: typeof ArticleCreateRoute
   ArticleSelectRoute: typeof ArticleSelectRoute
   ArticleViewRoute: typeof ArticleViewRoute
-  ChairsSelectionRoute: typeof ChairsSelectionRoute
   ConferenceIdRoute: typeof ConferenceIdRoute
   ConferenceCreateRoute: typeof ConferenceCreateRoute
   ConferenceViewRoute: typeof ConferenceViewRoute
   ReviewerBiddingRoute: typeof ReviewerBiddingRoute
   ArticleAssignIdRoute: typeof ArticleAssignIdRoute
+  ChairsSelectionArticlesSessionRoute: typeof ChairsSelectionArticlesSessionRoute
+  ChairsSelectionSessionListRoute: typeof ChairsSelectionSessionListRoute
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
@@ -277,13 +292,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chairs/selection': {
-      id: '/chairs/selection'
-      path: '/chairs/selection'
-      fullPath: '/chairs/selection'
-      preLoaderRoute: typeof ChairsSelectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/article/view': {
       id: '/article/view'
       path: '/article/view'
@@ -319,6 +327,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenceEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chairs/selection/session-list': {
+      id: '/chairs/selection/session-list'
+      path: '/chairs/selection/session-list'
+      fullPath: '/chairs/selection/session-list'
+      preLoaderRoute: typeof ChairsSelectionSessionListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chairs/selection/articles-session': {
+      id: '/chairs/selection/articles-session'
+      path: '/chairs/selection/articles-session'
+      fullPath: '/chairs/selection/articles-session'
+      preLoaderRoute: typeof ChairsSelectionArticlesSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/article/assign/$id': {
       id: '/article/assign/$id'
       path: '/article/assign/$id'
@@ -347,12 +369,13 @@ const rootRouteChildren: RootRouteChildren = {
   ArticleCreateRoute: ArticleCreateRoute,
   ArticleSelectRoute: ArticleSelectRoute,
   ArticleViewRoute: ArticleViewRoute,
-  ChairsSelectionRoute: ChairsSelectionRoute,
   ConferenceIdRoute: ConferenceIdRoute,
   ConferenceCreateRoute: ConferenceCreateRoute,
   ConferenceViewRoute: ConferenceViewRoute,
   ReviewerBiddingRoute: ReviewerBiddingRoute,
   ArticleAssignIdRoute: ArticleAssignIdRoute,
+  ChairsSelectionArticlesSessionRoute: ChairsSelectionArticlesSessionRoute,
+  ChairsSelectionSessionListRoute: ChairsSelectionSessionListRoute,
   ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport

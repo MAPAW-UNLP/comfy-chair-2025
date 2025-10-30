@@ -26,18 +26,20 @@ export const SelectionResultsList = ({ items }: SelectionResultsListProps) => {
           {visibleArticles.map((article: any) => (
             <div
               key={article.id}
-              className="relative flex items-center justify-between p-4 bg-white"
+              className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-2"
             >
               {/* Título */}
-              <div className="flex-1 pr-4">
+              <div
+                className="flex-1 pr-4 w-full text-left"
+              >
                 <h3 className="text-base text-gray-900 leading-tight">{article.title}</h3>
               </div>
 
               {/* Puntaje promedio */}
               <div
-                className={`px-4 py-2 rounded-full text-2xl font-bold ${article.status === 'accepted'
-                    ? 'bg-green-100 text-green-600'
-                    : 'bg-red-100 text-red-600'
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-2xl font-bold ${article.status === 'accepted'
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-red-100 text-red-600'
                   }`}
               >
                 {article.avg_score !== null && article.avg_score !== undefined

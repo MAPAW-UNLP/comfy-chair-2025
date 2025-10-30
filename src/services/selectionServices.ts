@@ -13,3 +13,8 @@ export const executeScoreThresholdSelection = async (sessionId: number, cutoffSc
   });
   return response.data;
 };
+
+export const getSessionById = async (id: number) => {
+  const response = await api.get(`/api/session/${id}/`);
+  return response.data;
+};
