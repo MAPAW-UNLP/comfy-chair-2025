@@ -20,6 +20,7 @@ import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
 import { Route as ArticleViewRouteImport } from './routes/article/view'
 import { Route as ArticleSelectRouteImport } from './routes/article/select'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
+import { Route as AuthNotificationsRouteImport } from './routes/_auth.notifications'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
@@ -78,6 +79,11 @@ const ArticleCreateRoute = ArticleCreateRouteImport.update({
   path: '/article/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthNotificationsRoute = AuthNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/notifications': typeof AuthNotificationsRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/notifications': typeof AuthNotificationsRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/notifications': typeof AuthNotificationsRoute
   '/article/create': typeof ArticleCreateRoute
   '/article/select': typeof ArticleSelectRoute
   '/article/view': typeof ArticleViewRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard'
+    | '/notifications'
     | '/article/create'
     | '/article/select'
     | '/article/view'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard'
+    | '/notifications'
     | '/article/create'
     | '/article/select'
     | '/article/view'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/_auth/dashboard'
+    | '/_auth/notifications'
     | '/article/create'
     | '/article/select'
     | '/article/view'
@@ -285,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/notifications': {
+      id: '/_auth/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthNotificationsRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
       path: '/dashboard'
@@ -311,10 +330,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthNotificationsRoute: typeof AuthNotificationsRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
+  AuthNotificationsRoute: AuthNotificationsRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

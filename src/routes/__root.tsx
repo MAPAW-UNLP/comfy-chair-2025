@@ -1,30 +1,43 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { AuthProvider } from '@/contexts/AuthContext';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 
 import { Armchair, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 
-// Definición del componente principal (layout raíz)
-const RootLayout = () => {
-
+// Componente interno que usa el contexto de autenticación
+const RootLayoutContent = () => {
   // Estado para controlar si el menú lateral móvil está abierto o cerrado
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Obtener el estado de autenticación
+  const { user } = useAuth();
 
-  // Lista de páginas principales de la aplicación
-  const links = [
+  // Lista de páginas principales de la aplicación (común para todos)
+  const commonLinks = [
     { to: '/', label: 'Home' },
     { to: '/conference/view', label: 'Conferencias' },
     { to: '/article/view', label: 'Articulos' },
     { to: '/article/create', label: 'Subir Articulo' },
     { to: '/article/select', label: 'Asignar Revisor' },
     { to: '/reviewer/bidding', label: 'Bidding' },
-    { to: '/login', label: 'Ingresar' },
   ];
 
+  // Enlaces adicionales según el estado de autenticación
+  const authLinks = user 
+    ? [
+        { to: '/notifications', label: 'Notificaciones' },
+        { to: '/dashboard', label: 'Panel' },
+      ]
+    : [
+        { to: '/login', label: 'Ingresar' },
+      ];
+
+  // Combinar todos los enlaces
+  const links = [...commonLinks, ...authLinks];
+
   return (
-    <AuthProvider>
     <div className="flex flex-col h-screen">
 
       {/* Navbar superior */}
@@ -81,7 +94,7 @@ const RootLayout = () => {
 
         {/* Área principal donde se renderizan las páginas hijas */}
         <main className="flex-1 overflow-auto">
-          <Outlet /> {/* Outlet es el “espacio” donde TanStack Router inyecta la página actual */}
+          <Outlet /> {/* Outlet es el "espacio" donde TanStack Router inyecta la página actual */}
         </main>
 
       </div>
@@ -93,6 +106,14 @@ const RootLayout = () => {
       <Toaster richColors position='top-right' />
 
     </div>
+  );
+};
+
+// Definición del componente principal (layout raíz) con el provider
+const RootLayout = () => {
+  return (
+    <AuthProvider>
+      <RootLayoutContent />
     </AuthProvider>
   );
 };
