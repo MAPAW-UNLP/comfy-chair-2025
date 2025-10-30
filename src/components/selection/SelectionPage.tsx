@@ -121,14 +121,12 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
       {/* Header */}
 
       {/* Titulo de la sesion */}
-      {/*
       <div
         className="text-white py-1 px-6 flex items-center gap-3 flex-shrink-0"
         style={{ backgroundColor: "var(--muted-foreground)" }}//"var(--ring)"
       >
         <h1 className="text-lg truncate">{sessionTitle}</h1>
       </div>
-      */}
 
       <div
         className="text-white py-2 px-6 flex items-center justify-between flex-shrink-0"

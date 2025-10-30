@@ -67,7 +67,7 @@ export const SessionList = () => {
 
                     <div className="flex flex-col items-center gap-2">
                         <span className="text-sm text-gray-500">
-                            Ver Artículos
+                            Ver Más
                         </span>
                     </div>
                 </div>
