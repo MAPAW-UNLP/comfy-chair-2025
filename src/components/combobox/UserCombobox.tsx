@@ -33,7 +33,7 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "justify-between font-normal text-sm",
+            "justify-between bg-white font-normal",
             !selectedUser ? "text-gray-500" : "text-gray-900"
           )}
         >

@@ -19,7 +19,8 @@ export const getAllSessions = async (): Promise<Session[]> => {
 // Trae sesiones filtradas por conference_id
 export const getSessionsByConference = async (conferenceId: number): Promise<Session[]> => {
   const response = await api.get('/api/session', {
-    params: { conference_id: conferenceId } // esto genera ?conference_id=1
+    params: { conference_id: conferenceId },
   });
-  return response.data;
-}
+  const now = new Date();
+  return response.data.filter((session: Session) => new Date(session.deadline) >= now);
+};

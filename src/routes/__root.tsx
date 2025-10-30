@@ -17,7 +17,6 @@ const RootLayout = () => {
     { to: '/', label: 'Home' },
     { to: '/conference/view', label: 'Conferencias' },
     { to: '/article/view', label: 'Articulos' },
-    { to: '/article/create', label: 'Subir Articulo' },
     { to: '/article/select', label: 'Asignar Revisor' },
     { to: '/reviewer/bidding', label: 'Bidding' },
     { to: '/login', label: 'Ingresar' },
@@ -90,7 +89,7 @@ const RootLayout = () => {
       <TanStackRouterDevtools />
 
       {/* Componente global de notificaciones tipo toast */}
-      <Toaster richColors position='top-right' />
+      <Toaster position='top-right' />
 
     </div>
     </AuthProvider>
