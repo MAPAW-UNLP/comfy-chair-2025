@@ -15,13 +15,11 @@ const RootLayout = () => {
   // Lista de páginas principales de la aplicación
   const links = [
     { to: '/', label: 'Home' },
-    //{ to: '/conference/view', label: 'Conferencias' },
-    //{ to: '/article/view', label: 'Articulos' },
-    //{ to: '/article/create', label: 'Subir Articulo' },
-    { to: '/article/select', label: 'Articulos' },
-    { to: '/chairs/selection/session-list', label: 'Seleccionar' },
-    //{ to: '/reviewer/bidding', label: 'Bidding' },
-    //{ to: '/login', label: 'Ingresar' },
+    { to: '/conference/view', label: 'Conferencias' },
+    { to: '/article/view', label: 'Articulos' },
+    { to: '/article/select', label: 'Asignar Revisor' },
+    { to: '/reviewer/bidding', label: 'Bidding' },
+    { to: '/login', label: 'Ingresar' },
   ];
 
   const handleBack = () => {
@@ -110,6 +108,14 @@ const RootLayout = () => {
         <Toaster richColors position='top-right' />
 
       </div>
+
+      {/* Herramientas de desarrollo del router (solo útiles en dev) */}
+      <TanStackRouterDevtools />
+
+      {/* Componente global de notificaciones tipo toast */}
+      <Toaster position='top-right' />
+
+    </div>
     </AuthProvider>
   );
 };

@@ -24,6 +24,7 @@ import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 import { Route as ChairsSelectionSessionListRouteImport } from './routes/chairs/selection/session-list'
 import { Route as ChairsSelectionArticlesSessionRouteImport } from './routes/chairs/selection/articles-session'
+import { Route as ArticleEditIdRouteImport } from './routes/article/edit/$id'
 import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -102,6 +103,11 @@ const ChairsSelectionArticlesSessionRoute =
     path: '/chairs/selection/articles-session',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ArticleEditIdRoute = ArticleEditIdRouteImport.update({
+  id: '/article/edit/$id',
+  path: '/article/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArticleAssignIdRoute = ArticleAssignIdRouteImport.update({
   id: '/article/assign/$id',
   path: '/article/assign/$id',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/article/assign/$id': typeof ArticleAssignIdRoute
   '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
   '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
+  '/article/edit/$id': typeof ArticleEditIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesByTo {
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/article/assign/$id': typeof ArticleAssignIdRoute
   '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
   '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
+  '/article/edit/$id': typeof ArticleEditIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRoutesById {
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/article/assign/$id': typeof ArticleAssignIdRoute
   '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
   '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
+  '/article/edit/$id': typeof ArticleEditIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
 }
 export interface FileRouteTypes {
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/article/assign/$id'
     | '/chairs/selection/articles-session'
     | '/chairs/selection/session-list'
+    | '/article/edit/$id'
     | '/conference/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/article/assign/$id'
     | '/chairs/selection/articles-session'
     | '/chairs/selection/session-list'
+    | '/article/edit/$id'
     | '/conference/edit/$id'
   id:
     | '__root__'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/article/assign/$id'
     | '/chairs/selection/articles-session'
     | '/chairs/selection/session-list'
+    | '/article/edit/$id'
     | '/conference/edit/$id'
   fileRoutesById: FileRoutesById
 }
@@ -231,6 +243,7 @@ export interface RootRouteChildren {
   ArticleAssignIdRoute: typeof ArticleAssignIdRoute
   ChairsSelectionArticlesSessionRoute: typeof ChairsSelectionArticlesSessionRoute
   ChairsSelectionSessionListRoute: typeof ChairsSelectionSessionListRoute
+  ArticleEditIdRoute: typeof ArticleEditIdRoute
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
 }
 
@@ -339,6 +352,11 @@ declare module '@tanstack/react-router' {
       path: '/chairs/selection/articles-session'
       fullPath: '/chairs/selection/articles-session'
       preLoaderRoute: typeof ChairsSelectionArticlesSessionRouteImport
+    '/article/edit/$id': {
+      id: '/article/edit/$id'
+      path: '/article/edit/$id'
+      fullPath: '/article/edit/$id'
+      preLoaderRoute: typeof ArticleEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/article/assign/$id': {
@@ -376,6 +394,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArticleAssignIdRoute: ArticleAssignIdRoute,
   ChairsSelectionArticlesSessionRoute: ChairsSelectionArticlesSessionRoute,
   ChairsSelectionSessionListRoute: ChairsSelectionSessionListRoute,
+  ArticleEditIdRoute: ArticleEditIdRoute,
   ConferenceEditIdRoute: ConferenceEditIdRoute,
 }
 export const routeTree = rootRouteImport
