@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import { UserCombobox } from '@/components/combobox/UserCombobox';
 import { getCommonUsers, type User } from '@/services/userServices';
 import CustomCalendar from './CustomCalendar';
+import type { Conference } from './ConferenceApp';
 
 // Tipos
 type SelectionMethod = 'corte_fijo' | 'mejores';
@@ -25,6 +26,7 @@ type SessionFormProps = {
   onCancel: () => void;
   isLoading?: boolean;
   submitButtonText?: string;
+  conference: Conference
 };
 
 export default function SessionForm({
@@ -33,6 +35,7 @@ export default function SessionForm({
   onCancel,
   isLoading = false,
   submitButtonText = 'Guardar',
+  conference
 }: SessionFormProps) {
   // Estados del formulario
   const [title, setTitle] = useState<string>(initialData?.title || '');
@@ -58,7 +61,8 @@ export default function SessionForm({
   useEffect(() => {
     const fetchUsers = async () => {
       const data = await getCommonUsers();
-      setUsers(data);
+      const filteredData= data.filter(user => !conference.chairs?.includes(user.id))
+      setUsers(filteredData);
     };
     fetchUsers();
   }, []);
@@ -141,7 +145,7 @@ export default function SessionForm({
           {/* Deadline */}
           <div className="flex flex-col gap-2">
             <label className="font-semibold">Deadline</label>
-            <CustomCalendar date={deadline} setDate={setDeadline} />
+            <CustomCalendar date={deadline} setDate={setDeadline} conference={conference}/>
           </div>
 
           {/* Cupo de artículos aceptados */}

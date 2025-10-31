@@ -11,15 +11,16 @@ import { Button } from '@/components/ui/button';
 import SessionForm, { type SessionFormData } from './SessionForm';
 import { toast } from 'sonner';
 import { createSession } from '@/services/sessionServices';
+import type { Conference } from './ConferenceApp';
 
 type AltaSessionProps = {
-  conferenceId: number;
+  conference: Conference;
   onSessionCreated?: () => void;
   trigger?: React.ReactNode;
 };
 
 export default function AltaSession({
-  conferenceId,
+  conference,
   onSessionCreated,
   trigger,
 }: AltaSessionProps) {
@@ -41,7 +42,7 @@ export default function AltaSession({
           data.selectionMethod === 'mejores' ? data.threshold : undefined,
       };
       console.log('Creating session with data:', sessionData);
-      await createSession(sessionData, conferenceId);
+      await createSession(sessionData, Number(conference.id));
 
       toast.success('Sesión creada exitosamente');
       setOpen(false);
@@ -71,6 +72,7 @@ export default function AltaSession({
           onCancel={handleCancel}
           isLoading={isLoading}
           submitButtonText="Guardar"
+          conference={conference}
         />
       </DialogContent>
     </Dialog>

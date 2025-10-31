@@ -18,7 +18,6 @@ import {
 import { CarouselContainer, CarouselItem } from '../ui/carousel-container';
 import ArticleCard from '../article/ArticleCard';
 import { toast } from 'sonner';
-// import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();

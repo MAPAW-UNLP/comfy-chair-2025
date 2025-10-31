@@ -81,6 +81,8 @@ export default function EditarSession({
         setChairs(data.filter((user) => session?.chairs!.includes(user.id)));
       };
       fetchChairs();
+
+      console.log(session)
     }, []);
 
   return (
@@ -113,6 +115,7 @@ export default function EditarSession({
           onCancel={handleCancel}
           isLoading={isLoading}
           submitButtonText="Guardar"
+          conference={session.conference!}
         />
       </DialogContent>
     </Dialog>

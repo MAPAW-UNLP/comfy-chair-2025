@@ -120,7 +120,7 @@ function AConference() {
           <div className="flex justify-between items-center">
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
             <AltaSession
-              conferenceId={Number(conferencia.id)}
+              conference={conferencia}
               onSessionCreated={fetchSessions}
               trigger={
                 <Button size={'sm'} className="cursor-pointer">
