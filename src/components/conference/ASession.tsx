@@ -18,6 +18,8 @@ import {
 import { CarouselContainer, CarouselItem } from '../ui/carousel-container';
 import ArticleCard from '../article/ArticleCard';
 import { toast } from 'sonner';
+import { SearchBar } from './ConferenceSearch';
+import SessionArticleCard from './SessionArticleCard';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -26,6 +28,7 @@ function ASession() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [chairs, setChairs] = useState<User[] | []>([]);
   const [articles, setArticles] = useState<Article[] | []>([]);
+  const [filteredArticles, setFilteredArticles] = useState<Article[] | []>([]);
   const navigate = useNavigate();
 
   const fetchSession = async () => {
@@ -70,6 +73,7 @@ function ASession() {
     const fetchArticles = async () => {
       const response = await getArticleBySessionId(session!.id);
       setArticles(response);
+      setFilteredArticles(response);
     };
 
     if (session) fetchArticles();
@@ -114,25 +118,25 @@ function ASession() {
       </div>
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
-        <h2 className="text-1xl font-bold">Artículos</h2>
-        {articles.length > 0 ? (
-          <CarouselContainer>
-            {articles.map((article) => (
-              <CarouselItem key={article.id} width="350px">
-                <ArticleCard
-                  title={article.title}
-                  session={session!.title}
-                  conference={session!.conference!.title}
-                  state={article.status}
-                  deadline={session?.deadline!}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContainer>
+        <div className="flex justify-between items-center gap-20">
+          <h2 className="text-1xl font-bold">Artículos</h2>
+          <SearchBar
+            datos={articles}
+            setResultados={setFilteredArticles}
+            campos={['title']}
+          />
+          <p>&nbsp;</p>
+        </div>
+        {filteredArticles.length > 0 ? (
+          filteredArticles.map((article) => (
+            <SessionArticleCard article={article} />
+          ))
+        ) : articles.length > 0 ? (
+          <p className="text-center py-4 text-muted-foreground">
+            No hay coincidencias.
+          </p>
         ) : (
-          <div className="text-center py-4 text-muted-foreground">
-            No hay artículos asignados
-          </div>
+          <p>No hay artículos asignados</p>
         )}
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-5 m-2 gap-3">
@@ -144,14 +148,16 @@ function ASession() {
           Volver a {session!.conference?.title}
         </Button>
 
-        <Button
-          variant="destructive"
-          onClick={handleEliminarSession}
-          className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
-        >
-          <Trash2 size={16} />
-          Eliminar sesión
-        </Button>
+        {articles.length == 0 && (
+          <Button
+            variant="destructive"
+            onClick={handleEliminarSession}
+            className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
+          >
+            <Trash2 size={16} />
+            Eliminar sesión
+          </Button>
+        )}
       </div>
 
       {showDeleteModal && (

@@ -1,30 +1,31 @@
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import type { Conference } from './ConferenceApp';
 
-type ConferenceSearchProps= {
-  confActivas:Conference[];
-  confTerminadas: Conference[];
-  setConferencias: React.Dispatch<React.SetStateAction<Conference[]>>;
-  verActivas: boolean;
-}
+type SearchProps<T> = {
+  datos: T[];
+  setResultados: React.Dispatch<React.SetStateAction<T[]>>;
+  campos: (keyof T)[]; // campos a buscar, ej: ["title", "description"]
+};
 
-export const ConferenceSearch = ({confActivas, confTerminadas, setConferencias, verActivas}: ConferenceSearchProps) => {
+export function SearchBar<T extends Record<string, any>>({
+  datos,
+  setResultados,
+  campos,
+}: SearchProps<T>) {
   const [query, setQuery] = useState('');
 
-  const buscar= ()=>{
-    if (query===''){
-      setConferencias(verActivas ? confActivas : confTerminadas)
-      return
+  useEffect(() => {
+    if (query.trim() === '') {
+      setResultados(datos);
+      return;
     }
-    const valor= query.toLowerCase()
-    const resultado= [...confActivas, ...confTerminadas].filter(conf => conf.title.toLowerCase().includes(valor))
-    setConferencias(resultado)
-  }
 
-  useEffect(() =>{
-    buscar()
-  },[query])
+    const valor = query.toLowerCase();
+    const filtrados = datos.filter((item) =>
+      campos.some((campo) => String(item[campo]).toLowerCase().includes(valor))
+    );
+    setResultados(filtrados);
+  }, [query, datos]);
 
   return (
     <div className="flex flex-auto border border-gray-300 rounded-lg bg-white min-w-20 overflow-hidden shadow">
@@ -33,11 +34,11 @@ export const ConferenceSearch = ({confActivas, confTerminadas, setConferencias, 
       </div>
       <input
         type="text"
-        placeholder="Buscar conferencia..."
+        placeholder="Buscar..."
         value={query}
-        onChange={(e)=> setQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         className="p-2 outline-none w-full"
       />
     </div>
   );
-};
+}

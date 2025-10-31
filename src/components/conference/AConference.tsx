@@ -10,8 +10,12 @@ import type { Session } from '@/services/sessionServices';
 import SessionCard from './SessionCard';
 import ModalEliminar from './ModalEliminar';
 import { deleteConference } from '@/services/conferenceServices';
-import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
+import {
+  CarouselContainer,
+  CarouselItem,
+} from '@/components/ui/carousel-container';
 import { toast } from 'sonner';
+import { SearchBar } from './ConferenceSearch';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -24,6 +28,7 @@ function AConference() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [chairs, setChairs] = useState<User[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
 
   const irEditarConferencia = () => {
@@ -35,6 +40,7 @@ function AConference() {
       setLoadingSessions(true);
       const data = await getSessionsByConference(Number(conferencia.id));
       setSessions(data);
+      setFilteredSessions(data);
     } catch (error) {
       console.error('Error al cargar las sesiones:', error);
     } finally {
@@ -50,7 +56,7 @@ function AConference() {
     setShowDeleteModal(true);
   };
 
-  const onDelete = async() => {
+  const onDelete = async () => {
     await deleteConference(conferencia.id);
     toast.warning('Conferencia eliminada');
     navigate({ to: '/conference/view' });
@@ -102,8 +108,8 @@ function AConference() {
           </div>
 
           <p className="text-sm">
-            Desde {formatearFecha(conferencia.start_date)} a{' '}
-            {formatearFecha(conferencia.end_date)}
+            Desde {formatearFecha(conferencia.start_date!)} a{' '}
+            {formatearFecha(conferencia.end_date!)}
           </p>
         </div>
 
@@ -116,9 +122,14 @@ function AConference() {
           })}
         </div>
 
-        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
-          <div className="flex justify-between items-center">
+        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-10">
+          <div className="flex justify-between items-center gap-10">
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
+            <SearchBar
+              datos={sessions}
+              setResultados={setFilteredSessions}
+              campos={['title']}
+            />
             <AltaSession
               conference={conferencia}
               onSessionCreated={fetchSessions}
@@ -138,11 +149,15 @@ function AConference() {
             </div>
           ) : sessions.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground">
-              No hay sesiones creadas aún. Creá la primera sesión.
+              No hay sesiones creadas aún. Cree la primera sesión.
+            </div>
+          ) : filteredSessions.length === 0 ? (
+            <div className="text-center py-4 text-muted-foreground">
+              No hay coincidencias.
             </div>
           ) : (
             <CarouselContainer>
-              {sessions.map((session) => (
+              {filteredSessions.map((session) => (
                 <CarouselItem key={session.id} width="350px">
                   <SessionCard
                     session={session}
@@ -163,14 +178,16 @@ function AConference() {
             Volver al inicio
           </Button>
 
-          <Button
-            variant="destructive"
-            onClick={handleEliminarConferencia}
-            className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
-          >
-            <Trash2 size={16} />
-            Eliminar conferencia
-          </Button>
+          {sessions.length == 0 && (
+            <Button
+              variant="destructive"
+              onClick={handleEliminarConferencia}
+              className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
+            >
+              <Trash2 size={16} />
+              Eliminar conferencia
+            </Button>
+          )}
         </div>
       </div>
 

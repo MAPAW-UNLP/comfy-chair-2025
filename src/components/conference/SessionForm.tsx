@@ -135,7 +135,7 @@ export default function SessionForm({
             <input
               className="border rounded px-2 py-1 bg-white"
               id="title"
-              placeholder="Ingresá el nombre..."
+              placeholder="Ingrese el nombre..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -157,7 +157,7 @@ export default function SessionForm({
               className="no-spinner border rounded px-2 py-1 bg-white"
               id="capacity"
               type="number"
-              placeholder="Ingresá el cupo..."
+              placeholder="Ingrese el cupo..."
               value={capacity}
               onChange={(e) => setCapacity(e.target.value)}
               min="1"

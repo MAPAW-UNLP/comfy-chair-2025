@@ -9,7 +9,7 @@ import {
 } from '@/services/conferenceServices';
 import { Route } from '@/routes/conference/view';
 import { useEffect, useState } from 'react';
-import { ConferenceSearch } from './ConferenceSearch';
+import { SearchBar } from './ConferenceSearch';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
@@ -58,11 +58,10 @@ function ConferenceApp() {
       <h1 className="text-3xl font-bold">Conferencias</h1>
 
       <div className="flex justify-center items-center gap-2 px-5 w-full">
-        <ConferenceSearch
-          confActivas={confActivas}
-          confTerminadas={confTerminadas}
-          setConferencias={setConferencias}
-          verActivas={verActivas}
+        <SearchBar
+          datos={verActivas ? confActivas : confTerminadas}
+          setResultados={setConferencias}
+          campos={['title']}
         />
       </div>
 
@@ -105,6 +104,8 @@ function ConferenceApp() {
           conferencias.map((c) => {
             return <ConferenceBox key={c.id} conferencia={c} />;
           })
+        ) : (confActivas.length > 0) || (confTerminadas.length > 0) ? (
+          <p>No hay coincidencias.</p>
         ) : (
           <p>Aún no hay conferencias disponibles.</p>
         )}
