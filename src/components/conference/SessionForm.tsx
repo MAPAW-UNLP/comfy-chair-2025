@@ -111,7 +111,7 @@ export default function SessionForm({
       }
       formData.percentage = percentageNum;
     } else {
-      const thresholdNum = parseInt(threshold);
+      const thresholdNum = parseFloat(threshold);
       if (isNaN(thresholdNum)) {
         return;
       }
@@ -218,7 +218,7 @@ export default function SessionForm({
                   className="border-2 border-black"
                 />
                 <label htmlFor="corte_fijo" className="cursor-pointer font-semibold">
-                  Corte fijo
+                  Porcentaje
                 </label>
               </div>
               <p className="text-sm text-gray-600 mt-2 ml-6">
@@ -226,9 +226,6 @@ export default function SessionForm({
               </p>
               {selectionMethod === 'corte_fijo' && (
                 <div className="mt-3 ml-6 flex flex-col gap-2">
-                  <label htmlFor="percentage" className="text-sm font-medium text-gray-700">
-                    Porcentaje
-                  </label>
                   <div className="flex items-center gap-2">
                     <input
                       className="no-spinner border rounded px-2 py-1 w-24 bg-white"
@@ -254,7 +251,7 @@ export default function SessionForm({
                   className="border-2 border-black"
                 />
                 <label htmlFor="mejores" className="cursor-pointer font-semibold">
-                  Mejores
+                  Puntaje minimo
                 </label>
               </div>
               <p className="text-sm text-gray-600 mt-2 ml-6">
@@ -262,9 +259,6 @@ export default function SessionForm({
               </p>
               {selectionMethod === 'mejores' && (
                 <div className="mt-3 ml-6 flex flex-col gap-2">
-                  <label htmlFor="threshold" className="text-sm font-medium text-gray-700">
-                    Umbral
-                  </label>
                   <input
                     className="no-spinner border rounded px-2 py-1 w-24 bg-white"
                     id="threshold"
@@ -273,6 +267,7 @@ export default function SessionForm({
                     onChange={(e) => setThreshold(e.target.value)}
                     min="-3"
                     max="3"
+                    step="0.01"
                   />
                 </div>
               )}
