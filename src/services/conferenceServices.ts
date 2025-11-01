@@ -1,5 +1,23 @@
 import type { Conference } from '@/components/conference/ConferenceApp';
 import { axiosInstance as api } from './api';
+
+type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
+
+export interface ConferenceG1 {
+  id: number;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  blind_kind: VISTA_CHOICES;
+}
+
+// Obtener todas las conferencias que no han finalizado
+export const getAllConferencesGrupo1 = async (): Promise<ConferenceG1[]> => {
+  const response = await api.get('/api/conference');
+  const now = new Date();
+  return response.data.filter((conf: Conference) => new Date(conf.end_date) >= now);
+};
 import type { User } from './userServices';
 
 export const getAllConferences = async (): Promise<Conference[]> => {
