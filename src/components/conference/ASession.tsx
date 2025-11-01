@@ -7,7 +7,7 @@ import { Loader2, Trash2 } from 'lucide-react';
 import { Route } from '@/routes/conference/session/$id';
 import { formatearFecha } from './AConference';
 import { Button } from '../ui/button';
-import ModalEliminar from './ModalEliminar';
+import ModalEliminar from './ModalDelete';
 import { useNavigate } from '@tanstack/react-router';
 import EditarSession from './SessionEdit';
 import { getAllUsers, type User } from '@/services/userServices';

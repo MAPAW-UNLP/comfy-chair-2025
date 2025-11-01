@@ -8,7 +8,7 @@ import AltaSession from './SessionCreate';
 import { getSessionsByConference } from '@/services/sessionServices';
 import type { Session } from '@/services/sessionServices';
 import SessionCard from './SessionCard';
-import ModalEliminar from './ModalEliminar';
+import ModalEliminar from './ModalDelete';
 import { deleteConference } from '@/services/conferenceServices';
 import {
   CarouselContainer,
