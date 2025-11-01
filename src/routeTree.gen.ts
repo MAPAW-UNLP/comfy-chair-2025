@@ -21,6 +21,7 @@ import { Route as ArticleViewRouteImport } from './routes/article/view'
 import { Route as ArticleSelectRouteImport } from './routes/article/select'
 import { Route as ArticleCreateRouteImport } from './routes/article/create'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
+import { Route as ConferenceSessionIdRouteImport } from './routes/conference/session/$id'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
 import { Route as ArticleEditIdRouteImport } from './routes/article/edit/$id'
 import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
@@ -84,6 +85,11 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
 } as any)
+const ConferenceSessionIdRoute = ConferenceSessionIdRouteImport.update({
+  id: '/conference/session/$id',
+  path: '/conference/session/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
   id: '/conference/edit/$id',
   path: '/conference/edit/$id',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/article/assign/$id': typeof ArticleAssignIdRoute
   '/article/edit/$id': typeof ArticleEditIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
+  '/conference/session/$id': typeof ConferenceSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/article/assign/$id': typeof ArticleAssignIdRoute
   '/article/edit/$id': typeof ArticleEditIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
+  '/conference/session/$id': typeof ConferenceSessionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/article/assign/$id': typeof ArticleAssignIdRoute
   '/article/edit/$id': typeof ArticleEditIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
+  '/conference/session/$id': typeof ConferenceSessionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/article/assign/$id'
     | '/article/edit/$id'
     | '/conference/edit/$id'
+    | '/conference/session/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/article/assign/$id'
     | '/article/edit/$id'
     | '/conference/edit/$id'
+    | '/conference/session/$id'
   id:
     | '__root__'
     | '/'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/article/assign/$id'
     | '/article/edit/$id'
     | '/conference/edit/$id'
+    | '/conference/session/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   ArticleAssignIdRoute: typeof ArticleAssignIdRoute
   ArticleEditIdRoute: typeof ArticleEditIdRoute
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
+  ConferenceSessionIdRoute: typeof ConferenceSessionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -305,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/conference/session/$id': {
+      id: '/conference/session/$id'
+      path: '/conference/session/$id'
+      fullPath: '/conference/session/$id'
+      preLoaderRoute: typeof ConferenceSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conference/edit/$id': {
       id: '/conference/edit/$id'
       path: '/conference/edit/$id'
@@ -354,6 +374,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArticleAssignIdRoute: ArticleAssignIdRoute,
   ArticleEditIdRoute: ArticleEditIdRoute,
   ConferenceEditIdRoute: ConferenceEditIdRoute,
+  ConferenceSessionIdRoute: ConferenceSessionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

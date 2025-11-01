@@ -129,3 +129,12 @@ export const getArticleById = async (id: number): Promise<Article> => {
   if (!res.status || res.status >= 400) throw new Error("Error al obtener el artículo");
   return res.data;
 };
+
+
+// Obtener artículo por ID de sesión grupo 3
+export const getArticleBySessionId = async (id: number): Promise<Article[]> => {
+  console.log('Obteniendo artículos para la sesión con ID:', id);
+  const res = await api.get(`/api/article/getArticlesBySessionId/${id}/`);
+  if (!res.status || res.status >= 400) throw new Error("Error al obtener los artículos");
+  return res.data;
+};
