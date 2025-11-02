@@ -4,10 +4,10 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ClipboardEditIcon, EyeIcon } from "lucide-react";
+import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon } from "lucide-react";
 import { useNavigate } from '@tanstack/react-router';
 import type { Article, Status } from "@/services/articleServices";
-import ArticleDetail from "./ArticleDetail";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
@@ -80,6 +80,21 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     navigate({ to: `/article/edit/${article.id}` });
   };
 
+  const navigateDetailArticle = () => {
+    navigate({ to: `/article/detail/${article.id}` });
+  };
+
+  const handleDownload = async (url: string, filename: string) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename; // nombre personalizado
+    link.click();
+  };
+
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
   useEffect(() => {
     if (article.status !== "reception") return;
@@ -119,24 +134,36 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       <hr className="bg-slate-100"/>
       <div className="flex flex-row">
         <div className="basis-3/4">
+          <p className="text-md text-slate-500"><b>Tipo:</b> {article.type ? article.type.charAt(0).toUpperCase() + article.type.slice(1) : "Desconocido"}</p>
           <p className="text-md text-slate-500"><b>Sesion:</b> {article.session?.title}</p>
           <p className="text-md text-slate-500"><b>Conferencia:</b> {article.session?.conference?.title}</p>
         </div>
-        <div className="flex flex-row basis-1/4 items-center">
-          <ClipboardEditIcon onClick={navigateEditArticle} className={`basis-1/2 ${article.status !== "reception" || tiempoRestante === "invalido" ? 'invisible' : 'visible'}`}/>
-          <Dialog>
-            <DialogTrigger asChild>
-              <EyeIcon className="basis-1/2"/>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Detalle del Articulo</DialogTitle>
-                <DialogDescription>
-                  <ArticleDetail article={article} />
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+        <div className="basis-1/4 flex justify-center items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="outline" className="bg-slate-900 text-white">
+                Opciones <SettingsIcon className="rounded"/>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={navigateDetailArticle}>
+                <EyeIcon/> Ver Articulo
+              </DropdownMenuItem>
+              {tiempoRestante !== "invalido" && (
+                <DropdownMenuItem onClick={navigateEditArticle}>
+                  <PencilIcon/> Editar Articulo
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={() => handleDownload(`${API_BASE}/api/article/${article?.id}/download_main/`, "Articulo")}>
+                <FileDownIcon/> Descargar Articulo
+              </DropdownMenuItem>
+              {article.type === "poster" && (
+                <DropdownMenuItem onClick={() => handleDownload(`${API_BASE}/api/article/${article?.id}/download_source/`, "Fuentes")}>
+                  <FileDownIcon/> Descargar Fuentes
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
@@ -165,11 +192,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
         {/* Boton Modificar */}
         <div className="flex-1 flex flex-col gap-1">
-          <span className="text-sm text-slate-900 font-medium text-start">Modificar</span>
+          <span className="text-sm text-slate-900 font-medium text-start">Deadline</span>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" disabled={article.status !== "reception" || tiempoRestante === "invalido"} className={`w-full ${article.status === "reception" ? "bg-slate-900 text-white" : "bg-zinc-500 text-white"}`}>
-                {article.status === "reception" && tiempoRestante !== "invalido" ? tiempoRestante || "..." : "No Disponible"}
+                {article.status === "reception" && tiempoRestante !== "invalido" ? tiempoRestante || "..." : "Expirado"}
               </Button>
             </DialogTrigger>
             <DialogContent>

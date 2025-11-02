@@ -32,7 +32,7 @@ function RouteComponent() {
   //Cuerpo del Componente
   return (
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
-      <Button variant="outline" className="bg-slate-900 text-white" onClick={handleClick}>
+      <Button variant="outline" className="bg-lime-900 text-white" onClick={handleClick}>
         Subir Artículo +
       </Button>
       {articulo.length === 0 ? (
