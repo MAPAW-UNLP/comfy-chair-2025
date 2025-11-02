@@ -42,7 +42,9 @@ export function UserCombobox({ users, onValueChange, isChair = false, background
         >
           {selectedUser
             ? `${selectedUser.full_name} `
-            : `Seleccione al menos un ${isChair ? "chair" : "autor"}...`}
+            : isChair
+            ? "Seleccione al menos un chair..."
+            : "Agregar autores a la lista..."}
           <ChevronsUpDown className="opacity-25" />
         </Button>
       </PopoverTrigger>

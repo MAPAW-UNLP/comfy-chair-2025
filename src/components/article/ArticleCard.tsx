@@ -131,7 +131,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       <div className="flex-1 flex flex-col justify-center">
         <h2 className="text-lg font-bold italic text-slate-500 text-center">{article.title}</h2>
       </div>
+
       <hr className="bg-slate-100"/>
+
       <div className="flex flex-row">
         <div className="basis-3/4">
           <p className="text-md text-slate-500"><b>Tipo:</b> {article.type ? article.type.charAt(0).toUpperCase() + article.type.slice(1) : "Desconocido"}</p>
@@ -141,8 +143,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <div className="basis-1/4 flex justify-center items-center">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="outline" className="bg-slate-900 text-white">
-                Opciones <SettingsIcon className="rounded"/>
+              <Button variant="outline" className="bg-slate-900 text-white flex items-center gap-2">
+                <span className="hidden sm:inline">Opciones</span>
+                <SettingsIcon className="rounded" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>

@@ -337,7 +337,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
   // Renderizado del componente
   // -------------------
   return (
-    <div className="w-full max-w-2xl rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
+    <div className="w-full max-w-3xl rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
 
       {/* Titulo del Form */}
       <h2 className="text-lg font-bold italic text-slate-500 text-center">
@@ -506,7 +506,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       {/* Combobox de autores */}
       <div className="flex-1 flex flex-col gap-2">
         <Label htmlFor="autor">Autores del Artículo {errors.authors && <p className="text-destructive">{errors.authors}</p>}</Label>
-        <UserCombobox onValueChange={handleAgregarAutor} users={users} />
+        <UserCombobox onValueChange={handleAgregarAutor} backgroundWhite={true} users={users} />
       </div>
 
       {/* Lista de autores seleccionados */}
@@ -514,7 +514,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
         <div className="flex flex-col gap-2 w-full">
           {authors.map((a) => (
             <div key={a.id} className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full">
-              <span className="truncate">{a.full_name} ({a.email})</span>
+              <span className="truncate text-sm">{a.full_name} ({a.email})</span>
               <button type="button" onClick={() => handleEliminarAutor(a.id)} className="text-red-500 hover:text-red-700">
                 <X size={16} />
               </button>
@@ -528,7 +528,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
         <Label htmlFor="autorNotif">Autor de Notificación {errors.correspondingAuthor && <p className="text-destructive">{errors.correspondingAuthor}</p>}</Label>
         <Select value={correspondingAuthor} onValueChange={setCorrespondingAuthor} disabled={authors.length === 0}>
           <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
-            <SelectValue placeholder="Seleccione un autor primero..." />
+            <SelectValue placeholder={authors.length > 0 ? "Seleccione un autor..." : "Seleccione un autor primero..."} />
           </SelectTrigger>
           <SelectContent>
             {authors.map((a) => (
