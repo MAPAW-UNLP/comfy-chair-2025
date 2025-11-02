@@ -2,7 +2,6 @@
 
 // Importación de funcionalidades y librerías
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from '@tanstack/react-router';
 import { articleSchema } from '@/lib/validations';
 import type { ArticleFormData } from '@/lib/validations';
 
@@ -36,9 +35,6 @@ type ArticleFormProps = {
 };
 
 export default function ArticleForm({ users, conferences, editMode, article }: ArticleFormProps) {
-
-  // Navegación
-  const navigate = useNavigate();
 
   // Setteo de sesiones
   const [sessions, setSessions] = useState<Session[]>([]); // Sesiones pertenecientes a la conferencia seleccionada
@@ -190,7 +186,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
   // Manejo del boton de cancelación
   // -------------------
   const handleCancel = () => {
-    navigate({ to: '/article/view', replace: true });
+    window.history.back()
   }
 
   // -------------------
@@ -244,7 +240,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       console.log("Article Submit: ", response);
 
       toast.success('Artículo subido correctamente !', { duration: 5000 });
-      navigate({ to: '/article/view', replace: true });
+      window.history.back()
 
     } catch (error) {
 
@@ -320,7 +316,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       console.log('Article Update: ', response);
       
       toast.success('Artículo actualizado correctamente !', { duration: 5000 });
-      navigate({ to: '/article/view', replace: true });
+      window.history.back();
 
     } catch (error) {
 

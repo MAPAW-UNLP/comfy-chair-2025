@@ -3,17 +3,21 @@ import type { Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
 import ArticleCard from '@/components/article/ArticleCard';
 import { Button } from '@/components/ui/button';
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/article/view')({
+export const Route = createFileRoute('/article/$conferenceId/view')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
+  // Parametros de entrada
+  const { conferenceId } = useParams({ from: '/article/$conferenceId/view' });
+  const id = Number(conferenceId);
+
   // Navegacion
   const navigate = useNavigate();
-  const handleClick = () => navigate({to: '/article/create', replace: true });
+  const handleClick = () => navigate({ to: `/article/${id}/create`, replace: true });
 
   // Lista de Articulos
   const [articulo, setArticulos] = useState<Article[]>([]);

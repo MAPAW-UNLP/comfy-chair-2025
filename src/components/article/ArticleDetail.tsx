@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 import type { Article } from "@/services/articleServices";
 import type { Status, Type } from "@/services/articleServices";
 import { Button } from "../ui/button";
-import { useNavigate } from '@tanstack/react-router';
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
@@ -33,8 +32,7 @@ const tipoTexto: Record<Type, string> = {
 const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
 
   // Navegacion
-  const navigate = useNavigate();
-  const handleCancel = () => {navigate({ to: '/article/view', replace: true });}
+  const handleCancel = () => {window.history.back();}
 
   // Manejo de archivos
   const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal

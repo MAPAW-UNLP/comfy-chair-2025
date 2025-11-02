@@ -5,15 +5,15 @@ import { getArticleById, type Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
 
-export const Route = createFileRoute('/article/edit/$id')({
+export const Route = createFileRoute('/article/$articleId/edit')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
   // Parametros de entrada
-  const { id } = useParams({ from: '/article/edit/$id' });
-  const articleId = Number(id);
+  const { articleId } = useParams({ from: '/article/$articleId/edit' });
+  const id = Number(articleId);
 
   // Articulo actual + Listas de Usuarios y Conferencias
   const [article, setArticle] = useState<Article | null>(null);
@@ -46,7 +46,7 @@ function RouteComponent() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const data = await getArticleById(articleId);
+        const data = await getArticleById(id);
         setArticle(data);
       } catch (error) {
         console.error("Error al obtener el artículo:", error);
