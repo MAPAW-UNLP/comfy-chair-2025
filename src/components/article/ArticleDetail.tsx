@@ -37,8 +37,10 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
   const handleCancel = () => {navigate({ to: '/article/view', replace: true });}
 
   // Manejo de archivos
-  const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal ya existente (edicion)
-  const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes ya existente (edicion)
+  const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal
+  const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal
+  const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes
+  const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes
 
   useEffect(() => {
   
@@ -52,15 +54,37 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
       if (mf) {
         const url = typeof mf === 'string' ? mf : mf.url ?? null;
         setExistingMainFileUrl(url);
+        if (url) {
+          try {
+            const parts = url.split('/');
+            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingMainFileName(String(mf));
+          }
+        } else {
+          setExistingMainFileName(typeof mf === 'string' ? mf : null);
+        }
       }
-  
+
       // Cargar y settear el archivo de fuentes (si existe)
       if (sf) {
         const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
         setExistingSourceFileUrl(urlS);
+        if (urlS) {
+          try {
+            const parts = urlS.split('/');
+            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingSourceFileName(String(sf));
+          }
+        } else {
+          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
+        }
       } else {
         setExistingSourceFileUrl(null);
+        setExistingSourceFileName(null);
       }
+
     }
   
   }, [article]);
@@ -89,14 +113,14 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
           {/* Mostrar enlace al archivo existente en modo edición */}
           {existingMainFileUrl && (
             <p><b>Articulo: </b>
-              <a href={existingMainFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">Ver Archivo</a>
+              <a href={existingMainFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">{existingMainFileName ?? 'archivo'}</a>
             </p>
           )}
           {/* Mostrar enlace al archivo de fuentes existente en modo edición */}
           {existingSourceFileUrl && (
             <p>
               <b>Fuentes: </b>
-              <a href={existingSourceFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">Ver Archivo</a>
+              <a href={existingSourceFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">{existingSourceFileName ?? 'archivo'}</a>
             </p>
           )}
         </div>

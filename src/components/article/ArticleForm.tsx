@@ -337,7 +337,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
   // Renderizado del componente
   // -------------------
   return (
-    <div className="w-full max-w-md rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
+    <div className="w-full max-w-2xl rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
 
       {/* Titulo del Form */}
       <h2 className="text-lg font-bold italic text-slate-500 text-center">
@@ -346,79 +346,168 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
 
       <hr className="bg-slate-100" />
 
-      {/* Combobox de Conferencias */}
-      <Label htmlFor="conferencia">Conferencia {errors.conference && <p className="text-destructive">{errors.conference}</p>}</Label>
-      <ConferenceCombobox value={selectedConference} onValueChange={setSelectedConference} conferences={conferences} disabled={editMode} />
-      
-      {/* Select de Sesiones */}
-      <Label htmlFor="sesion">Sesión {errors.session && <p className="text-destructive">{errors.session}</p>}</Label>
-      <Select value={selectedSession ?? ""} onValueChange={(value) => setSelectedSession(value)} disabled={!selectedConference || loadingSessions}>
-        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
-          <SelectValue placeholder={loadingSessions ? "Cargando sesiones..." : !selectedConference ? "Seleccione una conferencia primero..." : sessions.length ? "Seleccione una sesión..." : "No hay sesiones disponibles..."}/>
-        </SelectTrigger>
-        <SelectContent>
-          {sessions.map((s) => (
-            <SelectItem key={s.id} value={String(s.id)}>
-              {s.title}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      
-      {/* Campo de Título */}
-      <Label htmlFor="titulo">Título {errors.title && <p className="text-destructive">{errors.title}</p>}</Label>
-      <Input type="text" id="title" placeholder="Título del artículo..." value={title} onChange={(e) => setTitle(e.target.value)}/>
-      
-      {/* Campo de Abstract */}
-      <Label htmlFor="abstract">Abstract {errors.abstract && <p className="text-destructive">{errors.abstract}</p>}</Label>
-      <Textarea id="DetalleRegular" placeholder="Hasta 300 caracteres..." value={abstract} maxLength={300} onChange={(e) => setAbstract(e.target.value)}/>
-
-      {/* RadioGroup tipo de artículo */}
-      <Label htmlFor="tipo-articulo">Tipo</Label>
-      <RadioGroup value={articleType} onValueChange={setArticleType} className="flex flex-row gap-4">
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value={"regular"} id="regular" />
-          <Label htmlFor="regular">Regular</Label>
+      {/* Conferencia y Sesión */}
+      <div className="flex flex-col md:flex-row gap-4 w-full">
+        
+        {/* Combobox de Conferencias */}
+        <div className="flex-1 flex flex-col gap-2">
+          <Label htmlFor="conferencia">
+            Conferencia {errors.conference && <p className="text-destructive">{errors.conference}</p>}
+          </Label>
+          <ConferenceCombobox value={selectedConference} onValueChange={setSelectedConference} conferences={conferences} disabled={editMode}/>
         </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="poster" id="poster" />
-          <Label htmlFor="poster">Poster</Label>
-        </div>
-      </RadioGroup>
 
-      {/* Archivo principal */}
-      <div className="grid w-full items-center gap-3">
-        <Label htmlFor="DetalleRegular">Artículo {errors.file && <p className="text-destructive">{errors.file}</p>}</Label>
-        <input type="file" ref={mainFileRef} onChange={handleMainFileChange} className="hidden" />
-        <Button variant="outline" onClick={handleMainFileClick} type="button" className={`w-full ${mainFile ? "bg-lime-900" : "bg-slate-900"} text-white`}>
-          {mainFile ? mainFile.name : existingMainFileName ? existingMainFileName : "Seleccionar archivo..."}
-        </Button>
-        {/* Mostrar enlace al archivo existente en modo edición */}
-        {!mainFile && existingMainFileUrl && (
-          <a href={existingMainFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">
-            Ver archivo actual
-          </a>
-        )}
+        {/* Select de Sesiones */}
+        <div className="flex-1 flex flex-col gap-2">
+          <Label htmlFor="sesion">
+            Sesión {errors.session && <p className="text-destructive">{errors.session}</p>}
+          </Label>
+          <Select value={selectedSession ?? ""} onValueChange={(value) => setSelectedSession(value)} disabled={!selectedConference || loadingSessions}>
+            <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+              <SelectValue
+                placeholder={
+                  loadingSessions
+                  ? "Cargando sesiones..."
+                  : !selectedConference
+                  ? "Seleccione una conferencia primero..."
+                  : sessions.length
+                  ? "Seleccione una sesión..."
+                  : "No hay sesiones disponibles..."
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {sessions.map((s) => (
+                <SelectItem key={s.id} value={String(s.id)}>
+                  {s.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* Archivo extra solo si es Poster */}
-      {articleType === "poster" && (
-        <div className="grid w-full items-center gap-3">
-          <Label htmlFor="DetalleRegular">Fuentes {errors.sourcesFile && <p className="text-destructive">{errors.sourcesFile}</p>}</Label>
-          <input type="file" ref={sourceFileRef} onChange={handleSourceFileChange} className="hidden" />
-          <Button variant="outline" onClick={handleSourceFileClick} type="button" className={`w-full ${sourceFile ? "bg-lime-900" : "bg-slate-900"} text-white`}>
-            {sourceFile ? sourceFile.name : existingSourceFileName ? existingSourceFileName : "Seleccionar archivo..."}
+      {/* Campo de Título */}
+      <div className="flex-1 flex flex-col gap-2">
+        <Label htmlFor="titulo">Título {errors.title && <p className="text-destructive">{errors.title}</p>}</Label>
+        <Input type="text" id="title" placeholder="Título del artículo..." maxLength={100} value={title} onChange={(e) => setTitle(e.target.value)}/>
+      </div>
+      
+      {/* Campo de Abstract */}
+      <div className="flex-1 flex flex-col gap-2">
+        <Label htmlFor="abstract">Abstract {errors.abstract && <p className="text-destructive">{errors.abstract}</p>}</Label>
+        <Textarea id="DetalleRegular" placeholder="Hasta 300 caracteres..." value={abstract} maxLength={300} onChange={(e) => setAbstract(e.target.value)}/>
+      </div>
+
+      {/* RadioGroup tipo de artículo */}
+      <div className="flex-1 flex flex-col gap-2">   
+        <Label htmlFor="tipo-articulo">Tipo</Label>
+        <RadioGroup value={articleType} onValueChange={setArticleType} className="flex flex-row gap-4">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value={"regular"} id="regular" />
+            <Label htmlFor="regular">Regular</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="poster" id="poster" />
+            <Label htmlFor="poster">Poster</Label>
+          </div>
+        </RadioGroup>
+      </div> 
+
+      {/* Archivos */}
+      <div className="flex flex-col md:flex-row gap-4 w-full">
+        
+        {/* Archivo principal */}
+        <div className="flex-1 grid items-start gap-2">
+          <Label htmlFor="DetalleRegular">
+            Artículo {errors.file && <p className="text-destructive">{errors.file}</p>}
+          </Label>
+          <input type="file" ref={mainFileRef} onChange={handleMainFileChange} className="hidden" />
+          <Button
+            variant="outline"
+            onClick={handleMainFileClick}
+            type="button"
+            className={`w-full text-white ${
+              mainFile
+                ? "bg-lime-900"                     
+                : editMode && existingMainFileName  
+                ? "bg-lime-900"
+                : "bg-slate-900"                    
+            }`}
+          >
+            {mainFile
+              ? mainFile.name
+              : existingMainFileName
+              ? existingMainFileName
+              : "Seleccionar archivo..."}
           </Button>
-          {/* Mostrar enlace al archivo de fuentes existente en modo edición */}
-          {!sourceFile && existingSourceFileUrl && (
-            <a href={existingSourceFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">Ver fuentes actuales</a>
+        </div>  
+
+        {/* Archivo de fuentes solo si es Poster */}
+        {articleType === "poster" && (
+          <div className="flex-1 grid items-start gap-2">
+            <Label htmlFor="DetalleRegular">
+              Fuentes {errors.sourcesFile && <p className="text-destructive">{errors.sourcesFile}</p>}
+            </Label>
+            <input type="file" ref={sourceFileRef} onChange={handleSourceFileChange} className="hidden" />
+            <Button
+              variant="outline"
+              onClick={handleSourceFileClick}
+              type="button"
+              className={`w-full text-white ${
+                sourceFile
+                  ? "bg-lime-900"                         
+                  : editMode && existingSourceFileName   
+                  ? "bg-lime-900"
+                  : "bg-slate-900"                        
+              }`}
+            >
+              {sourceFile
+                ? sourceFile.name
+                : existingSourceFileName
+                ? existingSourceFileName
+                : "Seleccionar archivo..."}
+            </Button>
+          </div>
+        )}
+
+      </div>
+
+      {/* Links de archivos actuales (solo en modo edición) */}
+      {editMode && (existingMainFileUrl || existingSourceFileUrl) && (
+        <div className="flex flex-col md:flex-row gap-2 items-start justify-between text-xs text-sky-600">
+          
+          {/* Link archivo principal */}
+          {existingMainFileUrl && (
+            <a
+              href={existingMainFileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:underline"
+            >
+              Ver archivo actual{existingMainFileName ? `: ${existingMainFileName}` : ""}
+            </a>
+          )}
+
+          {/* Link archivo fuentes (solo si es poster y tiene fuente previa) */}
+          {articleType === "poster" && existingSourceFileUrl && (
+            <a
+              href={existingSourceFileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:underline"
+            >
+             Ver fuentes actuales{existingSourceFileName ? `: ${existingSourceFileName}` : ""}
+            </a>
           )}
         </div>
       )}
 
       {/* Combobox de autores */}
-      <Label htmlFor="autor">Autores del Artículo {errors.authors && <p className="text-destructive">{errors.authors}</p>}</Label>
-      <UserCombobox onValueChange={handleAgregarAutor} users={users} />
+      <div className="flex-1 flex flex-col gap-2">
+        <Label htmlFor="autor">Autores del Artículo {errors.authors && <p className="text-destructive">{errors.authors}</p>}</Label>
+        <UserCombobox onValueChange={handleAgregarAutor} users={users} />
+      </div>
 
       {/* Lista de autores seleccionados */}
       {authors?.length > 0 && (
@@ -435,19 +524,21 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
       )}
 
       {/* Select de autor de notificación */}
-      <Label htmlFor="autorNotif">Autor de Notificación {errors.correspondingAuthor && <p className="text-destructive">{errors.correspondingAuthor}</p>}</Label>
-      <Select value={correspondingAuthor} onValueChange={setCorrespondingAuthor} disabled={authors.length === 0}>
-        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
-          <SelectValue placeholder="Seleccione un autor primero..." />
-        </SelectTrigger>
-        <SelectContent>
-          {authors.map((a) => (
-            <SelectItem key={a.id} value={String(a.id)}>
-              {a.full_name} ({a.email})
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex-1 flex flex-col gap-2">
+        <Label htmlFor="autorNotif">Autor de Notificación {errors.correspondingAuthor && <p className="text-destructive">{errors.correspondingAuthor}</p>}</Label>
+        <Select value={correspondingAuthor} onValueChange={setCorrespondingAuthor} disabled={authors.length === 0}>
+          <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+            <SelectValue placeholder="Seleccione un autor primero..." />
+          </SelectTrigger>
+          <SelectContent>
+            {authors.map((a) => (
+              <SelectItem key={a.id} value={String(a.id)}>
+                {a.full_name} ({a.email})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <hr className="bg-slate-100" />
 
