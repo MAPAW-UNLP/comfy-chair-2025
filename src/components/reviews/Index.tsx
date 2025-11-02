@@ -4,14 +4,14 @@ import { useNavigate } from "@tanstack/react-router";
 
 import { getAllArticles, type Article } from "@/services/articleServices";
 import { getBidsByReviewer } from "@/services/biddingServices";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCountdown } from "@/utils/useCountdown";
-import {
-  fetchAssignedArticles,
-  type AssignedArticle,
-} from "@/services/assignmentsServices";
+import { fetchAssignedArticlesStrict, type AssignedArticle } from "@/services/assignmentsServices";
 import { hasPublishedReview } from "@/services/reviewerServices";
 
-const REVIEWER_ID = 1; // TODO: del auth real
+// NOTE: before this component used a hardcoded REVIEWER_ID; we now use
+// the authenticated user id via AuthContext. For non-authenticated users
+// we show a friendly warning instead of falling back to all articles.
 const REVIEW_DEADLINE =
   (import.meta.env.VITE_REVIEW_DEADLINE as string | undefined) ?? null;
 
@@ -59,10 +59,15 @@ export default function Inicio() {
   useEffect(() => {
     (async () => {
       try {
-        const [arts, userBids] = await Promise.all([
-          getAllArticles(),
-          getBidsByReviewer(REVIEWER_ID),
-        ]);
+        // Keep fetching global metrics quietly, but don't use them to render
+        // the assigned list. Bids depend on reviewer id; only fetch if we
+        // have a logged user.
+        const artsPromise = getAllArticles();
+        let bidsPromise: Promise<{ article: number; choice?: string }[]> = Promise.resolve([]);
+        if (auth.user) {
+          bidsPromise = getBidsByReviewer(Number(auth.user.id));
+        }
+        const [arts, userBids] = await Promise.all([artsPromise, bidsPromise]);
         setArticulos(arts);
         setBids(userBids);
       } catch {
@@ -71,14 +76,28 @@ export default function Inicio() {
     })();
   }, []);
 
-  // Cargar asignados
+  const auth = useAuth();
+
+  // Cargar asignados (solo para usuario autenticado). Usamos la variante
+  // estricta para evitar el fallback que devuelve todos los artículos.
   useEffect(() => {
-    setLoadingAssigned(true);
-    fetchAssignedArticles(REVIEWER_ID)
-      .then((rows) => setAssigned(rows))
-      .catch(() => setAssigned([]))
-      .finally(() => setLoadingAssigned(false));
-  }, []);
+    const load = async () => {
+      setLoadingAssigned(true);
+      try {
+        if (!auth.user) {
+          setAssigned(null);
+          return;
+        }
+        const rows = await fetchAssignedArticlesStrict(Number(auth.user.id));
+        setAssigned(rows);
+      } catch {
+        setAssigned([]);
+      } finally {
+        setLoadingAssigned(false);
+      }
+    };
+    load();
+  }, [auth.user]);
 
   // Construir reviewedMap consultando al backend (publicadas)
   useEffect(() => {
@@ -160,6 +179,16 @@ export default function Inicio() {
 
         {loadingAssigned ? (
           <p className="text-slate-600">Cargando asignaciones…</p>
+        ) : auth.isLoading ? (
+          <p className="text-slate-600">Verificando usuario…</p>
+        ) : !auth.user ? (
+          <div className="rounded-md border-l-4 border-amber-400 bg-amber-50 p-3 text-amber-800">
+            Debes iniciar sesión para ver los artículos asignados. 
+            <button
+              onClick={() => navigate({ to: '/login' })}
+              className="ml-2 underline text-amber-700"
+            >Iniciar sesión</button>
+          </div>
         ) : !assigned || assigned.length === 0 ? (
           <p className="text-slate-600">Sin asignar aún…</p>
         ) : (
