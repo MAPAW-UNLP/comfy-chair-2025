@@ -129,7 +129,7 @@ function ASession() {
         </div>
         {filteredArticles.length > 0 ? (
           filteredArticles.map((article) => (
-            <SessionArticleCard article={article} />
+            <SessionArticleCard key={article.id} article={article} />
           ))
         ) : articles.length > 0 ? (
           <p className="text-center py-4 text-muted-foreground">

@@ -82,7 +82,6 @@ export default function EditarSession({
       };
       fetchChairs();
 
-      console.log(session)
     }, []);
 
   return (

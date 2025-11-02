@@ -104,11 +104,7 @@ function ConferenceApp() {
           conferencias.map((c) => {
             return <ConferenceBox key={c.id} conferencia={c} />;
           })
-        ) : (confActivas.length > 0) || (confTerminadas.length > 0) ? (
-          <p>No hay coincidencias.</p>
-        ) : (
-          <p>Aún no hay conferencias disponibles.</p>
-        )}
+        ) : <p>No hay conferencias.</p>}
       </div>
     </div>
   );
