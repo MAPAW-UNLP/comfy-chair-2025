@@ -14,7 +14,7 @@ import { SearchBar } from './ConferenceSearch';
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
 export type Conference = {
-  id: string;
+  id: number;
   title: string;
   description: string;
   start_date?: string;

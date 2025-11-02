@@ -1,5 +1,6 @@
 import type { Conference } from '@/components/conference/ConferenceApp';
 import { axiosInstance as api } from './api';
+import type { User } from './userServices';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
@@ -16,9 +17,8 @@ export interface ConferenceG1 {
 export const getAllConferencesGrupo1 = async (): Promise<ConferenceG1[]> => {
   const response = await api.get('/api/conference');
   const now = new Date();
-  return response.data.filter((conf: Conference) => new Date(conf.end_date) >= now);
+  return response.data.filter((conf: Conference) => typeof conf.end_date === 'string' && new Date(conf.end_date) >= now);
 };
-import type { User } from './userServices';
 
 export const getAllConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/');

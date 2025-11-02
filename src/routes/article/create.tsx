@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getAllUsers, type User } from '@/services/userServices';
-import { getAllConferences, type Conference } from '@/services/conferenceServices';
+import { getAllConferencesGrupo1, type ConferenceG1 } from '@/services/conferenceServices';
 import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
 
@@ -13,7 +13,7 @@ function RouteComponent() {
 
   //Listas de Usuarios y Conferencias
   const [userList, setUser] = useState<User[]>([]);
-  const [conferenceList, setConference] = useState<Conference[]>([]);
+  const [conferenceList, setConference] = useState<ConferenceG1[]>([]);
 
   //Recupera usuarios del server ni bien se abre la pestaña
   useEffect(() => {
@@ -27,7 +27,7 @@ function RouteComponent() {
   //Recupera conferencias del server ni bien se abre la pestaña
   useEffect(() => {
     const fetchConferences = async () => {
-      const data = await getAllConferences();
+      const data = await getAllConferencesGrupo1();
       setConference(data);
       console.log(data);
     };

@@ -19,6 +19,20 @@ export const getAllSessions = async (): Promise<Session[]> => {
   return response.data;
 };
 
+// Grupo 1: Trae sesiones NO FINALIZADAS filtradas por conference_id
+export const getSessionsByConferenceGrupo1 = async (
+  conferenceId: number
+): Promise<Session[]> => {
+  const now = new Date();
+  const response = await api.get('/api/session', {
+    params: { conference_id: conferenceId },
+  });
+  const activeSessions = response.data.filter(
+    (session: Session) => session.deadline !== undefined && new Date(session.deadline) > now
+  );
+  return activeSessions;
+};
+
 // Trae sesiones filtradas por conference_id
 export const getSessionsByConference = async (
   conferenceId: number

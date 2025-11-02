@@ -4,10 +4,10 @@
   import { Button } from "@/components/ui/button";
   import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
   import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-  import type { Conference } from "@/services/conferenceServices";
+  import type { ConferenceG1 } from "@/services/conferenceServices";
 
  type ConferenceComboboxProps = {
-  conferences: Conference[];
+  conferences: ConferenceG1[];
   value?: number | null;
   disabled?: boolean;
   onValueChange?: (conferenceId: number | null) => void;

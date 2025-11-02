@@ -21,16 +21,16 @@ import { ConferenceCombobox } from "@/components/combobox/ConferenceCombobox";
 
 // Importación de servicios
 import { createArticle } from "@/services/articleServices";
-import { getSessionsByConference } from "@/services/sessionServices";
+import { getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
 import type { User } from "@/services/userServices";
-import type { Conference } from "@/services/conferenceServices";
+import type { ConferenceG1 } from "@/services/conferenceServices";
 import type { Session } from "@/services/sessionServices";
 import type { Article, ArticleNew } from "@/services/articleServices";
 
 // Props del componente
 type ArticleFormProps = {
   users: User[];
-  conferences: Conference[];
+  conferences: ConferenceG1[];
   editMode ?: boolean;
   article?: Article;
 };
@@ -136,7 +136,7 @@ export default function ArticleForm({ users, conferences, editMode, article }: A
 
       setLoadingSessions(true);
 
-      getSessionsByConference(Number(selectedConference)).then((data) => {
+      getSessionsByConferenceGrupo1(Number(selectedConference)).then((data) => {
         setSessions(data);
         // Si estamos en modo edición y el artículo tiene sesión asignada y pertenece a la conferencia seleccionada entonces precargamos la sesión
         if (editMode && article?.session && article.session.conference?.id === selectedConference) {

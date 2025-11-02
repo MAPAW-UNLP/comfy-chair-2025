@@ -1,6 +1,6 @@
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import { getAllUsers, type User } from '@/services/userServices';
-import { getAllConferencesGrupo1, type Conference } from '@/services/conferenceServices';
+import { getAllConferencesGrupo1, type ConferenceG1 } from '@/services/conferenceServices';
 import { getArticleById, type Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
@@ -15,7 +15,7 @@ function RouteComponent() {
 
   //Listas de Usuarios y Conferencias
   const [userList, setUser] = useState<User[]>([]);
-  const [conferenceList, setConference] = useState<Conference[]>([]);
+  const [conferenceList, setConference] = useState<ConferenceG1[]>([]);
   const [article, setArticle] = useState<Article | undefined>(undefined);
 
 
