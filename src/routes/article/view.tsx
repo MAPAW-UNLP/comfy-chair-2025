@@ -5,30 +5,45 @@ import ArticleCard from '@/components/article/ArticleCard';
 import { Button } from '@/components/ui/button';
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-//URL de la página
 export const Route = createFileRoute('/article/view')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
-   const navigate = useNavigate();
+  // Navegacion
+  const navigate = useNavigate();
+  const handleClick = () => navigate({to: '/article/create', replace: true });
 
-   const handleClick = () => navigate({to: '/article/create', replace: true });
-
-  //Lista de Articulos
+  // Lista de Articulos
   const [articulo, setArticulos] = useState<Article[]>([]);
 
-  //Recupera articulos del server ni bien se abre la app
+  // Estado de carga
+  const [loading, setLoading] = useState(true);
+
+  // Efecto para traer todos los articulos
   useEffect(() => {
     const fetchArticles = async () => {
-      const data = await getAllArticles();
-      const ordenados = [...data].sort((a, b) => b.id - a.id);
-      setArticulos(ordenados);
+      try {
+        const data = await getAllArticles();
+        const ordenados = [...data].sort((a, b) => b.id - a.id);
+        setArticulos(ordenados);
+      } finally {
+        setLoading(false); // Terminó la carga
+      }
     };
     fetchArticles();
   }, []);
     
+  //Spinner de carga
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full min-h-full">
+        <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   //Cuerpo del Componente
   return (
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
@@ -49,4 +64,6 @@ function RouteComponent() {
         </div>
       )}
     </div>
-  );}
+  );
+
+}

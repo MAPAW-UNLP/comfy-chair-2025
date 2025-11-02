@@ -147,7 +147,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={navigateDetailArticle}>
-                <EyeIcon/> Ver Articulo
+                <EyeIcon/> Ver Detalle
               </DropdownMenuItem>
               {tiempoRestante !== "invalido" && (
                 <DropdownMenuItem onClick={navigateEditArticle}>

@@ -9,28 +9,57 @@ export const Route = createFileRoute('/article/detail/$id')({
 
 function RouteComponent() {
 
+  // Parametros de entrada
   const { id } = useParams({ from: '/article/detail/$id' });
   const articleId = Number(id);
-  const [article, setArticle] = useState<Article | undefined>(undefined);
 
-  // Fetch del artículo actual
+  // Articulo actual
+  const [article, setArticle] = useState<Article | null>(null);
+
+  // Estado de carga
+  const [loading, setLoading] = useState(true);
+  
+  // Efecto para traer el articulo actual
   useEffect(() => {
     const fetchArticle = async () => {
       try {
         const data = await getArticleById(articleId);
-        setArticle(data);
+        setArticle(data ?? null);
       } catch (error) {
         console.error("Error al obtener el artículo:", error);
+        setArticle(null);
+      } finally {
+        setLoading(false);
       }
     };
     fetchArticle();
   }, [articleId]);
-  
-  //Cuerpo del Componente
-  return (
-      <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
-        {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
-        <ArticleDetail article={article} /> 
+
+  // Spinner de carga
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full min-h-full">
+        <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
       </div>
-    )
+    );
+  }
+
+  // Mensaje si el articulo no existe
+  if (!article) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-full">
+        <h1 className="text-2xl font-bold italic text-slate-500 text-center">
+          No se encontró el artículo solicitado...
+        </h1>
+      </div>
+    );
+  }
+  
+  // Cuerpo del componente
+  return (
+    <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
+      <ArticleDetail article={article} /> 
+    </div>
+  );
+
 }

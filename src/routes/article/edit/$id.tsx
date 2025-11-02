@@ -10,16 +10,20 @@ export const Route = createFileRoute('/article/edit/$id')({
 })
 
 function RouteComponent() {
+
+  // Parametros de entrada
   const { id } = useParams({ from: '/article/edit/$id' });
   const articleId = Number(id);
 
-  //Listas de Usuarios y Conferencias
+  // Articulo actual + Listas de Usuarios y Conferencias
+  const [article, setArticle] = useState<Article | null>(null);
   const [userList, setUser] = useState<User[]>([]);
   const [conferenceList, setConference] = useState<ConferenceG1[]>([]);
-  const [article, setArticle] = useState<Article | undefined>(undefined);
 
+  // Estado de carga
+  const [loading, setLoading] = useState(true);
 
-  //Recupera usuarios del server ni bien se abre la pestaña
+  // Efecto para traer los usuarios ni bien se abre la pestaña
   useEffect(() => {
     const fetchUsers = async () => {
       const data = await getAllUsers();
@@ -28,7 +32,7 @@ function RouteComponent() {
     fetchUsers();
   }, []);
 
-  //Recupera conferencias del server ni bien se abre la pestaña
+  // Efecto apra traer las conferencias ni bien se abre la pestaña
   useEffect(() => {
     const fetchConferences = async () => {
       const data = await getAllConferencesGrupo1();
@@ -38,7 +42,7 @@ function RouteComponent() {
     fetchConferences();
   }, []);
 
-    // Fetch del artículo actual
+  // Efecto para traer el articulo actual
   useEffect(() => {
     const fetchArticle = async () => {
       try {
@@ -46,10 +50,33 @@ function RouteComponent() {
         setArticle(data);
       } catch (error) {
         console.error("Error al obtener el artículo:", error);
+        setArticle(null);
+      } finally {
+        setLoading(false);
       }
     };
     fetchArticle();
   }, [articleId]);
+
+  // Spinner de carga
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full min-h-full">
+        <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Mensaje si el articulo no existe
+  if (!article) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-full">
+        <h1 className="text-2xl font-bold italic text-slate-500 text-center">
+          No se encontró el artículo solicitado...
+        </h1>
+      </div>
+    );
+  }
   
   //Cuerpo del Componente
   return (
