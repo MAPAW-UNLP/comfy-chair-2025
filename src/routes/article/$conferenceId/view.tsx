@@ -18,7 +18,8 @@ function RouteComponent() {
 
   // Navegacion
   const navigate = useNavigate();
-  const handleClick = () => navigate({ to: `/article/${id}/create`, replace: true });
+  const handleCreate = () => navigate({ to: `/article/${id}/create`, replace: true });
+  const handleBack = () => navigate({ to: `/article/test`, replace: true }); // RUTA PROVISORIA
 
   //Conferencia
   const [conferenceTitle, setConferenceTitle] = useState<String>();
@@ -47,11 +48,22 @@ function RouteComponent() {
   }, [id]);
 
     
-  //Spinner de carga
+  // Spinner de carga
   if (loading) {
     return (
       <div className="flex items-center justify-center w-full min-h-full">
         <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Mensaje si la conferencia no existe
+  if (!conferenceTitle) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-full">
+        <h1 className="text-2xl font-bold italic text-slate-500 text-center">
+          No se encontró la conferencia solicitada...
+        </h1>
       </div>
     );
   }
@@ -62,9 +74,14 @@ function RouteComponent() {
       <h1 className="text-2xl font-bold italic text-slate-500 text-center">
         Conferencia: {conferenceTitle ?? "?"}
       </h1>
-      <Button variant="outline" className="bg-lime-900 text-white" onClick={handleClick}>
-        Subir Artículo +
-      </Button>
+      <div className="flex flex-col sm:flex-row sm:w-100 w-auto gap-4">
+        <Button variant="outline" className="bg-zinc-500 text-white flex-1" onClick={handleBack}>
+          Volver
+        </Button>
+        <Button variant="outline" className="bg-lime-900 text-white flex-1" onClick={handleCreate}>
+          Subir Artículo +
+        </Button>
+      </div>
       {articulo.length === 0 ? (
         <div className="flex flex-col items-center justify-center w-full min-h-[60vh]">
           <h1 className="text-2xl font-bold italic text-slate-500 text-center">
@@ -72,7 +89,7 @@ function RouteComponent() {
           </h1>
         </div>
       ) : (
-        <div className="flex flex-wrap w-3/4 gap-4 justify-center">
+        <div className="flex flex-wrap w-full gap-4 justify-center">
           {articulo.map((a) => (
             <ArticleCard key={a.id} article={a} />
           ))}

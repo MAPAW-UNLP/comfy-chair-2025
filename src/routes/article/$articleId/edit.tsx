@@ -65,6 +65,17 @@ function RouteComponent() {
       </div>
     );
   }
+
+  // Feature de Seguridad - Mensaje si el articulo no debe editarse (solo accesible desde la barra de navegación)
+  if (article.status !== "reception" || article.session?.deadline! < Date.now().toString()) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-full">
+        <h1 className="text-2xl font-bold italic text-slate-500 text-center">
+          No se admite la edicion de este articulo...
+        </h1>
+      </div>
+    );
+  }
   
   //Cuerpo del Componente
   return (

@@ -59,13 +59,13 @@ function formatearTiempo(msRestante: number): string {
   const diasTotales = Math.floor(msRestante / (1000 * 60 * 60 * 24));
 
   if (horasTotales >= 48) {
-    return `${diasTotales} ${diasTotales === 1 ? "Día Restante" : "Días Restantes"}`;
+    return `${diasTotales} ${diasTotales === 1 ? "Día" : "Días"}`;
   } else if (horasTotales >= 1) {
-    return `${horasTotales} ${horasTotales === 1 ? "Hora Restante" : "Horas Restantes"}`;
+    return `${horasTotales} ${horasTotales === 1 ? "Hora" : "Horas"}`;
   } else {
     // Si falta menos de una hora → en minutos
     const minutos = Math.max(minutosTotales, 1);
-    return `${minutos} ${minutos === 1 ? "Minuto Restante" : "Minutos Restantes"}`;
+    return `${minutos} ${minutos === 1 ? "Minuto" : "Minutos"}`;
   }
 }
 
@@ -152,7 +152,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
               <DropdownMenuItem onClick={navigateDetailArticle}>
                 <EyeIcon/> Ver Detalle
               </DropdownMenuItem>
-              {tiempoRestante !== "invalido" && (
+              {((tiempoRestante !== "invalido") && (article.status === "reception")) && (
                 <DropdownMenuItem onClick={navigateEditArticle}>
                   <PencilIcon/> Editar Articulo
                 </DropdownMenuItem>

@@ -79,6 +79,11 @@ function RouteComponent() {
     <div className="flex flex-col items-center mx-4 my-6">
 
         {/* Título */}
+        <h1 className="text-2xl font-bold text-red-500 mb-6">
+            COMPONENTE PROVISORIO - UNICAMENTE PARA TESTING
+        </h1>
+
+        {/* Título */}
         <h1 className="text-2xl font-bold italic text-slate-500 mb-6">
             Conferencias Activas
         </h1>
