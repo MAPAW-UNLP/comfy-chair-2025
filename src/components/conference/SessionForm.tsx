@@ -6,6 +6,7 @@ import { UserCombobox } from '@/components/combobox/UserCombobox';
 import { getCommonUsers, type User } from '@/services/userServices';
 import CustomCalendar from './CustomCalendar';
 import type { Conference } from './ConferenceApp';
+import { toast } from 'sonner';
 
 // Tipos
 type SelectionMethod = 'corte_fijo' | 'mejores';
@@ -88,6 +89,7 @@ export default function SessionForm({
       return;
     }
     if (!deadline) {
+      toast.error("Se requiere un deadline para la sesión.")
       return;
     }
     const capacityNum = parseInt(capacity);
