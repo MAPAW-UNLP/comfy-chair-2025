@@ -24,6 +24,16 @@ export const getConferenceById = async (id: number): Promise<ConferenceG1 | null
   return null;
 };
 
+// Grupo 1 - Traer el titulo de una conferencia
+export const getConferenceTitleById = async (id: number): Promise<string | null> => {
+  const response = await api.get(`/api/conference/${id}/`);
+  const conf: ConferenceG1 = response.data;
+  if (conf !== null) {
+    return conf.title;
+  }
+  return null;
+};
+
 export const getAllConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/');
   return response.data;

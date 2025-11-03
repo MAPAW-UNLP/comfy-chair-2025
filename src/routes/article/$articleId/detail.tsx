@@ -58,7 +58,7 @@ function RouteComponent() {
   // Cuerpo del componente
   return (
     <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
-      <ArticleDetail article={article} conferenceId={id} /> 
+      <ArticleDetail article={article} /> 
     </div>
   );
 

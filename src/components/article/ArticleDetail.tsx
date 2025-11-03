@@ -10,7 +10,6 @@ import { useNavigate } from '@tanstack/react-router'
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
   article?: Article;
-  conferenceId : number;
 }
 
 // Textos asociados a cada estado
@@ -31,11 +30,11 @@ const tipoTexto: Record<Type, string> = {
 };
 
 //Cuerpo del Componente
-const ArticleDetail: React.FC<ArticleCardProps> = ({ article, conferenceId }) => {
+const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
 
   // Navegacion
   const navigate = useNavigate();
-  const handleCancel = () => navigate({ to: `/article/${conferenceId}/view`, replace: true });
+  const handleCancel = () => navigate({ to: `/article/${article?.session?.conference?.id}/view`, replace: true });
 
   // Manejo de archivos
   const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal

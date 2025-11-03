@@ -30,7 +30,7 @@ import { getConferenceById, type ConferenceG1 } from "@/services/conferenceServi
 type ArticleFormProps = {
   users: User[];
   editMode ?: boolean;
-  conferenceId : number;
+  conferenceId? : number;
   article?: Article;
 };
 
@@ -38,7 +38,7 @@ export default function ArticleForm({ users, editMode, article, conferenceId }: 
 
   // Navegacion
   const navigate = useNavigate();
-  const navigateBack = () => navigate({ to: `/article/${conferenceId}/view`, replace: true });
+  const navigateBack = () => navigate({ to: `/article/${article?.session?.conference?.id}/view`, replace: true });
 
   // Setteo de sesiones
   const [sessions, setSessions] = useState<Session[]>([]); // Sesiones pertenecientes a la conferencia seleccionada
@@ -77,15 +77,12 @@ export default function ArticleForm({ users, editMode, article, conferenceId }: 
       try {
         setLoadingSessions(true);
 
-        // 1️⃣ Cargar conferencia
-        const conference = await getConferenceById(conferenceId);
+        const conference = await getConferenceById(conferenceId!);
         setSelectedConference(conference);
 
-        // 2️⃣ Cargar sesiones de la conferencia
-        const sessionsData = await getSessionsByConferenceGrupo1(conferenceId);
+        const sessionsData = await getSessionsByConferenceGrupo1(conferenceId!);
         setSessions(sessionsData);
-
-        // 3️⃣ Si estamos en modo edición, precargar datos del artículo
+        
         if (editMode && article) {
           setTitle(article.title);
           setAbstract(article.abstract);
@@ -162,12 +159,12 @@ export default function ArticleForm({ users, editMode, article, conferenceId }: 
   useEffect(() => {
     const fetchConference = async () => {
       try {
-        const conference = await getConferenceById(conferenceId);
+        const conference = await getConferenceById(conferenceId!);
         setSelectedConference(conference);
 
         setLoadingSessions(true);
 
-        const data = await getSessionsByConferenceGrupo1(conferenceId);
+        const data = await getSessionsByConferenceGrupo1(conferenceId!);
         setSessions(data);
 
         // Si estamos editando, preseleccionamos la sesión si corresponde

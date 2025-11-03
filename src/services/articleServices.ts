@@ -37,6 +37,13 @@ export const getAllArticles = async (): Promise<Article[]> => {
   return response.data;
 };
 
+// PROVISORIAMENTE SE FILTRAN ACA, DEBE SER UN ENDPOINT
+export const getArticlesByConferenceId = async (conferenceId: number): Promise<Article[]> => {
+  const response = await api.get('/api/article');
+  const articles: Article[] = response.data;
+  return articles.filter(article => article.session?.conference?.id === conferenceId);
+};
+
 //Alta de Articulos
 export async function createArticle(newArticle: ArticleNew) {
   // Crear FormData
