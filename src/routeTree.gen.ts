@@ -17,6 +17,7 @@ import { Route as ReviewerBiddingRouteImport } from './routes/reviewer/bidding'
 import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
+import { Route as ArticleTestRouteImport } from './routes/article/test'
 import { Route as ArticleSelectRouteImport } from './routes/article/select'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ConferenceSessionIdRouteImport } from './routes/conference/session/$id'
@@ -64,6 +65,11 @@ const ConferenceCreateRoute = ConferenceCreateRouteImport.update({
 const ConferenceIdRoute = ConferenceIdRouteImport.update({
   id: '/conference/$id',
   path: '/conference/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleTestRoute = ArticleTestRouteImport.update({
+  id: '/article/test',
+  path: '/article/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticleSelectRoute = ArticleSelectRouteImport.update({
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/article/select': typeof ArticleSelectRoute
+  '/article/test': typeof ArticleTestRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/article/select': typeof ArticleSelectRoute
+  '/article/test': typeof ArticleTestRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/article/select': typeof ArticleSelectRoute
+  '/article/test': typeof ArticleTestRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/article/select'
+    | '/article/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/article/select'
+    | '/article/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/_auth/dashboard'
     | '/article/select'
+    | '/article/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -233,6 +245,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ArticleSelectRoute: typeof ArticleSelectRoute
+  ArticleTestRoute: typeof ArticleTestRoute
   ConferenceIdRoute: typeof ConferenceIdRoute
   ConferenceCreateRoute: typeof ConferenceCreateRoute
   ConferenceViewRoute: typeof ConferenceViewRoute
@@ -302,6 +315,13 @@ declare module '@tanstack/react-router' {
       path: '/conference/$id'
       fullPath: '/conference/$id'
       preLoaderRoute: typeof ConferenceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/test': {
+      id: '/article/test'
+      path: '/article/test'
+      fullPath: '/article/test'
+      preLoaderRoute: typeof ArticleTestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/article/select': {
@@ -386,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ArticleSelectRoute: ArticleSelectRoute,
+  ArticleTestRoute: ArticleTestRoute,
   ConferenceIdRoute: ConferenceIdRoute,
   ConferenceCreateRoute: ConferenceCreateRoute,
   ConferenceViewRoute: ConferenceViewRoute,
