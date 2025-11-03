@@ -1,6 +1,5 @@
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import { getAllUsers, type User } from '@/services/userServices';
-import { getAllConferencesGrupo1, type ConferenceG1 } from '@/services/conferenceServices';
 import { getArticleById, type Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
@@ -18,7 +17,6 @@ function RouteComponent() {
   // Articulo actual + Listas de Usuarios y Conferencias
   const [article, setArticle] = useState<Article | null>(null);
   const [userList, setUser] = useState<User[]>([]);
-  const [conferenceList, setConference] = useState<ConferenceG1[]>([]);
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
@@ -30,16 +28,6 @@ function RouteComponent() {
       setUser(data);
     };
     fetchUsers();
-  }, []);
-
-  // Efecto apra traer las conferencias ni bien se abre la pestaña
-  useEffect(() => {
-    const fetchConferences = async () => {
-      const data = await getAllConferencesGrupo1();
-      setConference(data);
-      console.log(data);
-    };
-    fetchConferences();
   }, []);
 
   // Efecto para traer el articulo actual
@@ -82,7 +70,7 @@ function RouteComponent() {
   return (
       <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
         {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
-        <ArticleForm users={userList} conferences={conferenceList} editMode={true} article={article} /> 
+        <ArticleForm users={userList} editMode={true} article={article} conferenceId={id} /> 
       </div>
     )
 }

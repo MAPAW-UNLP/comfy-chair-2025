@@ -5,10 +5,12 @@ import React, { useState, useEffect } from "react";
 import type { Article } from "@/services/articleServices";
 import type { Status, Type } from "@/services/articleServices";
 import { Button } from "../ui/button";
+import { useNavigate } from '@tanstack/react-router'
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
   article?: Article;
+  conferenceId : number;
 }
 
 // Textos asociados a cada estado
@@ -29,10 +31,11 @@ const tipoTexto: Record<Type, string> = {
 };
 
 //Cuerpo del Componente
-const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleDetail: React.FC<ArticleCardProps> = ({ article, conferenceId }) => {
 
   // Navegacion
-  const handleCancel = () => {window.history.back();}
+  const navigate = useNavigate();
+  const handleCancel = () => navigate({ to: `/article/${conferenceId}/view`, replace: true });
 
   // Manejo de archivos
   const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal

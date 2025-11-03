@@ -13,11 +13,15 @@ export interface ConferenceG1 {
   blind_kind: VISTA_CHOICES;
 }
 
-// Obtener todas las conferencias que no han finalizado
-export const getAllConferencesGrupo1 = async (): Promise<ConferenceG1[]> => {
-  const response = await api.get('/api/conference');
+// Grupo 1 - Traer una conferencia por su id solo si no ha finalizado
+export const getConferenceById = async (id: number): Promise<ConferenceG1 | null> => {
+  const response = await api.get(`/api/conference/${id}/`);
+  const conf: ConferenceG1 = response.data;
   const now = new Date();
-  return response.data.filter((conf: Conference) => typeof conf.end_date === 'string' && new Date(conf.end_date) >= now);
+  if (typeof conf.end_date === 'string' && new Date(conf.end_date) >= now) {
+    return conf;
+  }
+  return null;
 };
 
 export const getAllConferences = async (): Promise<Conference[]> => {
