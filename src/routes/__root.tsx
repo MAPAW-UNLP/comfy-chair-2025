@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Armchair, Menu, X, ArrowLeft } from 'lucide-react';
@@ -26,19 +26,24 @@ const RootLayout = () => {
     }
   };
 
+  const routerState = useRouterState();
+  const isHome = routerState.location.pathname === '/';
+
   return (
     <AuthProvider>
       <div className="flex flex-col h-screen">
 
         {/* Navbar superior */}
         <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between md:justify-center">
-          <button
-            onClick={handleBack}
-            className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center"
-            title="Volver"
-          >
-            <ArrowLeft size={20} />
-          </button>
+          {!isHome && (
+            <button
+              onClick={handleBack}
+              className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center"
+              title="Volver"
+            >
+              <ArrowLeft size={20} />
+            </button>
+          )}
 
           <nav className="hidden md:flex gap-4">
             {links.map((link) => (
