@@ -15,11 +15,10 @@ import {
   getArticleBySessionId,
   type Article,
 } from '@/services/articleServices';
-import { CarouselContainer, CarouselItem } from '../ui/carousel-container';
-import ArticleCard from '../article/ArticleCard';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import SessionArticleCard from './SessionArticleCard';
+import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -89,14 +88,16 @@ function ASession() {
 
   return (
     <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
+      <ConferenceBreadcrumb
+        conference={session?.conference!}
+        session={session!}
+      />
       <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
         <div className="flex justify-between items-center">
-          <div className="flex flex-col ">
-            <span className="text-sm font-medium">Sesión</span>
-            <h1 className="text-lg sm:text-2xl font-bold">
-              {session!.title.toUpperCase()}
-            </h1>
-          </div>
+          <h1 className="text-lg sm:text-2xl font-bold">
+            {session!.title.toUpperCase()}
+          </h1>
+
           <EditarSession session={session!} onSessionUpdated={fetchSession} />
         </div>
         <p className="text-sm">Deadline {formatearFecha(session!.deadline)}</p>
@@ -118,14 +119,13 @@ function ASession() {
       </div>
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
-        <div className="flex justify-between items-center gap-20">
+        <div className="flex flex-col gap-3">
           <h2 className="text-1xl font-bold">Artículos</h2>
           <SearchBar
             datos={articles}
             setResultados={setFilteredArticles}
             campos={['title']}
           />
-          <p>&nbsp;</p>
         </div>
         {filteredArticles.length > 0 ? (
           filteredArticles.map((article) => (
@@ -140,13 +140,7 @@ function ASession() {
         )}
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-5 m-2 gap-3">
-        <Button
-          variant={'secondary'}
-          className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700"
-          onClick={goToConferencia}
-        >
-          Volver a {session!.conference?.title}
-        </Button>
+        <div></div>
 
         {articles.length == 0 && (
           <Button

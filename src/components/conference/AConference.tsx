@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/carousel-container';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
+import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -89,47 +90,42 @@ function AConference() {
   }, [conferencia]);
 
   return (
-    <>
-      <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
-        <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col ">
-              <span className="text-sm font-medium">Conferencia</span>
-              <h1 className="text-lg sm:text-2xl font-bold">
-                {conferencia.title.toUpperCase()}
-              </h1>
-            </div>
-            <div
-              onClick={irEditarConferencia}
-              className="cursor-pointer rounded hover:bg-gray-200 p-1"
-            >
-              <Edit size={'15'} />
-            </div>
+    <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
+      <ConferenceBreadcrumb conference={conferencia} />
+
+      <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
+        <div className="flex justify-between items-center">
+          <h1 className="text-lg sm:text-2xl font-bold">
+            {conferencia.title.toUpperCase()}
+          </h1>
+
+          <div
+            onClick={irEditarConferencia}
+            className="cursor-pointer rounded hover:bg-gray-200 p-1"
+          >
+            <Edit size={'15'} />
           </div>
-
-          <p className="text-sm">
-            Desde {formatearFecha(conferencia.start_date!)} a{' '}
-            {formatearFecha(conferencia.end_date!)}
-          </p>
         </div>
 
-        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
-          <h2 className="text-1xl font-bold">Descripción</h2>
-          <p className="break-words">{conferencia.description}</p>
-          <h2 className="text-1xl font-bold">Chairs</h2>
-          {chairs.map((ch) => {
-            return <p key={ch.id}>{ch.full_name}</p>;
-          })}
-        </div>
+        <p className="text-sm">
+          Desde {formatearFecha(conferencia.start_date!)} a{' '}
+          {formatearFecha(conferencia.end_date!)}
+        </p>
+      </div>
 
-        <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-10">
-          <div className="flex justify-between items-center gap-10">
+      <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full">
+        <h2 className="text-1xl font-bold">Descripción</h2>
+        <p className="break-words">{conferencia.description}</p>
+        <h2 className="text-1xl font-bold">Chairs</h2>
+        {chairs.map((ch) => {
+          return <p key={ch.id}>{ch.full_name}</p>;
+        })}
+      </div>
+
+      <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-8">
+        <div className="flex flex-col gap-5">
+          <div className='flex flex-col sm:flex-row justify-between items-center gap-3'>
             <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
-            <SearchBar
-              datos={sessions}
-              setResultados={setFilteredSessions}
-              campos={['title']}
-            />
             <AltaSession
               conference={conferencia}
               onSessionCreated={fetchSessions}
@@ -140,57 +136,56 @@ function AConference() {
                 </Button>
               }
             />
+
           </div>
-
-          {/* Lista de sesiones con carrusel */}
-          {loadingSessions ? (
-            <div className="text-center py-4 text-muted-foreground">
-              Cargando sesiones...
-            </div>
-          ) : sessions.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
-              No hay sesiones creadas aún. Cree la primera sesión.
-            </div>
-          ) : filteredSessions.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
-              No hay coincidencias.
-            </div>
-          ) : (
-            <CarouselContainer>
-              {filteredSessions.map((session) => (
-                <CarouselItem key={session.id} width="350px">
-                  <SessionCard
-                    session={session}
-                    onSessionUpdated={fetchSessions}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContainer>
-          )}
+            <SearchBar
+              datos={sessions}
+              setResultados={setFilteredSessions}
+              campos={['title']}
+            />
         </div>
 
-        <div className="flex justify-between items-center mt-5 m-2">
-          <Button
-            variant={'secondary'}
-            className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700"
-            onClick={goToHome}
-          >
-            Volver al inicio
-          </Button>
-
-          {sessions.length == 0 && (
-            <Button
-              variant="destructive"
-              onClick={handleEliminarConferencia}
-              className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
-            >
-              <Trash2 size={16} />
-              Eliminar conferencia
-            </Button>
-          )}
-        </div>
+        {/* Lista de sesiones con carrusel */}
+        {loadingSessions ? (
+          <div className="text-center py-4 text-muted-foreground">
+            Cargando sesiones...
+          </div>
+        ) : sessions.length === 0 ? (
+          <div className="text-center py-4 text-muted-foreground">
+            No hay sesiones creadas aún. Cree la primera sesión.
+          </div>
+        ) : filteredSessions.length === 0 ? (
+          <div className="text-center py-4 text-muted-foreground">
+            No hay coincidencias.
+          </div>
+        ) : (
+          <CarouselContainer>
+            {filteredSessions.map((session) => (
+              <CarouselItem key={session.id} width="350px">
+                <SessionCard
+                  session={session}
+                  onSessionUpdated={fetchSessions}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContainer>
+        )}
       </div>
 
+      <div className="flex justify-between items-center mt-5 m-2">
+        <div></div>
+
+        {sessions.length == 0 && (
+          <Button
+            variant="destructive"
+            onClick={handleEliminarConferencia}
+            className="flex items-center gap-2 cursor-pointer bg-red-900 text-white hover:bg-red-700"
+          >
+            <Trash2 size={16} />
+            Eliminar conferencia
+          </Button>
+        )}
+      </div>
       {/* Modal de confirmación para eliminar*/}
       {showDeleteModal && (
         <ModalEliminar
@@ -200,7 +195,7 @@ function AConference() {
           cerrar={() => setShowDeleteModal(false)}
         />
       )}
-    </>
+    </div>
   );
 }
 
