@@ -31,16 +31,16 @@ const RootLayout = () => {
       <div className="flex flex-col h-screen">
 
         {/* Navbar superior */}
-        <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between md:justify-center">
           <button
             onClick={handleBack}
-            className="p-2 rounded-md hover:bg-slate-700 flex items-center justify-center"
+            className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center"
             title="Volver"
           >
             <ArrowLeft size={20} />
           </button>
 
-          <nav className="hidden md:flex gap-2">
+          <nav className="hidden md:flex gap-4">
             {links.map((link) => (
               <Link
                 key={link.to}
@@ -54,19 +54,20 @@ const RootLayout = () => {
 
           <button
             onClick={() => setIsOpen(true)}
-            className="md:hidden p-1 rounded hover:bg-gray-700"
+            className="md:hidden p-1 rounded hover:bg-gray-700 ml-auto"
           >
             <Menu />
           </button>
         </header>
+
 
         {/* Cuerpo principal */}
         <div className="flex flex-1 overflow-hidden">
 
           {/* Sidebar móvil */}
           <aside
-            className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${
-              isOpen ? 'translate-x-0' : '-translate-x-full'
+            className={`fixed z-20 top-0 right-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${
+              isOpen ? 'translate-x-0' : 'translate-x-full'
             } md:hidden`}
           >
             <div className="flex items-center justify-between p-4">
