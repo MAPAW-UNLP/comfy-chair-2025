@@ -13,25 +13,11 @@ export interface ConferenceG1 {
   blind_kind: VISTA_CHOICES;
 }
 
-// Grupo 1 - Traer una conferencia por su id solo si no ha finalizado
+// Grupo 1 - Traer una conferencia por su id
 export const getConferenceById = async (id: number): Promise<ConferenceG1 | null> => {
   const response = await api.get(`/api/conference/${id}/`);
   const conf: ConferenceG1 = response.data;
-  const now = new Date();
-  if (typeof conf.end_date === 'string' && new Date(conf.end_date) >= now) {
-    return conf;
-  }
-  return null;
-};
-
-// Grupo 1 - Traer el titulo de una conferencia
-export const getConferenceTitleById = async (id: number): Promise<string | null> => {
-  const response = await api.get(`/api/conference/${id}/`);
-  const conf: ConferenceG1 = response.data;
-  if (conf !== null) {
-    return conf.title;
-  }
-  return null;
+  return conf;
 };
 
 export const getAllConferences = async (): Promise<Conference[]> => {

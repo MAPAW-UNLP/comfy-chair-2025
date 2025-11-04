@@ -1,7 +1,27 @@
-import { createFileRoute, useParams } from '@tanstack/react-router'
-import { getAllUsers, type User } from '@/services/userServices';
-import { getArticleById, type Article } from '@/services/articleServices';
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para la edición de un articulo existente
+//
+// Funcionalidades principales:
+//
+// - Recuperar el artículo actual (según el parámetro "articleId" de la URL)
+// - Obtener la lista completa de usuarios del sistema
+// - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
+// - Mostrar mensajes informativos si:
+//     • El artículo no existe.
+//     • El artículo ya no puede editarse (ya pasó la deadilne).
+// - Permite navegar hacia:
+//     • La pantalla de visualizacion de artículos (al cancelar o editar un articulo).
+// - En caso de éxito, renderiza el componente "ArticleForm", enviándole como props 
+//   la lista de usuarios, el id de la conferencia actual, el articulo actual y una
+//   flag para indicar que el componente se encuentra en modo edicion.
+//
+// -------------------------------------------------------------------------------------- 
+
 import { useEffect, useState } from 'react';
+import { getAllUsers, type User } from '@/services/userServices';
+import { createFileRoute, useParams } from '@tanstack/react-router'
+import { getArticleById, type Article } from '@/services/articleServices';
 import ArticleForm from '@/components/article/ArticleForm';
 
 export const Route = createFileRoute('/article/$articleId/edit')({
@@ -10,41 +30,48 @@ export const Route = createFileRoute('/article/$articleId/edit')({
 
 function RouteComponent() {
 
-  // Parametros de entrada
-  const { articleId } = useParams({ from: '/article/$articleId/edit' });
-  const id = Number(articleId);
-
-  // Articulo actual + Listas de Usuarios y Conferencias
-  const [article, setArticle] = useState<Article | null>(null);
-  const [userList, setUser] = useState<User[]>([]);
-
   // Estado de carga
   const [loading, setLoading] = useState(true);
 
-  // Efecto para traer los usuarios ni bien se abre la pestaña
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const data = await getAllUsers();
-      setUser(data);
-    };
-    fetchUsers();
-  }, []);
+  // Parametros de entrada (articleId)
+  const { articleId } = useParams({ from: '/article/$articleId/edit' });
+  const id = Number(articleId);
 
-  // Efecto para traer el articulo actual
+  // Articulo Actual
+  const [article, setArticle] = useState<Article | null>(null);
+
+  // Lista de Usuarios
+  const [userList, setUser] = useState<User[]>([]);
+
+  // Efecto para recuperar el articulo actual y los usuarios de la app
   useEffect(() => {
+
+    const fetchUsers = async () => {
+      try{
+        const data = await getAllUsers();
+        setUser(data);
+      }
+      catch {
+        console.log("Error al obtener los usuarios");
+      }
+    };
+
     const fetchArticle = async () => {
       try {
         const data = await getArticleById(id);
         setArticle(data);
-      } catch (error) {
-        console.error("Error al obtener el artículo:", error);
+      } catch {
+        console.error("Error al obtener el artículo");
         setArticle(null);
       } finally {
         setLoading(false);
       }
     };
+
+    fetchUsers();
     fetchArticle();
-  }, [articleId]);
+
+  }, []);
 
   // Spinner de carga
   if (loading) {
@@ -79,9 +106,10 @@ function RouteComponent() {
   
   //Cuerpo del Componente
   return (
-      <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
-        {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
-        <ArticleForm users={userList} editMode={true} article={article} conferenceId={article.session?.conference?.id} /> 
-      </div>
-    )
+    <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
+      {/* Le envío al form la conferencia actual, el articulo existente y los usuarios de la app */}
+      <ArticleForm users={userList} editMode={true} article={article} conferenceId={article.session?.conference?.id} /> 
+    </div>
+  );
+
 }
