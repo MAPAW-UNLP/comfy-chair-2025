@@ -24,7 +24,7 @@ import { getActiveConferences } from '@/services/conferenceServices';
 import { Button } from '@/components/ui/button';
 import type { Conference } from '@/components/conference/ConferenceApp';
 
-export const Route = createFileRoute('/article/test')({
+export const Route = createFileRoute('/articles/test')({
   component: RouteComponent,
 })
 
@@ -92,9 +92,10 @@ function RouteComponent() {
         <div className="flex flex-wrap gap-4 justify-center">
         {conferences.map((conf) => (
             <Button
+            variant={"outline"}
             key={conf.id ?? conf.id}
-            onClick={() => navigate({ to: `/article/${conf.id ?? conf.id}/view` })}
-            className="px-6 py-3 bg-slate-900 text-white rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200"
+            onClick={() => navigate({ to: `/articles/view/${conf.id}` })}
+            className="px-6 py-3 bg-slate-900 text-white rounded-lg shadow-md"
             >
             {conf.title ?? 'Conferencia sin Título'}
             </Button>

@@ -34,7 +34,7 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
 
   // Navegacion
   const navigate = useNavigate();
-  const handleCancel = () => navigate({ to: `/article/${article?.session?.conference?.id}/view`, replace: true });
+  const handleCancel = () => navigate({ to: `/articles/view/${article?.session?.conference?.id}`, replace: true });
 
   // Manejo de archivos
   const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal

@@ -77,11 +77,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
 
   const navigateEditArticle = () => {
-    navigate({ to: `/article/${article.id}/edit` });
+    navigate({ to: `/article/edit/${article.id}` });
   };
 
   const navigateDetailArticle = () => {
-    navigate({ to: `/article/${article.id}/detail` });
+    navigate({ to: `/article/detail/${article.id}` });
   };
 
   const handleDownload = async (url: string, filename: string) => {

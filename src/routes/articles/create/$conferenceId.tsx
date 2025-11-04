@@ -23,7 +23,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router'
 import { getConferenceById, type ConferenceG1 } from '@/services/conferenceServices';
 import ArticleForm from '@/components/article/ArticleForm';
 
-export const Route = createFileRoute('/article/$conferenceId/create')({
+export const Route = createFileRoute('/articles/create/$conferenceId')({
   component: RouteComponent,
 })
 
@@ -33,7 +33,7 @@ function RouteComponent() {
   const [loading, setLoading] = useState(true);
 
   // Parametros de entrada (conferenceId)
-  const { conferenceId } = useParams({ from: '/article/$conferenceId/create' });
+  const { conferenceId } = useParams({ from: '/articles/create/$conferenceId' });
   const id = Number(conferenceId);
 
   // Conferencia Actual

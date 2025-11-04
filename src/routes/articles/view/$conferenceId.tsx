@@ -26,7 +26,7 @@ import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
 import { getConferenceById, type ConferenceG1 } from '@/services/conferenceServices';
 import ArticleCard from '@/components/article/ArticleCard';
 
-export const Route = createFileRoute('/article/$conferenceId/view')({
+export const Route = createFileRoute('/articles/view/$conferenceId')({
   component: RouteComponent,
 })
 
@@ -34,14 +34,14 @@ function RouteComponent() {
 
   // Navegacion
   const navigate = useNavigate();
-  const handleCreate = () => navigate({ to: `/article/${id}/create`, replace: true });
-  const handleBack = () => navigate({ to: `/article/test`, replace: true }); // RUTA PROVISORIA
+  const handleCreate = () => navigate({ to: `/articles/create/${id}`, replace: true });
+  const handleBack = () => navigate({ to: `/articles/test`, replace: true }); // RUTA PROVISORIA
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
 
   // Parametros de entrada (conferenceId)
-  const { conferenceId } = useParams({ from: '/article/$conferenceId/view' });
+  const { conferenceId } = useParams({ from: '/articles/view/$conferenceId' });
   const id = Number(conferenceId);
 
   //Conferencia Actual

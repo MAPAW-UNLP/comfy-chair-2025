@@ -18,17 +18,17 @@ import { Route as ReviewerAssignedRouteImport } from './routes/reviewer/assigned
 import { Route as ConferenceViewRouteImport } from './routes/conference/view'
 import { Route as ConferenceCreateRouteImport } from './routes/conference/create'
 import { Route as ConferenceIdRouteImport } from './routes/conference/$id'
-import { Route as ArticleTestRouteImport } from './routes/article/test'
+import { Route as ArticlesTestRouteImport } from './routes/articles/test'
 import { Route as ArticleSelectRouteImport } from './routes/article/select'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ReviewerReviewArticleIdRouteImport } from './routes/reviewer/review/$articleId'
 import { Route as ConferenceSessionIdRouteImport } from './routes/conference/session/$id'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
+import { Route as ArticlesViewConferenceIdRouteImport } from './routes/articles/view/$conferenceId'
+import { Route as ArticlesCreateConferenceIdRouteImport } from './routes/articles/create/$conferenceId'
+import { Route as ArticleEditArticleIdRouteImport } from './routes/article/edit/$articleId'
+import { Route as ArticleDetailArticleIdRouteImport } from './routes/article/detail/$articleId'
 import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
-import { Route as ArticleConferenceIdViewRouteImport } from './routes/article/$conferenceId/view'
-import { Route as ArticleConferenceIdCreateRouteImport } from './routes/article/$conferenceId/create'
-import { Route as ArticleArticleIdEditRouteImport } from './routes/article/$articleId/edit'
-import { Route as ArticleArticleIdDetailRouteImport } from './routes/article/$articleId/detail'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -74,9 +74,9 @@ const ConferenceIdRoute = ConferenceIdRouteImport.update({
   path: '/conference/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticleTestRoute = ArticleTestRouteImport.update({
-  id: '/article/test',
-  path: '/article/test',
+const ArticlesTestRoute = ArticlesTestRouteImport.update({
+  id: '/articles/test',
+  path: '/articles/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticleSelectRoute = ArticleSelectRouteImport.update({
@@ -104,30 +104,31 @@ const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
   path: '/conference/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticlesViewConferenceIdRoute =
+  ArticlesViewConferenceIdRouteImport.update({
+    id: '/articles/view/$conferenceId',
+    path: '/articles/view/$conferenceId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ArticlesCreateConferenceIdRoute =
+  ArticlesCreateConferenceIdRouteImport.update({
+    id: '/articles/create/$conferenceId',
+    path: '/articles/create/$conferenceId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ArticleEditArticleIdRoute = ArticleEditArticleIdRouteImport.update({
+  id: '/article/edit/$articleId',
+  path: '/article/edit/$articleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleDetailArticleIdRoute = ArticleDetailArticleIdRouteImport.update({
+  id: '/article/detail/$articleId',
+  path: '/article/detail/$articleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArticleAssignIdRoute = ArticleAssignIdRouteImport.update({
   id: '/article/assign/$id',
   path: '/article/assign/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArticleConferenceIdViewRoute = ArticleConferenceIdViewRouteImport.update({
-  id: '/article/$conferenceId/view',
-  path: '/article/$conferenceId/view',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArticleConferenceIdCreateRoute =
-  ArticleConferenceIdCreateRouteImport.update({
-    id: '/article/$conferenceId/create',
-    path: '/article/$conferenceId/create',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ArticleArticleIdEditRoute = ArticleArticleIdEditRouteImport.update({
-  id: '/article/$articleId/edit',
-  path: '/article/$articleId/edit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArticleArticleIdDetailRoute = ArticleArticleIdDetailRouteImport.update({
-  id: '/article/$articleId/detail',
-  path: '/article/$articleId/detail',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -137,17 +138,17 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/article/select': typeof ArticleSelectRoute
-  '/article/test': typeof ArticleTestRoute
+  '/articles/test': typeof ArticlesTestRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
-  '/article/$articleId/detail': typeof ArticleArticleIdDetailRoute
-  '/article/$articleId/edit': typeof ArticleArticleIdEditRoute
-  '/article/$conferenceId/create': typeof ArticleConferenceIdCreateRoute
-  '/article/$conferenceId/view': typeof ArticleConferenceIdViewRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+  '/article/detail/$articleId': typeof ArticleDetailArticleIdRoute
+  '/article/edit/$articleId': typeof ArticleEditArticleIdRoute
+  '/articles/create/$conferenceId': typeof ArticlesCreateConferenceIdRoute
+  '/articles/view/$conferenceId': typeof ArticlesViewConferenceIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
   '/conference/session/$id': typeof ConferenceSessionIdRoute
   '/reviewer/review/$articleId': typeof ReviewerReviewArticleIdRoute
@@ -158,17 +159,17 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/article/select': typeof ArticleSelectRoute
-  '/article/test': typeof ArticleTestRoute
+  '/articles/test': typeof ArticlesTestRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
-  '/article/$articleId/detail': typeof ArticleArticleIdDetailRoute
-  '/article/$articleId/edit': typeof ArticleArticleIdEditRoute
-  '/article/$conferenceId/create': typeof ArticleConferenceIdCreateRoute
-  '/article/$conferenceId/view': typeof ArticleConferenceIdViewRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+  '/article/detail/$articleId': typeof ArticleDetailArticleIdRoute
+  '/article/edit/$articleId': typeof ArticleEditArticleIdRoute
+  '/articles/create/$conferenceId': typeof ArticlesCreateConferenceIdRoute
+  '/articles/view/$conferenceId': typeof ArticlesViewConferenceIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
   '/conference/session/$id': typeof ConferenceSessionIdRoute
   '/reviewer/review/$articleId': typeof ReviewerReviewArticleIdRoute
@@ -181,17 +182,17 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/article/select': typeof ArticleSelectRoute
-  '/article/test': typeof ArticleTestRoute
+  '/articles/test': typeof ArticlesTestRoute
   '/conference/$id': typeof ConferenceIdRoute
   '/conference/create': typeof ConferenceCreateRoute
   '/conference/view': typeof ConferenceViewRoute
   '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
-  '/article/$articleId/detail': typeof ArticleArticleIdDetailRoute
-  '/article/$articleId/edit': typeof ArticleArticleIdEditRoute
-  '/article/$conferenceId/create': typeof ArticleConferenceIdCreateRoute
-  '/article/$conferenceId/view': typeof ArticleConferenceIdViewRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+  '/article/detail/$articleId': typeof ArticleDetailArticleIdRoute
+  '/article/edit/$articleId': typeof ArticleEditArticleIdRoute
+  '/articles/create/$conferenceId': typeof ArticlesCreateConferenceIdRoute
+  '/articles/view/$conferenceId': typeof ArticlesViewConferenceIdRoute
   '/conference/edit/$id': typeof ConferenceEditIdRoute
   '/conference/session/$id': typeof ConferenceSessionIdRoute
   '/reviewer/review/$articleId': typeof ReviewerReviewArticleIdRoute
@@ -204,17 +205,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/article/select'
-    | '/article/test'
+    | '/articles/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
-    | '/article/$articleId/detail'
-    | '/article/$articleId/edit'
-    | '/article/$conferenceId/create'
-    | '/article/$conferenceId/view'
     | '/article/assign/$id'
+    | '/article/detail/$articleId'
+    | '/article/edit/$articleId'
+    | '/articles/create/$conferenceId'
+    | '/articles/view/$conferenceId'
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/reviewer/review/$articleId'
@@ -225,17 +226,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/article/select'
-    | '/article/test'
+    | '/articles/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
-    | '/article/$articleId/detail'
-    | '/article/$articleId/edit'
-    | '/article/$conferenceId/create'
-    | '/article/$conferenceId/view'
     | '/article/assign/$id'
+    | '/article/detail/$articleId'
+    | '/article/edit/$articleId'
+    | '/articles/create/$conferenceId'
+    | '/articles/view/$conferenceId'
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/reviewer/review/$articleId'
@@ -247,17 +248,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/_auth/dashboard'
     | '/article/select'
-    | '/article/test'
+    | '/articles/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
-    | '/article/$articleId/detail'
-    | '/article/$articleId/edit'
-    | '/article/$conferenceId/create'
-    | '/article/$conferenceId/view'
     | '/article/assign/$id'
+    | '/article/detail/$articleId'
+    | '/article/edit/$articleId'
+    | '/articles/create/$conferenceId'
+    | '/articles/view/$conferenceId'
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/reviewer/review/$articleId'
@@ -269,17 +270,17 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ArticleSelectRoute: typeof ArticleSelectRoute
-  ArticleTestRoute: typeof ArticleTestRoute
+  ArticlesTestRoute: typeof ArticlesTestRoute
   ConferenceIdRoute: typeof ConferenceIdRoute
   ConferenceCreateRoute: typeof ConferenceCreateRoute
   ConferenceViewRoute: typeof ConferenceViewRoute
   ReviewerAssignedRoute: typeof ReviewerAssignedRoute
   ReviewerBiddingRoute: typeof ReviewerBiddingRoute
-  ArticleArticleIdDetailRoute: typeof ArticleArticleIdDetailRoute
-  ArticleArticleIdEditRoute: typeof ArticleArticleIdEditRoute
-  ArticleConferenceIdCreateRoute: typeof ArticleConferenceIdCreateRoute
-  ArticleConferenceIdViewRoute: typeof ArticleConferenceIdViewRoute
   ArticleAssignIdRoute: typeof ArticleAssignIdRoute
+  ArticleDetailArticleIdRoute: typeof ArticleDetailArticleIdRoute
+  ArticleEditArticleIdRoute: typeof ArticleEditArticleIdRoute
+  ArticlesCreateConferenceIdRoute: typeof ArticlesCreateConferenceIdRoute
+  ArticlesViewConferenceIdRoute: typeof ArticlesViewConferenceIdRoute
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
   ConferenceSessionIdRoute: typeof ConferenceSessionIdRoute
   ReviewerReviewArticleIdRoute: typeof ReviewerReviewArticleIdRoute
@@ -350,11 +351,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/article/test': {
-      id: '/article/test'
-      path: '/article/test'
-      fullPath: '/article/test'
-      preLoaderRoute: typeof ArticleTestRouteImport
+    '/articles/test': {
+      id: '/articles/test'
+      path: '/articles/test'
+      fullPath: '/articles/test'
+      preLoaderRoute: typeof ArticlesTestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/article/select': {
@@ -392,39 +393,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenceEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articles/view/$conferenceId': {
+      id: '/articles/view/$conferenceId'
+      path: '/articles/view/$conferenceId'
+      fullPath: '/articles/view/$conferenceId'
+      preLoaderRoute: typeof ArticlesViewConferenceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/create/$conferenceId': {
+      id: '/articles/create/$conferenceId'
+      path: '/articles/create/$conferenceId'
+      fullPath: '/articles/create/$conferenceId'
+      preLoaderRoute: typeof ArticlesCreateConferenceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/edit/$articleId': {
+      id: '/article/edit/$articleId'
+      path: '/article/edit/$articleId'
+      fullPath: '/article/edit/$articleId'
+      preLoaderRoute: typeof ArticleEditArticleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/detail/$articleId': {
+      id: '/article/detail/$articleId'
+      path: '/article/detail/$articleId'
+      fullPath: '/article/detail/$articleId'
+      preLoaderRoute: typeof ArticleDetailArticleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/article/assign/$id': {
       id: '/article/assign/$id'
       path: '/article/assign/$id'
       fullPath: '/article/assign/$id'
       preLoaderRoute: typeof ArticleAssignIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/article/$conferenceId/view': {
-      id: '/article/$conferenceId/view'
-      path: '/article/$conferenceId/view'
-      fullPath: '/article/$conferenceId/view'
-      preLoaderRoute: typeof ArticleConferenceIdViewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/article/$conferenceId/create': {
-      id: '/article/$conferenceId/create'
-      path: '/article/$conferenceId/create'
-      fullPath: '/article/$conferenceId/create'
-      preLoaderRoute: typeof ArticleConferenceIdCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/article/$articleId/edit': {
-      id: '/article/$articleId/edit'
-      path: '/article/$articleId/edit'
-      fullPath: '/article/$articleId/edit'
-      preLoaderRoute: typeof ArticleArticleIdEditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/article/$articleId/detail': {
-      id: '/article/$articleId/detail'
-      path: '/article/$articleId/detail'
-      fullPath: '/article/$articleId/detail'
-      preLoaderRoute: typeof ArticleArticleIdDetailRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -446,17 +447,17 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ArticleSelectRoute: ArticleSelectRoute,
-  ArticleTestRoute: ArticleTestRoute,
+  ArticlesTestRoute: ArticlesTestRoute,
   ConferenceIdRoute: ConferenceIdRoute,
   ConferenceCreateRoute: ConferenceCreateRoute,
   ConferenceViewRoute: ConferenceViewRoute,
   ReviewerAssignedRoute: ReviewerAssignedRoute,
   ReviewerBiddingRoute: ReviewerBiddingRoute,
-  ArticleArticleIdDetailRoute: ArticleArticleIdDetailRoute,
-  ArticleArticleIdEditRoute: ArticleArticleIdEditRoute,
-  ArticleConferenceIdCreateRoute: ArticleConferenceIdCreateRoute,
-  ArticleConferenceIdViewRoute: ArticleConferenceIdViewRoute,
   ArticleAssignIdRoute: ArticleAssignIdRoute,
+  ArticleDetailArticleIdRoute: ArticleDetailArticleIdRoute,
+  ArticleEditArticleIdRoute: ArticleEditArticleIdRoute,
+  ArticlesCreateConferenceIdRoute: ArticlesCreateConferenceIdRoute,
+  ArticlesViewConferenceIdRoute: ArticlesViewConferenceIdRoute,
   ConferenceEditIdRoute: ConferenceEditIdRoute,
   ConferenceSessionIdRoute: ConferenceSessionIdRoute,
   ReviewerReviewArticleIdRoute: ReviewerReviewArticleIdRoute,

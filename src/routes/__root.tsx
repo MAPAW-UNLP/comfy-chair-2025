@@ -16,7 +16,7 @@ const RootLayout = () => {
   const links = [
     { to: '/', label: 'Home' },
     { to: '/conference/view', label: 'Conferencias' },
-    { to: '/article/test', label: 'Articulos' },
+    { to: '/articles/test', label: 'Articulos' },
     { to: '/article/select', label: 'Asignar Revisor' },
     { to: '/reviewer/bidding', label: 'Bidding' },
     { to: '/login', label: 'Ingresar' },

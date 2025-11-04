@@ -38,7 +38,7 @@ export default function ArticleForm({ users, editMode, article, conferenceId }: 
 
   // Navegacion
   const navigate = useNavigate();
-  const navigateBack = () => navigate({ to: `/article/${conferenceId}/view`, replace: true });
+  const navigateBack = () => navigate({ to: `/articles/view/${conferenceId}`, replace: true });
 
   // Setteo de sesiones
   const [sessions, setSessions] = useState<Session[]>([]); // Sesiones pertenecientes a la conferencia seleccionada

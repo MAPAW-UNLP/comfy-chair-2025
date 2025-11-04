@@ -24,7 +24,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router'
 import { getArticleById, type Article } from '@/services/articleServices';
 import ArticleForm from '@/components/article/ArticleForm';
 
-export const Route = createFileRoute('/article/$articleId/edit')({
+export const Route = createFileRoute('/article/edit/$articleId')({
   component: RouteComponent,
 })
 
@@ -34,7 +34,7 @@ function RouteComponent() {
   const [loading, setLoading] = useState(true);
 
   // Parametros de entrada (articleId)
-  const { articleId } = useParams({ from: '/article/$articleId/edit' });
+  const { articleId } = useParams({ from: '/article/edit/$articleId' });
   const id = Number(articleId);
 
   // Articulo Actual
