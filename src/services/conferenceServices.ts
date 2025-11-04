@@ -13,7 +13,7 @@ export interface ConferenceG1 {
   blind_kind: VISTA_CHOICES;
 }
 
-// Grupo 1 - Traer una conferencia por su id
+// Grupo 1: Trae una conferencia por su id
 export const getConferenceById = async (id: number): Promise<ConferenceG1 | null> => {
   const response = await api.get(`/api/conference/${id}/`);
   const conf: ConferenceG1 = response.data;

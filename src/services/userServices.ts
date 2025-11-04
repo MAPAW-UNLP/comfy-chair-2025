@@ -9,12 +9,13 @@ export interface User {
   deleted:boolean;
 }
 
+// Necesario para grupo 3 y grupo 1
 export const getAllUsers = async (): Promise<User[]> => {
   const response = await api.get('/user/getUsers');
   return response.data;
 }
 
-//Necesario para grupo-3
+// Necesario para grupo 3
 export const getCommonUsers= async (): Promise<User[]> =>{
   const response = await api.get('/user/getCommonUsers');
   return response.data;
@@ -24,5 +25,3 @@ export const getUserById= async (id: number): Promise<User> =>{
   const response = await api.get(`/user/getUserById/${id}`);
   return response.data;
 }
-
-//-----------------------------------------------------------

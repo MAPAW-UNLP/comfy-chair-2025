@@ -1,4 +1,8 @@
-/* Componente que representa un formulario para dar de alta o modificar un artículo en una sesión de una conferencia */
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente tipo formulario que permite tanto el alta como edición de articulos.
+//
+// -------------------------------------------------------------------------------------- 
 
 // Importación de funcionalidades y librerías
 import React, { useEffect, useRef, useState } from "react";

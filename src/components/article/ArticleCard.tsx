@@ -1,4 +1,8 @@
-/* Componente que representa una tarjeta para visualizar un articulo con su estado y opcioned para modificarlo*/
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar un articulo en forma de card con sus aspectos principales.
+//
+// -------------------------------------------------------------------------------------- 
 
 // Importaciones
 import React, { useEffect, useState } from "react";

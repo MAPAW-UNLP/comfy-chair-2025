@@ -1,4 +1,8 @@
-/* Componente que muestra todos los datos de un articulo en detalle*/
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar todos los campos completos de un articulo.
+//
+// -------------------------------------------------------------------------------------- 
 
 // Importaciones
 import React, { useState, useEffect } from "react";

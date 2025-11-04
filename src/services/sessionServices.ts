@@ -50,7 +50,6 @@ export const getSession = async (sessionId: string): Promise<Session> => {
   return response.data;
 };
 
-
 const handleSessionError = (err: any, isCreate: boolean) => {
   const message= err.response?.data;
   if (!message) return

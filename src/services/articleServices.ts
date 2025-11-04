@@ -1,4 +1,10 @@
-// src/services/articleServices.ts
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Servicios relacionados a la app users (alta, baja y modificación).
+// También fue modificado por otros grupos para adaptarse a sus necesidades.
+//
+// -------------------------------------------------------------------------------------- 
+
 import { axiosInstance as api } from './api';
 
 import type { Session } from '@/services/sessionServices';

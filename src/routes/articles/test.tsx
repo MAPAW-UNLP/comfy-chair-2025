@@ -1,6 +1,6 @@
-// -----------------------------------------------------------------------------
-// COMPONENTE PROVISORIO DE ACCESO A ARTÍCULOS POR CONFERENCIA - GRUPO 1
-// -----------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - COMPONENTE PROVISORIO DE ACCESO A ARTÍCULOS POR CONFERENCIA
 //
 // Este componente actúa como una "puerta de acceso temporal" para la 
 // visualización de artículos filtrados por conferencia.

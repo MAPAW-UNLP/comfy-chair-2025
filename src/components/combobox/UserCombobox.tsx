@@ -1,3 +1,10 @@
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar y permitir seleccionar usuarios autores en un articulo.
+// También fue adaptado por el grupo 3 para permitir mostrar usuarios chairs en una conferencia o sesión.
+//
+// -------------------------------------------------------------------------------------- 
+
 import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
