@@ -126,7 +126,7 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
         </div>
 
         <div>
-          <Button variant="outline" onClick={handleCancel} className="w-full bg-zinc-500 text-white">
+          <Button variant="outline" onClick={handleCancel} className="w-full bg-slate-900 text-white">
             Volver
           </Button>
         </div>
