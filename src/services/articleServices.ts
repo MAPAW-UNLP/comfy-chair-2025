@@ -1,3 +1,4 @@
+// src/services/articleServices.ts
 import { axiosInstance as api } from './api';
 
 import type { Session } from '@/services/sessionServices';
@@ -32,6 +33,26 @@ export interface ArticleNew {
   session: number | null;
 }
 
+function normalizeArticleShape(raw: any): Article {
+  // Hacemos cast directo para no romper tu tipado actual.
+  // Si en tu back vienen strings, esto seguirá compilando sin tocar tu UI.
+  return {
+    id: Number(raw?.id),
+    title: raw?.title ?? raw?.titulo ?? 'Sin título',
+    main_file: (raw?.main_file as unknown as File) ?? (null as unknown as File),
+    status: (raw?.status as Status) ?? ('reception' as Status),
+    type: raw?.type ?? null,
+    abstract: raw?.abstract ?? '',
+    source_file: (raw?.source_file as unknown as File) ?? null,
+    authors: (raw?.authors as User[]) ?? [],
+    corresponding_author: (raw?.corresponding_author as User) ?? null,
+    session: (raw?.session as Session) ?? null,
+  };
+}
+
+/* -------------------------
+ * LISTAR
+ * ------------------------- */
 export const getAllArticles = async (): Promise<Article[]> => {
   const response = await api.get('/api/article');
   return response.data;
@@ -68,7 +89,9 @@ export async function createArticle(newArticle: ArticleNew) {
     console.error('Status:', response.status);
     throw new Error(`Error al crear el artículo: ${JSON.stringify(errorData)}`);
   }
-  return response.json();
+  // Normalizamos por consistencia con el resto del servicio
+  const data = await response.json();
+  return normalizeArticleShape(data);
 }
 
 export interface ArticleUpdate {
