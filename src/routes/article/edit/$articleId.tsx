@@ -4,16 +4,17 @@
 //
 // Funcionalidades principales:
 //
-// - Recuperar el artículo actual (según el parámetro "articleId" de la URL)
-// - Obtener la lista completa de usuarios del sistema
+// - Recuperar el artículo actual (según el parámetro "articleId" de la URL).
+// - Obtener la lista completa de conferencias activas.
+// - Obtener la lista completa de usuarios registrados.
 // - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
 // - Mostrar mensajes informativos si:
 //     • El artículo no existe.
 //     • El artículo ya no puede editarse (ya pasó la deadilne).
 // - Permite navegar hacia:
 //     • La pantalla de visualizacion de artículos (al cancelar o editar un articulo).
-// - En caso de éxito, renderiza el componente "ArticleForm", enviándole como props 
-//   la lista de usuarios, el id de la conferencia actual, el articulo actual y una
+// - En caso de éxito, renderiza el componente "ArticleForm" y le envía como props 
+//   la lista de usuarios, la lista de conferencias activas, el articulo actual y una
 //   flag para indicar que el componente se encuentra en modo edicion.
 //
 // -------------------------------------------------------------------------------------- 

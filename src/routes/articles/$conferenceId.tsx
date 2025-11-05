@@ -4,15 +4,15 @@
 //
 // Funcionalidades principales:
 //
-// - Recuperar la conferencia actual (según el parámetro "conferenceId" de la URL)
-// - Obtener la lista completa de artículos asociados a la conferencia actual
+// - Recuperar la conferencia actual (según el parámetro "conferenceId" de la URL).
+// - Obtener la lista completa de artículos asociados a la conferencia actual.
 // - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
 // - Mostrar mensajes informativos si:
 //     • La conferencia no existe.
 //     • No hay artículos disponibles para mostrar.
 // - Permite navegar hacia:
 //     • Una ruta de retorno ("article/test"). PROVISORIA HASTA TENER EL DASHBOARD.
-// - En caso de éxito, renderiza cada articulo como un componente "ArticleCard", enviándole
+// - En caso de éxito, renderiza cada articulo como un componente "ArticleCard" y le envía
 //   como prop a cada uno el articulo actual.
 //
 // -------------------------------------------------------------------------------------- 

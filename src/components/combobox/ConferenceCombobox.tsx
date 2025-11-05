@@ -1,3 +1,9 @@
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar y permitir seleccionar conferencias en un articulo.
+//
+// -------------------------------------------------------------------------------------- 
+
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";

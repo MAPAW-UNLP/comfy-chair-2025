@@ -1,16 +1,16 @@
 // -------------------------------------------------------------------------------------- 
 //
-// Grupo 1 - Componente para la visualización de un artículo en detalle
+// Grupo 1 - Componente para la visualización de un artículo existente en detalle
 //
 // Funcionalidades principales:
 //
-// - Recuperar el artículo actual (según el parámetro "articleId" de la URL)
+// - Recuperar el artículo actual (según el parámetro "articleId" de la URL).
 // - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
 // - Mostrar mensajes informativos si:
 //     • El articulo no existe.
 // - Permite navegar hacia:
 //     • La pantalla de visualizacion de artículos.
-// - En caso de éxito, renderiza el componente "ArticleDetail", enviándole como prop
+// - En caso de éxito, renderiza el componente "ArticleDetail" y le envía como prop
 //   el articulo actual.
 //
 // -------------------------------------------------------------------------------------- 

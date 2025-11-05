@@ -4,8 +4,8 @@
 //
 // Funcionalidades principales:
 //
-// - Obtener la lista completa de conferencias activas
-// - Obtener la lista completa de usuarios registrados
+// - Obtener la lista completa de conferencias activas.
+// - Obtener la lista completa de usuarios registrados.
 // - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
 // - Renderiza el componente "ArticleForm" y le envía como props la lista de usuarios y 
 //   la lista de conferencias activas.
