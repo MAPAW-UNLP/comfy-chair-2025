@@ -5,13 +5,13 @@
 // -------------------------------------------------------------------------------------- 
 
 // Importaciones
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon } from "lucide-react";
 import { useNavigate } from '@tanstack/react-router';
 import type { Article, Status } from "@/services/articleServices";
+import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {

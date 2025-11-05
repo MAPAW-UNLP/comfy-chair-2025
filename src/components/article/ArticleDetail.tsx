@@ -5,11 +5,10 @@
 // -------------------------------------------------------------------------------------- 
 
 // Importaciones
-import React, { useState, useEffect } from "react";
-import type { Article } from "@/services/articleServices";
-import type { Status, Type } from "@/services/articleServices";
 import { Button } from "../ui/button";
 import { useNavigate } from '@tanstack/react-router'
+import React, { useState, useEffect } from "react";
+import type { Article, Status, Type } from "@/services/articleServices";
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {

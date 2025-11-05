@@ -58,10 +58,18 @@
 # ---------- Services ----------
 
     articleServices - (src/services/articleServices.ts)
+        * metodo "createArticle()"
+        * metodo "updateArticle()"
+        * metodo "getArticleById()"
+        * metodo "getArticlesByConferenceId()"
 
     conferenceServices - (src/services/conferenceServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getActiveConferences()"
+        * metodo "getConferenceById()"
 
     sessionServices - (src/services/sessionServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getSessionsByConferenceGrupo1()"
 
     userServices - (src/services/userServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getAllUsers()"
     

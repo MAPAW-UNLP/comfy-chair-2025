@@ -10,19 +10,24 @@ export interface Session {
   conference: Conference | null;
   threshold_percentage?: number | null;
   improvement_threshold?: number | null;
-  chairs?: number[]; // Array de IDs de usuarios
+  chairs?: number[];
 }
 
-// Trae todas las sesiones
-export const getAllSessions = async (): Promise<Session[]> => {
-  const response = await api.get('/api/session');
-  return response.data;
+const handleSessionError = (err: any, isCreate: boolean) => {
+  const message= err.response?.data;
+  if (!message) return
+  const posibleError =
+    message?.title?.[0] ||
+    message?.deadline?.[0] ||
+    message?.capacity?.[0] ||
+    message?.chairs?.[0] ||
+    message?.improvement_threshold?.[0] ||
+    message?.threshold_percentage?.[0];
+  if (posibleError) throw new Error(posibleError);
 };
 
-// Grupo 1: Trae sesiones NO FINALIZADAS filtradas por conference_id
-export const getSessionsByConferenceGrupo1 = async (
-  conferenceId: number
-): Promise<Session[]> => {
+// GRUPO 1: Trae una lista de sesiones filtradas por conference_id
+export const getSessionsByConferenceGrupo1 = async (conferenceId: number): Promise<Session[]> => {
   const now = new Date();
   const response = await api.get('/api/session', {
     params: { conference_id: conferenceId },
@@ -31,6 +36,12 @@ export const getSessionsByConferenceGrupo1 = async (
     (session: Session) => session.deadline !== undefined && new Date(session.deadline) > now
   );
   return activeSessions;
+};
+
+// Trae todas las sesiones
+export const getAllSessions = async (): Promise<Session[]> => {
+  const response = await api.get('/api/session');
+  return response.data;
 };
 
 // Trae sesiones filtradas por conference_id
@@ -48,19 +59,6 @@ export const getSessionsByConference = async (
 export const getSession = async (sessionId: string): Promise<Session> => {
   const response = await api.get(`/api/session/${sessionId}/`);
   return response.data;
-};
-
-const handleSessionError = (err: any, isCreate: boolean) => {
-  const message= err.response?.data;
-  if (!message) return
-  const posibleError =
-    message?.title?.[0] ||
-    message?.deadline?.[0] ||
-    message?.capacity?.[0] ||
-    message?.chairs?.[0] ||
-    message?.improvement_threshold?.[0] ||
-    message?.threshold_percentage?.[0];
-  if (posibleError) throw new Error(posibleError);
 };
 
 // Crear una sesión

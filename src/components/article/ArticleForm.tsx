@@ -25,12 +25,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 // Importación de servicios
 import { type User } from "@/services/userServices";
-import { type Session } from "@/services/sessionServices";
-import { createArticle } from "@/services/articleServices";
 import { type Conference } from '@/components/conference/ConferenceApp';
-import { getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
-import { type Article, type ArticleNew } from "@/services/articleServices";
-
+import { type Session, getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
+import { type Article, type ArticleNew, type ArticleUpdate, createArticle, updateArticle } from "@/services/articleServices";
 
 // Props del componente
 type ArticleFormProps = {
@@ -300,7 +297,7 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
 
       setLoading(true);
 
-      const updated: import('@/services/articleServices').ArticleUpdate = {
+      const updated : ArticleUpdate = {
         title: title,
         abstract: abstract,
         type: articleType,
@@ -322,7 +319,7 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
         updated.source_file = sourceFile;
       }
 
-      const response = await import('@/services/articleServices').then(mod => mod.updateArticle(article.id, updated));
+      const response = await updateArticle(article.id, updated);
       console.log('Article Update: ', response);
       
       toast.success('Artículo actualizado correctamente !', { duration: 5000 });
