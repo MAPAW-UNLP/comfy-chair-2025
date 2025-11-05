@@ -65,21 +65,28 @@ function normalizeArticleShape(raw: any): Article {
   };
 }
 
+
+//------------------------------------------------------------
 // GRUPO 1 - Buscar Articulo por ID
+//------------------------------------------------------------
 export const getArticleById = async (id: number): Promise<Article> => {
   const res = await api.get(`/api/article/${id}/`);
   if (!res.status || res.status >= 400) throw new Error("Error al obtener el artículo");
   return res.data;
 };
 
+//------------------------------------------------------------
 // GRUPO 1 - Listar Articulos por ID de conferencia - PROVISORIAMENTE SE FILTRAN ACA, DEBE SER UN ENDPOINT
+//------------------------------------------------------------
 export const getArticlesByConferenceId = async (conferenceId: number): Promise<Article[]> => {
   const response = await api.get('/api/article');
   const articles: Article[] = response.data;
   return articles.filter(article => article.session?.conference?.id === conferenceId);
 };
 
+//------------------------------------------------------------
 // GRUPO 1 - Alta de Articulos
+//------------------------------------------------------------
 export async function createArticle(newArticle: ArticleNew) {
   const formData = new FormData();
   formData.append('title', newArticle.title);
@@ -112,7 +119,9 @@ export async function createArticle(newArticle: ArticleNew) {
   return normalizeArticleShape(data);
 }
  
+//------------------------------------------------------------
 // GRUPO 1 - Edición de Articulos
+//------------------------------------------------------------
 export async function updateArticle(id: number, updated: ArticleUpdate) {
   const formData = new FormData();
 

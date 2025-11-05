@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
-import type { Article, Status } from "@/services/articleServices";
+import { type Article, type Status } from "@/services/articleServices";
 import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -67,27 +67,29 @@ function formatearTiempo(msRestante: number): string {
   } else if (horasTotales >= 1) {
     return `${horasTotales} ${horasTotales === 1 ? "Hora" : "Horas"}`;
   } else {
-    // Si falta menos de una hora → en minutos
     const minutos = Math.max(minutosTotales, 1);
     return `${minutos} ${minutos === 1 ? "Minuto" : "Minutos"}`;
   }
 }
 
 //Cuerpo del Componente
-const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
 
+  // Navegación
   const navigate = useNavigate();
-  const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;
+  const navigateEditArticle = () => {navigate({ to: `/article/edit/${article.id}` });};
+  const navigateDetailArticle = () => {navigate({ to: `/article/detail/${article.id}` });};
+
+  // Api para la descarga de archivos
+  const API_BASE = import.meta.env.VITE_API_URL;
+
+  // Tiempo restante (deadline)
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
+  const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;  
 
-  const navigateEditArticle = () => {
-    navigate({ to: `/article/edit/${article.id}` });
-  };
-
-  const navigateDetailArticle = () => {
-    navigate({ to: `/article/detail/${article.id}` });
-  };
-
+  //------------------------------------------------------------
+  // Manejo  de la descarga de los archivos (articulo y fuentes)
+  //------------------------------------------------------------
   const handleDownload = async (url: string, filename: string) => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -97,9 +99,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     link.click();
   };
 
-  const API_BASE = import.meta.env.VITE_API_URL;
-
+  //------------------------------------------------------------
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
+  //------------------------------------------------------------
   useEffect(() => {
     if (article.status !== "reception") return;
 
@@ -127,7 +129,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
   }, [article.status, article.session?.deadline]);
 
+  //------------------------------------------------------------
   // Renderizado del componente
+  //------------------------------------------------------------
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 mb-2 bg-white flex flex-col gap-4">
       
@@ -138,6 +142,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
       <hr className="bg-slate-100"/>
 
+      {/* Boton de opciones */}
       <div className="flex flex-row">
         <div className="basis-3/4">
           <p className="text-md text-slate-500"><b>Tipo:</b> {article.type ? article.type.charAt(0).toUpperCase() + article.type.slice(1) : "Desconocido"}</p>

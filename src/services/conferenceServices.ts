@@ -1,6 +1,6 @@
-import type { Conference } from '@/components/conference/ConferenceApp';
+import { type User } from './userServices';
 import { axiosInstance as api } from './api';
-import type { User } from './userServices';
+import { type Conference } from '@/components/conference/ConferenceApp';
 
 const errorMessages: Record<string, string> = {
   'conference with this title already exists.':
@@ -27,14 +27,18 @@ const handleConferenceError = (err: any, isCreate: boolean) => {
   throw err;
 };
 
+//------------------------------------------------------------
 // GRUPO 1: Trae una conferencia filtrada por su id
+//------------------------------------------------------------
 export const getConferenceById = async (id: number): Promise<Conference | null> => {
   const response = await api.get(`/api/conference/${id}/`);
   const conf: Conference = response.data;
   return conf;
 };
 
+//------------------------------------------------------------
 // GRUPO 1: Trae una lista de conferencias que no han finalizado
+//------------------------------------------------------------
 export const getActiveConferences = async (): Promise<Conference[]> => {
   try {
     const response = await api.get('/api/conference/active/');

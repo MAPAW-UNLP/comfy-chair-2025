@@ -21,11 +21,11 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CornerUpLeftIcon } from 'lucide-react';
 import { type Article } from '@/services/articleServices';
+import ArticleCard from '@/components/article/ArticleCard';
 import { getConferenceById } from '@/services/conferenceServices';
 import { getArticlesByConferenceId } from '@/services/articleServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
 import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
-import ArticleCard from '@/components/article/ArticleCard';
 
 export const Route = createFileRoute('/articles/$conferenceId')({
   component: RouteComponent,

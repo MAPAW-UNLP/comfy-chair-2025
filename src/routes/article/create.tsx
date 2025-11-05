@@ -13,11 +13,11 @@
 // -------------------------------------------------------------------------------------- 
 
 import { useEffect, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
+import ArticleForm from '@/components/article/ArticleForm';
 import { getAllUsers, type User } from '@/services/userServices';
 import { getActiveConferences } from '@/services/conferenceServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
-import ArticleForm from '@/components/article/ArticleForm';
 
 export const Route = createFileRoute('/article/create')({
   component: RouteComponent,

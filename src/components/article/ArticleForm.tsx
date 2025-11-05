@@ -4,13 +4,12 @@
 //
 // -------------------------------------------------------------------------------------- 
 
-// Importación de funcionalidades y librerías
+// Importaciones de funcionalidades y librerías
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from '@tanstack/react-router';
 import { articleSchema, type ArticleFormData } from '@/lib/validations';
 
-
-// Importación de componentes UI
+// Importaciones de componentes UI
 import { toast } from 'sonner';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,13 +22,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Importación de servicios
+// Importaciones de servicios
 import { type User } from "@/services/userServices";
 import { type Conference } from '@/components/conference/ConferenceApp';
 import { type Session, getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
 import { type Article, type ArticleNew, type ArticleUpdate, createArticle, updateArticle } from "@/services/articleServices";
 
-// Props del componente
+// Lo que espera recibir el componente
 type ArticleFormProps = {
   conferences : Conference[];
   users: User[];
@@ -37,7 +36,8 @@ type ArticleFormProps = {
   article? : Article;
 };
 
-export default function ArticleForm({ conferences, users, editMode, article }: ArticleFormProps) {
+//Cuerpo del Componente
+const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode, article }) => {
 
   // Navegacion
   const navigate = useNavigate();
@@ -72,94 +72,9 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
   const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes ya existente (edicion)
   const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes ya existente (edicion)
 
-  //--------------
-  // Efecto para precargar datos del form en modo edición
-  //--------------
-  useEffect(() => {
-
-    if (editMode && article) {
-
-      // Setteo de campos del form
-      setTitle(article.title);
-      setAbstract(article.abstract);
-      setArticleType(article.type);
-      setSelectedConference(article.session?.conference?.id ?? null);
-      setSelectedSession(article.session?.id ? String(article.session.id) : null);
-      setAuthors(article.authors);
-      setCorrespondingAuthor(String(article.corresponding_author?.id ?? ""));
-
-      // Manejo de los archivos del articulo
-      const mf: any = article.main_file;
-      const sf: any = article.source_file;
-
-      // Cargar y settear el arthivo principal
-      if (mf) {
-        const url = typeof mf === 'string' ? mf : mf.url ?? null;
-        setExistingMainFileUrl(url);
-        if (url) {
-          try {
-            const parts = url.split('/');
-            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingMainFileName(String(mf));
-          }
-        } else {
-          setExistingMainFileName(typeof mf === 'string' ? mf : null);
-        }
-      }
-
-      // Cargar y settear el archivo de fuentes (si existe)
-      if (sf) {
-        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
-        setExistingSourceFileUrl(urlS);
-        if (urlS) {
-          try {
-            const parts = urlS.split('/');
-            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingSourceFileName(String(sf));
-          }
-        } else {
-          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
-        }
-      } else {
-        setExistingSourceFileUrl(null);
-        setExistingSourceFileName(null);
-      }
-    }
-
-  }, [editMode, article]);
-
-  // -------------------
-  // Efecto para traer sesiones al cambiar la conferencia
-  // -------------------
-  useEffect(() => {
-
-    if (selectedConference) {
-
-      setLoadingSessions(true);
-
-      getSessionsByConferenceGrupo1(Number(selectedConference)).then((data) => {
-        setSessions(data);
-        // Si estamos en modo edición y el artículo tiene sesión asignada y pertenece a la conferencia seleccionada entonces precargamos la sesión
-        if (editMode && article?.session && article.session.conference?.id === selectedConference) {
-          setSelectedSession(String(article.session.id));
-        } else {
-          // Si no estamos en modo edición (o la sesión no coincide) entonces limpiamos la selección
-          setSelectedSession(null);
-        }
-      }).catch((err) => console.error("Error cargando sesiones:", err)).finally(() => setLoadingSessions(false));
-
-    } else {
-      setSessions([]);
-      setSelectedSession(null);
-    }
-
-  }, [selectedConference, editMode, article]);
-
-  // -------------------
+  //------------------------------------------------------------
   // Manejo de la seleccion de archivos
-  // -------------------
+  //------------------------------------------------------------
   const handleMainFileClick = () => mainFileRef.current?.click();
 
   const handleMainFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,9 +89,9 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
     if (file) setSourceFile(file);
   };
 
-  // -------------------
+  //------------------------------------------------------------
   // Manejo de la seleccion de autores
-  // -------------------
+  //------------------------------------------------------------
   const handleAgregarAutor = (id: number) => {
     const autor = users.find((u) => u.id === id);
     if (autor && !authors.some((a) => a.id === autor.id)) {
@@ -189,16 +104,16 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
     if (correspondingAuthor === String(id)) setCorrespondingAuthor(""); // limpiar si se elimina
   };
 
-  // -------------------
+  //------------------------------------------------------------
   // Manejo del boton de cancelación
-  // -------------------
+  //------------------------------------------------------------
   const handleCancel = () => {
     navigateBack();
   }
 
-  // -------------------
+  //------------------------------------------------------------
   // Manejo del boton de submit
-  // -------------------
+  //------------------------------------------------------------
   const handleSubmit = async () => {
 
     setShowErrorAlert(false);
@@ -260,9 +175,9 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
     }
   };
 
-  // -------------------
+  //------------------------------------------------------------
   // Manejo del boton de update (edit mode)
-  // -------------------
+  //------------------------------------------------------------
   const handleUpdate = async () => {
 
     if (!article) return;
@@ -336,9 +251,94 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
     }
   };
 
-  // -------------------
+  //------------------------------------------------------------
+  // Efecto para precargar datos del form en modo edición
+  //------------------------------------------------------------
+  useEffect(() => {
+
+    if (editMode && article) {
+
+      // Setteo de campos del form
+      setTitle(article.title);
+      setAbstract(article.abstract);
+      setArticleType(article.type);
+      setSelectedConference(article.session?.conference?.id ?? null);
+      setSelectedSession(article.session?.id ? String(article.session.id) : null);
+      setAuthors(article.authors);
+      setCorrespondingAuthor(String(article.corresponding_author?.id ?? ""));
+
+      // Manejo de los archivos del articulo
+      const mf: any = article.main_file;
+      const sf: any = article.source_file;
+
+      // Cargar y settear el arthivo principal
+      if (mf) {
+        const url = typeof mf === 'string' ? mf : mf.url ?? null;
+        setExistingMainFileUrl(url);
+        if (url) {
+          try {
+            const parts = url.split('/');
+            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingMainFileName(String(mf));
+          }
+        } else {
+          setExistingMainFileName(typeof mf === 'string' ? mf : null);
+        }
+      }
+
+      // Cargar y settear el archivo de fuentes (si existe)
+      if (sf) {
+        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
+        setExistingSourceFileUrl(urlS);
+        if (urlS) {
+          try {
+            const parts = urlS.split('/');
+            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingSourceFileName(String(sf));
+          }
+        } else {
+          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
+        }
+      } else {
+        setExistingSourceFileUrl(null);
+        setExistingSourceFileName(null);
+      }
+    }
+
+  }, [editMode, article]);
+
+  //------------------------------------------------------------
+  // Efecto para traer sesiones al cambiar la conferencia
+  //------------------------------------------------------------
+  useEffect(() => {
+
+    if (selectedConference) {
+
+      setLoadingSessions(true);
+
+      getSessionsByConferenceGrupo1(Number(selectedConference)).then((data) => {
+        setSessions(data);
+        // Si estamos en modo edición y el artículo tiene sesión asignada y pertenece a la conferencia seleccionada entonces precargamos la sesión
+        if (editMode && article?.session && article.session.conference?.id === selectedConference) {
+          setSelectedSession(String(article.session.id));
+        } else {
+          // Si no estamos en modo edición (o la sesión no coincide) entonces limpiamos la selección
+          setSelectedSession(null);
+        }
+      }).catch((err) => console.error("Error cargando sesiones:", err)).finally(() => setLoadingSessions(false));
+
+    } else {
+      setSessions([]);
+      setSelectedSession(null);
+    }
+
+  }, [selectedConference, editMode, article]);
+
+  //------------------------------------------------------------
   // Renderizado del componente
-  // -------------------
+  //------------------------------------------------------------
   return (
     <div className="w-full max-w-3xl rounded-2xl shadow-md border p-4 bg-white flex flex-col gap-4">
 
@@ -570,4 +570,6 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
       
     </div>
   );
-}
+};
+
+export default ArticleForm;

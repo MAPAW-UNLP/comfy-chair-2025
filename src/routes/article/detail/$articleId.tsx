@@ -16,9 +16,9 @@
 // -------------------------------------------------------------------------------------- 
 
 import { useEffect, useState } from 'react';
+import ArticleDetail from '@/components/article/ArticleDetail';
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import { getArticleById, type Article } from '@/services/articleServices';
-import ArticleDetail from '@/components/article/ArticleDetail';
 
 export const Route = createFileRoute('/article/detail/$articleId')({
   component: RouteComponent,

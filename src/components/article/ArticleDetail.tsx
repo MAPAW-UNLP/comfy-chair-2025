@@ -6,14 +6,20 @@
 
 // Importaciones
 import { Button } from "../ui/button";
+import { useState, useEffect } from "react";
 import { useNavigate } from '@tanstack/react-router'
-import React, { useState, useEffect } from "react";
 import type { Article, Status, Type } from "@/services/articleServices";
 
 // Lo que espera recibir el componente
-export interface ArticleCardProps {
-  article?: Article;
+export interface ArticleDetailProps {
+  article: Article;
 }
+
+// Textos asociados a cada tipo
+const tipoTexto: Record<Type, string> = {
+  regular: "Regular",
+  poster: "Poster",
+};
 
 // Textos asociados a cada estado
 const estadoTexto: Record<Status, string> = {
@@ -26,25 +32,22 @@ const estadoTexto: Record<Status, string> = {
   rejected: "Rechazado",
 };
 
-// Textos asociados a cada tipo
-const tipoTexto: Record<Type, string> = {
-  regular: "Regular",
-  poster: "Poster",
-};
-
 //Cuerpo del Componente
-const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
-  // Navegacion
+  // Navegación
   const navigate = useNavigate();
-  const handleCancel = () => navigate({ to: `/articles/${article?.session?.conference?.id}`, replace: true });
+  const navigateBack = () => navigate({ to: `/articles/${article?.session?.conference?.id}`, replace: true });
 
-  // Manejo de archivos
+  // Archivos (articulo y fuentes)
   const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal
   const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal
   const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes
   const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes
 
+  //------------------------------------------------------------
+  // Efecto para cargar los archivos existentes (articulo y fuentes)
+  //------------------------------------------------------------
   useEffect(() => {
   
     if (article) {
@@ -92,10 +95,14 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
   
   }, [article]);
 
+  //------------------------------------------------------------
   // Renderizado del componente
+  //------------------------------------------------------------
   return (
     <div className="flex justify-center items-center">
       <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg">
+
+        {/* Campos del articulo */}
         <div className="text-start flex flex-col gap-2 mb-4">
           <p><b>Título:</b> {article?.title}</p>
           <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
@@ -113,13 +120,11 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
             ))}
           </p>
           <p><b>Abstract:</b> {article?.abstract}</p>
-          {/* Mostrar enlace al archivo existente en modo edición */}
           {existingMainFileUrl && (
             <p><b>Articulo: </b>
               <a href={existingMainFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">{existingMainFileName ?? 'archivo'}</a>
             </p>
           )}
-          {/* Mostrar enlace al archivo de fuentes existente en modo edición */}
           {existingSourceFileUrl && (
             <p>
               <b>Fuentes: </b>
@@ -128,15 +133,13 @@ const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
           )}
         </div>
 
-        <div>
-          <Button variant="outline" onClick={handleCancel} className="w-full bg-slate-900 text-white">
-            Volver
-          </Button>
-        </div>
+        {/* Boton de retorno */}
+        <Button variant="outline" onClick={navigateBack} className="w-full bg-slate-900 text-white">
+          Volver
+        </Button>
       </div>
     </div>
   );
-
 };
 
 export default ArticleDetail;

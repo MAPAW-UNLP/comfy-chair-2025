@@ -26,7 +26,9 @@ const handleSessionError = (err: any, isCreate: boolean) => {
   if (posibleError) throw new Error(posibleError);
 };
 
+//------------------------------------------------------------
 // GRUPO 1: Trae una lista de sesiones filtradas por conference_id
+//------------------------------------------------------------
 export const getSessionsByConferenceGrupo1 = async (conferenceId: number): Promise<Session[]> => {
   const now = new Date();
   const response = await api.get('/api/session', {

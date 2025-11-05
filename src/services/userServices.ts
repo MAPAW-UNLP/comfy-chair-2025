@@ -9,7 +9,9 @@ export interface User {
   deleted:boolean;
 }
 
+//------------------------------------------------------------
 // GRUPO 1: Trae una lista de usuarios registrados - Usado también por el grupo 3
+//------------------------------------------------------------
 export const getAllUsers = async (): Promise<User[]> => {
   const response = await api.get('/user/getUsers');
   return response.data;

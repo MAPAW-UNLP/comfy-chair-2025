@@ -4,52 +4,52 @@
 //
 // -------------------------------------------------------------------------------------- 
 
-import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { type Conference } from '@/components/conference/ConferenceApp';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
+// Lo que espera recibir el componente
 type ConferenceComboboxProps = {
     conferences: Conference[];
-    value?: number | null;
-    disabled?: boolean;
     onValueChange?: (conferenceId: number | null) => void;
+    value?: number | null;
+    disabled?: boolean;  
 };
 
-export function ConferenceCombobox({ conferences, value, disabled, onValueChange }: ConferenceComboboxProps) {
+// Cuerpo del componente
+export function ConferenceCombobox({ conferences, onValueChange, value, disabled } : ConferenceComboboxProps) {
     
-    const [open, setOpen] = React.useState(false);
-    const [selectedConferenceId, setSelectedConferenceId] = React.useState<number | null>(null);
-    const [query, setQuery] = React.useState("");
+    // Estados internos del componente
+    const [open, setOpen] = useState(false);
+    const [selectedConferenceId, setSelectedConferenceId] = useState<number | null>(null);
+    const [query, setQuery] = useState("");
+    const selectedConference = conferences.find((c) => c.id === selectedConferenceId) || null;
+    const filteredConferences = conferences.filter((c) => c.title.toLowerCase().includes(query.toLowerCase()));
 
-    // Si el componente es controlado, sincronizar el estado interno cuando cambie `value`
-    React.useEffect(() => {
+    //------------------------------------------------------------
+    // Efecto para seleccionar la conferencia actual (modo edición del form de articulos)
+    //------------------------------------------------------------
+    useEffect(() => {
       if (typeof value !== 'undefined') {
         setSelectedConferenceId(value ?? null);
       }
     }, [value]);
 
-    const filteredConferences = conferences.filter(
-      (c) => 
-        c.title.toLowerCase().includes(query.toLowerCase()) 
-    );
-
-    const selectedConference = conferences.find((c) => c.id === selectedConferenceId) || null;
-
+    //------------------------------------------------------------
+    // Renderizado del componente
+    //------------------------------------------------------------
     return (
-
         <Popover open={open} onOpenChange={setOpen}>
-
             <PopoverTrigger asChild>
                 <Button disabled={disabled} variant="outline" role="combobox" aria-expanded={open} className={cn("justify-between bg-white font-normal", !selectedConference ? "text-gray-500" : "text-gray-900")}>
                     {selectedConference ? `${selectedConference.title}` : "Seleccione una conferencia..."}
                     <ChevronsUpDown className="opacity-25" />
                 </Button>
             </PopoverTrigger>
-
             <PopoverContent className="w-auto max-w-sm p-0">
                 <Command>
                     <CommandInput placeholder="Buscar conferencias..." className="h-9" value={query} onValueChange={setQuery} />
@@ -73,7 +73,6 @@ export function ConferenceCombobox({ conferences, value, disabled, onValueChange
                     </CommandList>
                 </Command>
             </PopoverContent>
-        
         </Popover>
     );
 }
