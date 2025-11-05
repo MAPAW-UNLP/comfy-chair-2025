@@ -5,31 +5,32 @@
 // -------------------------------------------------------------------------------------- 
 
 // Importación de funcionalidades y librerías
-import React, { useEffect, useRef, useState } from "react";
-import { articleSchema } from '@/lib/validations';
-import type { ArticleFormData } from '@/lib/validations';
-import { useNavigate } from '@tanstack/react-router'
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from '@tanstack/react-router';
+import { articleSchema, type ArticleFormData } from '@/lib/validations';
+
 
 // Importación de componentes UI
 import { toast } from 'sonner';
-import { X, AlertCircleIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { X, AlertCircleIcon } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { UserCombobox } from "@/components/combobox/UserCombobox";
+import { ConferenceCombobox } from "../combobox/ConferenceCombobox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Importación de servicios
+import { type User } from "@/services/userServices";
+import { type Session } from "@/services/sessionServices";
 import { createArticle } from "@/services/articleServices";
-import { getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
-import type { User } from "@/services/userServices";
-import type { Session } from "@/services/sessionServices";
-import type { Article, ArticleNew } from "@/services/articleServices";
-import { getConferenceById } from "@/services/conferenceServices";
 import { type Conference } from '@/components/conference/ConferenceApp';
+import { getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
+import { type Article, type ArticleNew } from "@/services/articleServices";
+
 
 // Props del componente
 type ArticleFormProps = {
@@ -41,11 +42,9 @@ type ArticleFormProps = {
 
 export default function ArticleForm({ conferences, users, editMode, article }: ArticleFormProps) {
 
-  const conferenceId = 1;
-
   // Navegacion
   const navigate = useNavigate();
-  const navigateBack = () => navigate({ to: "/articles/test", replace: true });
+  const navigateBack = () => navigate({ to: `/articles/${selectedConference}`, replace: true });
 
   // Setteo de sesiones
   const [sessions, setSessions] = useState<Session[]>([]); // Sesiones pertenecientes a la conferencia seleccionada
@@ -61,7 +60,7 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
   const [title, setTitle] = useState<string>(""); // Título del artículo
   const [abstract, setAbstract] = useState<string>(""); // Abstract del artículo
   const [articleType, setArticleType] = useState<string>("regular"); // Tipo de artículo
-  const [selectedConference, setSelectedConference] = useState< Conference | null>(null); // Conferencia seleccionada
+  const [selectedConference, setSelectedConference] = useState< number | null>(null); // Conferencia seleccionada
   const [selectedSession, setSelectedSession] = useState<string | null>(null); // Sesión seleccionada
   const [authors, setAuthors] = useState<User[]>([]); // Autores seleccionados
   const [correspondingAuthor, setCorrespondingAuthor] = useState<string>(""); // Autor de notificación
@@ -76,125 +75,90 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
   const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes ya existente (edicion)
   const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes ya existente (edicion)
 
-  // -------------------
-  // Efecto para cargar conferencia, sesiones y (si aplica) datos del artículo
-  // -------------------
+  //--------------
+  // Efecto para precargar datos del form en modo edición
+  //--------------
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoadingSessions(true);
 
-        const conference = await getConferenceById(conferenceId!);
-        setSelectedConference(conference);
+    if (editMode && article) {
 
-        const sessionsData = await getSessionsByConferenceGrupo1(conferenceId!);
-        setSessions(sessionsData);
-        
-        if (editMode && article) {
-          setTitle(article.title);
-          setAbstract(article.abstract);
-          setArticleType(article.type);
-          setSelectedSession(article.session?.id ? String(article.session.id) : null);
-          setAuthors(article.authors);
-          setCorrespondingAuthor(String(article.corresponding_author?.id ?? ""));
+      // Setteo de campos del form
+      setTitle(article.title);
+      setAbstract(article.abstract);
+      setArticleType(article.type);
+      setSelectedConference(article.session?.conference?.id ?? null);
+      setSelectedSession(article.session?.id ? String(article.session.id) : null);
+      setAuthors(article.authors);
+      setCorrespondingAuthor(String(article.corresponding_author?.id ?? ""));
 
-          // --- Manejo de archivos ---
-          const mf: any = article.main_file;
-          const sf: any = article.source_file;
+      // Manejo de los archivos del articulo
+      const mf: any = article.main_file;
+      const sf: any = article.source_file;
 
-          // Archivo principal
-          if (mf) {
-            const url = typeof mf === "string" ? mf : mf.url ?? null;
-            setExistingMainFileUrl(url);
-            if (url) {
-              try {
-                const parts = url.split("/");
-                setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
-              } catch {
-                setExistingMainFileName(String(mf));
-              }
-            } else {
-              setExistingMainFileName(typeof mf === "string" ? mf : null);
-            }
-          }
-
-          // Archivo de fuentes
-          if (sf) {
-            const urlS = typeof sf === "string" ? sf : sf.url ?? null;
-            setExistingSourceFileUrl(urlS);
-            if (urlS) {
-              try {
-                const parts = urlS.split("/");
-                setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
-              } catch {
-                setExistingSourceFileName(String(sf));
-              }
-            } else {
-              setExistingSourceFileName(typeof sf === "string" ? sf : null);
-            }
-          } else {
-            setExistingSourceFileUrl(null);
-            setExistingSourceFileName(null);
+      // Cargar y settear el arthivo principal
+      if (mf) {
+        const url = typeof mf === 'string' ? mf : mf.url ?? null;
+        setExistingMainFileUrl(url);
+        if (url) {
+          try {
+            const parts = url.split('/');
+            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingMainFileName(String(mf));
           }
         } else {
-          // Si no está en modo edición, limpiar posibles residuos
-          setSelectedSession(null);
-          setExistingMainFileUrl(null);
-          setExistingMainFileName(null);
-          setExistingSourceFileUrl(null);
-          setExistingSourceFileName(null);
+          setExistingMainFileName(typeof mf === 'string' ? mf : null);
         }
-
-      } catch (err) {
-        console.error("Error cargando conferencia, sesiones o artículo:", err);
-        setSelectedConference(null);
-        setSessions([]);
-        setSelectedSession(null);
-      } finally {
-        setLoadingSessions(false);
       }
-    };
 
-    if (conferenceId) {
-      fetchData();
+      // Cargar y settear el archivo de fuentes (si existe)
+      if (sf) {
+        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
+        setExistingSourceFileUrl(urlS);
+        if (urlS) {
+          try {
+            const parts = urlS.split('/');
+            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingSourceFileName(String(sf));
+          }
+        } else {
+          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
+        }
+      } else {
+        setExistingSourceFileUrl(null);
+        setExistingSourceFileName(null);
+      }
     }
-  }, [conferenceId, editMode, article]);
+
+  }, [editMode, article]);
 
   // -------------------
   // Efecto para traer sesiones al cambiar la conferencia
   // -------------------
   useEffect(() => {
-    const fetchConference = async () => {
-      try {
-        const conference = await getConferenceById(conferenceId!);
-        setSelectedConference(conference);
 
-        setLoadingSessions(true);
+    if (selectedConference) {
 
-        const data = await getSessionsByConferenceGrupo1(conferenceId!);
+      setLoadingSessions(true);
+
+      getSessionsByConferenceGrupo1(Number(selectedConference)).then((data) => {
         setSessions(data);
-
-        // Si estamos editando, preseleccionamos la sesión si corresponde
-        if (editMode && article?.session && article.session.conference?.id === conferenceId) {
+        // Si estamos en modo edición y el artículo tiene sesión asignada y pertenece a la conferencia seleccionada entonces precargamos la sesión
+        if (editMode && article?.session && article.session.conference?.id === selectedConference) {
           setSelectedSession(String(article.session.id));
         } else {
+          // Si no estamos en modo edición (o la sesión no coincide) entonces limpiamos la selección
           setSelectedSession(null);
         }
+      }).catch((err) => console.error("Error cargando sesiones:", err)).finally(() => setLoadingSessions(false));
 
-      } catch (err) {
-        console.error("Error cargando conferencia o sesiones:", err);
-        setSessions([]);
-        setSelectedSession(null);
-      } finally {
-        setLoadingSessions(false);
-      }
-    };
-
-    if (conferenceId) {
-      fetchConference();
+    } else {
+      setSessions([]);
+      setSelectedSession(null);
     }
 
-  }, [conferenceId, editMode, article]);
+  }, [selectedConference, editMode, article]);
 
   // -------------------
   // Manejo de la seleccion de archivos
@@ -391,10 +355,10 @@ export default function ArticleForm({ conferences, users, editMode, article }: A
       {/* Conferencia y Sesión */}
       <div className="flex flex-col md:flex-row gap-4 w-full">
         
-        {/* Conferencia (solo lectura) */}
+        {/* Combobox de Conferencia */}
         <div className="flex-1 flex flex-col gap-2">
           <Label htmlFor="conferencia">Conferencia {errors.conference && <p className="text-destructive">{errors.conference}</p>}</Label>
-          <Input type="text" id="conference" placeholder="Conferencia" value={selectedConference?.title} disabled/>
+          <ConferenceCombobox value={selectedConference} onValueChange={setSelectedConference} conferences={conferences} disabled={editMode} />
         </div>
 
         {/* Select de Sesiones */}
