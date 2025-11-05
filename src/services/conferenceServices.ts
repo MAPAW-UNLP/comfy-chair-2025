@@ -2,21 +2,10 @@ import type { Conference } from '@/components/conference/ConferenceApp';
 import { axiosInstance as api } from './api';
 import type { User } from './userServices';
 
-type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
-
-export interface ConferenceG1 {
-  id: number;
-  title: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  blind_kind: VISTA_CHOICES;
-}
-
-// Grupo 1: Trae una conferencia por su id
-export const getConferenceById = async (id: number): Promise<ConferenceG1 | null> => {
+// Requerido para funcionalidades del grupo 1
+export const getConferenceById = async (id: number): Promise<Conference | null> => {
   const response = await api.get(`/api/conference/${id}/`);
-  const conf: ConferenceG1 = response.data;
+  const conf: Conference = response.data;
   return conf;
 };
 
@@ -25,6 +14,7 @@ export const getAllConferences = async (): Promise<Conference[]> => {
   return response.data;
 };
 
+// Requerido para funcionalidades del grupo 1
 export const getActiveConferences = async (): Promise<Conference[]> => {
   try {
     const response = await api.get('/api/conference/active/');

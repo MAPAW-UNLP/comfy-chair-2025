@@ -11,7 +11,6 @@
 //     • La conferencia no existe.
 //     • No hay artículos disponibles para mostrar.
 // - Permite navegar hacia:
-//     • La pantalla de creación de artículos (si la conferencia no ha finalizado).
 //     • Una ruta de retorno ("article/test"). PROVISORIA HASTA TENER EL DASHBOARD.
 // - En caso de éxito, renderiza cada articulo como un componente "ArticleCard", enviándole
 //   como prop a cada uno el articulo actual.
@@ -20,13 +19,15 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { CornerUpLeftIcon } from 'lucide-react';
 import { type Article } from '@/services/articleServices';
+import { getConferenceById } from '@/services/conferenceServices';
 import { getArticlesByConferenceId } from '@/services/articleServices';
+import { type Conference } from '@/components/conference/ConferenceApp';
 import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
-import { getConferenceById, type ConferenceG1 } from '@/services/conferenceServices';
 import ArticleCard from '@/components/article/ArticleCard';
 
-export const Route = createFileRoute('/articles/view/$conferenceId')({
+export const Route = createFileRoute('/articles/$conferenceId')({
   component: RouteComponent,
 })
 
@@ -34,18 +35,17 @@ function RouteComponent() {
 
   // Navegacion
   const navigate = useNavigate();
-  const handleCreate = () => navigate({ to: `/articles/create/${id}`, replace: true });
-  const handleBack = () => navigate({ to: `/articles/test`, replace: true }); // RUTA PROVISORIA
+  const handleBack = () => navigate({ to: `/articles/test`, replace: true }); // RUTA PROVISORIA. DEBE VOLVER AL DASHBOARD
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
 
   // Parametros de entrada (conferenceId)
-  const { conferenceId } = useParams({ from: '/articles/view/$conferenceId' });
+  const { conferenceId } = useParams({ from: '/articles/$conferenceId' });
   const id = Number(conferenceId);
 
   //Conferencia Actual
-  const [conference, setConference] = useState<ConferenceG1 | null>();
+  const [conference, setConference] = useState<Conference | null>();
 
   // Lista de Articulos
   const [articulo, setArticulos] = useState<Article[]>([]);
@@ -105,22 +105,16 @@ function RouteComponent() {
   //Cuerpo del Componente
   return (
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
-      
-      {/* Titulo de la conferencia*/}
-      <h1 className="text-2xl font-bold italic text-slate-500 text-center">
-        Conferencia: {conference.title}
-      </h1>
-      
-      {/* Botones de navegacion */}
-      <div className="flex flex-col sm:flex-row sm:w-100 w-auto gap-4">
-        <Button variant="outline" className="bg-zinc-500 text-white flex-1" onClick={handleBack}>
+ 
+      {/* Título de Conferencia y Botón de navegación */}
+      <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-4">
+        <h1 className="text-2xl font-bold italic text-slate-500 text-center sm:text-left flex-1">
+          Conferencia: {conference.title}
+        </h1>
+        <Button variant="outline" className="bg-zinc-500 text-white sm:w-auto w-full flex justify-center items-center gap-2" onClick={handleBack}>
           Volver
+          <CornerUpLeftIcon />
         </Button>
-        { new Date(conference.end_date).getTime() >= Date.now() && (
-          <Button variant="outline" className="bg-lime-900 text-white flex-1" onClick={handleCreate}>
-            Subir Artículo +
-          </Button>
-        )}
       </div>
       
       {/* Si hay articulos mapea cada uno como una card, sino muestra un mensaje */}

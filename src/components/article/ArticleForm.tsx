@@ -28,21 +28,24 @@ import { getSessionsByConferenceGrupo1 } from "@/services/sessionServices";
 import type { User } from "@/services/userServices";
 import type { Session } from "@/services/sessionServices";
 import type { Article, ArticleNew } from "@/services/articleServices";
-import { getConferenceById, type ConferenceG1 } from "@/services/conferenceServices";
+import { getConferenceById } from "@/services/conferenceServices";
+import { type Conference } from '@/components/conference/ConferenceApp';
 
 // Props del componente
 type ArticleFormProps = {
+  conferences : Conference[];
   users: User[];
-  editMode ?: boolean;
-  conferenceId? : number;
-  article?: Article;
+  editMode? : boolean;
+  article? : Article;
 };
 
-export default function ArticleForm({ users, editMode, article, conferenceId }: ArticleFormProps) {
+export default function ArticleForm({ conferences, users, editMode, article }: ArticleFormProps) {
+
+  const conferenceId = 1;
 
   // Navegacion
   const navigate = useNavigate();
-  const navigateBack = () => navigate({ to: `/articles/view/${conferenceId}`, replace: true });
+  const navigateBack = () => navigate({ to: "/articles/test", replace: true });
 
   // Setteo de sesiones
   const [sessions, setSessions] = useState<Session[]>([]); // Sesiones pertenecientes a la conferencia seleccionada
@@ -58,7 +61,7 @@ export default function ArticleForm({ users, editMode, article, conferenceId }: 
   const [title, setTitle] = useState<string>(""); // Título del artículo
   const [abstract, setAbstract] = useState<string>(""); // Abstract del artículo
   const [articleType, setArticleType] = useState<string>("regular"); // Tipo de artículo
-  const [selectedConference, setSelectedConference] = useState< ConferenceG1 | null>(null); // Conferencia seleccionada
+  const [selectedConference, setSelectedConference] = useState< Conference | null>(null); // Conferencia seleccionada
   const [selectedSession, setSelectedSession] = useState<string | null>(null); // Sesión seleccionada
   const [authors, setAuthors] = useState<User[]>([]); // Autores seleccionados
   const [correspondingAuthor, setCorrespondingAuthor] = useState<string>(""); // Autor de notificación
@@ -581,9 +584,11 @@ export default function ArticleForm({ users, editMode, article, conferenceId }: 
 
       {/* Botones inferiores */}
       <div className="flex flex-row gap-2">
-        <Button variant="outline" onClick={handleCancel} className="flex-1 bg-zinc-500 text-white" disabled={loading}>
-          Cancelar
-        </Button>
+        {editMode && (
+          <Button variant="outline" onClick={handleCancel} className="flex-1 bg-zinc-500 text-white" disabled={loading}>
+            Cancelar
+          </Button>
+        )}
         <Button variant="outline" onClick={editMode ? handleUpdate : handleSubmit} className="flex-1 bg-slate-900 text-white" disabled={loading}>
           {loading ? editMode ? "Guardando..." : "Subiendo..." : editMode ? "Guardar" : "Subir"}
         </Button>

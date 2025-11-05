@@ -21,6 +21,8 @@
 import { useEffect, useState } from 'react';
 import { getAllUsers, type User } from '@/services/userServices';
 import { createFileRoute, useParams } from '@tanstack/react-router'
+import { getActiveConferences } from '@/services/conferenceServices';
+import { type Conference } from '@/components/conference/ConferenceApp';
 import { getArticleById, type Article } from '@/services/articleServices';
 import ArticleForm from '@/components/article/ArticleForm';
 
@@ -40,21 +42,14 @@ function RouteComponent() {
   // Articulo Actual
   const [article, setArticle] = useState<Article | null>(null);
 
+  // Lista de Conferencias
+  const [conferenceList, setConferences] = useState<Conference[]>([]);
+
   // Lista de Usuarios
-  const [userList, setUser] = useState<User[]>([]);
+  const [userList, setUsers] = useState<User[]>([]);
 
   // Efecto para recuperar el articulo actual y los usuarios de la app
   useEffect(() => {
-
-    const fetchUsers = async () => {
-      try{
-        const data = await getAllUsers();
-        setUser(data);
-      }
-      catch {
-        console.log("Error al obtener los usuarios");
-      }
-    };
 
     const fetchArticle = async () => {
       try {
@@ -63,14 +58,36 @@ function RouteComponent() {
       } catch {
         console.error("Error al obtener el artículo");
         setArticle(null);
-      } finally {
+      }
+    };
+
+    const fetchUsers = async () => {
+      try{
+        const data = await getAllUsers();
+        setUsers(data);
+      }
+      catch {
+        console.log("Error al obtener los usuarios");
+      }
+    };
+
+    const fetchConferences = async () => {
+      try{
+        const conferenceList = await getActiveConferences();
+        setConferences(conferenceList);
+      }
+      catch{
+        console.log("Error al obtener las conferencias");
+      }
+      finally{
         setLoading(false);
       }
     };
 
-    fetchUsers();
     fetchArticle();
-
+    fetchUsers();
+    fetchConferences();
+  
   }, []);
 
   // Spinner de carga
@@ -108,7 +125,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
       {/* Le envío al form la conferencia actual, el articulo existente y los usuarios de la app */}
-      <ArticleForm users={userList} editMode={true} article={article} conferenceId={article.session?.conference?.id} /> 
+      <ArticleForm conferences={conferenceList} users={userList} editMode={true} article={article}  /> 
     </div>
   );
 
