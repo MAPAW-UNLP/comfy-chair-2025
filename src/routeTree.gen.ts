@@ -24,10 +24,16 @@ import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as ReviewerReviewArticleIdRouteImport } from './routes/reviewer/review/$articleId'
 import { Route as ConferenceSessionIdRouteImport } from './routes/conference/session/$id'
 import { Route as ConferenceEditIdRouteImport } from './routes/conference/edit/$id'
+<<<<<<< HEAD
 import { Route as ArticlesViewConferenceIdRouteImport } from './routes/articles/view/$conferenceId'
 import { Route as ArticlesCreateConferenceIdRouteImport } from './routes/articles/create/$conferenceId'
 import { Route as ArticleEditArticleIdRouteImport } from './routes/article/edit/$articleId'
 import { Route as ArticleDetailArticleIdRouteImport } from './routes/article/detail/$articleId'
+=======
+import { Route as ChairsSelectionSessionListRouteImport } from './routes/chairs/selection/session-list'
+import { Route as ChairsSelectionArticlesSessionRouteImport } from './routes/chairs/selection/articles-session'
+import { Route as ArticleEditIdRouteImport } from './routes/article/edit/$id'
+>>>>>>> origin/main
 import { Route as ArticleAssignIdRouteImport } from './routes/article/assign/$id'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -104,6 +110,7 @@ const ConferenceEditIdRoute = ConferenceEditIdRouteImport.update({
   path: '/conference/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+<<<<<<< HEAD
 const ArticlesViewConferenceIdRoute =
   ArticlesViewConferenceIdRouteImport.update({
     id: '/articles/view/$conferenceId',
@@ -124,6 +131,23 @@ const ArticleEditArticleIdRoute = ArticleEditArticleIdRouteImport.update({
 const ArticleDetailArticleIdRoute = ArticleDetailArticleIdRouteImport.update({
   id: '/article/detail/$articleId',
   path: '/article/detail/$articleId',
+=======
+const ChairsSelectionSessionListRoute =
+  ChairsSelectionSessionListRouteImport.update({
+    id: '/chairs/selection/session-list',
+    path: '/chairs/selection/session-list',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ChairsSelectionArticlesSessionRoute =
+  ChairsSelectionArticlesSessionRouteImport.update({
+    id: '/chairs/selection/articles-session',
+    path: '/chairs/selection/articles-session',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ArticleEditIdRoute = ArticleEditIdRouteImport.update({
+  id: '/article/edit/$id',
+  path: '/article/edit/$id',
+>>>>>>> origin/main
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticleAssignIdRoute = ArticleAssignIdRouteImport.update({
@@ -145,10 +169,16 @@ export interface FileRoutesByFullPath {
   '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+<<<<<<< HEAD
   '/article/detail/$articleId': typeof ArticleDetailArticleIdRoute
   '/article/edit/$articleId': typeof ArticleEditArticleIdRoute
   '/articles/create/$conferenceId': typeof ArticlesCreateConferenceIdRoute
   '/articles/view/$conferenceId': typeof ArticlesViewConferenceIdRoute
+=======
+  '/article/edit/$id': typeof ArticleEditIdRoute
+  '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
+  '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
+>>>>>>> origin/main
   '/conference/edit/$id': typeof ConferenceEditIdRoute
   '/conference/session/$id': typeof ConferenceSessionIdRoute
   '/reviewer/review/$articleId': typeof ReviewerReviewArticleIdRoute
@@ -166,10 +196,16 @@ export interface FileRoutesByTo {
   '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+<<<<<<< HEAD
   '/article/detail/$articleId': typeof ArticleDetailArticleIdRoute
   '/article/edit/$articleId': typeof ArticleEditArticleIdRoute
   '/articles/create/$conferenceId': typeof ArticlesCreateConferenceIdRoute
   '/articles/view/$conferenceId': typeof ArticlesViewConferenceIdRoute
+=======
+  '/article/edit/$id': typeof ArticleEditIdRoute
+  '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
+  '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
+>>>>>>> origin/main
   '/conference/edit/$id': typeof ConferenceEditIdRoute
   '/conference/session/$id': typeof ConferenceSessionIdRoute
   '/reviewer/review/$articleId': typeof ReviewerReviewArticleIdRoute
@@ -189,10 +225,16 @@ export interface FileRoutesById {
   '/reviewer/assigned': typeof ReviewerAssignedRoute
   '/reviewer/bidding': typeof ReviewerBiddingRoute
   '/article/assign/$id': typeof ArticleAssignIdRoute
+<<<<<<< HEAD
   '/article/detail/$articleId': typeof ArticleDetailArticleIdRoute
   '/article/edit/$articleId': typeof ArticleEditArticleIdRoute
   '/articles/create/$conferenceId': typeof ArticlesCreateConferenceIdRoute
   '/articles/view/$conferenceId': typeof ArticlesViewConferenceIdRoute
+=======
+  '/article/edit/$id': typeof ArticleEditIdRoute
+  '/chairs/selection/articles-session': typeof ChairsSelectionArticlesSessionRoute
+  '/chairs/selection/session-list': typeof ChairsSelectionSessionListRoute
+>>>>>>> origin/main
   '/conference/edit/$id': typeof ConferenceEditIdRoute
   '/conference/session/$id': typeof ConferenceSessionIdRoute
   '/reviewer/review/$articleId': typeof ReviewerReviewArticleIdRoute
@@ -212,10 +254,16 @@ export interface FileRouteTypes {
     | '/reviewer/assigned'
     | '/reviewer/bidding'
     | '/article/assign/$id'
+<<<<<<< HEAD
     | '/article/detail/$articleId'
     | '/article/edit/$articleId'
     | '/articles/create/$conferenceId'
     | '/articles/view/$conferenceId'
+=======
+    | '/article/edit/$id'
+    | '/chairs/selection/articles-session'
+    | '/chairs/selection/session-list'
+>>>>>>> origin/main
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/reviewer/review/$articleId'
@@ -233,10 +281,16 @@ export interface FileRouteTypes {
     | '/reviewer/assigned'
     | '/reviewer/bidding'
     | '/article/assign/$id'
+<<<<<<< HEAD
     | '/article/detail/$articleId'
     | '/article/edit/$articleId'
     | '/articles/create/$conferenceId'
     | '/articles/view/$conferenceId'
+=======
+    | '/article/edit/$id'
+    | '/chairs/selection/articles-session'
+    | '/chairs/selection/session-list'
+>>>>>>> origin/main
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/reviewer/review/$articleId'
@@ -255,10 +309,16 @@ export interface FileRouteTypes {
     | '/reviewer/assigned'
     | '/reviewer/bidding'
     | '/article/assign/$id'
+<<<<<<< HEAD
     | '/article/detail/$articleId'
     | '/article/edit/$articleId'
     | '/articles/create/$conferenceId'
     | '/articles/view/$conferenceId'
+=======
+    | '/article/edit/$id'
+    | '/chairs/selection/articles-session'
+    | '/chairs/selection/session-list'
+>>>>>>> origin/main
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/reviewer/review/$articleId'
@@ -277,10 +337,16 @@ export interface RootRouteChildren {
   ReviewerAssignedRoute: typeof ReviewerAssignedRoute
   ReviewerBiddingRoute: typeof ReviewerBiddingRoute
   ArticleAssignIdRoute: typeof ArticleAssignIdRoute
+<<<<<<< HEAD
   ArticleDetailArticleIdRoute: typeof ArticleDetailArticleIdRoute
   ArticleEditArticleIdRoute: typeof ArticleEditArticleIdRoute
   ArticlesCreateConferenceIdRoute: typeof ArticlesCreateConferenceIdRoute
   ArticlesViewConferenceIdRoute: typeof ArticlesViewConferenceIdRoute
+=======
+  ArticleEditIdRoute: typeof ArticleEditIdRoute
+  ChairsSelectionArticlesSessionRoute: typeof ChairsSelectionArticlesSessionRoute
+  ChairsSelectionSessionListRoute: typeof ChairsSelectionSessionListRoute
+>>>>>>> origin/main
   ConferenceEditIdRoute: typeof ConferenceEditIdRoute
   ConferenceSessionIdRoute: typeof ConferenceSessionIdRoute
   ReviewerReviewArticleIdRoute: typeof ReviewerReviewArticleIdRoute
@@ -393,6 +459,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConferenceEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+<<<<<<< HEAD
     '/articles/view/$conferenceId': {
       id: '/articles/view/$conferenceId'
       path: '/articles/view/$conferenceId'
@@ -419,6 +486,27 @@ declare module '@tanstack/react-router' {
       path: '/article/detail/$articleId'
       fullPath: '/article/detail/$articleId'
       preLoaderRoute: typeof ArticleDetailArticleIdRouteImport
+=======
+    '/chairs/selection/session-list': {
+      id: '/chairs/selection/session-list'
+      path: '/chairs/selection/session-list'
+      fullPath: '/chairs/selection/session-list'
+      preLoaderRoute: typeof ChairsSelectionSessionListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chairs/selection/articles-session': {
+      id: '/chairs/selection/articles-session'
+      path: '/chairs/selection/articles-session'
+      fullPath: '/chairs/selection/articles-session'
+      preLoaderRoute: typeof ChairsSelectionArticlesSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/edit/$id': {
+      id: '/article/edit/$id'
+      path: '/article/edit/$id'
+      fullPath: '/article/edit/$id'
+      preLoaderRoute: typeof ArticleEditIdRouteImport
+>>>>>>> origin/main
       parentRoute: typeof rootRouteImport
     }
     '/article/assign/$id': {
@@ -454,10 +542,16 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewerAssignedRoute: ReviewerAssignedRoute,
   ReviewerBiddingRoute: ReviewerBiddingRoute,
   ArticleAssignIdRoute: ArticleAssignIdRoute,
+<<<<<<< HEAD
   ArticleDetailArticleIdRoute: ArticleDetailArticleIdRoute,
   ArticleEditArticleIdRoute: ArticleEditArticleIdRoute,
   ArticlesCreateConferenceIdRoute: ArticlesCreateConferenceIdRoute,
   ArticlesViewConferenceIdRoute: ArticlesViewConferenceIdRoute,
+=======
+  ArticleEditIdRoute: ArticleEditIdRoute,
+  ChairsSelectionArticlesSessionRoute: ChairsSelectionArticlesSessionRoute,
+  ChairsSelectionSessionListRoute: ChairsSelectionSessionListRoute,
+>>>>>>> origin/main
   ConferenceEditIdRoute: ConferenceEditIdRoute,
   ConferenceSessionIdRoute: ConferenceSessionIdRoute,
   ReviewerReviewArticleIdRoute: ReviewerReviewArticleIdRoute,
