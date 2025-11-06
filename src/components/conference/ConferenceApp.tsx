@@ -72,16 +72,16 @@ function ConferenceApp() {
           onValueChange={(v) => setVerActivas(v === 'activas')}
           className="flex items-center"
         >
-          <TabsList className="h-10 shadow">
+          <TabsList className="py-5 shadow">
             <TabsTrigger
               value="activas"
-              className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
             >
               Activas
             </TabsTrigger>
             <TabsTrigger
               value="terminadas"
-              className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
             >
               Terminadas
             </TabsTrigger>

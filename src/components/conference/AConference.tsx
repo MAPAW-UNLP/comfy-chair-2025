@@ -17,6 +17,7 @@ import {
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import ConferenceBreadcrumb from './ConferenceBreadcrumb';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -30,6 +31,7 @@ function AConference() {
   const [chairs, setChairs] = useState<User[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
+  const [verEstadisticas, setVerEstadisticas] = useState<boolean>(false);
   const [loadingSessions, setLoadingSessions] = useState(false);
 
   const irEditarConferencia = () => {
@@ -47,10 +49,6 @@ function AConference() {
     } finally {
       setLoadingSessions(false);
     }
-  };
-
-  const goToHome = () => {
-    navigate({ to: '/conference/view' });
   };
 
   const handleEliminarConferencia = () => {
@@ -122,53 +120,81 @@ function AConference() {
         })}
       </div>
 
+      <div className="flex justify-center items-center my-3">
+        <Tabs
+          value={verEstadisticas ? 'estadisticas' : 'sesiones'}
+          onValueChange={(v) => setVerEstadisticas(v === 'estadisticas')}
+          className="flex items-center"
+        >
+          <TabsList className="py-5 shadow">
+            <TabsTrigger
+              value="sesiones"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
+            >
+              Sesiones
+            </TabsTrigger>
+            <TabsTrigger
+              value="estadisticas"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
+            >
+              Estadísticas
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-8">
-        <div className="flex flex-col gap-5">
-          <div className='flex flex-col sm:flex-row justify-between items-center gap-3'>
-            <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
-            <AltaSession
-              conference={conferencia}
-              onSessionCreated={fetchSessions}
-              trigger={
-                <Button size={'sm'} className="cursor-pointer">
-                  <Plus />
-                  Nueva sesión
-                </Button>
-              }
-            />
-
-          </div>
-            <SearchBar
-              datos={sessions}
-              setResultados={setFilteredSessions}
-              campos={['title']}
-            />
-        </div>
-
-        {/* Lista de sesiones con carrusel */}
-        {loadingSessions ? (
-          <div className="text-center py-4 text-muted-foreground">
-            Cargando sesiones...
-          </div>
-        ) : sessions.length === 0 ? (
-          <div className="text-center py-4 text-muted-foreground">
-            No hay sesiones creadas aún. Cree la primera sesión.
-          </div>
-        ) : filteredSessions.length === 0 ? (
-          <div className="text-center py-4 text-muted-foreground">
-            No hay coincidencias.
-          </div>
+        {verEstadisticas ? (
+          <div> estadisticas</div>
         ) : (
-          <CarouselContainer>
-            {filteredSessions.map((session) => (
-              <CarouselItem key={session.id} width="350px">
-                <SessionCard
-                  session={session}
-                  onSessionUpdated={fetchSessions}
+          <>
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+                <h2 className="text-1xl font-bold">Sesiones disponibles</h2>
+                <AltaSession
+                  conference={conferencia}
+                  onSessionCreated={fetchSessions}
+                  trigger={
+                    <Button size={'sm'} className="cursor-pointer">
+                      <Plus />
+                      Nueva sesión
+                    </Button>
+                  }
                 />
-              </CarouselItem>
-            ))}
-          </CarouselContainer>
+              </div>
+              <SearchBar
+                datos={sessions}
+                setResultados={setFilteredSessions}
+                campos={['title']}
+              />
+            </div>
+
+            {/* Lista de sesiones con carrusel */}
+            {loadingSessions ? (
+              <div className="text-center py-4 text-muted-foreground">
+                Cargando sesiones...
+              </div>
+            ) : sessions.length === 0 ? (
+              <div className="text-center py-4 text-muted-foreground">
+                No hay sesiones creadas aún. Cree la primera sesión.
+              </div>
+            ) : filteredSessions.length === 0 ? (
+              <div className="text-center py-4 text-muted-foreground">
+                No hay coincidencias.
+              </div>
+            ) : (
+              <CarouselContainer>
+                {filteredSessions.map((session) => (
+                  <CarouselItem key={session.id} width="350px">
+                    <SessionCard
+                      session={session}
+                      onSessionUpdated={fetchSessions}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContainer>
+            )}
+          </>
         )}
       </div>
 

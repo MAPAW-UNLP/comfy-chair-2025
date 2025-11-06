@@ -19,12 +19,14 @@ import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import SessionArticleCard from './SessionArticleCard';
 import ConferenceBreadcrumb from './ConferenceBreadcrumb';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(sessionInicial);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [verEstadisticas, setVerEstadisticas] = useState(false);
   const [chairs, setChairs] = useState<User[] | []>([]);
   const [articles, setArticles] = useState<Article[] | []>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[] | []>([]);
@@ -118,25 +120,54 @@ function ASession() {
         </p>
       </div>
 
+      <div className="flex justify-center items-center my-3">
+        <Tabs
+          value={verEstadisticas ? 'estadisticas' : 'articulos'}
+          onValueChange={(v) => setVerEstadisticas(v === 'estadisticas')}
+          className="flex items-center"
+        >
+          <TabsList className="py-5 shadow">
+            <TabsTrigger
+              value="articulos"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
+            >
+              Artículos
+            </TabsTrigger>
+            <TabsTrigger
+              value="estadisticas"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
+            >
+              Estadísticas
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
-        <div className="flex flex-col gap-3">
-          <h2 className="text-1xl font-bold">Artículos</h2>
-          <SearchBar
-            datos={articles}
-            setResultados={setFilteredArticles}
-            campos={['title']}
-          />
-        </div>
-        {filteredArticles.length > 0 ? (
-          filteredArticles.map((article) => (
-            <SessionArticleCard key={article.id} article={article} />
-          ))
-        ) : articles.length > 0 ? (
-          <p className="text-center py-4 text-muted-foreground">
-            No hay coincidencias.
-          </p>
+        {verEstadisticas ? (
+          <div>estadisticas</div>
         ) : (
-          <p>No hay artículos asignados</p>
+          <>
+            <div className="flex flex-col gap-3">
+              <h2 className="text-1xl font-bold">Artículos</h2>
+              <SearchBar
+                datos={articles}
+                setResultados={setFilteredArticles}
+                campos={['title']}
+              />
+            </div>
+            {filteredArticles.length > 0 ? (
+              filteredArticles.map((article) => (
+                <SessionArticleCard key={article.id} article={article} />
+              ))
+            ) : articles.length > 0 ? (
+              <p className="text-center py-4 text-muted-foreground">
+                No hay coincidencias.
+              </p>
+            ) : (
+              <p>No hay artículos asignados</p>
+            )}
+          </>
         )}
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-5 m-2 gap-3">
