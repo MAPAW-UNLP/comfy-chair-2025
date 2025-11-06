@@ -76,12 +76,12 @@ export const getArticleById = async (id: number): Promise<Article> => {
 };
 
 //------------------------------------------------------------
-// GRUPO 1 - Listar Articulos por ID de conferencia - PROVISORIAMENTE SE FILTRAN ACA, DEBE SER UN ENDPOINT
+// GRUPO 1 - Listar Articulos por ID de conferencia
 //------------------------------------------------------------
 export const getArticlesByConferenceId = async (conferenceId: number): Promise<Article[]> => {
-  const response = await api.get('/api/article');
+  const response = await api.get(`/api/article/getArticlesByConferenceId/${conferenceId}`);
   const articles: Article[] = response.data;
-  return articles.filter(article => article.session?.conference?.id === conferenceId);
+  return articles;
 };
 
 //------------------------------------------------------------

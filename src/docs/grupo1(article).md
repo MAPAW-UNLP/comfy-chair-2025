@@ -1,6 +1,6 @@
 # Aspectos del Front Desarrollados por el Grupo 1
 
-    El grupo 1 se encargó de la visualización, alta, baja y modificación de articulos. 
+    El grupo 1 se encargó de la lectura, alta, baja y modificación de articulos. 
 
 # ---------- Components ----------
 
