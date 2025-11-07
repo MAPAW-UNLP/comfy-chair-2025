@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 //URL de la página
-export const Route = createFileRoute('/article/view')({
+export const Route = createFileRoute('/_auth/article/view')({
   component: RouteComponent,
 })
 
@@ -50,3 +50,4 @@ function RouteComponent() {
       )}
     </div>
   );}
+

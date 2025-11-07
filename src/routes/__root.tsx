@@ -15,23 +15,23 @@ const RootLayoutContent = () => {
   const { user } = useAuth();
 
   // Lista de páginas principales de la aplicación (común para todos)
-  const commonLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/conference/view', label: 'Conferencias' },
-    { to: '/article/view', label: 'Articulos' },
-    { to: '/article/select', label: 'Asignar Revisor' },
-    { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
-    { to: '/reviewer/bidding', label: 'Bidding' },
-  ];
+  const commonLinks: { to: string; label: string }[] = [];
 
   // Enlaces adicionales según el estado de autenticación
   const authLinks = user 
     ? [
-        { to: '/notifications', label: 'Notificaciones' },
-        { to: '/dashboard', label: 'Panel' },
+      { to: '/reviewer/', label: 'Revisor' },
+      { to: '/conference/view', label: 'Conferencias' },
+      { to: '/article/view', label: 'Articulos' },
+      { to: '/article/select', label: 'Asignar Revisor' },
+      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+      { to: '/reviewer/bidding', label: 'Bidding' },
+      { to: '/notifications', label: 'Notificaciones' },
+      { to: '/dashboard', label: 'Panel' },
       ]
     : [
         { to: '/login', label: 'Ingresar' },
+        { to: '/register', label: 'Registrarse' },
       ];
 
   // Combinar todos los enlaces
@@ -52,11 +52,14 @@ const RootLayoutContent = () => {
           ))}
         </nav>
 
-        {/* Nombre de la app + ícono */}
-        <span className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2">
+        {/* Nombre de la app + ícono, ahora enlaza al landing page */}
+        <Link
+          to="/"
+          className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
+        >
           ComfyChair
           <Armchair />
-        </span>
+        </Link>
 
         {/* Botón colapsable (solo se muestra en móvil) */}
         <button onClick={() => setIsOpen(true)} className="md:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}

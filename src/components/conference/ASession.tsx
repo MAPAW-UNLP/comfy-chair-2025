@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { axiosInstance as api } from '@/services/api';
 import { deleteSession, type Session } from '@/services/sessionServices';
 import { Loader2, Trash2 } from 'lucide-react';
-import { Route } from '@/routes/conference/session/$id';
+import { Route } from '@/routes/_auth/conference/session/$id';
 import { formatearFecha } from './AConference';
 import { Button } from '../ui/button';
 import ModalEliminar from './ModalDelete';

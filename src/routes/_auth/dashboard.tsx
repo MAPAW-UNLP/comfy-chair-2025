@@ -68,6 +68,10 @@ function DashboardPage() {
                   <p className="text-sm text-muted-foreground">Afiliación</p>
                   <p className="font-medium">{user.affiliation}</p>
                 </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Rol</p>
+                  <p className="font-medium">{user.role}</p>
+                </div>
                 <Button onClick={handleLogout} variant="destructive" size="sm" className="w-full mt-4">
                   Cerrar Sesión
                 </Button>
