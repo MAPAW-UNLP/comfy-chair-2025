@@ -20,6 +20,7 @@ import { SearchBar } from './ConferenceSearch';
 import SessionArticleCard from './SessionArticleCard';
 import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import Statistics from './Statistics';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -42,10 +43,6 @@ function ASession() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const goToConferencia = () => {
-    navigate({ to: `/conference/${session!.conference?.id}` });
   };
 
   const handleEliminarSession = () => {
@@ -145,7 +142,7 @@ function ASession() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
         {verEstadisticas ? (
-          <div>estadisticas</div>
+          <Statistics fromConference={false} />
         ) : (
           <>
             <div className="flex flex-col gap-3">

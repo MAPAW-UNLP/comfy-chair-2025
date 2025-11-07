@@ -154,10 +154,21 @@ export const getArticleById = async (id: number): Promise<Article> => {
 };
 
 
-// Obtener artículo por ID de sesión grupo 3
+// Obtener artículos por ID de sesión grupo 3
 export const getArticleBySessionId = async (id: number): Promise<Article[]> => {
   console.log('Obteniendo artículos para la sesión con ID:', id);
   const res = await api.get(`/api/article/getArticlesBySessionId/${id}/`);
   if (!res.status || res.status >= 400) throw new Error("Error al obtener los artículos");
   return res.data;
 };
+
+// Obtener artículos por ID de conferencia grupo 3
+export const getArticleByConferenceId = async (id: number): Promise<Article[]> => {
+  console.log('Obteniendo artículos para la conferencia con ID:', id);
+  const res = await api.get(`/api/article/getArticlesByConferenceId/${id}/`); //TODO: todavia no esta este endpoint, ver si es el mismo nombre de ruta
+  if (!res.status || res.status >= 400) throw new Error("Error al obtener los artículos");
+  return res.data;
+};
+
+
+

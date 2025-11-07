@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import Statistics from './Statistics';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -145,7 +146,7 @@ function AConference() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-8">
         {verEstadisticas ? (
-          <div> estadisticas</div>
+          <Statistics fromConference={true} />
         ) : (
           <>
             <div className="flex flex-col gap-5">
