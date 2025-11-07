@@ -3,7 +3,7 @@ import { Route } from '@/routes/conference/$id';
 import { Edit, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { getUserById, type User } from '@/services/userServices';
+import { getAllUsers, getUserById, type User } from '@/services/userServices';
 import AltaSession from './SessionCreate';
 import { getSessionsByConference } from '@/services/sessionServices';
 import type { Session } from '@/services/sessionServices';
@@ -67,12 +67,12 @@ function AConference() {
 
     const getChairs = async () => {
       const chairsIds = conferencia.chairs;
-      const users: User[] = [];
+      if (!chairsIds) return;
 
-      for (const ch of chairsIds!) {
-        const user = await getUserById(ch);
-        users.push(user);
-      }
+      const allUsers = await getAllUsers();
+      const users = allUsers.filter((user: User) =>
+        chairsIds.includes(user.id)
+      );
 
       if (!isCancelled) {
         setChairs(users);
