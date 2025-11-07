@@ -1,9 +1,10 @@
+import type { Conference } from '@/components/conference/ConferenceApp';
 import { axiosInstance as api } from './api';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
-export interface Conference {
-  id: string;
+export interface ConferenceG1 {
+  id: number;
   title: string;
   description: string;
   start_date: string;
@@ -11,14 +12,16 @@ export interface Conference {
   blind_kind: VISTA_CHOICES;
 }
 
-export const getAllConferencesGrupo1 = async (): Promise<Conference[]> => {
+// Obtener todas las conferencias que no han finalizado
+export const getAllConferencesGrupo1 = async (): Promise<ConferenceG1[]> => {
   const response = await api.get('/api/conference');
-  return response.data;
-}
+  const now = new Date();
+  return response.data.filter((conf: Conference) => new Date(conf.end_date) >= now);
+};
+import type { User } from './userServices';
 
 export const getAllConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/');
-  console.log(response.data);
   return response.data;
 };
 
@@ -28,13 +31,12 @@ export const getActiveConferences = async (): Promise<Conference[]> => {
     return response.data;
   } catch (err) {
     console.warn('Backend no disponible, devolviendo lista vacía.');
-    return []; 
+    return [];
   }
 };
 
 export const getFinishedConferences = async (): Promise<Conference[]> => {
   const response = await api.get('/api/conference/finished/');
-  console.log(response.data);
   return response.data;
 };
 
@@ -43,61 +45,65 @@ export const getConference = async (id: string): Promise<Conference> => {
   return response.data;
 };
 
+const errorMessages: Record<string, string> = {
+  'conference with this title already exists.':
+    'Ya existe una conferencia con ese título',
+  'Ensure this field has no more than 300 characters.':
+    'La descripción no debe tener más de 300 caracteres',
+  'Ensure this field has no more than 50 characters.':
+    'El título no debe tener más de 50 caracteres',
+  'Se requiere al menos un chair para crear/editar la conferencia.':
+    'Se requiere al menos un chair para crear/editar la conferencia.',
+};
+
+const handleConferenceError = (err: any, isCreate: boolean) => {
+  const message = err.response?.data;
+  const posibleError = message?.title?.[0] || message?.description?.[0] || message?.chairs?.[0];
+  if (posibleError && errorMessages[posibleError]) {
+    if (errorMessages[posibleError] === 'Se requiere al menos un chair para crear/editar la conferencia.') {
+      if (isCreate) throw new Error('Se requiere al menos un chair para crear la conferencia.');
+      else throw new Error('Se requiere al menos un chair para editar la conferencia.');
+    }
+    throw new Error(errorMessages[posibleError]);
+  }
+  console.error(err);
+  throw err;
+};
+
 export const createConference = async (
-  conferencia: Omit<Conference, 'id'>
+  conferencia: Omit<Conference, 'id'>,
+  chairs: User[]
 ): Promise<Conference> => {
   try {
-    const response = await api.post('/api/conference/', conferencia);
+    const response = await api.post('/api/conference/', {
+      ...conferencia,
+      chairs: chairs.map(user => user.id),
+    });
 
     return response.data;
-  } catch (err: any) {
-    console.log(err);
-    if (
-      err.response?.data?.title?.[0] ==
-      'conferencia with this title already exists.'
-    ) {
-      throw new Error('Ya existe una conferencia con ese título');
-    } else if (
-      err.response?.data?.description?.[0] ==
-      'Ensure this field has no more than 300 characters.'
-    ) {
-      throw new Error('La descripción no debe tener más de 300 caracteres');
-    } else if (
-      err.response?.data?.title?.[0] ==
-      'Ensure this field has no more than 50 characters.'
-    ) {
-      throw new Error('El título no debe tener más de 50 caracteres');
-    } else throw err;
+  } catch (err) {
+    handleConferenceError(err, true);
+    throw err;
+  }
+};
+
+export const updateConference = async (
+  id: string,
+  conferencia: Omit<Conference, 'id'>,
+  chairs: User[]
+): Promise<Conference> => {
+  try {
+    const response = await api.patch(`/api/conference/${id}/`, {
+      ...conferencia,
+      chairs: chairs.map(user => user.id),
+    });
+    return response.data;
+  } catch (err) {
+    handleConferenceError(err, false);
+    throw err;
   }
 };
 
 export const deleteConference = async (id: string): Promise<void> => {
   await api.delete(`/api/conference/${id}/`);
-};
-
-export const updateConference = async (
-  id: string,
-  conferencia: Omit<Conference, 'id'>
-): Promise<Conference> => {
-  try {
-    const response = await api.put(`/api/conference/${id}/`, conferencia);
-    return response.data;
-  } catch (err: any) {
-    if (
-      err.response?.data?.title?.[0] ==
-      'conferencia with this title already exists.'
-    ) {
-      throw new Error('Ya existe una conferencia con ese título');
-    } else if (
-      err.response?.data?.description?.[0] ==
-      'Ensure this field has no more than 300 characters.'
-    ) {
-      throw new Error('La descripción no debe tener más de 300 caracteres');
-    } else if (
-      err.response?.data?.title?.[0] ==
-      'Ensure this field has no more than 50 characters.'
-    ) {
-      throw new Error('El título no debe tener más de 50 caracteres');
-    } else throw err;
-  }
 };

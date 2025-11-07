@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getAllUsers, type User } from '@/services/userServices';
-import { getAllConferencesGrupo1, type Conference } from '@/services/conferenceServices';
+import { getAllConferences, type Conference } from '@/services/conferenceServices';
 import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
 
@@ -27,7 +27,7 @@ function RouteComponent() {
   //Recupera conferencias del server ni bien se abre la pestaña
   useEffect(() => {
     const fetchConferences = async () => {
-      const data = await getAllConferencesGrupo1();
+      const data = await getAllConferences();
       setConference(data);
       console.log(data);
     };
@@ -36,7 +36,7 @@ function RouteComponent() {
 
   //Cuerpo del Componente
   return (
-      <div className="flex flex-wrap gap-4 mx-4 justify-center">
+      <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
         {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
         <ArticleForm users={userList} conferences={conferenceList}/>
       </div>

@@ -106,3 +106,16 @@ export const markNotificationAsRead = async (notificationId: number): Promise<Ma
   const response = await api.post(`/notifications/${notificationId}/read/`);
   return response.data;
 }
+
+//Necesario para grupo-3
+export const getCommonUsers= async (): Promise<User[]> =>{
+  const response = await api.get('/user/getCommonUsers');
+  return response.data;
+}
+
+export const getUserById= async (id: number): Promise<User> =>{
+  const response = await api.get(`/user/getUserById/${id}`);
+  return response.data;
+}
+
+//-----------------------------------------------------------

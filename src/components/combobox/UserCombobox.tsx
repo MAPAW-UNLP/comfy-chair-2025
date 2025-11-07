@@ -9,9 +9,11 @@ import type { User } from "@/services/userServices";
 type UserComboboxProps = {
   users: User[];
   onValueChange?: (userId: number) => void;
+  isChair?: boolean;
+  backgroundWhite?: boolean;
 };
 
-export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
+export function UserCombobox({ users, onValueChange, isChair = false, backgroundWhite = false }: UserComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
   const [query, setQuery] = React.useState("");
@@ -34,12 +36,13 @@ export function UserCombobox({ users, onValueChange }: UserComboboxProps) {
           aria-expanded={open}
           className={cn(
             "justify-between font-normal text-sm",
-            !selectedUser ? "text-gray-500" : "text-gray-900"
+            !selectedUser ? "text-gray-500" : "text-gray-900",
+            backgroundWhite && "bg-white hover:bg-gray-50"
           )}
         >
           {selectedUser
             ? `${selectedUser.full_name} `
-            : "Seleccione al menos un autor..."}
+            : `Seleccione al menos un ${isChair ? "chair" : "autor"}...`}
           <ChevronsUpDown className="opacity-25" />
         </Button>
       </PopoverTrigger>

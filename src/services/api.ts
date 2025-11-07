@@ -1,7 +1,21 @@
 import axios from 'axios';
 
+// ✅ MIN: baseURL robusto con fallback y normalización
+const rawBase = (import.meta as any)?.env?.VITE_API_BASE as string | undefined;
+let baseURL =
+  (rawBase && rawBase.trim()) ||
+  (() => {
+    const proto = window.location.protocol === 'https:' ? 'https' : 'http';
+    const host = window.location.hostname || 'localhost';
+    const port = '8000';
+    return `${proto}://${host}${port ? `:${port}` : ''}`;
+  })();
+
+// sin barra final
+baseURL = baseURL.replace(/\/+$/, '');
+
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -36,7 +50,7 @@ axiosInstance.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      
+
       // Use TanStack Router navigation if available
       if (navigateToLogin) {
         navigateToLogin();
@@ -45,5 +59,13 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export default axiosInstance;
