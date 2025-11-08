@@ -84,17 +84,17 @@ function RouteComponent() {
 
   // Spinner de carga
   if (loading) {
-    return (
-      <div className="flex items-center justify-center w-full min-h-full">
-        <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+      return (
+          <div className="grid place-items-center w-full min-h-[calc(100dvh-64px)]">
+              <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+      );
   }
 
   // Mensaje si la conferencia no existe
   if (!conference) {
     return (
-      <div className="flex flex-col items-center justify-center w-full min-h-full">
+      <div className="flex flex-col items-center justify-center w-full min-h-[calc(100dvh-64px)]">
         <h1 className="text-2xl font-bold italic text-slate-500 text-center">
           No se encontró la conferencia solicitada...
         </h1>
@@ -119,7 +119,7 @@ function RouteComponent() {
       
       {/* Si hay articulos mapea cada uno como una card, sino muestra un mensaje */}
       {articulo.length === 0 ? (
-        <div className="flex flex-col items-center justify-center w-full min-h-[60vh]">
+        <div className="flex flex-col items-center justify-center w-full min-h-[80vh]">
           <h1 className="text-2xl font-bold italic text-slate-500 text-center">
             No hay artículos para mostrar...
           </h1>

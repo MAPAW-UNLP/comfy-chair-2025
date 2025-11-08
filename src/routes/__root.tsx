@@ -45,7 +45,7 @@ const RootLayoutContent = () => {
       <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
 
         {/* Navegación visible solo en pantallas medianas en adelante */}
-        <nav className="hidden md:flex gap-2 order-1 md:order-1">
+        <nav className="hidden xl:flex gap-2 order-1 xl:order-1">
           {links.map((link) => (
             <Link key={link.to} to={link.to} className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
               {link.label}
@@ -56,14 +56,14 @@ const RootLayoutContent = () => {
         {/* Nombre de la app + ícono, ahora enlaza al landing page */}
         <Link
           to="/"
-          className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
+          className="font-bold text-lg order-2 xl:order-2 ml-auto flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
         >
           ComfyChair
           <Armchair />
         </Link>
 
         {/* Botón colapsable (solo se muestra en móvil) */}
-        <button onClick={() => setIsOpen(true)} className="md:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}
+        <button onClick={() => setIsOpen(true)} className="xl:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}
           <Menu />
         </button>
 
@@ -73,7 +73,7 @@ const RootLayoutContent = () => {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar móvil (se desliza desde la izquierda) */}
-        <aside className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:hidden`}>
+        <aside className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'} xl:hidden`}>
 
           {/* Encabezado del menú móvil */}
           <div className="flex items-center justify-between p-4">

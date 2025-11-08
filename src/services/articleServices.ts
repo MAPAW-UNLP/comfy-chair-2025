@@ -65,7 +65,6 @@ function normalizeArticleShape(raw: any): Article {
   };
 }
 
-
 //------------------------------------------------------------
 // GRUPO 1 - Buscar Articulo por ID
 //------------------------------------------------------------
@@ -89,34 +88,34 @@ export const getArticlesByConferenceId = async (conferenceId: number): Promise<A
 //------------------------------------------------------------
 export async function createArticle(newArticle: ArticleNew) {
   const formData = new FormData();
-  formData.append('title', newArticle.title);
-  formData.append('main_file', newArticle.main_file);
-  if (newArticle.source_file && newArticle.source_file !== null) {
-    formData.append('source_file', newArticle.source_file);
+  formData.append("title", newArticle.title);
+  formData.append("main_file", newArticle.main_file);
+  if (newArticle.source_file) {
+    formData.append("source_file", newArticle.source_file);
   }
-  formData.append('status', newArticle.status || 'reception');
-  formData.append('type', newArticle.type || '');
-  formData.append('abstract', newArticle.abstract || '');
-  formData.append('corresponding_author_id', newArticle.corresponding_author?.toString() || '');
-  formData.append('session_id', newArticle.session?.toString() || '');
+  formData.append("status", newArticle.status || "reception");
+  formData.append("type", newArticle.type || "");
+  formData.append("abstract", newArticle.abstract || "");
+  formData.append("corresponding_author_id", newArticle.corresponding_author?.toString() || "");
+  formData.append("session_id", newArticle.session?.toString() || "");
 
   newArticle.authors.forEach((authorId) => {
-    formData.append('authors_ids', authorId.toString());
+    formData.append("authors_ids", authorId.toString());
   });
 
-  const response = await fetch('http://127.0.0.1:8000/api/article/', {
-    method: 'POST',
-    body: formData,
-  });
+  try {
+    const res = await api.post(`/api/article/`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    console.error('Error response:', errorData);
-    console.error('Status:', response.status);
-    throw new Error(`Error al crear el artículo: ${JSON.stringify(errorData)}`);
+    return normalizeArticleShape(res.data);
+
+  } catch (err: any) {
+    if (err.response?.data) {
+      throw new Error(JSON.stringify(err.response.data));
+    }
+    throw err;
   }
-  const data = await response.json();
-  return normalizeArticleShape(data);
 }
  
 //------------------------------------------------------------

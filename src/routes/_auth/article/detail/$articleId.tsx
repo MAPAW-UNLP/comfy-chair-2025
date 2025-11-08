@@ -58,7 +58,7 @@ function RouteComponent() {
   // Spinner de carga
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full min-h-full">
+      <div className="grid place-items-center w-full min-h-[calc(100dvh-64px)]">
         <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -67,7 +67,7 @@ function RouteComponent() {
   // Mensaje si el articulo no existe
   if (!article) {
     return (
-      <div className="flex flex-col items-center justify-center w-full min-h-full">
+      <div className="flex flex-col items-center justify-center w-full min-h-[calc(100dvh-64px)]">
         <h1 className="text-2xl font-bold italic text-slate-500 text-center">
           No se encontró el artículo solicitado...
         </h1>

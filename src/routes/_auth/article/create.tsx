@@ -19,7 +19,6 @@ import { getAllUsers, type User } from '@/services/userServices';
 import { getActiveConferences } from '@/services/conferenceServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
 
-//URL de la página
 export const Route = createFileRoute('/_auth/article/create')({
   component: RouteComponent,
 })
@@ -69,7 +68,7 @@ function RouteComponent() {
   // Spinner de carga
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full min-h-full">
+      <div className="grid place-items-center w-full min-h-[calc(100dvh-64px)]">
         <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -84,4 +83,3 @@ function RouteComponent() {
   );
 
 }
-
