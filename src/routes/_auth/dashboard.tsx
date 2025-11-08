@@ -28,13 +28,18 @@ function DashboardPage() {
   }
 
   const handleRoleClick = (conference: ProcessedConference, role: string) => {
-    alert(
-      `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
-      `Conferencia: ${conference.conference_name}\n` +
-      `Conference ID: ${conference.conference_id}\n` +
-      `Rol: ${role}\n\n` +
-      `Esta funcionalidad redirigirá a la página correspondiente del rol una vez que las rutas estén completamente implementadas.`
-    )
+    if(role === "autor"){
+      navigate({ to: `/articles/${conference.conference_id}`, replace: true })
+    }
+    else{
+       alert(
+        `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
+        `Conferencia: ${conference.conference_name}\n` +
+        `Conference ID: ${conference.conference_id}\n` +
+        `Rol: ${role}\n\n` +
+        `Esta funcionalidad redirigirá a la página correspondiente del rol una vez que las rutas estén completamente implementadas.`
+      )
+    }
   }
 
   return (

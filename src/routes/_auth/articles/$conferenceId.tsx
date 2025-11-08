@@ -35,7 +35,7 @@ function RouteComponent() {
 
   // Navegacion
   const navigate = useNavigate();
-  const handleBack = () => navigate({ to: `/articles/test`, replace: true }); // RUTA PROVISORIA. DEBE VOLVER AL DASHBOARD
+  const handleBack = () => navigate({ to: `/dashboard`, replace: true });
 
   // Estado de carga
   const [loading, setLoading] = useState(true);

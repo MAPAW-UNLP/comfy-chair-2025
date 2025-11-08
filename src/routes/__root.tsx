@@ -22,7 +22,6 @@ const RootLayoutContent = () => {
     ? [
       { to: '/reviewer/', label: 'Revisor' },
       { to: '/conference/view', label: 'Conferencias' },
-      { to: '/articles/test', label: 'Articulos' },
       { to: '/article/create', label: 'Subir Articulo' },
       { to: '/article/select', label: 'Asignar Revisor' },
       { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },

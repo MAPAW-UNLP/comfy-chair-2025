@@ -46,14 +46,9 @@
     articles/$conferenceId - (src/routes/articles/conferenceId.tsx)
         * Hace uso del componente "ArticleCard"
         * Muestra un mensaje si no encuentra una conferencia con el id indicado
-        * Permite volver al menú anterior (articles/test provisoriamente, luego será el dashboard de inicio)
+        * Permite volver al menú anterior (dashboard)
         * Muestra el titulo de la conferencia seleccionada
         * Muestra todos los articulos de la conferencia seleccionada
-
-    articles/test - (src/routes/articles/test.tsx)
-        * Componente provisorio que simula ser el dashboard del grupo 5
-        * Muestra todas las conferencias activas en forma de botones
-        * Permite entrar a ver los articulos de una conferencia al clickear una
 
 # ---------- Services ----------
 

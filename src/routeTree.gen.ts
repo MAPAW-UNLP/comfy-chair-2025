@@ -21,7 +21,6 @@ import { Route as AuthReviewerAssignedRouteImport } from './routes/_auth/reviewe
 import { Route as AuthConferenceViewRouteImport } from './routes/_auth/conference/view'
 import { Route as AuthConferenceCreateRouteImport } from './routes/_auth/conference/create'
 import { Route as AuthConferenceIdRouteImport } from './routes/_auth/conference/$id'
-import { Route as AuthArticlesTestRouteImport } from './routes/_auth/articles/test'
 import { Route as AuthArticlesConferenceIdRouteImport } from './routes/_auth/articles/$conferenceId'
 import { Route as AuthArticleSelectRouteImport } from './routes/_auth/article/select'
 import { Route as AuthArticleCreateRouteImport } from './routes/_auth/article/create'
@@ -91,11 +90,6 @@ const AuthConferenceCreateRoute = AuthConferenceCreateRouteImport.update({
 const AuthConferenceIdRoute = AuthConferenceIdRouteImport.update({
   id: '/conference/$id',
   path: '/conference/$id',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthArticlesTestRoute = AuthArticlesTestRouteImport.update({
-  id: '/articles/test',
-  path: '/articles/test',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthArticlesConferenceIdRoute =
@@ -169,7 +163,6 @@ export interface FileRoutesByFullPath {
   '/article/create': typeof AuthArticleCreateRoute
   '/article/select': typeof AuthArticleSelectRoute
   '/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
-  '/articles/test': typeof AuthArticlesTestRoute
   '/conference/$id': typeof AuthConferenceIdRoute
   '/conference/create': typeof AuthConferenceCreateRoute
   '/conference/view': typeof AuthConferenceViewRoute
@@ -194,7 +187,6 @@ export interface FileRoutesByTo {
   '/article/create': typeof AuthArticleCreateRoute
   '/article/select': typeof AuthArticleSelectRoute
   '/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
-  '/articles/test': typeof AuthArticlesTestRoute
   '/conference/$id': typeof AuthConferenceIdRoute
   '/conference/create': typeof AuthConferenceCreateRoute
   '/conference/view': typeof AuthConferenceViewRoute
@@ -221,7 +213,6 @@ export interface FileRoutesById {
   '/_auth/article/create': typeof AuthArticleCreateRoute
   '/_auth/article/select': typeof AuthArticleSelectRoute
   '/_auth/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
-  '/_auth/articles/test': typeof AuthArticlesTestRoute
   '/_auth/conference/$id': typeof AuthConferenceIdRoute
   '/_auth/conference/create': typeof AuthConferenceCreateRoute
   '/_auth/conference/view': typeof AuthConferenceViewRoute
@@ -248,7 +239,6 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/article/select'
     | '/articles/$conferenceId'
-    | '/articles/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -273,7 +263,6 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/article/select'
     | '/articles/$conferenceId'
-    | '/articles/test'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -299,7 +288,6 @@ export interface FileRouteTypes {
     | '/_auth/article/create'
     | '/_auth/article/select'
     | '/_auth/articles/$conferenceId'
-    | '/_auth/articles/test'
     | '/_auth/conference/$id'
     | '/_auth/conference/create'
     | '/_auth/conference/view'
@@ -409,13 +397,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConferenceIdRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/articles/test': {
-      id: '/_auth/articles/test'
-      path: '/articles/test'
-      fullPath: '/articles/test'
-      preLoaderRoute: typeof AuthArticlesTestRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/articles/$conferenceId': {
       id: '/_auth/articles/$conferenceId'
       path: '/articles/$conferenceId'
@@ -502,7 +483,6 @@ interface AuthRouteChildren {
   AuthArticleCreateRoute: typeof AuthArticleCreateRoute
   AuthArticleSelectRoute: typeof AuthArticleSelectRoute
   AuthArticlesConferenceIdRoute: typeof AuthArticlesConferenceIdRoute
-  AuthArticlesTestRoute: typeof AuthArticlesTestRoute
   AuthConferenceIdRoute: typeof AuthConferenceIdRoute
   AuthConferenceCreateRoute: typeof AuthConferenceCreateRoute
   AuthConferenceViewRoute: typeof AuthConferenceViewRoute
@@ -525,7 +505,6 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthArticleCreateRoute: AuthArticleCreateRoute,
   AuthArticleSelectRoute: AuthArticleSelectRoute,
   AuthArticlesConferenceIdRoute: AuthArticlesConferenceIdRoute,
-  AuthArticlesTestRoute: AuthArticlesTestRoute,
   AuthConferenceIdRoute: AuthConferenceIdRoute,
   AuthConferenceCreateRoute: AuthConferenceCreateRoute,
   AuthConferenceViewRoute: AuthConferenceViewRoute,
