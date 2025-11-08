@@ -19,7 +19,8 @@ import { getAllUsers, type User } from '@/services/userServices';
 import { getActiveConferences } from '@/services/conferenceServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
 
-export const Route = createFileRoute('/article/create')({
+//URL de la página
+export const Route = createFileRoute('/_auth/article/create')({
   component: RouteComponent,
 })
 
@@ -83,3 +84,4 @@ function RouteComponent() {
   );
 
 }
+

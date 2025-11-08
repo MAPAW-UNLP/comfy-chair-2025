@@ -27,7 +27,7 @@ type CompleteReviewerInfo = Omit<ReviewerInfo, "email" | "interest"> & {
 }
 
 export const ReviewerApp = () => {
-  const { id } = useParams({ from: "/article/assign/$id" })
+  const { id } = useParams({ from: "/_auth/article/assign/$id" })
 
   const [reviewers, setReviewers] = useState<CompleteReviewerInfo[]>([])
   const [article, setArticle] = useState<Article | null>(null)

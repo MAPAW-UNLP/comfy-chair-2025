@@ -37,7 +37,7 @@ function hrefFrom(path?: string | null) {
 
 export default function ReviewArticle() {
   const navigate = useNavigate();
-  const { articleId: articleIdParam } = useParams({ from: "/reviewer/review/$articleId" });
+  const { articleId: articleIdParam } = useParams({ from: "/_auth/reviewer/review/$articleId" });
   const articleId = Number(articleIdParam);
 
   const { user } = useAuth();
