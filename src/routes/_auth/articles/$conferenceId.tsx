@@ -27,7 +27,7 @@ import { getArticlesByConferenceId } from '@/services/articleServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
 import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/articles/$conferenceId')({
+export const Route = createFileRoute('/_auth/articles/$conferenceId')({
   component: RouteComponent,
 })
 
@@ -41,7 +41,7 @@ function RouteComponent() {
   const [loading, setLoading] = useState(true);
 
   // Parametros de entrada (conferenceId)
-  const { conferenceId } = useParams({ from: '/articles/$conferenceId' });
+  const { conferenceId } = useParams({ from: '/_auth/articles/$conferenceId' });
   const id = Number(conferenceId);
 
   //Conferencia Actual

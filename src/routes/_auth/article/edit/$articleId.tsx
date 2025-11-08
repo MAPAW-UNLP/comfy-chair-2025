@@ -27,7 +27,7 @@ import { getActiveConferences } from '@/services/conferenceServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
 import { getArticleById, type Article } from '@/services/articleServices';
 
-export const Route = createFileRoute('/article/edit/$articleId')({
+export const Route = createFileRoute('/_auth/article/edit/$articleId')({
   component: RouteComponent,
 })
 
@@ -37,7 +37,7 @@ function RouteComponent() {
   const [loading, setLoading] = useState(true);
 
   // Parametros de entrada (articleId)
-  const { articleId } = useParams({ from: '/article/edit/$articleId' });
+  const { articleId } = useParams({ from: '/_auth/article/edit/$articleId' });
   const id = Number(articleId);
 
   // Articulo Actual

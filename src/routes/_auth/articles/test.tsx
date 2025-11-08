@@ -21,7 +21,7 @@ import { getActiveConferences } from '@/services/conferenceServices';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { type Conference } from '@/components/conference/ConferenceApp';
 
-export const Route = createFileRoute('/articles/test')({
+export const Route = createFileRoute('/_auth/articles/test')({
   component: RouteComponent,
 })
 
