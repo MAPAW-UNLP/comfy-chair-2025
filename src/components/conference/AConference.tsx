@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route } from '@/routes/conference/$id';
+import { Route } from '@/routes/_auth/conference/$id';
 import { Edit, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';

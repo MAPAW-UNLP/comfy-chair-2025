@@ -5,12 +5,12 @@ import { getArticleById, type Article } from '@/services/articleServices';
 import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
 
-export const Route = createFileRoute('/article/edit/$id')({
+export const Route = createFileRoute('/_auth/article/edit/$id')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { id } = useParams({ from: '/article/edit/$id' });
+  const { id } = useParams({ from: '/_auth/article/edit/$id' });
   const articleId = Number(id);
 
   //Listas de Usuarios y Conferencias
@@ -59,3 +59,4 @@ function RouteComponent() {
       </div>
     )
 }
+

@@ -7,7 +7,7 @@ import {
   getActiveConferences,
   getFinishedConferences,
 } from '@/services/conferenceServices';
-import { Route } from '@/routes/conference/view';
+import { Route } from '@/routes/_auth/conference/view';
 import { useEffect, useState } from 'react';
 import { SearchBar } from './ConferenceSearch';
 

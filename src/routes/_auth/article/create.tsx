@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import ArticleForm from '@/components/article/ArticleForm';
 
 //URL de la página
-export const Route = createFileRoute('/article/create')({
+export const Route = createFileRoute('/_auth/article/create')({
   component: RouteComponent,
 })
 
@@ -42,3 +42,4 @@ function RouteComponent() {
       </div>
     )
 }
+

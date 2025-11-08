@@ -5,7 +5,7 @@ type SearchParams = {
   sessionId: string;
 };
 
-export const Route = createFileRoute('/chairs/selection/articles-session')({
+export const Route = createFileRoute('/_auth/chairs/selection/articles-session')({
   component: RouteComponent,
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {

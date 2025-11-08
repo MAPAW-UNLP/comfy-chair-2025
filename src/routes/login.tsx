@@ -79,8 +79,8 @@ function LoginPage() {
 
   useEffect(() => {
     if (user && !isLoading) {
-      // Redirect to the original destination or default to panel
-      navigate({ to: redirect || '/panel' })
+      // Redirect to the original destination or default to dashboard
+      navigate({ to: redirect || '/dashboard' })
     }
   }, [user, navigate, redirect, isLoading])
 
