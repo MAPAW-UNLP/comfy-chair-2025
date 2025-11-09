@@ -57,6 +57,7 @@
         * metodo "updateArticle()"
         * metodo "getArticleById()"
         * metodo "getArticlesByConferenceId()"
+        * metodo "deleteArticle()"
 
     conferenceServices - (src/services/conferenceServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
         * metodo "getActiveConferences()"

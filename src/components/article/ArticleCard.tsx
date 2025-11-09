@@ -8,8 +8,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
+import { deleteArticle } from "@/services/articleServices";
 import { type Article, type Status } from "@/services/articleServices";
-import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon } from "lucide-react";
+import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
@@ -99,6 +100,22 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
     link.click();
   };
 
+  const handleDelete = async (id: number) => {
+    const confirmar = window.confirm("¿Estás seguro de que querés eliminar este artículo? Esta acción no se puede deshacer.");
+    if (!confirmar) return;
+
+    try {
+      await deleteArticle(id);
+      alert("Artículo eliminado correctamente.");
+
+      window.location.reload();
+
+    } catch (error: any) {
+      console.error("Error al eliminar el artículo:", error);
+      alert("No se pudo eliminar el artículo. Detalles: " + error.message);
+    }
+  };
+
   //------------------------------------------------------------
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
   //------------------------------------------------------------
@@ -172,6 +189,11 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
               {article.type === "poster" && (
                 <DropdownMenuItem onClick={() => handleDownload(`${API_BASE}/api/article/${article?.id}/download_source/`, "Fuentes")}>
                   <FileDownIcon/> Descargar Fuentes
+                </DropdownMenuItem>
+              )}
+              {((tiempoRestante !== "invalido") && (article.status === "reception")) && (
+                <DropdownMenuItem onClick={() => handleDelete(article.id)}>
+                  <Trash2Icon/> Eliminar Articulo
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

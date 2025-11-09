@@ -155,6 +155,24 @@ export async function updateArticle(id: number, updated: ArticleUpdate) {
   }
 }
 
+//------------------------------------------------------------
+// GRUPO 1 - Eliminar Artículo por ID
+//------------------------------------------------------------
+export const deleteArticle = async (id: number): Promise<void> => {
+  try {
+    const res = await api.delete(`/api/article/${id}/`);
+
+    if (!res.status || res.status >= 400) {
+      throw new Error("Error al eliminar el artículo");
+    }
+  } catch (err: any) {
+    if (err.response?.data) {
+      throw new Error(JSON.stringify(err.response.data));
+    }
+    throw err;
+  }
+};
+
 // GRUPO 3 - Obtener artículo por ID de sesión
 export const getArticleBySessionId = async (id: number): Promise<Article[]> => {
   console.log('Obteniendo artículos para la sesión con ID:', id);
