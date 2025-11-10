@@ -20,6 +20,7 @@ import { UserCombobox } from "@/components/combobox/UserCombobox";
 import { ConferenceCombobox } from "../combobox/ConferenceCombobox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Importaciones de servicios
@@ -252,6 +253,53 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
   };
 
   //------------------------------------------------------------
+  // Efecto para cargar los archivos existentes (articulo y fuentes)
+  //------------------------------------------------------------
+  useEffect(() => {
+  
+    if (article) {
+  
+      // Manejo de los archivos del articulo
+      const mf: any = article.main_file;
+      const sf: any = article.source_file;
+  
+      // Cargar y settear el arthivo principal
+      if (mf) {
+        const url = typeof mf === 'string' ? mf : mf.url ?? null;
+        if (url) {
+          try {
+            const parts = url.split('/');
+            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingMainFileName(String(mf));
+          }
+        } else {
+          setExistingMainFileName(typeof mf === 'string' ? mf : null);
+        }
+      }
+
+      // Cargar y settear el archivo de fuentes (si existe)
+      if (sf) {
+        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
+        if (urlS) {
+          try {
+            const parts = urlS.split('/');
+            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingSourceFileName(String(sf));
+          }
+        } else {
+          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
+        }
+      } else {
+        setExistingSourceFileName(null);
+      }
+
+    }
+  
+  }, [article]);
+
+  //------------------------------------------------------------
   // Efecto para precargar datos del form en modo edición
   //------------------------------------------------------------
   useEffect(() => {
@@ -477,32 +525,31 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       {/* Links de archivos actuales (solo en modo edición) */}
       {editMode && (existingMainFileUrl || existingSourceFileUrl) && (
         <div className="flex flex-col md:flex-row gap-2 items-start justify-between text-xs text-sky-600">
-          
-          {/* Link archivo principal */}
-          {existingMainFileUrl && (
-            <a
-              href={existingMainFileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:underline"
+
+          {/* Botón archivo principal */}
+          {existingMainFileName && (
+            <Button
+              variant="link"
+              className="p-0 m-0 h-auto leading-none text-sky-600 hover:underline"
+              onClick={() => downloadMainFile(article!.id, existingMainFileName)}
             >
               Ver archivo actual{existingMainFileName ? `: ${existingMainFileName}` : ""}
-            </a>
+            </Button>
           )}
 
-          {/* Link archivo fuentes (solo si es poster y tiene fuente previa) */}
-          {articleType === "poster" && existingSourceFileUrl && (
-            <a
-              href={existingSourceFileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:underline"
+          {/* Botón archivo de fuentes */}
+          {articleType === "poster" && existingSourceFileName && (
+            <Button
+              variant="link"
+              className="p-0 m-0 h-auto leading-none text-sky-600 hover:underline"
+              onClick={() => downloadSourceFile(article!.id, existingSourceFileName)}
             >
-             Ver fuentes actuales{existingSourceFileName ? `: ${existingSourceFileName}` : ""}
-            </a>
+              Ver fuentes actuales{existingSourceFileName ? `: ${existingSourceFileName}` : ""}
+            </Button>
           )}
         </div>
       )}
+
 
       {/* Combobox de autores */}
       <div className="flex-1 flex flex-col gap-2">

@@ -7,8 +7,10 @@
 // Importaciones
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
+import { CornerUpLeftIcon } from "lucide-react";
 import { useNavigate } from '@tanstack/react-router'
 import type { Article, Status, Type } from "@/services/articleServices";
+import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 
 // Lo que espera recibir el componente
 export interface ArticleDetailProps {
@@ -40,9 +42,7 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
   const navigateBack = () => navigate({ to: `/articles/${article?.session?.conference?.id}`, replace: true });
 
   // Archivos (articulo y fuentes)
-  const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal
   const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal
-  const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes
   const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes
 
   //------------------------------------------------------------
@@ -59,7 +59,6 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
       // Cargar y settear el arthivo principal
       if (mf) {
         const url = typeof mf === 'string' ? mf : mf.url ?? null;
-        setExistingMainFileUrl(url);
         if (url) {
           try {
             const parts = url.split('/');
@@ -75,7 +74,6 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
       // Cargar y settear el archivo de fuentes (si existe)
       if (sf) {
         const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
-        setExistingSourceFileUrl(urlS);
         if (urlS) {
           try {
             const parts = urlS.split('/');
@@ -87,7 +85,6 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
           setExistingSourceFileName(typeof sf === 'string' ? sf : null);
         }
       } else {
-        setExistingSourceFileUrl(null);
         setExistingSourceFileName(null);
       }
 
@@ -99,17 +96,27 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
   // Renderizado del componente
   //------------------------------------------------------------
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-end items-center">
       <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg">
 
         {/* Campos del articulo */}
-        <div className="text-start flex flex-col gap-2 mb-4">
+        <div className="text-start flex flex-col gap-2">
+          
+          {/* Boton de retorno */}
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={navigateBack}className="wrap bg-zinc-500 text-white">
+              Volver
+              <CornerUpLeftIcon />
+            </Button>
+          </div>
+          
           <p><b>Título:</b> {article?.title}</p>
           <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
           <p><b>Sesión:</b> {article?.session?.title}</p>
           <p><b>Conferencia:</b> {article?.session?.conference?.title}</p>
           <p><b>Estado:</b> {estadoTexto[article?.status!] ?? "Desconocido"}</p>
           <p><b>Autor de Notificación:</b> {article?.corresponding_author?.email}</p>
+
           <p>
             <b>Autores:</b>{" "}
             {article?.authors?.map((author, index) => (
@@ -119,24 +126,37 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
               </span>
             ))}
           </p>
-          <p><b>Abstract:</b> {article?.abstract}</p>
-          {existingMainFileUrl && (
-            <p><b>Articulo: </b>
-              <a href={existingMainFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">{existingMainFileName ?? 'archivo'}</a>
-            </p>
-          )}
-          {existingSourceFileUrl && (
-            <p>
-              <b>Fuentes: </b>
-              <a href={existingSourceFileUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-600 hover:underline mt-1">{existingSourceFileName ?? 'archivo'}</a>
-            </p>
-          )}
-        </div>
 
-        {/* Boton de retorno */}
-        <Button variant="outline" onClick={navigateBack} className="w-full bg-slate-900 text-white">
-          Volver
-        </Button>
+          <p><b>Abstract:</b> {article?.abstract}</p>
+
+          <div className="flex flex-col md:flex-row gap-4 w-full">
+
+            {existingMainFileName && (
+              <div className="flex-1 grid items-start gap-2">
+                <Button
+                variant="outline"
+                onClick={() => downloadMainFile(article.id, existingMainFileName!)}
+                className="w-full bg-slate-900 text-white"
+                >
+                  Descargar Articulo
+                </Button>
+              </div>      
+            )}
+
+            {existingSourceFileName && (
+              <div className="flex-1 grid items-start gap-2">
+                <Button
+                variant="outline"
+                onClick={() => downloadSourceFile(article.id, existingSourceFileName!)}
+                className="w-full bg-slate-900 text-white"
+                >
+                  Descargar Fuentes
+                </Button>
+              </div>
+            )}
+
+          </div> 
+        </div>
       </div>
     </div>
   );

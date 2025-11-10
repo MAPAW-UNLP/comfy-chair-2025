@@ -173,6 +173,46 @@ export const deleteArticle = async (id: number): Promise<void> => {
   }
 };
 
+//------------------------------------------------------------
+// GRUPO 1 - Descargar archivo principal del artículo
+//------------------------------------------------------------
+export async function downloadMainFile(articleId: number, fileName: string) {
+  const res = await api.get(`/api/article/${articleId}/download_main/`, {
+    responseType: "blob",
+  });
+
+  if (res.status !== 200) {
+    throw new Error("No se pudo descargar el archivo principal.");
+  }
+
+  const url = window.URL.createObjectURL(res.data);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName || "archivo";
+  link.click();
+  window.URL.revokeObjectURL(url);
+}
+
+//------------------------------------------------------------
+// GRUPO 1 - Descargar archivo de fuentes del artículo
+//------------------------------------------------------------
+export async function downloadSourceFile(articleId: number, fileName: string) {
+  const res = await api.get(`/api/article/${articleId}/download_source/`, {
+    responseType: "blob",
+  });
+
+  if (res.status !== 200) {
+    throw new Error("No se pudo descargar el archivo de fuentes.");
+  }
+
+  const url = window.URL.createObjectURL(res.data);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName || "fuentes";
+  link.click();
+  window.URL.revokeObjectURL(url);
+}
+
 // GRUPO 3 - Obtener artículo por ID de sesión
 export const getArticleBySessionId = async (id: number): Promise<Article[]> => {
   console.log('Obteniendo artículos para la sesión con ID:', id);

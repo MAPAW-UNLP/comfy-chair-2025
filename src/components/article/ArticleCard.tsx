@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
 import { deleteArticle } from "@/services/articleServices";
 import { type Article, type Status } from "@/services/articleServices";
+import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -81,25 +82,17 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
   const navigateEditArticle = () => {navigate({ to: `/article/edit/${article.id}` });};
   const navigateDetailArticle = () => {navigate({ to: `/article/detail/${article.id}` });};
 
-  // Api para la descarga de archivos
-  const API_BASE = import.meta.env.VITE_API_URL;
-
   // Tiempo restante (deadline)
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
   const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;  
 
-  //------------------------------------------------------------
-  // Manejo  de la descarga de los archivos (articulo y fuentes)
-  //------------------------------------------------------------
-  const handleDownload = async (url: string, filename: string) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = filename; // nombre personalizado
-    link.click();
-  };
+  // Archivos
+  const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null);
+  const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null);
 
+  //------------------------------------------------------------
+  // Manejo de la baja de un archivo
+  //------------------------------------------------------------
   const handleDelete = async (id: number) => {
     const confirmar = window.confirm("¿Estás seguro de que querés eliminar este artículo? Esta acción no se puede deshacer.");
     if (!confirmar) return;
@@ -115,6 +108,53 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
       alert("No se pudo eliminar el artículo. Detalles: " + error.message);
     }
   };
+
+  //------------------------------------------------------------
+  // Efecto para cargar los archivos existentes (articulo y fuentes)
+  //------------------------------------------------------------
+  useEffect(() => {
+  
+    if (article) {
+  
+      // Manejo de los archivos del articulo
+      const mf: any = article.main_file;
+      const sf: any = article.source_file;
+  
+      // Cargar y settear el arthivo principal
+      if (mf) {
+        const url = typeof mf === 'string' ? mf : mf.url ?? null;
+        if (url) {
+          try {
+            const parts = url.split('/');
+            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingMainFileName(String(mf));
+          }
+        } else {
+          setExistingMainFileName(typeof mf === 'string' ? mf : null);
+        }
+      }
+
+      // Cargar y settear el archivo de fuentes (si existe)
+      if (sf) {
+        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
+        if (urlS) {
+          try {
+            const parts = urlS.split('/');
+            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
+          } catch (_) {
+            setExistingSourceFileName(String(sf));
+          }
+        } else {
+          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
+        }
+      } else {
+        setExistingSourceFileName(null);
+      }
+
+    }
+  
+  }, [article]);
 
   //------------------------------------------------------------
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
@@ -183,11 +223,11 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
                   <PencilIcon/> Editar Articulo
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => handleDownload(`${API_BASE}/api/article/${article?.id}/download_main/`, "Articulo")}>
+              <DropdownMenuItem onClick={() => downloadMainFile(article.id, existingMainFileName!)}>
                 <FileDownIcon/> Descargar Articulo
               </DropdownMenuItem>
               {article.type === "poster" && (
-                <DropdownMenuItem onClick={() => handleDownload(`${API_BASE}/api/article/${article?.id}/download_source/`, "Fuentes")}>
+                <DropdownMenuItem onClick={() => downloadSourceFile(article.id, existingSourceFileName!)}>
                   <FileDownIcon/> Descargar Fuentes
                 </DropdownMenuItem>
               )}
