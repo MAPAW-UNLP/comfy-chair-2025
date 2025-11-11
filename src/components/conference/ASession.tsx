@@ -11,10 +11,7 @@ import ModalEliminar from './ModalDelete';
 import { useNavigate } from '@tanstack/react-router';
 import EditarSession from './SessionEdit';
 import { getAllUsers, type User } from '@/services/userServices';
-import {
-  getArticleBySessionId,
-  type Article,
-} from '@/services/articleServices';
+import { getArticleBySessionId, type Article } from '@/services/articleServices';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import SessionArticleCard from './SessionArticleCard';
@@ -142,7 +139,13 @@ function ASession() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
         {verEstadisticas ? (
-          <Statistics fromConference={false} />
+          <Statistics 
+            fromConference={false}
+            acceptedArticles={articles.filter(a => a.status === 'accepted').length}
+            rejectedArticles={articles.filter(a => a.status === 'rejected').length}
+            capacity={session!.capacity}
+            totalArticles={articles.length}
+          />
         ) : (
           <>
             <div className="flex flex-col gap-3">

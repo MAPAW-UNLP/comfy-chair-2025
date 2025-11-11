@@ -3,22 +3,20 @@ import { Route } from '@/routes/conference/$id';
 import { Edit, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { getAllUsers, getUserById, type User } from '@/services/userServices';
+import { getAllUsers, type User } from '@/services/userServices';
 import AltaSession from './SessionCreate';
 import { getSessionsByConference } from '@/services/sessionServices';
 import type { Session } from '@/services/sessionServices';
 import SessionCard from './SessionCard';
 import ModalEliminar from './ModalDelete';
 import { deleteConference } from '@/services/conferenceServices';
-import {
-  CarouselContainer,
-  CarouselItem,
-} from '@/components/ui/carousel-container';
+import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import Statistics from './Statistics';
+import { getArticleByConferenceId, type Article } from '@/services/articleServices';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -34,6 +32,7 @@ function AConference() {
   const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
   const [verEstadisticas, setVerEstadisticas] = useState<boolean>(false);
   const [loadingSessions, setLoadingSessions] = useState(false);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   const irEditarConferencia = () => {
     navigate({ to: `/conference/edit/${conferencia.id}` });
@@ -62,6 +61,15 @@ function AConference() {
     navigate({ to: '/conference/view' });
   };
 
+  const fetchArticles = async () => {
+    try {
+      const data = await getArticleByConferenceId(Number(conferencia.id));
+      setArticles(data);
+    } catch (error) {
+      console.error('Error al cargar los artículos:', error);
+    }
+  };
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -81,6 +89,7 @@ function AConference() {
 
     getChairs();
     fetchSessions(); // Cargar sesiones al montar el componente
+    fetchArticles(); // Cargar artículos al montar el componente
 
     return () => {
       //Cancelo el seteo de chairs del efecto anterior si cambia conferencia
@@ -146,7 +155,11 @@ function AConference() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-8">
         {verEstadisticas ? (
-          <Statistics fromConference={true} />
+          <Statistics 
+            fromConference={true}
+            totalSessions={sessions.length}
+            totalArticles={articles.length}
+          />
         ) : (
           <>
             <div className="flex flex-col gap-5">
