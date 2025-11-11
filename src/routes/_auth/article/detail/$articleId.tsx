@@ -17,6 +17,7 @@
 
 import { useEffect, useState } from 'react';
 import ArticleDetail from '@/components/article/ArticleDetail';
+import Breadcrumb from '@/components/Breadcrumb'
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import { getArticleById, type Article } from '@/services/articleServices';
 
@@ -77,9 +78,25 @@ function RouteComponent() {
   
   // Cuerpo del componente
   return (
-    <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
-      {/* Le envío al componente el articulo actual */}
-      <ArticleDetail article={article} /> 
+    <div className="mx-4 my-4 w-full">
+      {/* Breadcrumb full width, left-aligned like the conference list */}
+      <div className="w-full">
+        <Breadcrumb
+          items={[
+            { label: 'Panel', to: '/dashboard' },
+            { label: article?.session?.conference?.title ?? 'Conferencia', to: `/articles/${article?.session?.conference?.id}` },
+            { label: article?.title ?? 'Artículo' },
+          ]}
+        />
+      </div>
+
+      {/* Article content centered below the breadcrumb */}
+      <div className="flex flex-wrap gap-4 justify-center">
+        <div className="w-full max-w-3xl">
+          {/* Le envío al componente el articulo actual */}
+          <ArticleDetail article={article} />
+        </div>
+      </div>
     </div>
   );
 

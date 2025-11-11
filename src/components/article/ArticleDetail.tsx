@@ -7,8 +7,7 @@
 // Importaciones
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
-import { CornerUpLeftIcon } from "lucide-react";
-import { useNavigate } from '@tanstack/react-router'
+import {  } from "lucide-react";
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 
@@ -37,9 +36,7 @@ const estadoTexto: Record<Status, string> = {
 //Cuerpo del Componente
 const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
-  // Navegación
-  const navigate = useNavigate();
-  const navigateBack = () => navigate({ to: `/articles/${article?.session?.conference?.id}`, replace: true });
+  // (Back button removed — breadcrumb handles navigation)
 
   // Archivos (articulo y fuentes)
   const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal
@@ -102,13 +99,7 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
         {/* Campos del articulo */}
         <div className="text-start flex flex-col gap-2">
           
-          {/* Boton de retorno */}
-          <div className="flex justify-center">
-            <Button variant="outline" onClick={navigateBack}className="wrap bg-zinc-500 text-white">
-              Volver
-              <CornerUpLeftIcon />
-            </Button>
-          </div>
+          {/* Back button removed — breadcrumb includes navigation */}
           
           <p><b>Título:</b> {article?.title}</p>
           <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
