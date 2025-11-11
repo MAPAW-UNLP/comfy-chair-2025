@@ -2,20 +2,20 @@ import { Card } from '@/components/ui/card';
 import type { LucideIcon } from 'lucide-react';
 
 export type ChartItem = {
-  label: string;
-  value: number;
-  icon: LucideIcon;
-  colorClass: string;
-  gradientClass: string;
+  label: string;           // Texto que aparece (ej: "Aceptados", "Regular")
+  value: number;           // El número/cantidad
+  icon: LucideIcon;        // Ícono de lucide-react (CheckCircle2, FileText, etc.)
+  colorClass: string;      // Clase de Tailwind para el color del texto/ícono
+  gradientClass: string;   // Clase de Tailwind para el gradiente de la barra
 };
 
 type ArticleStatsChartProps = {
-  title: string;
-  items: ChartItem[];
-  capacity?: number;
-  capacityLabel?: string;
-  capacityValue?: number;
-};
+  title: string;              // Título del gráfico (ej: "Estado de los Artículos")
+  items: ChartItem[];         // Array de items a mostrar (cada uno es una barra)
+  capacity?: number;          // (Opcional) Capacidad máxima 
+  capacityLabel?: string;     // (Opcional) Etiqueta para la capacidad
+  capacityValue?: number;     // (Opcional) Valor actual vs capacidad
+}
 
 export function ArticleStatsChart({ title, items, capacity, capacityLabel = 'Cupo máximo de artículos aceptados:', capacityValue }: ArticleStatsChartProps) {
   const total = items.reduce((sum, item) => sum + item.value, 0);
@@ -30,6 +30,7 @@ export function ArticleStatsChart({ title, items, capacity, capacityLabel = 'Cup
 
         {/* Renderizar cada item */}
         {items.map((item, index) => {
+          // Calcular el porcentaje de este item respecto al total
           const percentage = total > 0 ? (item.value / total) * 100 : 0;
           const Icon = item.icon;
 
@@ -85,6 +86,7 @@ export function ArticleStatsChart({ title, items, capacity, capacityLabel = 'Cup
                     ? 'bg-gradient-to-r from-orange-500 to-red-500'
                     : 'bg-gradient-to-r from-blue-500 to-blue-600'
                 }`}
+                // Limitar el ancho al 100% aunque se exceda la capacidad
                 style={{ width: `${Math.min((capacityValue / capacity) * 100, 100)}%` }}
               />
             </div>
