@@ -159,6 +159,11 @@ function AConference() {
             fromConference={true}
             totalSessions={sessions.length}
             totalArticles={articles.length}
+            sessionsWithArticles={sessions.map(session => ({
+              id: session.id,
+              title: session.title,
+              articleCount: articles.filter(article => article.session?.id === session.id).length
+            }))}
           />
         ) : (
           <>

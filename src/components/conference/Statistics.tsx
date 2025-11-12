@@ -1,6 +1,13 @@
 import { ArticleStatsChart, type ChartItem } from './ArticleStatsChart';
 import { CheckCircle2, XCircle, FileText, PresentationIcon } from 'lucide-react';
 
+// Tipo para representar una sesión con su cantidad de artículos
+export type SessionStats = {
+  id: number;
+  title: string;
+  articleCount: number;
+};
+
 type StatisticsProps = {
   fromConference: boolean;
   acceptedArticles?: number;
@@ -10,6 +17,7 @@ type StatisticsProps = {
   capacity?: number;
   totalSessions?: number;
   totalArticles?: number;
+  sessionsWithArticles?: SessionStats[];
 };
 
 function Statistics({ 
@@ -20,7 +28,7 @@ function Statistics({
   posterArticles = 0,
   capacity,
   totalSessions,
-  totalArticles
+  sessionsWithArticles = []
 }: StatisticsProps) {
   // Items para el gráfico de estado (aceptados/rechazados)
   const statusItems: ChartItem[] = [
@@ -73,14 +81,31 @@ function Statistics({
           </div>
         )}
 
-        {totalArticles !== undefined && (
-          <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-            <h3 className="text-lg font-semibold mb-2">Artículos enviados</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-3xl font-bold text-purple-600">{totalArticles}</span>
-              <span className="text-gray-600">artículos totales</span>
-            </div>
-          </div>
+        {/* Gráfico de artículos por sesión (solo en conferencia) */}
+        {fromConference && sessionsWithArticles.length > 0 && (
+          <ArticleStatsChart 
+            title="Artículos enviados por sesión"
+            items={sessionsWithArticles.map((session, index) => {
+              // Array de colores para diferenciar las sesiones
+              const colors = [
+                { colorClass: 'text-blue-600', gradientClass: 'bg-gradient-to-r from-blue-500 to-blue-600' },
+                { colorClass: 'text-purple-600', gradientClass: 'bg-gradient-to-r from-purple-500 to-purple-600' },
+                { colorClass: 'text-green-600', gradientClass: 'bg-gradient-to-r from-green-500 to-green-600' },
+                { colorClass: 'text-orange-600', gradientClass: 'bg-gradient-to-r from-orange-500 to-orange-600' },
+                { colorClass: 'text-pink-600', gradientClass: 'bg-gradient-to-r from-pink-500 to-pink-600' },
+                { colorClass: 'text-teal-600', gradientClass: 'bg-gradient-to-r from-teal-500 to-teal-600' },
+              ];
+              const colorIndex = index % colors.length;
+              
+              return {
+                label: session.title,
+                value: session.articleCount,
+                icon: FileText,
+                colorClass: colors[colorIndex].colorClass,
+                gradientClass: colors[colorIndex].gradientClass
+              };
+            })}
+          />
         )}
 
         {!fromConference && (
