@@ -10,7 +10,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
   if (!items || items.length === 0) return null
 
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground mb-4">
+    <nav aria-label="Breadcrumb" className="text-base text-muted-foreground">
       <ol className="flex items-center gap-2">
         {items.map((it, idx) => {
           const isLast = idx === items.length - 1

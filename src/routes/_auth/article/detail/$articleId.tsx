@@ -78,12 +78,12 @@ function RouteComponent() {
   
   // Cuerpo del componente
   return (
-    <div className="mx-4 my-4 w-full">
+    <div className="mx-4 my-4 flex flex-col items-center gap-4">
       {/* Breadcrumb full width, left-aligned like the conference list */}
-      <div className="w-full">
+      <div className="flex justify-center w-full">
         <Breadcrumb
           items={[
-            { label: 'Panel', to: '/dashboard' },
+            { label: 'Inicio', to: '/dashboard' },
             { label: article?.session?.conference?.title ?? 'Conferencia', to: `/articles/${article?.session?.conference?.id}` },
             { label: article?.title ?? 'Artículo' },
           ]}

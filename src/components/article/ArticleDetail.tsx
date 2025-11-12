@@ -7,7 +7,6 @@
 // Importaciones
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
-import {  } from "lucide-react";
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 
@@ -35,8 +34,6 @@ const estadoTexto: Record<Status, string> = {
 
 //Cuerpo del Componente
 const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
-
-  // (Back button removed — breadcrumb handles navigation)
 
   // Archivos (articulo y fuentes)
   const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal
@@ -99,15 +96,13 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
         {/* Campos del articulo */}
         <div className="text-start flex flex-col gap-2">
           
-          {/* Back button removed — breadcrumb includes navigation */}
-          
+          {/* Detalles del Artículo */}
           <p><b>Título:</b> {article?.title}</p>
           <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
           <p><b>Sesión:</b> {article?.session?.title}</p>
           <p><b>Conferencia:</b> {article?.session?.conference?.title}</p>
           <p><b>Estado:</b> {estadoTexto[article?.status!] ?? "Desconocido"}</p>
           <p><b>Autor de Notificación:</b> {article?.corresponding_author?.email}</p>
-
           <p>
             <b>Autores:</b>{" "}
             {article?.authors?.map((author, index) => (
@@ -117,36 +112,41 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
               </span>
             ))}
           </p>
-
           <p><b>Abstract:</b> {article?.abstract}</p>
 
-          <div className="flex flex-col md:flex-row gap-4 w-full">
+          {/* Botones de Archivos */}
+          <div className="flex flex-col sm:flex-row gap-2 w-full">
 
+            {/* Archivo principal descargable */}
             {existingMainFileName && (
-              <div className="flex-1 grid items-start gap-2">
+              <div className="flex-1 grid items-start">
+                <p><b>Articulo</b></p>
                 <Button
-                variant="outline"
-                onClick={() => downloadMainFile(article.id, existingMainFileName!)}
-                className="w-full bg-slate-900 text-white"
+                  variant="outline"
+                  onClick={() => downloadMainFile(article.id, existingMainFileName!)}
+                  className="w-full text-white bg-slate-900"
                 >
-                  Descargar Articulo
+                  Descargar Artículo
                 </Button>
-              </div>      
+              </div>
             )}
 
+            {/* Archivo fuentes descargable */}
             {existingSourceFileName && (
-              <div className="flex-1 grid items-start gap-2">
+              <div className="flex-1 grid items-start">
+                <p><b>Fuentes</b></p>
                 <Button
-                variant="outline"
-                onClick={() => downloadSourceFile(article.id, existingSourceFileName!)}
-                className="w-full bg-slate-900 text-white"
+                  variant="outline"
+                  onClick={() => downloadSourceFile(article.id, existingSourceFileName!)}
+                  className="w-full text-white bg-slate-900"
                 >
                   Descargar Fuentes
                 </Button>
               </div>
             )}
 
-          </div> 
+          </div>
+
         </div>
       </div>
     </div>

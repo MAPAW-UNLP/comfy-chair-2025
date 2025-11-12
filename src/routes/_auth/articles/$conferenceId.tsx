@@ -108,18 +108,8 @@ function RouteComponent() {
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
  
       {/* Breadcrumb + Título de Conferencia y Botón de navegación */}
-      <div className="w-full">
-        <Breadcrumb items={[{ label: 'Panel', to: '/dashboard' }, { label: conference.title }]} />
-
-        <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-4">
-          <h1 className="text-2xl font-bold italic text-slate-500 text-center sm:text-left flex-1">
-            Conferencia: {conference.title}
-          </h1>
-          <Button variant="outline" className="bg-zinc-500 text-white sm:w-auto w-full flex justify-center items-center gap-2" onClick={handleBack}>
-            Volver
-            <CornerUpLeftIcon />
-          </Button>
-        </div>
+      <div className="flex justify-center w-full">
+        <Breadcrumb items={[{ label: 'Inicio', to: '/dashboard' }, { label: conference.title }]} />
       </div>
       
       {/* Si hay articulos mapea cada uno como una card, sino muestra un mensaje */}
