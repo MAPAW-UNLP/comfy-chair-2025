@@ -5,9 +5,11 @@
 // -------------------------------------------------------------------------------------- 
 
 // Importaciones
+import { toast } from 'sonner';
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
+import ArticleDeleteDialog from "./ArticleDeleteDialog";
 import { deleteArticle } from "@/services/articleServices";
 import { type Article, type Status } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
@@ -18,6 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
   article: Article;
+  onDeleted?: (id: number) => void 
 }
 
 // Colores asociados a cada estado
@@ -75,7 +78,7 @@ function formatearTiempo(msRestante: number): string {
 }
 
 //Cuerpo del Componente
-const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
 
   // Navegación
   const navigate = useNavigate();
@@ -94,20 +97,14 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
   // Manejo de la baja de un archivo
   //------------------------------------------------------------
   const handleDelete = async (id: number) => {
-    const confirmar = window.confirm("¿Estás seguro de que querés eliminar este artículo? Esta acción no se puede deshacer.");
-    if (!confirmar) return;
-
     try {
-      await deleteArticle(id);
-      alert("Artículo eliminado correctamente.");
-
-      window.location.reload();
-
-    } catch (error: any) {
-      console.error("Error al eliminar el artículo:", error);
-      alert("No se pudo eliminar el artículo. Detalles: " + error.message);
+      await deleteArticle(id)
+      onDeleted?.(id)
+      toast.success('Articulo eliminado correctamente !', { duration: 5000 });
+    } catch {
+      toast.success('Error al eliminar el articulo...', { duration: 5000 });
     }
-  };
+  }
 
   //------------------------------------------------------------
   // Efecto para cargar los archivos existentes (articulo y fuentes)
@@ -232,15 +229,21 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article }) => {
                 </DropdownMenuItem>
               )}
               {((tiempoRestante !== "invalido") && (article.status === "reception")) && (
-                <DropdownMenuItem onClick={() => handleDelete(article.id)}>
-                  <Trash2Icon/> Eliminar Articulo
-                </DropdownMenuItem>
+                <ArticleDeleteDialog
+                  trigger={
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">
+                      <Trash2Icon className="mr-2" />
+                      Eliminar Articulo
+                    </DropdownMenuItem>
+                  }
+                  onConfirm={() => handleDelete(article.id)}
+                />
               )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
-      
+
       {/* Contenedor de los dos botones */}
       <div className="flex gap-2 mt-auto">
 

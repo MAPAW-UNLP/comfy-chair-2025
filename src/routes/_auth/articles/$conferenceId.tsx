@@ -18,25 +18,19 @@
 // -------------------------------------------------------------------------------------- 
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { CornerUpLeftIcon } from 'lucide-react';
+import Breadcrumb from '@/components/Breadcrumb'
 import { type Article } from '@/services/articleServices';
 import ArticleCard from '@/components/article/ArticleCard';
 import { getConferenceById } from '@/services/conferenceServices';
+import { createFileRoute, useParams } from '@tanstack/react-router';
 import { getArticlesByConferenceId } from '@/services/articleServices';
 import { type Conference } from '@/components/conference/ConferenceApp';
-import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
-import Breadcrumb from '@/components/Breadcrumb'
 
 export const Route = createFileRoute('/_auth/articles/$conferenceId')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-
-  // Navegacion
-  const navigate = useNavigate();
-  const handleBack = () => navigate({ to: `/dashboard`, replace: true });
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
@@ -123,7 +117,7 @@ function RouteComponent() {
         <div className="flex flex-wrap w-full gap-4 justify-center">
           {/* Le envío a cada card el id del articulo y el objeto articulo correspondiente*/}
           {articulo.map((a) => (
-            <ArticleCard key={a.id} article={a} />
+            <ArticleCard key={a.id} article={a} onDeleted={(id) => setArticulos((prev) => prev.filter((art) => art.id !== id))}/>
           ))}
         </div>
       )}
