@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthNotificationsRouteImport } from './routes/_auth/notifications'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as AuthReviewerIndexRouteImport } from './routes/_auth/reviewer/index'
+import { Route as AuthReviewerHistoryRouteImport } from './routes/_auth/reviewer/history'
 import { Route as AuthReviewerBiddingRouteImport } from './routes/_auth/reviewer/bidding'
 import { Route as AuthReviewerAssignedRouteImport } from './routes/_auth/reviewer/assigned'
 import { Route as AuthConferenceViewRouteImport } from './routes/_auth/conference/view'
@@ -64,6 +65,11 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
 const AuthReviewerIndexRoute = AuthReviewerIndexRouteImport.update({
   id: '/reviewer/',
   path: '/reviewer/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthReviewerHistoryRoute = AuthReviewerHistoryRouteImport.update({
+  id: '/reviewer/history',
+  path: '/reviewer/history',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthReviewerBiddingRoute = AuthReviewerBiddingRouteImport.update({
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/conference/view': typeof AuthConferenceViewRoute
   '/reviewer/assigned': typeof AuthReviewerAssignedRoute
   '/reviewer/bidding': typeof AuthReviewerBiddingRoute
+  '/reviewer/history': typeof AuthReviewerHistoryRoute
   '/reviewer': typeof AuthReviewerIndexRoute
   '/article/assign/$id': typeof AuthArticleAssignIdRoute
   '/article/edit/$id': typeof AuthArticleEditIdRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/conference/view': typeof AuthConferenceViewRoute
   '/reviewer/assigned': typeof AuthReviewerAssignedRoute
   '/reviewer/bidding': typeof AuthReviewerBiddingRoute
+  '/reviewer/history': typeof AuthReviewerHistoryRoute
   '/reviewer': typeof AuthReviewerIndexRoute
   '/article/assign/$id': typeof AuthArticleAssignIdRoute
   '/article/edit/$id': typeof AuthArticleEditIdRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/_auth/conference/view': typeof AuthConferenceViewRoute
   '/_auth/reviewer/assigned': typeof AuthReviewerAssignedRoute
   '/_auth/reviewer/bidding': typeof AuthReviewerBiddingRoute
+  '/_auth/reviewer/history': typeof AuthReviewerHistoryRoute
   '/_auth/reviewer/': typeof AuthReviewerIndexRoute
   '/_auth/article/assign/$id': typeof AuthArticleAssignIdRoute
   '/_auth/article/edit/$id': typeof AuthArticleEditIdRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/conference/view'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
+    | '/reviewer/history'
     | '/reviewer'
     | '/article/assign/$id'
     | '/article/edit/$id'
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/conference/view'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
+    | '/reviewer/history'
     | '/reviewer'
     | '/article/assign/$id'
     | '/article/edit/$id'
@@ -279,6 +290,7 @@ export interface FileRouteTypes {
     | '/_auth/conference/view'
     | '/_auth/reviewer/assigned'
     | '/_auth/reviewer/bidding'
+    | '/_auth/reviewer/history'
     | '/_auth/reviewer/'
     | '/_auth/article/assign/$id'
     | '/_auth/article/edit/$id'
@@ -345,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/reviewer'
       fullPath: '/reviewer'
       preLoaderRoute: typeof AuthReviewerIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/reviewer/history': {
+      id: '/_auth/reviewer/history'
+      path: '/reviewer/history'
+      fullPath: '/reviewer/history'
+      preLoaderRoute: typeof AuthReviewerHistoryRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/reviewer/bidding': {
@@ -466,6 +485,7 @@ interface AuthRouteChildren {
   AuthConferenceViewRoute: typeof AuthConferenceViewRoute
   AuthReviewerAssignedRoute: typeof AuthReviewerAssignedRoute
   AuthReviewerBiddingRoute: typeof AuthReviewerBiddingRoute
+  AuthReviewerHistoryRoute: typeof AuthReviewerHistoryRoute
   AuthReviewerIndexRoute: typeof AuthReviewerIndexRoute
   AuthArticleAssignIdRoute: typeof AuthArticleAssignIdRoute
   AuthArticleEditIdRoute: typeof AuthArticleEditIdRoute
@@ -487,6 +507,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthConferenceViewRoute: AuthConferenceViewRoute,
   AuthReviewerAssignedRoute: AuthReviewerAssignedRoute,
   AuthReviewerBiddingRoute: AuthReviewerBiddingRoute,
+  AuthReviewerHistoryRoute: AuthReviewerHistoryRoute,
   AuthReviewerIndexRoute: AuthReviewerIndexRoute,
   AuthArticleAssignIdRoute: AuthArticleAssignIdRoute,
   AuthArticleEditIdRoute: AuthArticleEditIdRoute,

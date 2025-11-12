@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCountdown } from "@/utils/useCountdown";
 import { fetchAssignedArticlesStrict, type AssignedArticle } from "@/services/assignmentsServices";
 import { hasPublishedReview } from "@/services/reviewerServices";
+import { Button } from "@/components/ui/button";
 
 // NOTE: before this component used a hardcoded REVIEWER_ID; we now use
 // the authenticated user id via AuthContext. For non-authenticated users
@@ -139,7 +140,6 @@ export default function Inicio() {
   return (
     <div className="mx-auto w-full max-w-md px-4 py-6 md:max-w-2xl">
       <h1 className="mb-4 text-2xl font-semibold">Bienvenido, Revisor</h1>
-
       {/* Tarjetas superiores: ahora son botones a /reviewer/assigned */}
       <div className="grid grid-cols-2 gap-4">
         <SoftCard onClick={() => navigate({ to: "/reviewer/assigned" })}>
@@ -169,12 +169,19 @@ export default function Inicio() {
 
       {/* Lista breve de asignados (cada item navega y pasa selected) */}
       <section className="mt-8">
-        <button
-          onClick={() => navigate({ to: "/reviewer/assigned" })}
-          className="mb-4 text-lg font-semibold hover:text-blue-700 transition"
-        >
-          Tus Artículos
-        </button>
+        <div className="flex items-center justify-between mb-4">
+  <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+    Tus Artículos
+  </h1>
+
+  <Button
+    onClick={() => navigate({ to: "/reviewer/history" })}
+    className="bg-slate-700 hover:bg-slate-600 text-white font-medium"
+  >
+    Ver historial
+  </Button>
+</div>
+
         <hr className="mb-4 border-slate-200" />
 
         {loadingAssigned ? (
