@@ -9,11 +9,12 @@ import { toast } from 'sonner';
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
-import ArticleDeleteDialog from "./ArticleDeleteDialog";
 import { deleteArticle } from "@/services/articleServices";
+import ArticleDeleteAccepted from './ArticleDeleteAccepted';
+import ArticleDeleteReception from "./ArticleDeleteReception";
 import { type Article, type Status } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
-import { EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
+import { CircleXIcon, EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
@@ -229,14 +230,23 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
                 </DropdownMenuItem>
               )}
               {((tiempoRestante !== "invalido") && (article.status === "reception")) && (
-                <ArticleDeleteDialog
+                <ArticleDeleteReception
                   trigger={
                     <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">
-                      <Trash2Icon className="mr-2" />
-                      Eliminar Articulo
+                      <Trash2Icon/> Eliminar Articulo
                     </DropdownMenuItem>
                   }
                   onConfirm={() => handleDelete(article.id)}
+                />
+              )}
+              {(article.status === "accepted") && (
+                <ArticleDeleteAccepted
+                  trigger={
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">
+                      <CircleXIcon /> Solicitar Baja
+                    </DropdownMenuItem>
+                  }
+                  onConfirm={() => console.log("Solicitud de baja confirmada")} // acá ponés tu lógica real
                 />
               )}
             </DropdownMenuContent>

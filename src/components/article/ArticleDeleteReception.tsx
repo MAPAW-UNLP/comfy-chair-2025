@@ -8,7 +8,7 @@ interface DeleteDialogProps {
   onConfirm: () => void
 }
 
-export default function AlertDeleteDialog({ trigger, onConfirm }: DeleteDialogProps) {
+export default function AlertDeleteReceptionDialog({ trigger, onConfirm }: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
