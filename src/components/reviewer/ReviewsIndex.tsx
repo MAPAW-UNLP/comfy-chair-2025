@@ -1,23 +1,27 @@
-// src/components/reviews/Index.tsx
-import React, { useEffect, useMemo, useState } from "react";
+// ./reviewer/ReviewsIndex.tsx
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
-
 import { getAllArticles, type Article } from "@/services/articleServices";
 import { getBidsByReviewer } from "@/services/biddingServices";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCountdown } from "@/utils/useCountdown";
-import { fetchAssignedArticlesStrict, type AssignedArticle } from "@/services/assignmentsServices";
-import { hasPublishedReview } from "@/services/reviewerServices";
-import { Button } from "@/components/ui/button";
+import {
+  fetchAssignedArticlesStrict,
+  type AssignedArticle,
+  fetchAssignedArticles, // para el listado clonado
+} from "@/services/assignmentsServices";
+import {
+  hasPublishedReview,
+  getOwnReviewByArticle, // para el listado clonado
+} from "@/services/reviewerServices";
+import { Button } from "../ui/button"; // ⬅️ ajustado a tu estructura
 
-// NOTE: before this component used a hardcoded REVIEWER_ID; we now use
-// the authenticated user id via AuthContext. For non-authenticated users
-// we show a friendly warning instead of falling back to all articles.
+// --- helpers existentes
 const REVIEW_DEADLINE =
   (import.meta.env.VITE_REVIEW_DEADLINE as string | undefined) ?? null;
-
 const pad = (n: number) => String(n).padStart(2, "0");
 
+// --- UI auxiliar (se mantiene)
 function SoftCard(props: {
   children: React.ReactNode;
   className?: string;
@@ -38,31 +42,108 @@ function SoftCard(props: {
   );
 }
 
-export default function Inicio() {
-  const navigate = useNavigate();
+/* =========================================================================
+ *   BLOQUE TRANSFERIDO de AssignedArticles.tsx — {content} y su lógica
+ * ========================================================================= */
+type ReviewStatus = "pending" | "draft" | "completed";
 
-  // Métricas previas (no se tocan)
+interface UiRow {
+  id: number;
+  title: string;
+  status: ReviewStatus;
+}
+
+interface ArticleCardProps {
+  article: UiRow;
+  onAction?: (article: UiRow) => void;
+  selected?: boolean;
+  flashing?: boolean;
+}
+
+const DEADLINE = "2025-11-10";
+
+const STATUS_UI = {
+  pending: {
+    label: "Pendiente",
+    badgeClass:
+      "text-rose-700 bg-rose-50 ring-1 ring-rose-200 dark:text-rose-200 dark:bg-rose-900/30 dark:ring-rose-800",
+    cta: "Revisar" as const,
+  },
+  draft: {
+    label: "Borrador",
+    badgeClass:
+      "text-amber-700 bg-amber-50 ring-1 ring-amber-200 dark:text-amber-200 dark:bg-amber-900/30 dark:ring-amber-800",
+    cta: "Editar borrador" as const,
+  },
+  completed: {
+    label: "Completo",
+    badgeClass:
+      "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 dark:text-emerald-200 dark:bg-emerald-900/30 dark:ring-emerald-800",
+    cta: "Ver" as const,
+  },
+} as const;
+
+function ArticleCard({ article, onAction, selected, flashing }: ArticleCardProps) {
+  const conf = STATUS_UI[article.status];
+
+  return (
+    <div
+      id={`art-${article.id}`}
+      tabIndex={-1}
+      className={[
+        "rounded-2xl bg-slate-50 dark:bg-slate-800/50 p-4 md:p-5 transition-all duration-500 ease-out",
+        selected ? "ring-2 ring-sky-400 ring-offset-2" : "ring-1 ring-transparent",
+        flashing ? "bg-sky-50/70 shadow-md scale-[1.01]" : "",
+      ].join(" ")}
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex-1">
+          <h3 className="text-slate-900 dark:text-slate-100 font-semibold leading-snug">
+            {article.title}
+          </h3>
+          <div className="mt-2">
+            <span
+              className={
+                "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium " +
+                conf.badgeClass
+              }
+            >
+              {conf.label}
+            </span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onAction?.(article)}
+          className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 dark:focus:ring-offset-slate-900"
+        >
+          {conf.cta}
+        </button>
+      </div>
+    </div>
+  );
+}
+/* ========================= FIN bloque transferido ========================= */
+
+export default function ReviewsIndex() {
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  // ---- estado original (no modificado, salvo lo necesario para integrarse)
   const [articulos, setArticulos] = useState<Article[]>([]);
   const [bids, setBids] = useState<{ article: number; choice?: string }[]>([]);
-
-  // Asignados + estado de revisión por id
   const [assigned, setAssigned] = useState<AssignedArticle[] | null>(null);
   const [loadingAssigned, setLoadingAssigned] = useState(false);
   const [reviewedMap, setReviewedMap] = useState<Record<number, boolean>>({});
 
-  // -------- Contador de revisión (mismo mecanismo que bidding) --------
   const cd = useCountdown(REVIEW_DEADLINE || undefined);
   const isReviewOver =
     !REVIEW_DEADLINE || cd.isOver || (cd.days === 0 && cd.hours === 0 && cd.minutes === 0);
   const dhm = `${pad(cd.days)}:${pad(cd.hours)}:${pad(cd.minutes)}`;
 
-  // Datos previos (mantener comportamiento)
   useEffect(() => {
     (async () => {
       try {
-        // Keep fetching global metrics quietly, but don't use them to render
-        // the assigned list. Bids depend on reviewer id; only fetch if we
-        // have a logged user.
         const artsPromise = getAllArticles();
         let bidsPromise: Promise<{ article: number; choice?: string }[]> = Promise.resolve([]);
         if (auth.user) {
@@ -75,12 +156,8 @@ export default function Inicio() {
         /* noop */
       }
     })();
-  }, []);
+  }, [auth.user]);
 
-  const auth = useAuth();
-
-  // Cargar asignados (solo para usuario autenticado). Usamos la variante
-  // estricta para evitar el fallback que devuelve todos los artículos.
   useEffect(() => {
     const load = async () => {
       setLoadingAssigned(true);
@@ -100,7 +177,6 @@ export default function Inicio() {
     load();
   }, [auth.user]);
 
-  // Construir reviewedMap consultando al backend (publicadas)
   useEffect(() => {
     if (!assigned || assigned.length === 0) {
       setReviewedMap({});
@@ -109,19 +185,15 @@ export default function Inicio() {
     let alive = true;
     (async () => {
       try {
-        const flags = await Promise.all(
-          assigned.map((a) => hasPublishedReview(a.id))
-        );
+        const flags = await Promise.all(assigned.map((a) => hasPublishedReview(a.id)));
         if (!alive) return;
         const map: Record<number, boolean> = {};
         assigned.forEach((a, i) => {
-          // preferimos la verificación remota; si falla, caemos al flag que venga del servicio
           map[a.id] = Boolean(flags[i] ?? a.reviewed ?? false);
         });
         setReviewedMap(map);
       } catch {
         if (!alive) return;
-        // fallback: usar lo que venga del servicio si existe
         const map: Record<number, boolean> = {};
         assigned.forEach((a) => (map[a.id] = Boolean(a.reviewed)));
         setReviewedMap(map);
@@ -130,17 +202,148 @@ export default function Inicio() {
     return () => {
       alive = false;
     };
-  }, [assigned?.length]); // se recalcula cuando cambia la cantidad de asignados
+  }, [assigned?.length]);
 
   const reviewedCount = useMemo(
     () => Object.values(reviewedMap).filter(Boolean).length,
     [reviewedMap]
   );
 
+  /* ===================== Estado + efectos del {content} ===================== */
+  const [data, setData] = useState<UiRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [flashId, setFlashId] = useState<number | null>(null);
+
+  const { user } = useAuth();
+  const reviewerId = Number(user?.id ?? 1); // fallback simple si aún no está el auth real
+
+  // --- helper para calcular estado (pendiente/draft/completed) ---
+  const computeStatusFor = useCallback(
+    async (articleId: number): Promise<ReviewStatus> => {
+      try {
+        // primero vemos si está publicada
+        const published = await hasPublishedReview(articleId);
+        if (published) return "completed";
+        // si no está publicada, puede haber borrador
+        const own = await getOwnReviewByArticle(articleId, reviewerId);
+        return own ? "draft" : "pending";
+      } catch {
+        return "pending";
+      }
+    },
+    [reviewerId]
+  );
+
+  // --- Recalcular estado tras guardar revisión (usamos el detalle del evento si viene) ---
+  useEffect(() => {
+    const handleReviewUpdated = async (e: any) => {
+      const updatedId = Number(e.detail?.articleId ?? 0);
+      const stateHint: "draft" | "sent" | "sent_edited" | undefined = e.detail?.state;
+      if (!updatedId) return;
+
+      // si nos pasaron el estado, lo mapeamos directo; si no, recalculamos
+      let status: ReviewStatus | null = null;
+      if (stateHint === "draft") status = "draft";
+      if (stateHint === "sent" || stateHint === "sent_edited") status = "completed";
+      if (!status) status = await computeStatusFor(updatedId);
+
+      setData((prev) =>
+        prev.map((a) => (a.id === updatedId ? { ...a, status: status! } : a))
+      );
+    };
+    window.addEventListener("review-updated", handleReviewUpdated);
+    return () => window.removeEventListener("review-updated", handleReviewUpdated);
+  }, [computeStatusFor]);
+
+  // --- Detectar seleccionado por query param ---
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const v = sp.get("selected");
+    const id = v ? Number(v) : null;
+    setSelectedId(id);
+    setFlashId(id);
+  }, []);
+
+  // --- Quitar “flash” ---
+  useEffect(() => {
+    if (!flashId) return;
+    const t = setTimeout(() => setFlashId(null), 1200);
+    return () => clearTimeout(t);
+  }, [flashId]);
+
+  // --- Scroll + focus al cargar ---
+  useEffect(() => {
+    if (loading || !selectedId) return;
+    const el = document.getElementById(`art-${selectedId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => (el as HTMLElement).focus?.(), 300);
+    }
+  }, [loading, selectedId]);
+
+  // --- Carga inicial ---
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        setLoading(true);
+        const assigned = await fetchAssignedArticles(reviewerId);
+        const rows: UiRow[] = await Promise.all(
+          assigned.map(async (a: any) => ({
+            id: a.id,
+            title: a.title,
+            status: await computeStatusFor(a.id),
+          }))
+        );
+        if (alive) setData(rows);
+      } catch (err) {
+        console.error("Error cargando artículos asignados:", err);
+        if (alive) setData([]);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [reviewerId, computeStatusFor]);
+
+  const handleAction = useCallback(
+    (article: UiRow) => {
+      navigate({
+        to: "/reviewer/review/$articleId",
+        params: { articleId: String(article.id) },
+      });
+    },
+    [navigate]
+  );
+
+  const content = useMemo(() => {
+    if (loading) return <div className="text-slate-600 dark:text-slate-300">Cargando…</div>;
+    if (!data.length) return <div className="text-slate-600 dark:text-slate-300">Sin asignar aún…</div>;
+    return (
+      <div className="space-y-3">
+        {data.map((a) => (
+          <ArticleCard
+            key={a.id}
+            article={a}
+            onAction={handleAction}
+            selected={selectedId === a.id}
+            flashing={flashId === a.id}
+          />
+        ))}
+      </div>
+    );
+  }, [data, loading, handleAction, selectedId, flashId]);
+
+  /* =================== FIN estado/efectos del {content} =================== */
+
   return (
     <div className="mx-auto w-full max-w-md px-4 py-6 md:max-w-2xl">
       <h1 className="mb-4 text-2xl font-semibold">Bienvenido, Revisor</h1>
-      {/* Tarjetas superiores: ahora son botones a /reviewer/assigned */}
+
+      {/* Tarjetas superiores (sin cambios en su intención) */}
       <div className="grid grid-cols-2 gap-4">
         <SoftCard onClick={() => navigate({ to: "/reviewer/assigned" })}>
           <div className="flex h-full flex-col items-center justify-center">
@@ -167,68 +370,38 @@ export default function Inicio() {
         </SoftCard>
       </div>
 
-      {/* Lista breve de asignados (cada item navega y pasa selected) */}
+      {/* Encabezado + botón historial a la derecha */}
       <section className="mt-8">
         <div className="flex items-center justify-between mb-4">
-  <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
-    Tus Artículos
-  </h1>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Tus Artículos
+          </h1>
 
-  <Button
-    onClick={() => navigate({ to: "/reviewer/history" })}
-    className="bg-slate-700 hover:bg-slate-600 text-white font-medium"
-  >
-    Ver historial
-  </Button>
-</div>
+          <Button
+            onClick={() => navigate({ to: "/reviewer/history" })}
+            className="bg-slate-700 hover:bg-slate-600 text-white font-medium"
+          >
+            Ver historial
+          </Button>
+        </div>
 
         <hr className="mb-4 border-slate-200" />
 
-        {loadingAssigned ? (
-          <p className="text-slate-600">Cargando asignaciones…</p>
-        ) : auth.isLoading ? (
+        {/* 👇 Reemplazo directo por el {content} traído de AssignedArticles */}
+        {auth.isLoading ? (
           <p className="text-slate-600">Verificando usuario…</p>
         ) : !auth.user ? (
           <div className="rounded-md border-l-4 border-amber-400 bg-amber-50 p-3 text-amber-800">
-            Debes iniciar sesión para ver los artículos asignados. 
+            Debes iniciar sesión para ver los artículos asignados.
             <button
-              onClick={() => navigate({ to: '/login' })}
+              onClick={() => navigate({ to: "/login" })}
               className="ml-2 underline text-amber-700"
-            >Iniciar sesión</button>
+            >
+              Iniciar sesión
+            </button>
           </div>
-        ) : !assigned || assigned.length === 0 ? (
-          <p className="text-slate-600">Sin asignar aún…</p>
         ) : (
-          <ul className="space-y-3">
-            {assigned.map((a) => {
-              const done = reviewedMap[a.id] ?? Boolean(a.reviewed);
-              return (
-                <li
-                  key={a.id}
-                  className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-black/5 hover:shadow-md cursor-pointer transition"
-                  onClick={() =>
-                    navigate({
-                      to: "/reviewer/assigned",
-                      search: { selected: a.id },
-                    })
-                  }
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="truncate text-sm font-medium">{a.title}</span>
-                    <span
-                      className={
-                        done
-                          ? "rounded-full bg-emerald-600 px-2.5 py-0.5 text-xs font-semibold text-white"
-                          : "rounded-full bg-rose-500 px-2.5 py-0.5 text-xs font-semibold text-white"
-                      }
-                    >
-                      {done ? "Completo" : "Pendiente"}
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          content
         )}
       </section>
     </div>

@@ -151,6 +151,12 @@ export default function ReviewArticle() {
           detail: { articleId, state: "draft" },
         })
       );
+
+      // ⬅️ ir a ReviewsIndex resaltando este artículo
+      navigate({
+        to: "/reviewer",
+        search: { selected: String(articleId) },
+      });
     } catch (e) {
       console.error("Error al guardar borrador:", e);
       alert("Ocurrió un error al guardar el borrador.");
@@ -193,9 +199,9 @@ export default function ReviewArticle() {
         })
       );
 
-      // volver a Asignados resaltando este artículo
+      // ⬅️ ir a ReviewsIndex resaltando este artículo
       navigate({
-        to: "/reviewer/assigned",
+        to: "/reviewer",
         search: { selected: String(articleId) },
       });
     } catch (e) {
