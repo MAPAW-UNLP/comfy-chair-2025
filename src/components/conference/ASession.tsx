@@ -142,10 +142,8 @@ function ASession() {
           <Statistics 
             fromConference={false}
             acceptedArticles={articles.filter(a => a.status === 'accepted').length}
-            rejectedArticles={articles.filter(a => a.status === 'rejected').length}
             regularArticles={articles.filter(a => a.type === 'regular').length}
             posterArticles={articles.filter(a => a.type === 'poster').length}
-            capacity={session!.capacity}
             totalArticles={articles.length}
           />
         ) : (

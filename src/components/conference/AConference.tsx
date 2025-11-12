@@ -164,6 +164,14 @@ function AConference() {
               title: session.title,
               articleCount: articles.filter(article => article.session?.id === session.id).length
             }))}
+            percentageMethodCount={sessions.filter(session => 
+              session.threshold_percentage !== null && session.threshold_percentage !== undefined
+            ).length}
+            thresholdMethodCount={sessions.filter(session => 
+              session.improvement_threshold !== null && session.improvement_threshold !== undefined
+            ).length}
+            conferenceAcceptedArticles={articles.filter(a => a.status === 'accepted').length}
+            conferenceTotalArticles={articles.length}
           />
         ) : (
           <>

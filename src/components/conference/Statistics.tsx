@@ -1,5 +1,5 @@
 import { ArticleStatsChart, type ChartItem } from './ArticleStatsChart';
-import { CheckCircle2, XCircle, FileText, PresentationIcon } from 'lucide-react';
+import { FileText, PresentationIcon, Percent, Target } from 'lucide-react';
 
 // Tipo para representar una sesión con su cantidad de artículos
 export type SessionStats = {
@@ -11,43 +11,30 @@ export type SessionStats = {
 type StatisticsProps = {
   fromConference: boolean;
   acceptedArticles?: number;
-  rejectedArticles?: number;
   regularArticles?: number;
   posterArticles?: number;
-  capacity?: number;
   totalSessions?: number;
   totalArticles?: number;
   sessionsWithArticles?: SessionStats[];
+  percentageMethodCount?: number;
+  thresholdMethodCount?: number;
+  conferenceAcceptedArticles?: number;
+  conferenceTotalArticles?: number;
 };
 
 function Statistics({ 
   fromConference, 
-  acceptedArticles = 0, 
-  rejectedArticles = 0,
+  acceptedArticles = 0,
   regularArticles = 0,
   posterArticles = 0,
-  capacity,
   totalSessions,
-  sessionsWithArticles = []
+  totalArticles,
+  sessionsWithArticles = [],
+  percentageMethodCount = 0,
+  thresholdMethodCount = 0,
+  conferenceAcceptedArticles = 0,
+  conferenceTotalArticles = 0
 }: StatisticsProps) {
-  // Items para el gráfico de estado (aceptados/rechazados)
-  const statusItems: ChartItem[] = [
-    {
-      label: 'Aceptados',
-      value: acceptedArticles,
-      icon: CheckCircle2,
-      colorClass: 'text-green-600',
-      gradientClass: 'bg-gradient-to-r from-green-500 to-green-600'
-    },
-    {
-      label: 'Rechazados',
-      value: rejectedArticles,
-      icon: XCircle,
-      colorClass: 'text-red-600',
-      gradientClass: 'bg-gradient-to-r from-red-500 to-red-600'
-    }
-  ];
-
   // Items para el gráfico de tipo (regular/poster)
   const typeItems: ChartItem[] = [
     {
@@ -72,16 +59,58 @@ function Statistics({
 
       <div className="flex flex-col gap-5">
         {fromConference && totalSessions !== undefined && (
-          <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-            <h3 className="text-lg font-semibold mb-2">Sesiones</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-3xl font-bold text-blue-600">{totalSessions}</span>
-              <span className="text-gray-600">sesiones creadas</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Box de Sesiones */}
+            <div className="bg-white p-4 rounded-lg shadow border border-gray-200 flex flex-col items-center justify-center">
+              <h3 className="text-lg font-semibold mb-2">Sesiones</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-blue-600">{totalSessions}</span>
+                <span className="text-gray-600">sesiones creadas</span>
+              </div>
             </div>
+            
+            {/* Box de Artículos aprobados */}
+            {conferenceTotalArticles > 0 && (
+              <div className="bg-white p-4 rounded-lg shadow border border-gray-200 flex flex-col items-center justify-center">
+                <h3 className="text-lg font-semibold mb-2">Artículos aprobados</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold text-green-600">
+                    {((conferenceAcceptedArticles / conferenceTotalArticles) * 100).toFixed(1)}%
+                  </span>
+                  <span className="text-gray-600 text-sm">
+                    ({conferenceAcceptedArticles}/{conferenceTotalArticles})
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Gráfico de artículos por sesión (solo en conferencia) */}
+        {/* Gráfico de métodos de selección (solo en conferencia) */}
+        {fromConference && (percentageMethodCount > 0 || thresholdMethodCount > 0) && (
+          <ArticleStatsChart 
+            title="Métodos de selección utilizados"
+            showTotal={false}
+            items={[
+              {
+                label: 'Porcentaje',
+                value: percentageMethodCount,
+                icon: Percent,
+                colorClass: 'text-indigo-600',
+                gradientClass: 'bg-gradient-to-r from-indigo-500 to-indigo-600'
+              },
+              {
+                label: 'Puntaje mínimo',
+                value: thresholdMethodCount,
+                icon: Target,
+                colorClass: 'text-cyan-600',
+                gradientClass: 'bg-gradient-to-r from-cyan-500 to-cyan-600'
+              }
+            ]}
+          />
+        )}
+
+        {/* Gráfico de artículos por sesión (solo en conferencia) - Al final */}
         {fromConference && sessionsWithArticles.length > 0 && (
           <ArticleStatsChart 
             title="Artículos enviados por sesión"
@@ -110,17 +139,39 @@ function Statistics({
 
         {!fromConference && (
           <>
-            <ArticleStatsChart 
-              title="Estado de los Artículos"
-              items={statusItems}
-              capacity={capacity}
-              capacityLabel="Cupo máximo de artículos aceptados:"
-              capacityValue={acceptedArticles}
-            />
+            {/* Cajas de resumen para sesiones */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Box de Artículos enviados */}
+              <div className="bg-white p-4 rounded-lg shadow border border-gray-200 flex flex-col items-center justify-center">
+                <h3 className="text-lg font-semibold mb-2">Artículos enviados</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold text-purple-600">
+                    {totalArticles || 0}
+                  </span>
+                  <span className="text-gray-600">artículos totales</span>
+                </div>
+              </div>
+              
+              {/* Box de Artículos aprobados */}
+              <div className="bg-white p-4 rounded-lg shadow border border-gray-200 flex flex-col items-center justify-center">
+                <h3 className="text-lg font-semibold mb-2">Artículos aprobados</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold text-green-600">
+                    {totalArticles && totalArticles > 0 
+                      ? ((acceptedArticles / totalArticles) * 100).toFixed(1)
+                      : '0.0'}%
+                  </span>
+                  <span className="text-gray-600 text-sm">
+                    ({acceptedArticles}/{totalArticles || 0})
+                  </span>
+                </div>
+              </div>
+            </div>
             
             <ArticleStatsChart 
               title="Tipo de Artículos"
               items={typeItems}
+              showTotal={false}
             />
           </>
         )}

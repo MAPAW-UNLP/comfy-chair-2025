@@ -15,9 +15,17 @@ type ArticleStatsChartProps = {
   capacity?: number;          // (Opcional) Capacidad máxima 
   capacityLabel?: string;     // (Opcional) Etiqueta para la capacidad
   capacityValue?: number;     // (Opcional) Valor actual vs capacidad
+  showTotal?: boolean;        // (Opcional) Mostrar el total en el header (default: true)
 }
 
-export function ArticleStatsChart({ title, items, capacity, capacityLabel = 'Cupo máximo de artículos aceptados:', capacityValue }: ArticleStatsChartProps) {
+export function ArticleStatsChart({ 
+  title, 
+  items, 
+  capacity, 
+  capacityLabel = 'Cupo máximo de artículos aceptados:', 
+  capacityValue,
+  showTotal = true 
+}: ArticleStatsChartProps) {
   const total = items.reduce((sum, item) => sum + item.value, 0);
 
   return (
@@ -25,7 +33,7 @@ export function ArticleStatsChart({ title, items, capacity, capacityLabel = 'Cup
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <span className="text-sm text-gray-500">Total: {total}</span>
+          {showTotal && <span className="text-sm text-gray-500">Total: {total}</span>}
         </div>
 
         {/* Renderizar cada item */}
