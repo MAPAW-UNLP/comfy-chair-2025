@@ -8,6 +8,16 @@
         * Props: objeto del tipo article.
         * Data: titulo, tipo, sesion, conferencia, estado y deadline de un articulo.
         * Acciones: ver detalle, editar (si permite), descargar archivo principal, descargar archivo fuentes (si tiene), eliminar (si permite).
+
+    ArticleDeleteAccepted - (src/components/article/ArticleDeleteAccepted.tsx)
+        * Props: trigger, callback
+        * Data: dialogo de confirmación, motivo de la solicitud
+        * Acciones: cancelar accion, confirmar solicitud de baja de articulo aceptado
+
+    ArticleDeleteReception - (src/components/article/ArticleDeleteReception.tsx)
+        * Props: trigger, callback
+        * Data: dialogo de confirmación
+        * Acciones: cancelar accion, confirmar eliminación de articulo
         
     ArticleDetail - (src/components/article/ArticleDetail.tsx)
         * Props: objeto del tipo article.
@@ -29,6 +39,11 @@
         * Data: nombre completo y correo de cada usuario.
         * Acciones: buscar y seleccionar usuarios.
 
+    Breadcrumb - (src/components/Breadcrumb.tsx)
+        * Props: items (rutas)
+        * Data: ruta actual
+        * Acciones: viajar a la ruta seleccionada
+
 # ---------- Routes ----------
 
     article/detail/$articleId.tsx - (src/routes/article/detail/articleId.tsx)
@@ -46,7 +61,7 @@
     articles/$conferenceId - (src/routes/articles/conferenceId.tsx)
         * Hace uso del componente "ArticleCard"
         * Muestra un mensaje si no encuentra una conferencia con el id indicado
-        * Permite volver al menú anterior (dashboard)
+        * Muestra un breadcrumb que permite volver al menú anterior (dashboard)
         * Muestra el titulo de la conferencia seleccionada
         * Muestra todos los articulos de la conferencia seleccionada
 

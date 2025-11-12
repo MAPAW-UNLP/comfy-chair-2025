@@ -18,7 +18,8 @@
 // -------------------------------------------------------------------------------------- 
 
 import { useEffect, useState } from 'react';
-import Breadcrumb from '@/components/Breadcrumb'
+import Breadcrumb from '@/components/Breadcrumb';
+import { useRouteContext } from '@tanstack/react-router';
 import { type Article } from '@/services/articleServices';
 import ArticleCard from '@/components/article/ArticleCard';
 import { getConferenceById } from '@/services/conferenceServices';
@@ -31,6 +32,9 @@ export const Route = createFileRoute('/_auth/articles/$conferenceId')({
 })
 
 function RouteComponent() {
+
+  // Usuario Actual
+  const { user } = useRouteContext({ from: '/_auth/articles/$conferenceId' });
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
@@ -51,7 +55,8 @@ function RouteComponent() {
     const fetchArticles = async () => {
       try{
         const data = await getArticlesByConferenceId(id);
-        const ordenados = [...data].sort((a, b) => b.id - a.id);
+        const filtrados = data.filter(a => a.authors.some(author => author.email === user.email)); // Filtrar artículos por usuario logueado
+        const ordenados = filtrados.sort((a, b) => b.id - a.id);
         setArticulos(ordenados);
       }
       catch{
@@ -100,7 +105,6 @@ function RouteComponent() {
   //Cuerpo del Componente
   return (
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
- 
       {/* Breadcrumb + Título de Conferencia y Botón de navegación */}
       <div className="flex justify-center w-full">
         <Breadcrumb items={[{ label: 'Inicio', to: '/dashboard' }, { label: conference.title }]} />
