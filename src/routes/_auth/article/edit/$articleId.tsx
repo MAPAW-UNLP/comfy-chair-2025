@@ -20,6 +20,7 @@
 // -------------------------------------------------------------------------------------- 
 
 import { useEffect, useState } from 'react';
+import { useRouteContext } from '@tanstack/react-router';
 import ArticleForm from '@/components/article/ArticleForm';
 import { getAllUsers, type User } from '@/services/userServices';
 import { createFileRoute, useParams } from '@tanstack/react-router'
@@ -32,6 +33,9 @@ export const Route = createFileRoute('/_auth/article/edit/$articleId')({
 })
 
 function RouteComponent() {
+
+  // Usuario Actual
+  const { user } = useRouteContext({ from: '/_auth/article/edit/$articleId' });
 
   // Estado de carga
   const [loading, setLoading] = useState(true);
@@ -121,7 +125,19 @@ function RouteComponent() {
       </div>
     );
   }
-  
+
+  // Feature de Seguridad - Mensaje si el usuario no es autor del artículo
+  const esAutor = article.authors?.some(a => a.email === user.email);
+  if (!esAutor) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full min-h-[calc(100dvh-64px)]">
+        <h1 className="text-2xl font-bold italic text-slate-500 text-center">
+          No tienes permiso para editar este artículo...
+        </h1>
+      </div>
+    );
+  }
+
   //Cuerpo del Componente
   return (
     <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
