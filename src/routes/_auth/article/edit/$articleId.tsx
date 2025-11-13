@@ -94,7 +94,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
       {/* Le envío al form la conferencia actual, el articulo existente y los usuarios de la app */}
-      <ArticleForm conferences={conferenceList} users={userList} editMode={true} article={article}  /> 
+      <ArticleForm conferences={conferenceList} users={userList} editMode={true} article={article} userId={Number(user.id)} /> 
     </div>
   );
 

@@ -12,6 +12,7 @@
 //
 // -------------------------------------------------------------------------------------- 
 
+import { useRouteContext } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';
 import ArticleForm from '@/components/article/ArticleForm';
 import { useFetchUsers } from '@/hooks/Grupo1/useFetchUsers';
@@ -22,6 +23,9 @@ export const Route = createFileRoute('/_auth/article/create')({
 })
 
 function RouteComponent() {
+
+  // Usuario Actual
+  const { user } = useRouteContext({ from: '/_auth/article/create' });
 
   // Hooks
   const { userList, loadingUsers } = useFetchUsers();
@@ -43,7 +47,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
       {/* Le envío al form la lista de conferencias y la lista de usuarios */}
-      <ArticleForm conferences={conferenceList} users={userList} />
+      <ArticleForm conferences={conferenceList} users={userList} userId={Number(user.id)} />
     </div>
   );
 

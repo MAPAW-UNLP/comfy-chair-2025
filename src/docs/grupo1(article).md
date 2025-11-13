@@ -45,7 +45,7 @@
         * Acciones: ver archivo principal, ver archivo fuentes (si tiene), volver al menu de articulos.
 
     ArticleForm - (src/components/article/ArticleForm.tsx)
-        * Props: listado de conferencias, listado de usuarios, flag de edición (modo alta o edición), articulo (para modo edición).
+        * Props: listado de conferencias, listado de usuarios, flag de edición (modo alta o edición), articulo (para modo edición), userId.
         * Data: todos los atributos de un articulo a crear o editar (en edición no se puede cambiar la conferencia).
         * Acciones: subir articulo (modo alta), editar articulo(modo edición), volver al menu de articulos (modo edición).
 
@@ -93,6 +93,8 @@
         * metodo "getArticleById()"
         * metodo "getArticlesByConferenceId()"
         * metodo "deleteArticle()"
+        * metodo "downloadMainFile()"
+        * metodo "downloadSourceFile()"
 
     conferenceServices - (src/services/conferenceServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
         * metodo "getActiveConferences()"

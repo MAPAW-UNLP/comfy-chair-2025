@@ -36,10 +36,11 @@ type ArticleFormProps = {
   users: User[];
   editMode? : boolean;
   article? : Article;
+  userId : number
 };
 
 //Cuerpo del Componente
-const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode, article }) => {
+const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode, article, userId }) => {
 
   // Navegacion
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
   const [mainFile, setMainFile] = useState<File | null>(null); // Archivo principal
   const [sourceFile, setSourceFile] = useState<File | null>(null); // Archivo de fuentes (solo para posters)
   const { mainFileName, sourceFileName, mainFileUrl, sourceFileUrl } = useArticleFiles(article ?? null); // Hook custom para el manejo de archivos
-  
+
   //------------------------------------------------------------
   // Manejo de la seleccion de archivos
   //------------------------------------------------------------
@@ -251,6 +252,15 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
   };
 
   //------------------------------------------------------------
+  // Efecto para precargar al usuario autenticado como autor por defecto
+  //------------------------------------------------------------
+  useEffect(() => {
+    if (!editMode) {
+      handleAgregarAutor(userId);
+    }
+  });
+
+  //------------------------------------------------------------
   // Efecto para precargar datos del form en modo edición
   //------------------------------------------------------------
   useEffect(() => {
@@ -296,6 +306,10 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
     }
 
   }, [selectedConference, editMode, article]);
+
+  const availableUsers = users.filter(u => 
+    !authors.some(a => a.id === u.id)
+  );
 
   //------------------------------------------------------------
   // Renderizado del componente
@@ -467,7 +481,7 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       {/* Combobox de autores */}
       <div className="flex-1 flex flex-col gap-2">
         <Label htmlFor="autor">Autores del Artículo {errors.authors && <p className="text-destructive">{errors.authors}</p>}</Label>
-        <UserCombobox onValueChange={handleAgregarAutor} backgroundWhite={true} users={users} />
+        <UserCombobox onValueChange={handleAgregarAutor} backgroundWhite={true} users={availableUsers} />
       </div>
 
       {/* Lista de autores seleccionados */}
@@ -476,9 +490,11 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
           {authors.map((a) => (
             <div key={a.id} className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full">
               <span className="truncate text-sm">{a.full_name} ({a.email})</span>
-              <button type="button" onClick={() => handleEliminarAutor(a.id)} className="text-red-500 hover:text-red-700">
-                <X size={16} />
-              </button>
+              {a.id !== userId && (
+                <button type="button" onClick={() => handleEliminarAutor(a.id)} className="text-red-500 hover:text-red-700">
+                  <X size={16} />
+                </button>
+              )}   
             </div>
           ))}
         </div>
