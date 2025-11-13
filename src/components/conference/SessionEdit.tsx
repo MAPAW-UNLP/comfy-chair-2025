@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { updateSession, type Session } from '@/services/sessionServices';
 import { Edit } from 'lucide-react';
 import { getAllUsers, type User } from '@/services/userServices';
+import { useAuth } from '@/contexts/AuthContext';
 
 type EditarSessionProps = {
   session: Session;
@@ -29,6 +30,7 @@ export default function EditarSession({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [chairs, setChairs] = useState<User[] | []>([]);
+  const {user}= useAuth()
 
 
   // Datos iniciales del formulario
@@ -56,7 +58,7 @@ export default function EditarSession({
         improvement_threshold: data.selectionMethod === 'mejores' ? data.threshold : undefined,
       };
 
-      await updateSession(session.id.toString(), sessionData, session.conference!.id);
+      await updateSession(session.id.toString(), sessionData, session.conference!.id, user!.id);
 
       toast.success('Sesión actualizada exitosamente');
       setOpen(false);

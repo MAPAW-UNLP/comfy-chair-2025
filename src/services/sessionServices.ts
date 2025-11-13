@@ -53,12 +53,14 @@ const handleSessionError = (err: any, isCreate: boolean) => {
 // Crear una sesión
 export const createSession = async (
   sessionData: Omit<Session, 'id' | 'conference'>,
-  conference_id: number
+  conference_id: number,
+  user_id: string
 ): Promise<Session> => {
   try {
     const response = await api.post('/api/session/', {
       ...sessionData,
       conference_id,
+      user_id
     });
     return response.data;
   } catch (error: any) {
@@ -71,13 +73,15 @@ export const createSession = async (
 export const updateSession = async (
   sessionId: string,
   sessionData: Omit<Session, 'id' | 'conference'>,
-  conference_id: string
+  conference_id: string,
+  user_id: string
 ): Promise<Session> => {
   try {
     console.log('Updating session with data:', sessionData);
     const response = await api.put(`/api/session/${sessionId}/`, {
       ...sessionData,
       conference_id,
+      user_id
     });
     return response.data;
   } catch (error: any) {
@@ -87,6 +91,6 @@ export const updateSession = async (
 };
 
 // Elimina una sesión por su ID
-export const deleteSession = async (sessionId: string): Promise<void> => {
-  await api.delete(`/api/session/${sessionId}/`);
+export const deleteSession = async (sessionId: string, user_id: string): Promise<void> => {
+  await api.delete(`/api/session/${sessionId}/?user_id=${user_id}`);
 };

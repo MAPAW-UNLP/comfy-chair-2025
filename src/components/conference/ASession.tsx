@@ -18,6 +18,7 @@ import SessionArticleCard from './SessionArticleCard';
 import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import Statistics from './Statistics';
+import { useAuth } from '@/contexts/AuthContext';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -29,6 +30,7 @@ function ASession() {
   const [articles, setArticles] = useState<Article[] | []>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[] | []>([]);
   const navigate = useNavigate();
+  const {user}= useAuth()
 
   const fetchSession = async () => {
     try {
@@ -47,7 +49,7 @@ function ASession() {
   };
 
   const onDelete = async () => {
-    await deleteSession(String(session!.id));
+    await deleteSession(String(session!.id), user!.id);
     toast.warning('Sesión eliminada');
     navigate({ to: `/conference/${session!.conference?.id}` });
   };

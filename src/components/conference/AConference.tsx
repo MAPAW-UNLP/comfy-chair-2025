@@ -17,6 +17,7 @@ import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import Statistics from './Statistics';
 import { getArticleByConferenceId, type Article } from '@/services/articleServices';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function formatearFecha(fecha: string): string {
   const [year, month, day] = fecha.split('-');
@@ -33,6 +34,7 @@ function AConference() {
   const [verEstadisticas, setVerEstadisticas] = useState<boolean>(false);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
+  const {user}= useAuth()
 
   const irEditarConferencia = () => {
     navigate({ to: `/conference/edit/${conferencia.id}` });
@@ -56,7 +58,7 @@ function AConference() {
   };
 
   const onDelete = async () => {
-    await deleteConference(conferencia.id);
+    await deleteConference(conferencia.id, user!.id);
     toast.warning('Conferencia eliminada');
     navigate({ to: '/conference/view' });
   };
