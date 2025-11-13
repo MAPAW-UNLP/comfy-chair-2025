@@ -4,17 +4,24 @@
 //
 // -------------------------------------------------------------------------------------- 
 
+// Importaciones
 import { type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent } from "@/components/ui/alert-dialog"
 import { AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
+// Lo que espera recibir el componente
 interface DeleteDialogProps {
   trigger: ReactNode
   onConfirm: () => void
 }
 
+//Cuerpo del Componente
 export default function AlertDeleteReceptionDialog({ trigger, onConfirm }: DeleteDialogProps) {
+  
+  //------------------------------------------------------------
+  // Renderizado del componente
+  //------------------------------------------------------------
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
