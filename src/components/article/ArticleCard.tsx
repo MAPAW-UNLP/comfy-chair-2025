@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
 import { deleteArticle } from "@/services/articleServices";
 import ArticleDeleteAccepted from './ArticleDeleteAccepted';
+import { readArticleFiles } from "@/hooks/readArticleFiles";
 import ArticleDeleteReception from "./ArticleDeleteReception";
 import { type Article, type Status } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
@@ -90,9 +91,8 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
   const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;  
 
-  // Archivos
-  const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null);
-  const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null);
+  // Hook custom para el manejo de archivos
+  const { mainFileName, sourceFileName } = readArticleFiles(article);
 
   //------------------------------------------------------------
   // Manejo de la baja de un archivo
@@ -106,53 +106,6 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
       toast.success('Error al eliminar el articulo...', { duration: 5000 });
     }
   }
-
-  //------------------------------------------------------------
-  // Efecto para cargar los archivos existentes (articulo y fuentes)
-  //------------------------------------------------------------
-  useEffect(() => {
-  
-    if (article) {
-  
-      // Manejo de los archivos del articulo
-      const mf: any = article.main_file;
-      const sf: any = article.source_file;
-  
-      // Cargar y settear el arthivo principal
-      if (mf) {
-        const url = typeof mf === 'string' ? mf : mf.url ?? null;
-        if (url) {
-          try {
-            const parts = url.split('/');
-            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingMainFileName(String(mf));
-          }
-        } else {
-          setExistingMainFileName(typeof mf === 'string' ? mf : null);
-        }
-      }
-
-      // Cargar y settear el archivo de fuentes (si existe)
-      if (sf) {
-        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
-        if (urlS) {
-          try {
-            const parts = urlS.split('/');
-            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingSourceFileName(String(sf));
-          }
-        } else {
-          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
-        }
-      } else {
-        setExistingSourceFileName(null);
-      }
-
-    }
-  
-  }, [article]);
 
   //------------------------------------------------------------
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
@@ -221,11 +174,11 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
                   <PencilIcon/> Editar Articulo
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => downloadMainFile(article.id, existingMainFileName!)}>
+              <DropdownMenuItem onClick={() => downloadMainFile(article.id, mainFileName!)}>
                 <FileDownIcon/> Descargar Articulo
               </DropdownMenuItem>
               {article.type === "poster" && (
-                <DropdownMenuItem onClick={() => downloadSourceFile(article.id, existingSourceFileName!)}>
+                <DropdownMenuItem onClick={() => downloadSourceFile(article.id, sourceFileName!)}>
                   <FileDownIcon/> Descargar Fuentes
                 </DropdownMenuItem>
               )}

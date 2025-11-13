@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { X, AlertCircleIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { readArticleFiles } from "@/hooks/readArticleFiles";
 import { UserCombobox } from "@/components/combobox/UserCombobox";
 import { ConferenceCombobox } from "../combobox/ConferenceCombobox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -68,11 +69,8 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
   const sourceFileRef = useRef<HTMLInputElement>(null); // Ref para el input de archivo de fuentes
   const [mainFile, setMainFile] = useState<File | null>(null); // Archivo principal
   const [sourceFile, setSourceFile] = useState<File | null>(null); // Archivo de fuentes (solo para posters)
-  const [existingMainFileUrl, setExistingMainFileUrl] = useState<string | null>(null); // URL del archivo principal ya existente (edicion)
-  const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal ya existente (edicion)
-  const [existingSourceFileUrl, setExistingSourceFileUrl] = useState<string | null>(null); // URL del archivo de fuentes ya existente (edicion)
-  const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes ya existente (edicion)
-
+  const { mainFileName, sourceFileName, mainFileUrl, sourceFileUrl } = readArticleFiles(article ?? null); // Hook custom para el manejo de archivos
+  
   //------------------------------------------------------------
   // Manejo de la seleccion de archivos
   //------------------------------------------------------------
@@ -191,10 +189,10 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       session: selectedSession ?? "",
       title: title.trim(),
       abstract: abstract.trim(),
-      file: mainFile ? mainFile.name : existingMainFileName ?? "",
+      file: mainFile ? mainFile.name : mainFileName ?? "",
       authors: authors.length > 0 ? "ok" : "",
       correspondingAuthor: correspondingAuthor ?? "",
-      sourcesFile: articleType === "poster" ? (sourceFile ? sourceFile.name : existingSourceFileName ?? "") : "ok",
+      sourcesFile: articleType === "poster" ? (sourceFile ? sourceFile.name : sourceFileName ?? "") : "ok",
     };
 
     // Validación con Zod
@@ -253,53 +251,6 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
   };
 
   //------------------------------------------------------------
-  // Efecto para cargar los archivos existentes (articulo y fuentes)
-  //------------------------------------------------------------
-  useEffect(() => {
-  
-    if (article) {
-  
-      // Manejo de los archivos del articulo
-      const mf: any = article.main_file;
-      const sf: any = article.source_file;
-  
-      // Cargar y settear el arthivo principal
-      if (mf) {
-        const url = typeof mf === 'string' ? mf : mf.url ?? null;
-        if (url) {
-          try {
-            const parts = url.split('/');
-            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingMainFileName(String(mf));
-          }
-        } else {
-          setExistingMainFileName(typeof mf === 'string' ? mf : null);
-        }
-      }
-
-      // Cargar y settear el archivo de fuentes (si existe)
-      if (sf) {
-        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
-        if (urlS) {
-          try {
-            const parts = urlS.split('/');
-            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingSourceFileName(String(sf));
-          }
-        } else {
-          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
-        }
-      } else {
-        setExistingSourceFileName(null);
-      }
-
-    }
-  
-  }, [article]);
-
-  //------------------------------------------------------------
   // Efecto para precargar datos del form en modo edición
   //------------------------------------------------------------
   useEffect(() => {
@@ -314,45 +265,7 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       setSelectedSession(article.session?.id ? String(article.session.id) : null);
       setAuthors(article.authors);
       setCorrespondingAuthor(String(article.corresponding_author?.id ?? ""));
-
-      // Manejo de los archivos del articulo
-      const mf: any = article.main_file;
-      const sf: any = article.source_file;
-
-      // Cargar y settear el arthivo principal
-      if (mf) {
-        const url = typeof mf === 'string' ? mf : mf.url ?? null;
-        setExistingMainFileUrl(url);
-        if (url) {
-          try {
-            const parts = url.split('/');
-            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingMainFileName(String(mf));
-          }
-        } else {
-          setExistingMainFileName(typeof mf === 'string' ? mf : null);
-        }
-      }
-
-      // Cargar y settear el archivo de fuentes (si existe)
-      if (sf) {
-        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
-        setExistingSourceFileUrl(urlS);
-        if (urlS) {
-          try {
-            const parts = urlS.split('/');
-            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingSourceFileName(String(sf));
-          }
-        } else {
-          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
-        }
-      } else {
-        setExistingSourceFileUrl(null);
-        setExistingSourceFileName(null);
-      }
+      
     }
 
   }, [editMode, article]);
@@ -479,15 +392,15 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
             className={`w-full text-white ${
               mainFile
                 ? "bg-lime-900"                     
-                : editMode && existingMainFileName  
+                : editMode && mainFileName  
                 ? "bg-lime-900"
                 : "bg-slate-900"                    
             }`}
           >
             {mainFile
               ? mainFile.name
-              : existingMainFileName
-              ? existingMainFileName
+              : mainFileName
+              ? mainFileName
               : "Seleccionar archivo..."}
           </Button>
         </div>  
@@ -506,15 +419,15 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
               className={`w-full text-white ${
                 sourceFile
                   ? "bg-lime-900"                         
-                  : editMode && existingSourceFileName   
+                  : editMode && sourceFileName   
                   ? "bg-lime-900"
                   : "bg-slate-900"                        
               }`}
             >
               {sourceFile
                 ? sourceFile.name
-                : existingSourceFileName
-                ? existingSourceFileName
+                : sourceFileName
+                ? sourceFileName
                 : "Seleccionar archivo..."}
             </Button>
           </div>
@@ -523,28 +436,28 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       </div>
 
       {/* Links de archivos actuales (solo en modo edición) */}
-      {editMode && (existingMainFileUrl || existingSourceFileUrl) && (
+      {editMode && (mainFileUrl || sourceFileUrl) && (
         <div className="flex flex-col md:flex-row gap-2 items-start justify-between text-xs text-sky-600">
 
           {/* Botón archivo principal */}
-          {existingMainFileName && (
+          {mainFileName && (
             <Button
               variant="link"
               className="p-0 m-0 h-auto leading-none text-sky-600 hover:underline"
-              onClick={() => downloadMainFile(article!.id, existingMainFileName)}
+              onClick={() => downloadMainFile(article!.id, mainFileName)}
             >
-              Ver archivo actual{existingMainFileName ? `: ${existingMainFileName}` : ""}
+              Ver archivo actual{mainFileName ? `: ${mainFileName}` : ""}
             </Button>
           )}
 
           {/* Botón archivo de fuentes */}
-          {articleType === "poster" && existingSourceFileName && (
+          {articleType === "poster" && sourceFileName && (
             <Button
               variant="link"
               className="p-0 m-0 h-auto leading-none text-sky-600 hover:underline"
-              onClick={() => downloadSourceFile(article!.id, existingSourceFileName)}
+              onClick={() => downloadSourceFile(article!.id, sourceFileName)}
             >
-              Ver fuentes actuales{existingSourceFileName ? `: ${existingSourceFileName}` : ""}
+              Ver fuentes actuales{sourceFileName ? `: ${sourceFileName}` : ""}
             </Button>
           )}
         </div>

@@ -1,3 +1,9 @@
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar un diálogo de alerta para confirmar la eliminación de un artículo ya aceptado
+//
+// -------------------------------------------------------------------------------------- 
+
 import { Button } from "@/components/ui/button"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent } from "@/components/ui/alert-dialog"
 import { AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"

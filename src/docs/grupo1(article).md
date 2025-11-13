@@ -2,6 +2,11 @@
 
     El grupo 1 se encargó de la lectura, alta, baja y modificación de articulos. 
 
+# ---------- Hooks ----------
+
+    readArticleFiles - (src/hooks/readArticleFiles.tsx)
+        * Hook personalizado que lee y procesa los archivos asociados a un artículo (archivo principal y archivo de fuentes si corresponde).
+
 # ---------- Components ----------
 
     ArticleCard - (src/components/article/ArticleCard.tsx)

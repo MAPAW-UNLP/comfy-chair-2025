@@ -1,3 +1,9 @@
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar un diálogo de alerta para confirmar la eliminación de un artículo en recepcion
+//
+// -------------------------------------------------------------------------------------- 
+
 import { type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent } from "@/components/ui/alert-dialog"
