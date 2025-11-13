@@ -12,12 +12,10 @@
 //
 // -------------------------------------------------------------------------------------- 
 
-import { useEffect, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import ArticleForm from '@/components/article/ArticleForm';
-import { getAllUsers, type User } from '@/services/userServices';
-import { getActiveConferences } from '@/services/conferenceServices';
-import { type Conference } from '@/components/conference/ConferenceApp';
+import { useFetchUsers } from '@/hooks/Grupo1/useFetchUsers';
+import { useFetchConferences } from '@/hooks/Grupo1/useFetchConferences';
 
 export const Route = createFileRoute('/_auth/article/create')({
   component: RouteComponent,
@@ -25,45 +23,12 @@ export const Route = createFileRoute('/_auth/article/create')({
 
 function RouteComponent() {
 
+  // Hooks
+  const { userList, loadingUsers } = useFetchUsers();
+  const { conferenceList, loadingConferences } = useFetchConferences();
+
   // Estado de carga
-  const [loading, setLoading] = useState(true);
-
-  // Lista de Conferencias
-  const [conferenceList, setConferences] = useState<Conference[]>([]);
-
-  // Lista de Usuarios
-  const [userList, setUsers] = useState<User[]>([]);
-
-  // Efecto para recuperar las conferencias y los usuarios
-  useEffect(() => {
-
-    const fetchUsers = async () => {
-      try{
-        const data = await getAllUsers();
-        setUsers(data);
-      }
-      catch {
-        console.log("Error al obtener los usuarios");
-      }
-    };
-
-    const fetchConferences = async () => {
-      try{
-        const conferenceList = await getActiveConferences();
-        setConferences(conferenceList);
-      }
-      catch{
-        console.log("Error al obtener las conferencias");
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-    fetchConferences();
-
-  }, []);
+  const loading = loadingUsers || loadingConferences;
 
   // Spinner de carga
   if (loading) {

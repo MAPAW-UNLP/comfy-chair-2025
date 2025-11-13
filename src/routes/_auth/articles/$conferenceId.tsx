@@ -10,22 +10,18 @@
 // - Mostrar mensajes informativos si:
 //     • La conferencia no existe.
 //     • No hay artículos disponibles para mostrar.
-// - Permite navegar hacia:
-//     • Una ruta de retorno ("article/test"). PROVISORIA HASTA TENER EL DASHBOARD.
+// - Permite navegar a través de un breadcrumb al inicio del dashboard.
 // - En caso de éxito, renderiza cada articulo como un componente "ArticleCard" y le envía
 //   como prop a cada uno el articulo actual.
 //
 // -------------------------------------------------------------------------------------- 
 
-import { useEffect, useState } from 'react';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useRouteContext } from '@tanstack/react-router';
-import { type Article } from '@/services/articleServices';
 import ArticleCard from '@/components/article/ArticleCard';
-import { getConferenceById } from '@/services/conferenceServices';
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import { getArticlesByConferenceId } from '@/services/articleServices';
-import { type Conference } from '@/components/conference/ConferenceApp';
+import { useFetchConference } from "@/hooks/Grupo1/useFetchConference";
+import { useFetchConferenceArticles } from "@/hooks/Grupo1/useFetchConferenceArticles";
 
 export const Route = createFileRoute('/_auth/articles/$conferenceId')({
   component: RouteComponent,
@@ -36,51 +32,16 @@ function RouteComponent() {
   // Usuario Actual
   const { user } = useRouteContext({ from: '/_auth/articles/$conferenceId' });
 
-  // Estado de carga
-  const [loading, setLoading] = useState(true);
-
   // Parametros de entrada (conferenceId)
   const { conferenceId } = useParams({ from: '/_auth/articles/$conferenceId' });
   const id = Number(conferenceId);
 
-  //Conferencia Actual
-  const [conference, setConference] = useState<Conference | null>();
+  //Hooks
+  const { conference, loadingConference } = useFetchConference(id);
+  const { articles, loadingArticles, setArticles } = useFetchConferenceArticles(id, user.email);
 
-  // Lista de Articulos
-  const [articulo, setArticulos] = useState<Article[]>([]);
-
-  // Efecto para recuperar la conferencia actual y sus articulos
-  useEffect(() => {
-
-    const fetchArticles = async () => {
-      try{
-        const data = await getArticlesByConferenceId(id);
-        const filtrados = data.filter(a => a.authors.some(author => author.email === user.email)); // Filtrar artículos por usuario logueado
-        const ordenados = filtrados.sort((a, b) => b.id - a.id);
-        setArticulos(ordenados);
-      }
-      catch{
-        console.log("Error al obtener los articulos");
-      }
-    };
-
-    const fetchConference = async () => {
-      try{
-        const conference = await getConferenceById(id);
-        setConference(conference);
-      }
-      catch{
-        console.log("Error al obtener la conferencia");
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-
-    fetchArticles();
-    fetchConference();
-    
-  }, []);
+  // Estado de carga
+  const loading = loadingConference || loadingArticles;
 
   // Spinner de carga
   if (loading) {
@@ -105,13 +66,14 @@ function RouteComponent() {
   //Cuerpo del Componente
   return (
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
-      {/* Breadcrumb + Título de Conferencia y Botón de navegación */}
+      
+      {/* Breadcrumb para la navegación */}
       <div className="flex justify-center w-full">
         <Breadcrumb items={[{ label: 'Inicio', to: '/dashboard' }, { label: conference.title }]} />
       </div>
       
-      {/* Si hay articulos mapea cada uno como una card, sino muestra un mensaje */}
-      {articulo.length === 0 ? (
+      {/* Si no hay articulos muestra un mensaje, si hay entonces mapea cada uno como una card */}
+      {articles.length === 0 ? (
         <div className="flex flex-col items-center justify-center w-full min-h-[80vh]">
           <h1 className="text-2xl font-bold italic text-slate-500 text-center">
             No hay artículos para mostrar...
@@ -120,8 +82,8 @@ function RouteComponent() {
       ) : (
         <div className="flex flex-wrap w-full gap-4 justify-center">
           {/* Le envío a cada card el id del articulo y el objeto articulo correspondiente*/}
-          {articulo.map((a) => (
-            <ArticleCard key={a.id} article={a} onDeleted={(id) => setArticulos((prev) => prev.filter((art) => art.id !== id))}/>
+          {articles.map((a) => (
+            <ArticleCard key={a.id} article={a} onDeleted={(id) => setArticles((prev) => prev.filter((art) => art.id !== id))}/>
           ))}
         </div>
       )}

@@ -1,11 +1,26 @@
 # Aspectos del Front Desarrollados por el Grupo 1
 
-    El grupo 1 se encargó de la lectura, alta, baja y modificación de articulos. 
+    El grupo 1 se encargó de la lectura, alta, baja y modificación de articulos. También se implementó la funcionalidad para solicitar la baja de un articulo cuando este ya fue aceptado en una sesión de una conferencia específica. 
 
 # ---------- Hooks ----------
 
-    readArticleFiles - (src/hooks/readArticleFiles.tsx)
-        * Hook personalizado que lee y procesa los archivos asociados a un artículo (archivo principal y archivo de fuentes si corresponde).
+    useArticleFiles.tsx - (src/hooks/Grupo1/useArticleFiles.tsx)
+        * Hook que gestiona la lectura, descarga y manejo de los archivos de un artículo (archivo principal y archivo de fuentes).
+
+    useFetchArticle.tsx - (src/hooks/Grupo1/useFetchArticle.tsx)
+        * Hook que obtiene un artículo específico por su ID.
+
+    useFetchConference.tsx - (src/hooks/Grupo1/useFetchConference.tsx)
+        * Hook que obtiene los datos de una conferencia por su ID.
+
+    useFetchConferenceArticles.tsx - (src/hooks/Grupo1/useFetchConferenceArticles.tsx)
+        * Hook que obtiene todos los artículos del usuario logueado pertenecientes a una conferencia específica.
+
+    useFetchConferences.tsx - (src/hooks/Grupo1/useFetchConferences.tsx)
+        * Hook que obtiene la lista completa de las conferencias activas.
+
+    useFetchUsers.tsx - (src/hooks/Grupo1/useFetchUsers.tsx)
+        * Hook que obtiene la lista de usuarios del sistema.
 
 # ---------- Components ----------
 
@@ -53,21 +68,21 @@
 
     article/detail/$articleId.tsx - (src/routes/article/detail/articleId.tsx)
         * Hace uso del componente "ArticleDetail"
+        * Muestra un breadcrumb que permite volver al menú anterior (articles/$conferenceId)
         * Muestra un mensaje si no encuentra un articulo con el id indicado
 
     article/edit/$articleId.tsx - (src/routes/article/edit/articleId.tsx)
         * Hace uso del componente "ArticleForm"
         * Muestra un mensaje si no encuentra un articulo con el id indicado
-        * Bloquea la edición si ya pasó la deadline de la sesión del articulo
+        * Bloquea la edición si ya pasó la deadline de la sesión del articulo o si el usuario autenticado no es autor
         
     article/create - (src/routes/article/create.tsx)
         * Hace uso del componente "ArticleForm"
 
     articles/$conferenceId - (src/routes/articles/conferenceId.tsx)
         * Hace uso del componente "ArticleCard"
-        * Muestra un mensaje si no encuentra una conferencia con el id indicado
         * Muestra un breadcrumb que permite volver al menú anterior (dashboard)
-        * Muestra el titulo de la conferencia seleccionada
+        * Muestra un mensaje si no encuentra una conferencia con el id indicado
         * Muestra todos los articulos de la conferencia seleccionada
 
 # ---------- Services ----------

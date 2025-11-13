@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
 import { deleteArticle } from "@/services/articleServices";
 import ArticleDeleteAccepted from './ArticleDeleteAccepted';
-import { readArticleFiles } from "@/hooks/readArticleFiles";
 import ArticleDeleteReception from "./ArticleDeleteReception";
+import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
 import { type Article, type Status } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 import { CircleXIcon, EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
@@ -92,7 +92,7 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
   const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;  
 
   // Hook custom para el manejo de archivos
-  const { mainFileName, sourceFileName } = readArticleFiles(article);
+  const { mainFileName, sourceFileName } = useArticleFiles(article);
 
   //------------------------------------------------------------
   // Manejo de la baja de un archivo

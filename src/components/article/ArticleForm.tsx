@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { X, AlertCircleIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { readArticleFiles } from "@/hooks/readArticleFiles";
+import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
 import { UserCombobox } from "@/components/combobox/UserCombobox";
 import { ConferenceCombobox } from "../combobox/ConferenceCombobox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -69,7 +69,7 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
   const sourceFileRef = useRef<HTMLInputElement>(null); // Ref para el input de archivo de fuentes
   const [mainFile, setMainFile] = useState<File | null>(null); // Archivo principal
   const [sourceFile, setSourceFile] = useState<File | null>(null); // Archivo de fuentes (solo para posters)
-  const { mainFileName, sourceFileName, mainFileUrl, sourceFileUrl } = readArticleFiles(article ?? null); // Hook custom para el manejo de archivos
+  const { mainFileName, sourceFileName, mainFileUrl, sourceFileUrl } = useArticleFiles(article ?? null); // Hook custom para el manejo de archivos
   
   //------------------------------------------------------------
   // Manejo de la seleccion de archivos

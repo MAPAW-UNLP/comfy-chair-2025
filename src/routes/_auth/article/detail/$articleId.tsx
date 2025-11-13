@@ -6,20 +6,17 @@
 //
 // - Recuperar el artículo actual (según el parámetro "articleId" de la URL).
 // - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
-// - Mostrar mensajes informativos si:
-//     • El articulo no existe.
-// - Permite navegar hacia:
-//     • La pantalla de visualizacion de artículos.
+// - Mostrar mensaje informativo si el articulo no existe.
+// - Permite navegar a través de un breadcrumb hasta la conferencia asociada al artículo o al inicio del dashboard.
 // - En caso de éxito, renderiza el componente "ArticleDetail" y le envía como prop
 //   el articulo actual.
 //
 // -------------------------------------------------------------------------------------- 
 
-import { useEffect, useState } from 'react';
+import Breadcrumb from '@/components/Breadcrumb';
 import ArticleDetail from '@/components/article/ArticleDetail';
-import Breadcrumb from '@/components/Breadcrumb'
-import { createFileRoute, useParams } from '@tanstack/react-router'
-import { getArticleById, type Article } from '@/services/articleServices';
+import { useFetchArticle } from "@/hooks/Grupo1/useFetchArticle";
+import { createFileRoute, useParams } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_auth/article/detail/$articleId')({
   component: RouteComponent,
@@ -27,34 +24,15 @@ export const Route = createFileRoute('/_auth/article/detail/$articleId')({
 
 function RouteComponent() {
 
-  // Estado de carga
-  const [loading, setLoading] = useState(true);
-
   // Parametros de entrada (articleId)
   const { articleId } = useParams({ from: '/_auth/article/detail/$articleId' });
   const id = Number(articleId);
 
-  // Articulo actual
-  const [article, setArticle] = useState<Article | null>(null);
+  // Hooks 
+  const { article, loading: loadingArticle } = useFetchArticle(id);
 
-  // Efecto para traer el articulo actual
-  useEffect(() => {
-
-    const fetchArticle = async () => {
-      try {
-        const data = await getArticleById(id);
-        setArticle(data);
-      } catch {
-        console.error("Error al obtener el artículo");
-        setArticle(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArticle();
-
-  }, []);
+  // Estado de carga
+  const loading = loadingArticle;
 
   // Spinner de carga
   if (loading) {
@@ -79,7 +57,8 @@ function RouteComponent() {
   // Cuerpo del componente
   return (
     <div className="mx-4 my-4 flex flex-col items-center gap-4">
-      {/* Breadcrumb full width, left-aligned like the conference list */}
+       
+      {/* Breadcrumb para la navegación */}
       <div className="flex justify-center w-full">
         <Breadcrumb
           items={[
@@ -90,13 +69,14 @@ function RouteComponent() {
         />
       </div>
 
-      {/* Article content centered below the breadcrumb */}
+      {/* Contenido Detallado del Articulo */}
       <div className="flex flex-wrap gap-4 justify-center">
         <div className="w-full max-w-3xl">
           {/* Le envío al componente el articulo actual */}
           <ArticleDetail article={article} />
         </div>
       </div>
+      
     </div>
   );
 

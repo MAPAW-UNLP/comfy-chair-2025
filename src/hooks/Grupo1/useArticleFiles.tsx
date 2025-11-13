@@ -1,13 +1,13 @@
 // -------------------------------------------------------------------------------------- 
 //
-// Grupo 1 - Hook para leer los archivos de un artículo y permitir su descarga
+// Grupo 1 - Hook para leer los archivos de un artículo especifico y permitir su descarga
 //
 // -------------------------------------------------------------------------------------- 
 
 import { useEffect, useState } from "react";
 import type { Article } from "@/services/articleServices";
 
-export function readArticleFiles(article: Article | null) {
+export function useArticleFiles(article: Article | null) {
     const [mainFileName, setMainFileName] = useState<string | null>(null);
     const [sourceFileName, setSourceFileName] = useState<string | null>(null);
     const [mainFileUrl, setMainFileUrl] = useState<string | null>(null);

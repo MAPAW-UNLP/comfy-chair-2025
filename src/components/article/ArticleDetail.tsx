@@ -6,7 +6,7 @@
 
 // Importaciones
 import { Button } from "../ui/button";
-import { readArticleFiles } from "@/hooks/readArticleFiles";
+import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 
@@ -36,7 +36,7 @@ const estadoTexto: Record<Status, string> = {
 const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
   // Hook custom para el manejo de archivos
-  const { mainFileName, sourceFileName } = readArticleFiles(article);
+  const { mainFileName, sourceFileName } = useArticleFiles(article);
 
   //------------------------------------------------------------
   // Renderizado del componente

@@ -11,22 +11,20 @@
 // - Mostrar mensajes informativos si:
 //     • El artículo no existe.
 //     • El artículo ya no puede editarse (ya pasó la deadilne).
-// - Permite navegar hacia:
-//     • La pantalla de visualizacion de artículos (al cancelar o editar un articulo).
+//     • El usuario no tiene permiso para editar el articulo (no es autor).
+// - Permite navegar hacia la pantalla de visualizacion de artículos de la conferencia actual (al cancelar o editar un articulo).
 // - En caso de éxito, renderiza el componente "ArticleForm" y le envía como props 
 //   la lista de usuarios, la lista de conferencias activas, el articulo actual y una
 //   flag para indicar que el componente se encuentra en modo edicion.
 //
 // -------------------------------------------------------------------------------------- 
 
-import { useEffect, useState } from 'react';
 import { useRouteContext } from '@tanstack/react-router';
 import ArticleForm from '@/components/article/ArticleForm';
-import { getAllUsers, type User } from '@/services/userServices';
+import { useFetchUsers } from "@/hooks/Grupo1/useFetchUsers";
+import { useFetchArticle } from "@/hooks/Grupo1/useFetchArticle";
 import { createFileRoute, useParams } from '@tanstack/react-router'
-import { getActiveConferences } from '@/services/conferenceServices';
-import { type Conference } from '@/components/conference/ConferenceApp';
-import { getArticleById, type Article } from '@/services/articleServices';
+import { useFetchConferences } from "@/hooks/Grupo1/useFetchConferences";
 
 export const Route = createFileRoute('/_auth/article/edit/$articleId')({
   component: RouteComponent,
@@ -37,63 +35,17 @@ function RouteComponent() {
   // Usuario Actual
   const { user } = useRouteContext({ from: '/_auth/article/edit/$articleId' });
 
-  // Estado de carga
-  const [loading, setLoading] = useState(true);
-
   // Parametros de entrada (articleId)
   const { articleId } = useParams({ from: '/_auth/article/edit/$articleId' });
   const id = Number(articleId);
 
-  // Articulo Actual
-  const [article, setArticle] = useState<Article | null>(null);
+  // Hooks 
+  const { userList, loadingUsers } = useFetchUsers();
+  const { article, loading: loadingArticle } = useFetchArticle(id);
+  const { conferenceList, loadingConferences } = useFetchConferences();
 
-  // Lista de Conferencias
-  const [conferenceList, setConferences] = useState<Conference[]>([]);
-
-  // Lista de Usuarios
-  const [userList, setUsers] = useState<User[]>([]);
-
-  // Efecto para recuperar el articulo actual y los usuarios de la app
-  useEffect(() => {
-
-    const fetchArticle = async () => {
-      try {
-        const data = await getArticleById(id);
-        setArticle(data);
-      } catch {
-        console.error("Error al obtener el artículo");
-        setArticle(null);
-      }
-    };
-
-    const fetchUsers = async () => {
-      try{
-        const data = await getAllUsers();
-        setUsers(data);
-      }
-      catch {
-        console.log("Error al obtener los usuarios");
-      }
-    };
-
-    const fetchConferences = async () => {
-      try{
-        const conferenceList = await getActiveConferences();
-        setConferences(conferenceList);
-      }
-      catch{
-        console.log("Error al obtener las conferencias");
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-
-    fetchArticle();
-    fetchUsers();
-    fetchConferences();
-  
-  }, []);
+  // Estado de carga
+  const loading = loadingArticle || loadingUsers || loadingConferences;
 
   // Spinner de carga
   if (loading) {
