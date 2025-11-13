@@ -199,6 +199,7 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
                       <CircleXIcon /> Solicitar Baja
                     </DropdownMenuItem>
                   }
+                  articleId={article.id}
                   onConfirm={() => console.log("Solicitud de baja confirmada")} // acá ponés tu lógica real
                 />
               )}
