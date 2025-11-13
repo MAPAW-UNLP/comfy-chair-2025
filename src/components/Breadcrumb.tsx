@@ -1,3 +1,9 @@
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar un breadcrumb de navegación
+//
+// -------------------------------------------------------------------------------------- 
+
 import { Link } from '@tanstack/react-router'
 
 type Crumb = { label: string; to?: string }

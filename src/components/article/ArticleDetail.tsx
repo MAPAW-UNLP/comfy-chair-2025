@@ -6,7 +6,7 @@
 
 // Importaciones
 import { Button } from "../ui/button";
-import { useState, useEffect } from "react";
+import { readArticleFiles } from "@/hooks/readArticleFiles";
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 
@@ -35,56 +35,8 @@ const estadoTexto: Record<Status, string> = {
 //Cuerpo del Componente
 const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
-  // Archivos (articulo y fuentes)
-  const [existingMainFileName, setExistingMainFileName] = useState<string | null>(null); // Nombre del archivo principal
-  const [existingSourceFileName, setExistingSourceFileName] = useState<string | null>(null); // Nombre del archivo de fuentes
-
-  //------------------------------------------------------------
-  // Efecto para cargar los archivos existentes (articulo y fuentes)
-  //------------------------------------------------------------
-  useEffect(() => {
-  
-    if (article) {
-  
-      // Manejo de los archivos del articulo
-      const mf: any = article.main_file;
-      const sf: any = article.source_file;
-  
-      // Cargar y settear el arthivo principal
-      if (mf) {
-        const url = typeof mf === 'string' ? mf : mf.url ?? null;
-        if (url) {
-          try {
-            const parts = url.split('/');
-            setExistingMainFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingMainFileName(String(mf));
-          }
-        } else {
-          setExistingMainFileName(typeof mf === 'string' ? mf : null);
-        }
-      }
-
-      // Cargar y settear el archivo de fuentes (si existe)
-      if (sf) {
-        const urlS = typeof sf === 'string' ? sf : sf.url ?? null;
-        if (urlS) {
-          try {
-            const parts = urlS.split('/');
-            setExistingSourceFileName(decodeURIComponent(parts[parts.length - 1]));
-          } catch (_) {
-            setExistingSourceFileName(String(sf));
-          }
-        } else {
-          setExistingSourceFileName(typeof sf === 'string' ? sf : null);
-        }
-      } else {
-        setExistingSourceFileName(null);
-      }
-
-    }
-  
-  }, [article]);
+  // Hook custom para el manejo de archivos
+  const { mainFileName, sourceFileName } = readArticleFiles(article);
 
   //------------------------------------------------------------
   // Renderizado del componente
@@ -118,12 +70,12 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
           <div className="flex flex-col sm:flex-row gap-2 w-full">
 
             {/* Archivo principal descargable */}
-            {existingMainFileName && (
+            {mainFileName && (
               <div className="flex-1 grid items-start">
                 <p><b>Articulo</b></p>
                 <Button
                   variant="outline"
-                  onClick={() => downloadMainFile(article.id, existingMainFileName!)}
+                  onClick={() => downloadMainFile(article.id, mainFileName!)}
                   className="w-full text-white bg-slate-900"
                 >
                   Descargar Artículo
@@ -132,12 +84,12 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
             )}
 
             {/* Archivo fuentes descargable */}
-            {existingSourceFileName && (
+            {sourceFileName && (
               <div className="flex-1 grid items-start">
                 <p><b>Fuentes</b></p>
                 <Button
                   variant="outline"
-                  onClick={() => downloadSourceFile(article.id, existingSourceFileName!)}
+                  onClick={() => downloadSourceFile(article.id, sourceFileName!)}
                   className="w-full text-white bg-slate-900"
                 >
                   Descargar Fuentes
