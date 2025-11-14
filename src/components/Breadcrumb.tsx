@@ -27,8 +27,18 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                   {it.label}
                 </Link>
               ) : (
-                <span className={isLast ? 'font-semibold text-slate-900' : 'text-slate-600'}>{it.label}</span>
+                <span
+                  className={
+                    isLast
+                      ? "font-semibold text-slate-900 max-w-[150px] sm:max-w-[350px] md:max-w-[500px] lg:max-w-[750px] truncate overflow-hidden whitespace-nowrap block"
+                      : "text-slate-600"
+                  }
+                  title={isLast ? it.label : undefined} // tooltip con el texto real
+                >
+                  {it.label}
+                </span>
               )}
+
               {!isLast && <span className="text-slate-400">/</span>}
             </li>
           )
