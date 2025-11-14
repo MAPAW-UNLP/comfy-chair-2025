@@ -71,10 +71,8 @@ function RouteComponent() {
 
       {/* Contenido Detallado del Articulo */}
       <div className="flex flex-wrap gap-4 justify-center">
-        <div className="w-full max-w-3xl">
           {/* Le envío al componente el articulo actual */}
           <ArticleDetail article={article} />
-        </div>
       </div>
       
     </div>

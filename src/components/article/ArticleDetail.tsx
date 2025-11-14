@@ -42,11 +42,18 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
   // Renderizado del componente
   //------------------------------------------------------------
   return (
-    <div className="flex justify-end items-center">
-      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg">
-
-        {/* Campos del articulo */}
+    <div className="flex flex-col xl:flex-row items-start gap-4 max-w-5xl w-full">
+      
+      {/* Card con los detalles del articulo */}
+      <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
         <div className="text-start flex flex-col gap-2">
+
+          {/* Titulo de la card */}
+          <h2 className="text-lg font-bold italic text-slate-500 text-center">
+            Detalle del Articulo
+          </h2>
+
+          <hr className="bg-slate-100" />
           
           {/* Detalles del Artículo */}
           <p><b>Título:</b> {article?.title}</p>
@@ -101,6 +108,28 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
         </div>
       </div>
+
+      {/* Card con las reviews del articulo, solo si el estado es aceptado o rechazado */}
+      {(article.status === "accepted" || article.status === "rejected") && (
+        <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
+          <div className="text-start flex flex-col gap-2">
+            
+            {/* Titulo de la card */}
+            <h2 className="text-lg font-bold italic text-slate-500 text-center">
+              Reviews del Articulo
+            </h2>
+
+            <hr className="bg-slate-100" />
+
+            {/* Reviews del Artículo */}
+            <h1><b>Review 1:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</h1>
+            <h1><b>Review 2:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</h1>
+            <h1><b>Review 3:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</h1>
+          
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
