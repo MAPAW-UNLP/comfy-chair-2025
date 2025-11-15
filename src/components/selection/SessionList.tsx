@@ -6,6 +6,10 @@ export const SessionList = () => {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const conferenceTitle =
+    sessions.length > 0 && sessions[0].conference
+      ? sessions[0].conference.title
+      : 'Sesiones'; // Fallback si la lista esta vacía o el objeto conference es null
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -22,11 +26,10 @@ export const SessionList = () => {
     fetchSessions();
   }, []);
 
-
   const handleSessionClick = (sessionId: number) => {
     navigate({
       to: '/chairs/selection/articles-session',
-      search: { sessionId: String(sessionId) }
+      search: { sessionId: String(sessionId) },
     });
   };
 
@@ -41,12 +44,18 @@ export const SessionList = () => {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: 'var(--ring)' }}>
-        <h1 className="text-xl font-semibold">Sesiones de la Conferencia</h1>
+      <div
+        className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0"
+        style={{ backgroundColor: 'var(--ring)' }}
+      >
+        <h1 className="text-xl font-semibold">{conferenceTitle}</h1>
       </div>
 
       {/* Lista de sesiones */}
-      <div className="flex-1 overflow-hidden flex flex-col" style={{ backgroundColor: 'var(--sidebar-border)' }}>
+      <div
+        className="flex-1 overflow-hidden flex flex-col"
+        style={{ backgroundColor: 'var(--sidebar-border)' }}
+      >
         {sessions.length === 0 ? (
           <div className="text-center py-12 text-gray-500 flex-1 flex items-center justify-center">
             No se encontraron sesiones
@@ -60,16 +69,14 @@ export const SessionList = () => {
                   className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer w-full"
                   onClick={() => handleSessionClick(session.id)}
                 >
-                    {/* Título */}
-                    <div className="flex-1 pr-4">
-                        <h3 className="text-base text-gray-900 leading-tight">{session.title}</h3>
-                    </div>
-
-                    <div className="flex flex-col items-center gap-2">
-                        <span className="text-sm text-gray-500">
-                            Ver Más
-                        </span>
-                    </div>
+                  <div className="flex-1 pr-4">
+                    <h3 className="text-base text-gray-900 leading-tight">
+                      {session.title}
+                    </h3>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-sm text-gray-500">Ver Más</span>
+                  </div>
                 </div>
               ))}
             </div>
