@@ -1,21 +1,27 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { executeCutoffSelection, executeScoreThresholdSelection, getSessionById } from "@/services/selectionServices";
-import { SelectionResultsList } from "./SelectionResultsList";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, Check } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import {
+  executeCutoffSelection,
+  executeScoreThresholdSelection,
+  getSessionById,
+} from '@/services/selectionServices';
+import { SelectionResultsList } from './SelectionResultsList';
+import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
 
 interface SelectionPageProps {
   sessionId: number;
 }
 
 export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
-  const [sessionTitle, setSessionTitle] = useState<string>("Sesión");
-  const [selectedMethod, setSelectedMethod] = useState<"cutoff" | "threshold">("cutoff");
-  const [cutoffScore, setCutoffScore] = useState("");
-  const [percentage, setPercentage] = useState("");
+  const [sessionTitle, setSessionTitle] = useState<string>('Sesión');
+  const [selectedMethod, setSelectedMethod] = useState<'cutoff' | 'threshold'>(
+    'cutoff'
+  );
+  const [cutoffScore, setCutoffScore] = useState('');
+  const [percentage, setPercentage] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingSession, setLoadingSession] = useState(true);
   const [articles, setArticles] = useState<any[]>([]);
@@ -26,12 +32,12 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     const fetchSession = async () => {
       try {
         const session = await getSessionById(sessionId);
-        setSessionTitle(session.title || "Sesión desconocida");
+        setSessionTitle(session.title || 'Sesión desconocida');
       } catch (error) {
-        console.error("Error fetching session:", error);
-        setSessionTitle("Sesión desconocida");
-        toast.error("No se pudo cargar la sesión.", {
-          position: "top-left",
+        console.error('Error fetching session:', error);
+        setSessionTitle('Sesión desconocida');
+        toast.error('No se pudo cargar la sesión.', {
+          position: 'top-left',
         });
       } finally {
         setLoadingSession(false);
@@ -42,12 +48,14 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
   }, [sessionId]);
 
   const executeSelection = async () => {
-    if (selectedMethod === "cutoff" && !percentage) {
-      toast.error("Por favor ingresa un porcentaje.", { position: "top-left" });
+    if (selectedMethod === 'cutoff' && !percentage) {
+      toast.error('Por favor ingresa un porcentaje.', { position: 'top-left' });
       return;
     }
-    if (selectedMethod === "threshold" && !cutoffScore) {
-      toast.error("Por favor ingresa un puntaje mínimo.", { position: "top-left" });
+    if (selectedMethod === 'threshold' && !cutoffScore) {
+      toast.error('Por favor ingresa un puntaje mínimo.', {
+        position: 'top-left',
+      });
       return;
     }
     setLoading(true);
@@ -55,17 +63,23 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     try {
       let result: any = null;
 
-      if (selectedMethod === "cutoff") {
+      if (selectedMethod === 'cutoff') {
         const parsed = parseFloat(percentage);
         if (isNaN(parsed)) {
-          toast.error("Por favor ingresa un número válido para el porcentaje.", {
-            position: "top-left",
-          });
+          toast.error(
+            'Por favor ingresa un número válido para el porcentaje.',
+            {
+              position: 'top-left',
+            }
+          );
           return;
         }
         result = await executeCutoffSelection(sessionId, parsed);
       } else {
-        result = await executeScoreThresholdSelection(sessionId, parseFloat(cutoffScore));
+        result = await executeScoreThresholdSelection(
+          sessionId,
+          parseFloat(cutoffScore)
+        );
       }
 
       const safeResult = result && typeof result === 'object' ? result : {};
@@ -79,12 +93,11 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
       }
 
       const combined = [
-        ...accepted.map((a: any) => ({ ...a, status: "accepted" })),
-        ...rejected.map((a: any) => ({ ...a, status: "rejected" })),
+        ...accepted.map((a: any) => ({ ...a, status: 'accepted' })),
+        ...rejected.map((a: any) => ({ ...a, status: 'rejected' })),
       ];
 
       setArticles(combined);
-
     } catch (error: any) {
       // console.error("Error ejecutando selección:", error);
 
@@ -92,13 +105,11 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
       setShowResults(true); // Fuerza la vista de resultados vacios en caso de error
 
       const backendMessage =
-        error.response?.data?.detail ||
-        error.response?.data?.error ||
-        null;
+        error.response?.data?.detail || error.response?.data?.error || null;
 
       if (backendMessage) {
         toast.error(backendMessage, {
-          position: "top-left",
+          position: 'top-left',
         });
       }
     } finally {
@@ -106,7 +117,8 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     }
   };
 
-  const getMethodLabel = () => (selectedMethod === "cutoff" ? "Corte Fijo" : "Mejores");
+  const getMethodLabel = () =>
+    selectedMethod === 'cutoff' ? 'Corte Fijo' : 'Mejores';
 
   if (loadingSession) {
     return (
@@ -116,6 +128,12 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     );
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !loading) {
+      executeSelection();
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
@@ -123,14 +141,14 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
       {/* Titulo de la sesion */}
       <div
         className="text-white py-1 px-6 flex items-center gap-3 flex-shrink-0"
-        style={{ backgroundColor: "var(--muted-foreground)" }}//"var(--ring)"
+        style={{ backgroundColor: 'var(--muted-foreground)' }} //"var(--ring)"
       >
         <h1 className="text-lg truncate">{sessionTitle}</h1>
       </div>
 
       <div
         className="text-white py-2 px-6 flex items-center justify-between flex-shrink-0"
-        style={{ backgroundColor: "var(--ring)" }}
+        style={{ backgroundColor: 'var(--ring)' }}
       >
         <div className="flex items-center gap-3 flex-wrap">
           {/* Dropdown de método */}
@@ -147,73 +165,69 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
             {menuOpen && (
               <div className="absolute left-0 mt-2 w-44 bg-white text-gray-900 border rounded-lg shadow-lg z-50">
                 <button
-                  className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${selectedMethod === "cutoff" ? "bg-gray-100 font-medium" : ""
-                    } rounded-t-lg`}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+                    selectedMethod === 'cutoff' ? 'bg-gray-100 font-medium' : ''
+                  } rounded-t-lg`}
                   onClick={() => {
-                    setSelectedMethod("cutoff");
+                    setSelectedMethod('cutoff');
                     setMenuOpen(false);
                     setShowResults(false); // Oculta resultados cuando cambia de metodo
-                    setArticles([]);      // Limpia lista de articulos
+                    setArticles([]); // Limpia lista de articulos
                   }}
                 >
                   Corte Fijo
                 </button>
                 <button
-                  className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${selectedMethod === "threshold" ? "bg-gray-100 font-medium" : ""
-                    } rounded-b-lg`}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+                    selectedMethod === 'threshold'
+                      ? 'bg-gray-100 font-medium'
+                      : ''
+                  } rounded-b-lg`}
                   onClick={() => {
-                    setSelectedMethod("threshold");
+                    setSelectedMethod('threshold');
                     setMenuOpen(false);
                     setShowResults(false); // Oculta resultados cuando cambia de metodo
-                    setArticles([]);      // Limpia lista de articulos
+                    setArticles([]); // Limpia lista de articulos
                   }}
                 >
-                  Mejores
+                  Mejor Puntaje
                 </button>
               </div>
             )}
           </div>
 
-          {selectedMethod === "threshold" ? (
+          {selectedMethod === 'threshold' ? (
             <input
               type="number"
               value={cutoffScore}
               onChange={(e) => setCutoffScore(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Puntaje mínimo"
               step="1"
               min="-3"
               max="3"
-              className="px-3 py-2 border rounded-md w-24 sm:w-32 text-black"
+              className="px-3 py-2 border rounded-md w-37 sm:w-40 text-black"
             />
           ) : (
             <input
               type="number"
               value={percentage}
               onChange={(e) => setPercentage(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Porcentaje"
               min="0"
               max="100"
-              className="px-3 py-2 border rounded-md w-24 sm:w-32 text-black"
+              className="px-3 py-2 border rounded-md w-37 sm:w-40 text-black"
             />
           )}
-
-          <Button
-            onClick={executeSelection}
-            disabled={loading}
-            className="hover:opacity-90 text-white px-4 py-2 rounded-md transition-colors shadow-sm flex items-center justify-center"
-            style={{ backgroundColor: "var(--primary)" }}
-          >
-            {loading ? (
-              "Procesando..."
-            ) : (
-              <Check className="w-5 h-5" /> // icono tick
-            )}
-          </Button>
         </div>
       </div>
 
       {/* Contenido */}
-      <div className="flex-1 overflow-hidden" style={{ backgroundColor: "var(--sidebar-border)" }}>
+      <div
+        className="flex-1 overflow-hidden"
+        style={{ backgroundColor: 'var(--sidebar-border)' }}
+      >
         {showResults ? (
           articles.length === 0 ? (
             <div className="h-full flex items-center justify-center text-gray-500 text-lg">
