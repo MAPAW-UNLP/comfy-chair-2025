@@ -146,3 +146,23 @@ export const removeReviewerFromArticle = async (reviewerId: number, articleId: n
   const response = await api.delete(`/api/chair/${reviewerId}/${articleId}/delete/`)
   return response.data
 }
+
+/**
+ * Obtener todas las reviews de un artículo
+ * Backend: GET /api/reviews/{articleId}/
+ */
+export const getReviewsByArticle = async (articleId: number): Promise<Review[]> => {
+  try {
+    const response = await api.get(`/api/reviews/${articleId}/`, {
+      validateStatus: () => true,
+    });
+    if (response.status === 200 && response.data) {
+      // El backend devuelve un objeto individual, lo envolvemos en array 
+      return [response.data as Review];
+    }
+    return [];
+  } catch (e) {
+    console.error('getReviewsByArticle error', e);
+    return [];
+  }
+};

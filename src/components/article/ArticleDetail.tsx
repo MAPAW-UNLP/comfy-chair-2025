@@ -1,3 +1,4 @@
+
 // -------------------------------------------------------------------------------------- 
 //
 // Grupo 1 - Componente para mostrar todos los campos completos de un articulo.
@@ -7,8 +8,11 @@
 // Importaciones
 import { Button } from "../ui/button";
 import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
+import { useEffect, useState } from 'react';
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
+import { getReviewsByArticle } from '@/services/reviewerServices'
+import type { Review } from '@/services/reviewerServices'
 
 // Lo que espera recibir el componente
 export interface ArticleDetailProps {
@@ -37,6 +41,32 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
   // Hook custom para el manejo de archivos
   const { mainFileName, sourceFileName } = useArticleFiles(article);
+
+  // Estado y carga de reviews
+  const [reviews, setReviews] = useState<Review[] | null>(null);
+  const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchReviews = async () => {
+      setLoadingReviews(true);
+      try {
+        const data = await getReviewsByArticle(article.id);
+        if (mounted) setReviews(data ?? []);
+      } catch (e) {
+        console.error('Error fetching reviews', e);
+        if (mounted) setReviews([]);
+      } finally {
+        if (mounted) setLoadingReviews(false);
+      }
+    };
+
+    if (article.status === 'accepted' || article.status === 'rejected') {
+      fetchReviews();
+    }
+
+    return () => { mounted = false };
+  }, [article.id, article.status]);
 
   //------------------------------------------------------------
   // Renderizado del componente
@@ -122,9 +152,41 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
             <hr className="bg-slate-100" />
 
             {/* Reviews del Artículo */}
-            <h1><b>Review 1:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</h1>
-            <h1><b>Review 2:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</h1>
-            <h1><b>Review 3:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</h1>
+            {loadingReviews && (
+              <div className="py-4 text-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+              </div>
+            )}
+
+            {!loadingReviews && (!reviews || reviews.length === 0) && (
+              <div className="py-4 text-sm text-muted-foreground">No hay reviews publicadas para este artículo.</div>
+            )}
+
+            {!loadingReviews && reviews && reviews.length > 0 && (
+              (() => {
+                const publishedReviews = reviews.filter((r) => r.is_published === true);
+                
+                if (publishedReviews.length === 0) {
+                  return (
+                    <div className="py-4 text-sm text-muted-foreground">No hay reviews publicadas para este artículo.</div>
+                  );
+                }
+                
+                return (
+                  <div className="space-y-4">
+                    {publishedReviews.map((r) => (
+                      <div key={r.id} className="p-3 border rounded">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm text-muted-foreground">Revisor: {String(r.reviewer)}</div>
+                          <div className="text-sm font-medium">Puntaje: {r.score}</div>
+                        </div>
+                        <div className="mt-2 text-sm">{r.opinion}</div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()
+            )}
           
           </div>
         </div>
