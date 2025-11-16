@@ -1,30 +1,84 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { getAllSessions } from '@/services/sessionServices';
+import { getSessionsByConference } from '@/services/sessionServices';
+import { getActiveConferences } from '@/services/conferenceServices';
 
-export const SessionList = () => {
+type SessionListProps = {
+  conferenceId: number;
+};
+
+export const SessionList = ({ conferenceId }: SessionListProps) => {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Estado provisorio: si el ID de la conferencia no se pasa por la url se obtiene un id de la bbdd
+  const [auxConferenceId, setAuxConferenceId] = useState(0);
+
   const conferenceTitle =
     sessions.length > 0 && sessions[0].conference
       ? sessions[0].conference.title
       : 'Sesiones'; // Fallback si la lista esta vacía o el objeto conference es null
 
+  // Determina el ID de la conferencia a usar
   useEffect(() => {
-    const fetchSessions = async () => {
+    // Si recibe un ID válido por prop se usa
+    if (conferenceId > 0 && !isNaN(conferenceId)) {
+      setAuxConferenceId(conferenceId);
+      return;
+    }
+
+    // Si el ID es inválido (no se navego desde la vista de la conferencia) se busca el fallback
+    const fetchFallbackConference = async () => {
+      setLoading(true); // Bloquea la carga hasta tener un ID
       try {
-        const data = await getAllSessions();
+        const activeConferences = await getActiveConferences();
+        if (activeConferences && activeConferences.length > 0) {
+          const firstId = Number(activeConferences[0].id);
+          setAuxConferenceId(firstId);
+        } else {
+          setAuxConferenceId(0); // No hay conferencias activas en la bbdd
+        }
+      } catch (error) {
+        console.error('Error fetching fallback conference:', error);
+        setAuxConferenceId(0);
+      }
+    };
+
+    fetchFallbackConference();
+  }, [conferenceId]); // Solo se ejecuta cuando el prop conferenceId cambia
+
+  // Carga las sesiones usando el ID efectivo
+  useEffect(() => {
+    const fetchSessions = async (id: number) => {
+      // Valida que el id sea mayor a 0 antes de llamar a la API
+      if (id <= 0 || isNaN(id)) {
+        setLoading(false);
+        setSessions([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Usa el id buscado para el filtrado
+        const data = await getSessionsByConference(id);
         setSessions(data);
       } catch (error) {
         console.error('Error fetching sessions:', error);
+        setSessions([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSessions();
-  }, []);
+    // Si auxConferenceId es v+alido llama a la funcion de fetch
+    if (auxConferenceId > 0) {
+      fetchSessions(auxConferenceId);
+    } else if (conferenceId <= 0 || isNaN(conferenceId)) {
+      // Si el ID inicial es 0 o nan y el fallback también es 0, termina la carga
+      setLoading(false);
+    }
+  }, [auxConferenceId]); // Se ejecuta cuando auxConferenceId se actualiza
 
   const handleSessionClick = (sessionId: number) => {
     navigate({
