@@ -1,118 +1,148 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { AuthProvider } from '@/contexts/AuthContext';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 
-import { Armchair, Menu, X, ArrowLeft, ChevronDown, ChevronRight } from 'lucide-react';
+import { Armchair, Menu, X, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 
-// Definición del componente principal (layout raíz)
-const RootLayout = () => {
-
-  // Estado para controlar si el menú lateral móvil está abierto o cerrado
+// Componente interno que usa el contexto de autenticación
+const RootLayoutContent = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
 
-  // Lista de páginas principales de la aplicación
-  const links = [
-    { to: '/', label: 'Home' },
-    //{ to: '/conference/view', label: 'Conferencias' },
-    //{ to: '/article/view', label: 'Articulos' },
-    //{ to: '/article/create', label: 'Subir Articulo' },
-    { to: '/article/select', label: 'Articulos' },
-    { to: '/chairs/selection/session-list', label: 'Seleccionar' },
-    //{ to: '/reviewer/bidding', label: 'Bidding' },
-    //{ to: '/login', label: 'Ingresar' },
-  ];
-
+  // Funcionalidad de retroceso
   const handleBack = () => {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = '/'; // fallback al home si no hay historial
+      window.location.href = '/';
     }
   };
 
-  return (
-    <AuthProvider>
-      <div className="flex flex-col h-screen">
+  const routerState = useRouterState();
+  const isHome = routerState.location.pathname === '/';
+  const isDashboard = routerState.location.pathname === '/dashboard';
 
-        {/* Navbar superior */}
-        <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+  const commonLinks: { to: string; label: string }[] = [];
+
+  const authLinks = user
+    ? [
+        { to: '/reviewer/', label: 'Revisor' },
+        { to: '/conference/view', label: 'Conferencias' },
+        { to: '/article/view', label: 'Articulos' },
+        { to: '/article/select', label: 'Articulos a asignar' },
+        { to: '/review/chair/reviewed', label: 'Articulos revisados' },
+        { to: '/chairs/selection/session-list', label: 'Seleccionar corte de sesión' },
+        { to: '/reviewer/bidding', label: 'Bidding' },
+        { to: '/notifications', label: 'Notificaciones' },
+        { to: '/dashboard', label: 'Panel' },
+      ]
+    : [
+        { to: '/login', label: 'Ingresar' },
+        { to: '/register', label: 'Registrarse' },
+      ];
+
+  const links = [...commonLinks, ...authLinks];
+
+  return (
+    <div className="flex flex-col h-screen">
+
+      {/* Navbar superior */}
+      <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+
+        {/* Flecha de retroceso (solo si no estamos en Home) */}
+        {!isHome && !isDashboard && (
           <button
             onClick={handleBack}
-            className="p-2 rounded-md hover:bg-slate-700 flex items-center justify-center"
+            className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center md:hidden"
             title="Volver"
           >
             <ArrowLeft size={20} />
           </button>
-          {/* Navegación visible solo en pantallas medianas en adelante */}
-          <nav className="hidden md:flex gap-2 order-1 md:order-1">
+        )}
+
+
+        {/* Navegación visible solo en pantallas medianas en adelante */}
+        <nav className="hidden md:flex gap-2 order-1 md:order-1">
+          {links.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Nombre de la app + ícono */}
+        <div className="flex items-center gap-2 ml-auto order-2">
+          <Link
+            to="/"
+            className="font-bold text-lg flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
+          >
+            ComfyChair
+            {/* Ícono visible solo en escritorio */}
+            <Armchair className="hidden md:inline" />
+          </Link>
+
+          {/* Botón colapsable (solo móvil) */}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="md:hidden p-1 rounded hover:bg-gray-700"
+          >
+            <Menu />
+          </button>
+        </div>
+      </header>
+
+      {/* Cuerpo principal */}
+      <div className="flex flex-1 overflow-hidden">
+
+        {/* Sidebar móvil (izquierda) */}
+        <aside
+          className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${
+            isOpen ? 'translate-x-0' : '-translate-x-full'
+          } md:hidden`}
+        >
+          <div className="flex items-center justify-between p-4">
+            <span className="font-bold text-lg">Menu</span>
+            <button onClick={() => setIsOpen(false)}>
+              <X />
+            </button>
+          </div>
+
+          <nav className="flex flex-col mt-4 gap-2">
             {links.map((link) => (
-              <Link key={link.to} to={link.to} className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
+              <Link
+                key={link.to}
+                to={link.to}
+                className="px-4 mx-2 py-2 rounded-md hover:bg-gray-700 [&.active]:bg-slate-400 [&.active]:text-white"
+                onClick={() => setIsOpen(false)}
+              >
                 {link.label}
               </Link>
             ))}
           </nav>
+        </aside>
 
-          {/*
-          {/* Nombre de la app + ícono 
-          <span className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2">
-            ComfyChair
-            <Armchair />
-          </span>
-          */}
-
-          {/* Botón colapsable (solo se muestra en móvil) */}
-          <button onClick={() => setIsOpen(true)} className="md:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}
-            <Menu />
-          </button>
-
-        </header>
-
-        {/* Cuerpo principal de la aplicación */}
-        <div className="flex flex-1 overflow-hidden">
-
-          {/* Sidebar móvil (se desliza desde la izquierda) */}
-          <aside className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:hidden`}>
-
-            {/* Encabezado del menú móvil */}
-            <div className="flex items-center justify-between p-4">
-              <span className="font-bold text-lg">Menu</span>
-
-              {/* Botón para cerrar el menú */}
-              <button onClick={() => setIsOpen(false)}>
-                <X />
-              </button>
-            </div>
-
-            {/* Lista de enlaces de navegación (en columna) */}
-            <nav className="flex flex-col mt-4 gap-2">
-              {links.map((link) => (
-                <Link key={link.to} to={link.to} className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-
-          </aside>
-
-          {/* Área principal donde se renderizan las páginas hijas */}
-          <main className="flex-1 overflow-auto">
-            <Outlet /> {/* Outlet es el “espacio” donde TanStack Router inyecta la página actual */}
-          </main>
-
-        </div>
-
-        {/* Herramientas de desarrollo del router (solo útiles en dev) */}
-        <TanStackRouterDevtools />
-
-        {/* Componente global de notificaciones tipo toast */}
-        <Toaster richColors position='top-right' />
-
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
       </div>
-    </AuthProvider>
+
+      <TanStackRouterDevtools />
+      <Toaster position="top-right" />
+    </div>
   );
 };
 
-// Exportamos la ruta raíz del enrutador, usando este layout como componente principal
+// Layout raíz con el provider
+const RootLayout = () => (
+  <AuthProvider>
+    <RootLayoutContent />
+  </AuthProvider>
+);
+
 export const Route = createRootRoute({ component: RootLayout });

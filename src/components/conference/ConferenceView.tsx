@@ -35,7 +35,7 @@ export function ConferenceView({
             Visualización
           </FieldLabel>
           <FieldDescription>
-            Selecciona la visualización de los artículos.
+            Seleccione la visualización de los artículos.
           </FieldDescription>
           <RadioGroup
             value={valorSeleccionado}

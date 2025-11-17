@@ -6,6 +6,7 @@ export interface User {
   email: string
   full_name: string
   affiliation: string
+  role: string
 }
 
 export interface AuthResponse {
@@ -44,7 +45,8 @@ export const authService = {
         id: response.data.id,
         email: response.data.email,
         full_name: response.data.full_name,
-        affiliation: response.data.affiliation
+        affiliation: response.data.affiliation,
+        role: response.data.role
       }
     }
   },
