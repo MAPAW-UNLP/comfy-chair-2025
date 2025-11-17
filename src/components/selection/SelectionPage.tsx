@@ -8,12 +8,14 @@ import {
   getSessionById,
 } from '@/services/selectionServices';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 interface SelectionPageProps {
   sessionId: number;
 }
 
 export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
+  const navigate = useNavigate();
   const [sessionTitle, setSessionTitle] = useState<string>('Sesión');
   const [selectedMethod, setSelectedMethod] = useState<'cutoff' | 'threshold'>(
     'cutoff'
@@ -114,6 +116,13 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     }
   };
 
+  const goToReviewList = (status: 'accepted' | 'rejected') => {
+    navigate({
+      to: '/chairs/selection/reviewed-article-list',
+      search: { sessionId: String(sessionId), status: status }, // parámetros de búsqueda
+    });
+  };
+
   if (loadingSession) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -131,7 +140,6 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Header */}
 
       {/* Titulo de la sesion */}
       <div
@@ -145,33 +153,30 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
         className="px-6 py-2 flex flex-col items-start justify-between flex-shrink-0"
         style={{ backgroundColor: 'var(--background)' }}
       >
-        <div
-          className="px-6 py-2 flex flex-col items-start justify-between flex-shrink-0"
-          style={{ backgroundColor: 'var(--background)' }}
-        >
-          {showResults ? (
-            // Texto a mostrar después de enter (info sobre los valores permitidos)
-            <div className="text-sm text-gray-600 font-medium">
-              <span className="font-bold text-gray-1500">
-                VALORES PERMITIDOS
-              </span>
-              <p className="mt-2">
-                Corte Fijo:{' '}
-                <span className="font-bold text-gray-900">0% a 100%</span>
+        {showResults ? (
+          // Texto a mostrar después de enter (info sobre los valores permitidos)
+          <div className="text-sm text-gray-600 font-medium mt-4">
+            <span className="text-gray-900">VALORES PERMITIDOS</span>
+            {selectedMethod === 'cutoff' && (
+              <p className="mt-2 text-lg">
+                {' '}
+                <span className="font-bold text-gray-1500"> 0% a 100%</span>
               </p>
-              <p className="mt-2">
-                Mejor Puntaje:{' '}
-                <span className="font-bold text-gray-900">-3 a 3</span>
+            )}
+            {selectedMethod === 'threshold' && (
+              <p className="mt-2 text-lg">
+                {' '}
+                <span className="font-bold text-gray-1500"> -3 a 3</span>
               </p>
-            </div>
-          ) : (
-            // Texto a mostrar antes de ver los resultados (estado inicial - info sobre la vista en sí)
-            <p className="text-gray-500 text-justify">
-              Para ver la lista de artículos aceptados y rechazados, seleccione
-              un método para filtrarlos e ingrese un valor
-            </p>
-          )}
-        </div>
+            )}
+          </div>
+        ) : (
+          // Texto a mostrar antes de ver los resultados (estado inicial - info sobre la vista en sí)
+          <p className="text-gray-500 text-justify">
+            Para ver la lista de artículos aceptados y rechazados, seleccione un
+            método para filtrarlos e ingrese un valor
+          </p>
+        )}
       </div>
 
       {/* Barra de selección de filtros */}
@@ -179,10 +184,15 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
         className="text-white py-2 px-6 flex items-center justify-start flex-shrink-0"
         style={{ backgroundColor: 'var(--ring)' }}
       >
-        <div className="flex w-full items-center justify-start gap-3 flex-wrap">
-          <div className="flex flex-col gap-0 rounded-md overflow-hidden shadow-sm border border-gray-300">
+        <div className="flex w-full flex-col items-center justify-center">
+          <div className="flex w-full items-stretch overflow-hidden shadow-sm">
             {/* Botón 1 - Corte Fijo */}
             <Button
+              className={`flex-1 rounded-none ${
+                selectedMethod === 'cutoff'
+                  ? 'bg-primary text-white hover:bg-primary/90'
+                  : 'bg-white text-black hover:bg-gray-100 border-r border-gray-300'
+              }`}
               variant={selectedMethod === 'cutoff' ? 'default' : 'outline'}
               onClick={() => {
                 setSelectedMethod('cutoff');
@@ -193,32 +203,27 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
                 if (!isCutoffEmpty) executeSelection('cutoff');
               }}
               disabled={loading}
-              className={
-                selectedMethod === 'cutoff'
-                  ? 'bg-primary text-white hover:bg-primary/90 rounded-none'
-                  : 'bg-white text-black hover:bg-gray-100 rounded-none'
-              }
             >
               Corte Fijo
             </Button>
 
             {/* Botón 2 - Mejor Puntaje */}
             <Button
+              className={`flex-1 rounded-none ${
+                selectedMethod === 'threshold'
+                  ? 'bg-primary text-white hover:bg-primary/90'
+                  : 'bg-white text-black hover:bg-gray-100'
+              }`}
               variant={selectedMethod === 'threshold' ? 'default' : 'outline'}
               onClick={() => {
                 setSelectedMethod('threshold');
                 setPercentage(''); // Limpia el input del método opuesto (cutoff)
-                setShowResults(false); // Oculta resultados cuando cambia de metodo
+                setShowResults(false);
 
                 // Si el input de mejor puntaje no estaba vacío ejecuta la selección
                 if (!isThresholdEmpty) executeSelection('threshold');
               }}
               disabled={loading}
-              className={
-                selectedMethod === 'threshold'
-                  ? 'bg-primary text-white hover:bg-primary/90 rounded-none border-t border-gray-300'
-                  : 'bg-white text-black hover:bg-gray-100 rounded-none border-t border-gray-300'
-              }
             >
               Mejor Puntaje
             </Button>
@@ -240,11 +245,11 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
                 ? 'Puntaje Mínimo'
                 : 'Porcentaje (%)'
             }
-            className="px-3 py-2 border rounded-md w-40 sm:w-48 text-black text-center no-spinner" // poner py-6 para que tenga la altrua de los filtros
+            className="px-3 py-2 rounded-none w-full text-black text-center no-spinner bg-white"
+            disabled={loading}
           />
         </div>
       </div>
-      {/* Final de barra de selección de filtros */}
 
       {/* Contenido: puede ser explicación de vista o lista de resultados */}
       <div
@@ -270,8 +275,14 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
               <h3 className="text-xl font-semibold mb-2 text-green-700">
                 Aceptados: {acceptedCount}
               </h3>
-              <Button variant="outline" className="w-full">
-                Ver Artículos
+              <Button
+                variant="outline"
+                className="w-full"
+                // Deshabilita el boton si no hay articulos en la lista
+                disabled={acceptedCount === 0}
+                onClick={() => goToReviewList('accepted')}
+              >
+                Ver Artículos Aceptados
               </Button>
             </div>
 
@@ -280,8 +291,13 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
               <h3 className="text-xl font-semibold mb-2 text-red-700">
                 Rechazados: {rejectedCount}
               </h3>
-              <Button variant="outline" className="w-full">
-                Ver Artículos
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={rejectedCount === 0}
+                onClick={() => goToReviewList('rejected')}
+              >
+                Ver Artículos Rechazados
               </Button>
             </div>
           </div>
@@ -289,16 +305,22 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
           // Texto explicativo de la vista (este sería el estado inicial)
           <div className="text-center max-w-sm p-4 mx-auto">
             <p className="mt-4 text-gray-500 text-justify">
-              <span className="font-semibold text-gray-700"> Corte Fijo: </span>
-              acepta el porcentaje de envíos ingresado (los mejores primero).
+              <span className="font-semibold text-gray-700">Corte Fijo: </span>
+              acepta el porcentaje de envíos ingresado (los mejores primero)
+              <span className="block mt-2 font-bold">
+                Toma valores desde -3 a 3
+              </span>
             </p>
 
-            <p className="mt-6 text-gray-500 text-justify">
+            <p className="mt-14 text-gray-500 text-justify">
               <span className="font-semibold text-gray-700">
                 {' '}
                 Mejor Puntaje:{' '}
               </span>
               acepta artículos cuyo puntaje superen al valor ingresado
+              <span className="block mt-2 font-bold">
+                Toma valores desde 0% hasta 100%
+              </span>
             </p>
           </div>
         )}
