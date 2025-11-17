@@ -100,7 +100,7 @@ export const SessionList = ({ conferenceId }: SessionListProps) => {
       {/* Header */}
       <div
         className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0"
-        style={{ backgroundColor: 'var(--ring)' }}
+        style={{ backgroundColor: "#555353ff" }}
       >
         <h1 className="text-xl font-semibold">{conferenceTitle}</h1>
       </div>

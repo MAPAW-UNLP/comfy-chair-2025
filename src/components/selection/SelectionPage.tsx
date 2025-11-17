@@ -140,11 +140,10 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
 
   return (
     <div className="h-screen flex flex-col">
-
       {/* Titulo de la sesion */}
       <div
         className="text-white py-1 px-6 flex items-center justify-start gap-3 flex-shrink-0"
-        style={{ backgroundColor: 'var(--muted-foreground)' }} //"var(--ring)"
+        style={{ backgroundColor: '#555353ff' }}
       >
         <h1 className="text-lg truncate">{sessionTitle}</h1>
       </div>
@@ -154,36 +153,23 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
         style={{ backgroundColor: 'var(--background)' }}
       >
         {showResults ? (
-          // Texto a mostrar después de enter (info sobre los valores permitidos)
-          <div className="text-sm text-gray-600 font-medium mt-4">
-            <span className="text-gray-900">VALORES PERMITIDOS</span>
-            {selectedMethod === 'cutoff' && (
-              <p className="mt-2 text-lg">
-                {' '}
-                <span className="font-bold text-gray-1500"> 0% a 100%</span>
-              </p>
-            )}
-            {selectedMethod === 'threshold' && (
-              <p className="mt-2 text-lg">
-                {' '}
-                <span className="font-bold text-gray-1500"> -3 a 3</span>
-              </p>
-            )}
+          // Texto a mostrar después de enter
+          <div className="h-[4.5rem] flex items-center"> 
+            <span className="text-gray-900 text-lg font-bold">
+
+            </span>
           </div>
         ) : (
           // Texto a mostrar antes de ver los resultados (estado inicial - info sobre la vista en sí)
           <p className="text-gray-500 text-justify">
             Para ver la lista de artículos aceptados y rechazados, seleccione un
-            método para filtrarlos e ingrese un valor
+            método para filtrarlos
           </p>
         )}
       </div>
 
       {/* Barra de selección de filtros */}
-      <div
-        className="text-white py-2 px-6 flex items-center justify-start flex-shrink-0"
-        style={{ backgroundColor: 'var(--ring)' }}
-      >
+      <div className="text-white py-2 px-6 flex items-center justify-start flex-shrink-0">
         <div className="flex w-full flex-col items-center justify-center">
           <div className="flex w-full items-stretch overflow-hidden shadow-sm">
             {/* Botón 1 - Corte Fijo */}
@@ -248,24 +234,27 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
             className="px-3 py-2 rounded-none w-full text-black text-center no-spinner bg-white"
             disabled={loading}
           />
+          {/* Info del input - se muestra si no hay resultados exitosos */}
+          {!showResults && (
+            <p className="text-gray-500 text-sm mt-1">
+              Ingrese un valor para ver los totales
+            </p>
+          )}
         </div>
       </div>
 
       {/* Contenido: puede ser explicación de vista o lista de resultados */}
-      <div
-        className="flex-1 overflow-auto p-6"
-        style={{ backgroundColor: 'var(--sidebar-border)' }}
-      >
+      <div className="flex-1 overflow-auto p-6">
         {loading ? (
           <div className="text-center text-gray-500">
             Ejecutando selección...
           </div>
         ) : showResults ? (
-          // Bloques de Resultados: se muestran despues de presionar enter
+          // Bloques de Resultados: se muestran despues de presionar enter y si la ejecución fue exitosa
           <div className="flex flex-col gap-6 max-w-lg mx-auto">
             {/* Cantidad total de artículos revisados */}
             <div className="p-4 border rounded-lg shadow-md bg-white text-center">
-              <h3 className="text-xl font-semibold mb-0 text-gray-800">
+              <h3 className="text-xl font-semibold mb-0 text-gray-600">
                 Totales: {acceptedCount + rejectedCount} artículos revisados
               </h3>
             </div>
@@ -303,25 +292,34 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
           </div>
         ) : (
           // Texto explicativo de la vista (este sería el estado inicial)
-          <div className="text-center max-w-sm p-4 mx-auto">
-            <p className="mt-4 text-gray-500 text-justify">
-              <span className="font-semibold text-gray-700">Corte Fijo: </span>
-              acepta el porcentaje de envíos ingresado (los mejores primero)
-              <span className="block mt-2 font-bold">
-                Toma valores desde -3 a 3
-              </span>
-            </p>
+          <div className="flex flex-col gap-6 max-w-lg mx-auto">
+            {/* Bloque 1 - Corte Fijo (explicación) */}
+            <div className="p-4 border rounded-lg shadow-md bg-white">
+              <h3 className="text-xl font-semibold mb-2 text-gray-700">
+                Corte Fijo (Porcentaje)
+              </h3>
+              <p className="text-gray-500 text-justify">
+                <span className="font-semibold text-gray-700"> </span>
+                Acepta el porcentaje de envíos ingresado (los mejores primero)
+                <span className="block mt-2 font-bold text-gray-600">
+                  Toma valores desde 0% hasta 100%
+                </span>
+              </p>
+            </div>
 
-            <p className="mt-14 text-gray-500 text-justify">
-              <span className="font-semibold text-gray-700">
-                {' '}
-                Mejor Puntaje:{' '}
-              </span>
-              acepta artículos cuyo puntaje superen al valor ingresado
-              <span className="block mt-2 font-bold">
-                Toma valores desde 0% hasta 100%
-              </span>
-            </p>
+            {/* Bloque 2 - Mejor Puntaje (explicación) */}
+            <div className="p-4 border rounded-lg shadow-md bg-white">
+              <h3 className="text-xl font-semibold mb-2 text-gray-700">
+                Mejor Puntaje (Umbral)
+              </h3>
+              <p className="text-gray-500 text-justify">
+                <span className="font-semibold text-gray-700"> </span>
+                Acepta artículos cuyo puntaje superen al valor ingresado
+                <span className="block mt-2 font-bold text-gray-600">
+                  Toma valores desde -3 a 3
+                </span>
+              </p>
+            </div>
           </div>
         )}
       </div>
