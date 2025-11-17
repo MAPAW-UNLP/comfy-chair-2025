@@ -25,6 +25,8 @@ import { Route as AuthArticleViewRouteImport } from './routes/_auth/article/view
 import { Route as AuthArticleSelectRouteImport } from './routes/_auth/article/select'
 import { Route as AuthArticleCreateRouteImport } from './routes/_auth/article/create'
 import { Route as AuthReviewerReviewArticleIdRouteImport } from './routes/_auth/reviewer/review/$articleId'
+import { Route as AuthReviewChairReviewedRouteImport } from './routes/_auth/review/chair/reviewed'
+import { Route as AuthReviewChairIdRouteImport } from './routes/_auth/review/chair/$id'
 import { Route as AuthConferenceSessionIdRouteImport } from './routes/_auth/conference/session/$id'
 import { Route as AuthConferenceEditIdRouteImport } from './routes/_auth/conference/edit/$id'
 import { Route as AuthChairsSelectionSessionListRouteImport } from './routes/_auth/chairs/selection/session-list'
@@ -112,6 +114,16 @@ const AuthReviewerReviewArticleIdRoute =
     path: '/reviewer/review/$articleId',
     getParentRoute: () => AuthRoute,
   } as any)
+const AuthReviewChairReviewedRoute = AuthReviewChairReviewedRouteImport.update({
+  id: '/review/chair/reviewed',
+  path: '/review/chair/reviewed',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthReviewChairIdRoute = AuthReviewChairIdRouteImport.update({
+  id: '/review/chair/$id',
+  path: '/review/chair/$id',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthConferenceSessionIdRoute = AuthConferenceSessionIdRouteImport.update({
   id: '/conference/session/$id',
   path: '/conference/session/$id',
@@ -166,6 +178,8 @@ export interface FileRoutesByFullPath {
   '/chairs/selection/session-list': typeof AuthChairsSelectionSessionListRoute
   '/conference/edit/$id': typeof AuthConferenceEditIdRoute
   '/conference/session/$id': typeof AuthConferenceSessionIdRoute
+  '/review/chair/$id': typeof AuthReviewChairIdRoute
+  '/review/chair/reviewed': typeof AuthReviewChairReviewedRoute
   '/reviewer/review/$articleId': typeof AuthReviewerReviewArticleIdRoute
 }
 export interface FileRoutesByTo {
@@ -189,6 +203,8 @@ export interface FileRoutesByTo {
   '/chairs/selection/session-list': typeof AuthChairsSelectionSessionListRoute
   '/conference/edit/$id': typeof AuthConferenceEditIdRoute
   '/conference/session/$id': typeof AuthConferenceSessionIdRoute
+  '/review/chair/$id': typeof AuthReviewChairIdRoute
+  '/review/chair/reviewed': typeof AuthReviewChairReviewedRoute
   '/reviewer/review/$articleId': typeof AuthReviewerReviewArticleIdRoute
 }
 export interface FileRoutesById {
@@ -214,6 +230,8 @@ export interface FileRoutesById {
   '/_auth/chairs/selection/session-list': typeof AuthChairsSelectionSessionListRoute
   '/_auth/conference/edit/$id': typeof AuthConferenceEditIdRoute
   '/_auth/conference/session/$id': typeof AuthConferenceSessionIdRoute
+  '/_auth/review/chair/$id': typeof AuthReviewChairIdRoute
+  '/_auth/review/chair/reviewed': typeof AuthReviewChairReviewedRoute
   '/_auth/reviewer/review/$articleId': typeof AuthReviewerReviewArticleIdRoute
 }
 export interface FileRouteTypes {
@@ -239,6 +257,8 @@ export interface FileRouteTypes {
     | '/chairs/selection/session-list'
     | '/conference/edit/$id'
     | '/conference/session/$id'
+    | '/review/chair/$id'
+    | '/review/chair/reviewed'
     | '/reviewer/review/$articleId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -262,6 +282,8 @@ export interface FileRouteTypes {
     | '/chairs/selection/session-list'
     | '/conference/edit/$id'
     | '/conference/session/$id'
+    | '/review/chair/$id'
+    | '/review/chair/reviewed'
     | '/reviewer/review/$articleId'
   id:
     | '__root__'
@@ -286,6 +308,8 @@ export interface FileRouteTypes {
     | '/_auth/chairs/selection/session-list'
     | '/_auth/conference/edit/$id'
     | '/_auth/conference/session/$id'
+    | '/_auth/review/chair/$id'
+    | '/_auth/review/chair/reviewed'
     | '/_auth/reviewer/review/$articleId'
   fileRoutesById: FileRoutesById
 }
@@ -410,6 +434,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthReviewerReviewArticleIdRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/review/chair/reviewed': {
+      id: '/_auth/review/chair/reviewed'
+      path: '/review/chair/reviewed'
+      fullPath: '/review/chair/reviewed'
+      preLoaderRoute: typeof AuthReviewChairReviewedRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/review/chair/$id': {
+      id: '/_auth/review/chair/$id'
+      path: '/review/chair/$id'
+      fullPath: '/review/chair/$id'
+      preLoaderRoute: typeof AuthReviewChairIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/conference/session/$id': {
       id: '/_auth/conference/session/$id'
       path: '/conference/session/$id'
@@ -473,6 +511,8 @@ interface AuthRouteChildren {
   AuthChairsSelectionSessionListRoute: typeof AuthChairsSelectionSessionListRoute
   AuthConferenceEditIdRoute: typeof AuthConferenceEditIdRoute
   AuthConferenceSessionIdRoute: typeof AuthConferenceSessionIdRoute
+  AuthReviewChairIdRoute: typeof AuthReviewChairIdRoute
+  AuthReviewChairReviewedRoute: typeof AuthReviewChairReviewedRoute
   AuthReviewerReviewArticleIdRoute: typeof AuthReviewerReviewArticleIdRoute
 }
 
@@ -495,6 +535,8 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthChairsSelectionSessionListRoute: AuthChairsSelectionSessionListRoute,
   AuthConferenceEditIdRoute: AuthConferenceEditIdRoute,
   AuthConferenceSessionIdRoute: AuthConferenceSessionIdRoute,
+  AuthReviewChairIdRoute: AuthReviewChairIdRoute,
+  AuthReviewChairReviewedRoute: AuthReviewChairReviewedRoute,
   AuthReviewerReviewArticleIdRoute: AuthReviewerReviewArticleIdRoute,
 }
 
