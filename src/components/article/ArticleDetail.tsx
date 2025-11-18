@@ -69,134 +69,108 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
   //------------------------------------------------------------
   // Renderizado del componente
   //------------------------------------------------------------
-  return (
-    <div className="flex flex-col xl:flex-row items-start gap-4 max-w-5xl w-full">
-      
-      {/* Card con los detalles del articulo */}
-      <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
-        <div className="text-start flex flex-col gap-2">
+ return (
+  <div className="flex flex-col items-start gap-4 max-w-5xl w-full">
 
-          {/* Titulo de la card */}
-          <h2 className="text-lg font-bold italic text-slate-500 text-center">
-            Detalle del Articulo
-          </h2>
+    {/* Card con los detalles del articulo */}
+    <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
+      <div className="text-start flex flex-col gap-2">
 
-          <hr className="bg-slate-100" />
-          
-          {/* Detalles del Artículo */}
-          <p><b>Título:</b> {article?.title}</p>
-          <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
-          <p><b>Sesión:</b> {article?.session?.title}</p>
-          <p><b>Conferencia:</b> {article?.session?.conference?.title}</p>
-          <p><b>Estado:</b> {estadoTexto[article?.status!] ?? "Desconocido"}</p>
-          <p><b>Autor de Notificación:</b> {article?.corresponding_author?.email}</p>
-          <p>
-            <b>Autores:</b>{" "}
-            {article?.authors?.map((author, index) => (
-              <span key={index}>
-                {author?.email}
-                {index < article.authors.length - 1 ? ", " : ""}
-              </span>
-            ))}
-          </p>
-          <p><b>Abstract:</b> {article?.abstract}</p>
+        {/* Titulo de la card */}
+        <h2 className="text-lg font-bold italic text-slate-500 text-center">
+          Detalle del Articulo
+        </h2>
 
-          {/* Botones de Archivos */}
-          <div className="flex flex-col sm:flex-row gap-2 w-full">
+        <hr className="bg-slate-100" />
 
-            {/* Archivo principal descargable */}
-            {mainFileName && (
-              <div className="flex-1 grid items-start">
-                <p><b>Articulo</b></p>
-                <Button
-                  variant="outline"
-                  onClick={() => downloadMainFile(article.id, mainFileName!)}
-                  className="w-full text-white bg-slate-900"
-                >
-                  Descargar Artículo
-                </Button>
-              </div>
-            )}
+        {/* Detalles del Artículo */}
+        <p><b>Título:</b> {article?.title}</p>
+        <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
+        <p><b>Sesión:</b> {article?.session?.title}</p>
+        <p><b>Conferencia:</b> {article?.session?.conference?.title}</p>
+        <p><b>Estado:</b> {estadoTexto[article?.status!] ?? "Desconocido"}</p>
+        <p><b>Autor de Notificación:</b> {article?.corresponding_author?.email}</p>
+        <p>
+          <b>Autores:</b>{" "}
+          {article?.authors?.map((author, index) => (
+            <span key={index}>
+              {author?.email}
+              {index < article.authors.length - 1 ? ", " : ""}
+            </span>
+          ))}
+        </p>
+        <p><b>Abstract:</b> {article?.abstract}</p>
 
-            {/* Archivo fuentes descargable */}
-            {sourceFileName && (
-              <div className="flex-1 grid items-start">
-                <p><b>Fuentes</b></p>
-                <Button
-                  variant="outline"
-                  onClick={() => downloadSourceFile(article.id, sourceFileName!)}
-                  className="w-full text-white bg-slate-900"
-                >
-                  Descargar Fuentes
-                </Button>
-              </div>
-            )}
+        {/* Botones de Archivos */}
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          {mainFileName && (
+            <div className="flex-1 grid items-start">
+              <p><b>Articulo</b></p>
+              <Button
+                variant="outline"
+                onClick={() => downloadMainFile(article.id, mainFileName!)}
+                className="w-full text-white bg-slate-900"
+              >
+                Descargar Artículo
+              </Button>
+            </div>
+          )}
 
-          </div>
-
+          {sourceFileName && (
+            <div className="flex-1 grid items-start">
+              <p><b>Fuentes</b></p>
+              <Button
+                variant="outline"
+                onClick={() => downloadSourceFile(article.id, sourceFileName!)}
+                className="w-full text-white bg-slate-900"
+              >
+                Descargar Fuentes
+              </Button>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Card con las reviews del articulo, solo si el estado es aceptado o rechazado */}
-      {(article.status === "accepted" || article.status === "rejected") && (
-        <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
+      </div>
+    </div>
+
+    {/* Card con las reviews del artículo */}
+    {(article.status === "accepted" || article.status === "rejected") && !loadingReviews && reviews && (() => {
+      const publishedReviews = reviews.reviews?.filter(r => r.is_published) || [];
+
+      // ❗ Si no hay reviews publicadas → NO mostrar nada
+      if (publishedReviews.length === 0) return null;
+
+      return (
+        <div className="bg-white shadow-lg rounded-2xl p-6 w-full mt-2">
           <div className="text-start flex flex-col gap-2">
-            
-            {/* Titulo de la card */}
+
             <h2 className="text-lg font-bold italic text-slate-500 text-center">
               Reviews del Articulo
             </h2>
 
             <hr className="bg-slate-100" />
 
-            {/* Reviews del Artículo */}
-            {loadingReviews && (
-              <div className="py-4 text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-              </div>
-            )}
-
-            {!loadingReviews && (!reviews || reviews.count === 0) && (
-              <div className="italic text-slate-500 text-center mt-3">
-                  <p>No hay reviews publicadas para este artículo...</p>
-              </div>
-            )}
-
-            {!loadingReviews && reviews && reviews.count > 0 && (
-              (() => {
-                const publishedReviews = reviews.reviews.filter((r) => r.is_published === true);
-                
-                if (publishedReviews.length === 0) {
-                  return (
-                    <div className="italic text-slate-500 text-center mt-3">
-                      <p>No hay reviews publicadas para este artículo...</p>
-                    </div>
-                  );
-                }
-                
-                return (
-                  <div className="space-y-2">
-                    {publishedReviews.map((r, index) => (
-                      <div key={r.id} className="p-3 border rounded">
-                        <div className="flex justify-between items-center">
-                          <div className="text-sm"><b className="italic">Review</b> #{index + 1}</div>
-                          <div className="text-sm"><b className="italic">Revisor:</b> {String(r.reviewer)}</div>
-                          <div className="text-sm"><b className="italic">Puntaje:</b> {r.score}</div>
-                        </div>
-                        <div className="mt-2 text-sm">{r.opinion}</div>
-                      </div>
-                    ))}
+            <div className="space-y-2">
+              {publishedReviews.map((r, index) => (
+                <div key={r.id} className="p-3 border rounded">
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm"><b className="italic">Review</b> #{index + 1}</div>
+                    <div className="text-sm"><b className="italic">Revisor:</b> {String(r.reviewer)}</div>
+                    <div className="text-sm"><b className="italic">Puntaje:</b> {r.score}</div>
                   </div>
-                );
-              })()
-            )}
-          
+
+                  <div className="mt-2 text-sm">{r.opinion}</div>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
-      )}
+      );
+    })()}
 
-    </div>
-  );
+  </div>
+);
 };
 
 export default ArticleDetail;
