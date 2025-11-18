@@ -1,16 +1,14 @@
-// src/services/reviewedArticlesService.ts
 import api from "./api"
 
 export interface ReviewedArticle {
   id: number
   title: string
-  abstract: string
-  author_full_name: string
-  total_reviews: number
-  avg_score: number | null
+  review_count: number
 }
 
-export async function getReviewedArticles(): Promise<ReviewedArticle[]> {
-  const { data } = await api.get("/api/chair/articles-reviewed/")
-  return data
-}
+export const getReviewedArticles = async (sessionId?: string): Promise<ReviewedArticle[]> => {
+  const response = await api.get("/api/chair/articles-reviewed/", {
+    params: sessionId ? { session_id: sessionId } : {}
+  });
+  return response.data;
+};

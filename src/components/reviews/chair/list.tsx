@@ -15,7 +15,14 @@ export const ReviewedArticlesList = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await getReviewedArticles()
+        const sessionId = localStorage.getItem("selectedSession")
+
+        if (!sessionId) {
+          setArticles([])
+          return
+        }
+
+        const data = await getReviewedArticles(sessionId)
         setArticles(data)
       } finally {
         setLoading(false)
@@ -33,17 +40,15 @@ export const ReviewedArticlesList = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* HEADER */}
+    <div className="mx-auto">
       <div className="text-white py-4 px-6 text-center bg-gray-700 -t-lg"
       style={{ backgroundColor: "#555353ff" }}>
         <h2 className="text-xl font-semibold">Artículos con revisiones</h2>
       </div>
 
-      {/* LISTA */}
       {articles.length === 0 ? (
         <p className="text-center text-gray-600 mt-4">
-          No hay artículos revisados.
+          No hay artículos revisados para esta sesión.
         </p>
       ) : (
         <div className="divide-y divide-gray-300 border border-gray-300 rounded-b-lg">
@@ -54,7 +59,6 @@ export const ReviewedArticlesList = () => {
               params={{ id: String(a.id) }}
               className="flex items-center justify-between px-6 py-5 hover:bg-gray-100 transition cursor-pointer"
             >
-              {/* TITULO */}
               <div className="flex-1 text-center">
                 <p className="text-lg font-medium">{a.title}</p>
               </div>
