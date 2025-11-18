@@ -330,25 +330,31 @@ export default function ReviewArticle() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
       {/* Encabezado */}
-      <div className="flex items-start justify-between gap-4">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+      <div className="mb-2">
+        {/* Fila 1: estado, alineado a la derecha */}
+        <div className="flex justify-end">
+          <span
+            className={[
+              "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+              derivedState.key === "pending" && "bg-slate-200 text-slate-800",
+              derivedState.key === "draft" && "bg-amber-200 text-amber-900",
+              (derivedState.key === "sent" ||
+                derivedState.key === "sent_edited") &&
+                "bg-emerald-200 text-emerald-900",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {derivedState.label}
+          </span>
+        </div>
+
+        {/* Fila 2: título usando todo el ancho */}
+        <h1 className="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
           {article.title}
         </h1>
-        <span
-          className={[
-            "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
-            derivedState.key === "pending" && "bg-slate-200 text-slate-800",
-            derivedState.key === "draft" && "bg-amber-200 text-amber-900",
-            (derivedState.key === "sent" ||
-              derivedState.key === "sent_edited") &&
-              "bg-emerald-200 text-emerald-900",
-          ]
-            .filter(Boolean)
-            .join(" ")}
-        >
-          {derivedState.label}
-        </span>
       </div>
+
 
       {lastUpdated && (
         <p className="mt-1 text-xs text-slate-500">
