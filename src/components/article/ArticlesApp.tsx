@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllArticles, type Article } from '@/services/articleServices';
+import { getArticleBySessionId, type Article } from '@/services/articleServices';
 import { ArticleList } from './ArticleList';
 
 
@@ -11,8 +11,18 @@ export const ArticlesApp = () => {
     const fetchArticulos = async () => {
       try {
         setLoading(true);
-        const data = await getAllArticles();
+
+        const sessionId = localStorage.getItem("selectedSession")
+
+        if (sessionId === null) {
+          setArticulos([]);
+          console.warn('No session ID found in localStorage.');
+          return;
+        }
+
+        const data = await getArticleBySessionId(parseInt(sessionId));
         setArticulos(data);
+        
       } catch (error) {
         console.error('Error fetching articulos:', error);
         setArticulos([]);
