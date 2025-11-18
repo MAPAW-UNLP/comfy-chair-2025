@@ -21,7 +21,7 @@ const RootLayoutContent = () => {
   };
 
   const routerState = useRouterState();
-  const isHome = routerState.location.pathname === '/';
+  const isHomeChair = routerState.location.pathname === '/chairs/select-session';
   const isDashboard = routerState.location.pathname === '/dashboard';
 
   const commonLinks: { to: string; label: string }[] = [];
@@ -52,7 +52,7 @@ const RootLayoutContent = () => {
       <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
 
         {/* Flecha de retroceso (solo si no estamos en Home) */}
-        {!isHome && !isDashboard && (
+        {!isHomeChair && !isDashboard && (
           <button
             onClick={handleBack}
             className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center md:hidden"
