@@ -152,7 +152,7 @@ export const ReviewerApp = () => {
     <div className="h-screen flex flex-col bg-gray-200">
       <div
         className="text-white py-4 px-6 flex-shrink-0 text-center"
-        style={{ backgroundColor: "var(--ring)" }}
+        style={{ backgroundColor: "#555353ff" }}
       >
         <h2 className="text-xl font-semibold">
           {article?.title || "Artículo sin título"}

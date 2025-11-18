@@ -77,7 +77,7 @@ export const ArticleList = ({ items }: ArticleListProps) => {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: 'var(--ring)' }}>
+      <div className="text-white py-4 px-6 flex justify-center items-center flex-shrink-0" style={{ backgroundColor: "#555353ff" }}>
         <div className="relative" ref={menuRef}>
           <Button
             variant="outline"
