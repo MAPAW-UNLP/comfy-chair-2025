@@ -22,7 +22,7 @@ const RootLayoutContent = () => {
 
   const routerState = useRouterState();
   const isHomeChair = routerState.location.pathname === '/chairs/select-session';
-  const isDashboard = routerState.location.pathname === '/dashboard';
+  //const isDashboard = routerState.location.pathname === '/dashboard';
 
   const commonLinks: { to: string; label: string }[] = [];
 
@@ -52,7 +52,7 @@ const RootLayoutContent = () => {
       <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
 
         {/* Flecha de retroceso (solo si no estamos en Home) */}
-        {!isHomeChair && !isDashboard && (
+        {!isHomeChair && /*!isDashboard &&*/ (
           <button
             onClick={handleBack}
             className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center md:hidden"
@@ -88,12 +88,14 @@ const RootLayoutContent = () => {
           </Link>
 
           {/* Botón colapsable (solo móvil) */}
+          {!isHomeChair && /*!isDashboard &&*/ (
           <button
             onClick={() => setIsOpen(true)}
             className="md:hidden p-1 rounded hover:bg-gray-700"
           >
             <Menu />
           </button>
+          )}
         </div>
       </header>
 
@@ -101,32 +103,33 @@ const RootLayoutContent = () => {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar móvil (izquierda) */}
-        <aside
-          className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
-          } md:hidden`}
-        >
-          <div className="flex items-center justify-between p-4">
-            <span className="font-bold text-lg">Menu</span>
-            <button onClick={() => setIsOpen(false)}>
-              <X />
-            </button>
-          </div>
+        {!isHomeChair && /*!isDashboard &&*/ (
+          <aside
+            className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${
+              isOpen ? 'translate-x-0' : '-translate-x-full'
+            } md:hidden`}
+          >
+            <div className="flex items-center justify-between p-4">
+              <span className="font-bold text-lg">Menu</span>
+              <button onClick={() => setIsOpen(false)}>
+                <X />
+              </button>
+            </div>
 
-          <nav className="flex flex-col mt-4 gap-2">
-            {links.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="px-4 mx-2 py-2 rounded-md hover:bg-gray-700 [&.active]:bg-slate-400 [&.active]:text-white"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </aside>
-
+            <nav className="flex flex-col mt-4 gap-2">
+              {links.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="px-4 mx-2 py-2 rounded-md hover:bg-gray-700 [&.active]:bg-slate-400 [&.active]:text-white"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </aside>
+        )}
         <main className="flex-1 overflow-auto">
           <Outlet />
         </main>

@@ -60,7 +60,7 @@ export const ReviewedArticlesList = () => {
               className="flex items-center justify-between px-6 py-5 hover:bg-gray-100 transition cursor-pointer"
             >
               <div className="flex-1 text-center">
-                <p className="text-lg font-medium">{a.title}</p>
+                <p className="text-base text-gray-900 leading-tight">{a.title}</p>
               </div>
 
               {/* BOTÓN */}
