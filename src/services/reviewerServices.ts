@@ -1,4 +1,3 @@
-// src/services/reviewerServices.ts
 import api from '@/services/api';
 
 export interface Review {
@@ -79,11 +78,23 @@ export async function createReview(payload: CreateReviewPayload): Promise<Review
 }
 
 /**
- * Actualiza una review existente
- * Backend: PUT /api/reviews/{id}/update/
+ * Actualiza una review existente en estado BORRADOR
+ * Backend: PUT /api/reviews/{id}/updateDraft/
  */
 export async function updateReview(id: number, payload: UpdateReviewPayload): Promise<Review> {
-  const { data } = await api.put(`/api/reviews/${id}/update/`, payload);
+  const { data } = await api.put(`/api/reviews/${id}/updateDraft/`, payload);
+  return data as Review;
+}
+
+/**
+ * Actualiza una review ya PUBLICADA (crea nueva versión)
+ * Backend: PUT /api/reviews/{id}/updatePublished/
+ */
+export async function updatePublishedReview(
+  id: number,
+  payload: UpdateReviewPayload
+): Promise<Review> {
+  const { data } = await api.put(`/api/reviews/${id}/updatePublished/`, payload);
   return data as Review;
 }
 

@@ -9,6 +9,7 @@ import {
   getOwnReviewByArticle,
   createReview,
   updateReview,
+  updatePublishedReview,
   publishReview,
   type Review as ReviewDTO,
 } from "@/services/reviewerServices";
@@ -20,16 +21,27 @@ type Article = {
   title: string;
   type: string | null;
   abstract: string | null;
-  main_file?: string | null;   // PDF principal
-  source_file?: string | null; // adjunto extra (posters)
+  // pueden venir como string (URL) o como File según el servicio
+  main_file?: string | File | null; // PDF principal
+  source_file?: string | File | null; // adjunto extra (posters)
   authors?: Author[];
 };
 
-const SCORE_OPTIONS = [-3, -2, -1, 0, 1, 2, 3];
+// Definición de scores con etiquetas (orden de mejor a peor)
+const SCORE_DEFS = [
+  { value: 3, label: "Muy aceptado" },
+  { value: 2, label: "Aceptado" },
+  { value: 1, label: "Aceptado con cambios mínimos" },
+  { value: 0, label: "Sin recomendación" },
+  { value: -1, label: "Requiere revisiones menores" },
+  { value: -2, label: "Requiere revisiones mayores" },
+  { value: -3, label: "Rechazado" },
+];
 
 // Base para armar hrefs absolutos cuando llegan paths relativos
 const API_BASE =
-  (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") || "";
+  (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
+  "";
 function hrefFrom(path?: string | null) {
   if (!path) return "";
   return path.startsWith("http") ? path : `${API_BASE}${path}`;
@@ -37,7 +49,9 @@ function hrefFrom(path?: string | null) {
 
 export default function ReviewArticle() {
   const navigate = useNavigate();
-  const { articleId: articleIdParam } = useParams({ from: "/_auth/reviewer/review/$articleId" });
+  const { articleId: articleIdParam } = useParams({
+    from: "/_auth/reviewer/review/$articleId",
+  });
   const articleId = Number(articleIdParam);
 
   const { user } = useAuth();
@@ -46,7 +60,8 @@ export default function ReviewArticle() {
   const reviewerId = useMemo(() => {
     if (user?.id != null) return Number(user.id);
     const stored =
-      localStorage.getItem("cc_user_id") || sessionStorage.getItem("cc_user_id");
+      localStorage.getItem("cc_user_id") ||
+      sessionStorage.getItem("cc_user_id");
     return stored ? Number(stored) : NaN;
   }, [user?.id]);
 
@@ -63,7 +78,7 @@ export default function ReviewArticle() {
     [article?.type]
   );
 
-  // Estado derivado para badge
+  // Estado derivado para badge global de la review
   const derivedState = useMemo(() => {
     if (!review) return { key: "pending" as const, label: "Pendiente" };
     if (review.is_published) {
@@ -73,6 +88,62 @@ export default function ReviewArticle() {
     }
     return { key: "draft" as const, label: "Borrador" };
   }, [review]);
+
+  // Info visual para el score seleccionado (chip + colores)
+  const scoreInfo = useMemo(() => {
+    if (score === "") return null;
+    const v = Number(score);
+
+    if (v >= 2) {
+      return {
+        tone: "positive-strong" as const,
+        short: "Aceptado (fuerte)",
+        chipClass:
+          "bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:border-emerald-800",
+        selectClass:
+          "border-emerald-300 bg-emerald-50/40 dark:border-emerald-700 dark:bg-emerald-950/20",
+      };
+    }
+    if (v === 1) {
+      return {
+        tone: "positive" as const,
+        short: "Aceptado",
+        chipClass:
+          "bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-100 dark:border-emerald-800",
+        selectClass:
+          "border-emerald-200 bg-emerald-50/30 dark:border-emerald-700 dark:bg-emerald-950/10",
+      };
+    }
+    if (v === 0) {
+      return {
+        tone: "neutral" as const,
+        short: "Sin recomendación",
+        chipClass:
+          "bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800/60 dark:text-slate-100 dark:border-slate-600",
+        selectClass:
+          "border-slate-300 bg-slate-50/60 dark:border-slate-600 dark:bg-slate-900/40",
+      };
+    }
+    if (v === -1) {
+      return {
+        tone: "warn" as const,
+        short: "Revisión menor",
+        chipClass:
+          "bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-100 dark:border-amber-800",
+        selectClass:
+          "border-amber-200 bg-amber-50/40 dark:border-amber-700 dark:bg-amber-950/20",
+      };
+    }
+    // -2 o -3
+    return {
+      tone: "negative" as const,
+      short: v === -2 ? "Revisión mayor" : "Rechazado",
+      chipClass:
+        "bg-rose-50 text-rose-800 border border-rose-200 dark:bg-rose-900/30 dark:text-rose-100 dark:border-rose-800",
+      selectClass:
+        "border-rose-200 bg-rose-50/40 dark:border-rose-700 dark:bg-rose-950/20",
+    };
+  }, [score]);
 
   // ---- Carga inicial ----
   useEffect(() => {
@@ -119,7 +190,12 @@ export default function ReviewArticle() {
     return true;
   };
 
-  // Guardar como borrador (NO publica)
+  const buildPayload = () => ({
+    opinion: opinion.trim(),
+    score: Number(score),
+  });
+
+  // Guardar como borrador (NO publica, queda local al revisor)
   const handleSaveDraft = async () => {
     if (!ensureFields()) return;
 
@@ -127,17 +203,22 @@ export default function ReviewArticle() {
       setSaving(true);
       let saved: ReviewDTO;
 
+      const payload = buildPayload();
+
       if (review) {
-        saved = await updateReview(review.id, {
-          opinion: opinion.trim(),
-          score: Number(score),
-        });
+        // Si ya está publicada, igual permitimos sobrescribir contenido,
+        // pero sigue siendo una review publicada (no se vuelve a "borrador" en el back).
+        if (review.is_published) {
+          saved = await updatePublishedReview(review.id, payload);
+        } else {
+          saved = await updateReview(review.id, payload);
+        }
       } else {
+        // No existía review: creamos una nueva (queda como borrador en backend)
         saved = await createReview({
           article: articleId,
           reviewer: reviewerId,
-          opinion: opinion.trim(),
-          score: Number(score),
+          ...payload,
         });
       }
 
@@ -148,11 +229,14 @@ export default function ReviewArticle() {
       // notificar AssignedArticles / Index
       window.dispatchEvent(
         new CustomEvent("review-updated", {
-          detail: { articleId, state: "draft" },
+          detail: {
+            articleId,
+            state: saved.is_published ? "sent" : "draft",
+          },
         })
       );
 
-      // ⬅️ ir a ReviewsIndex resaltando este artículo
+      // Volver al índice con scroll al artículo
       navigate({
         to: "/reviewer",
         search: { selected: String(articleId) },
@@ -165,28 +249,35 @@ export default function ReviewArticle() {
     }
   };
 
-  // Enviar (publicar). Si ya existe, primero se actualiza y luego se publica.
+  // Enviar (publicar)
   const handleSend = async () => {
     if (!ensureFields()) return;
 
     try {
       setSaving(true);
       let saved: ReviewDTO;
+      const payload = buildPayload();
+      const wasAlreadyPublished = !!review?.is_published;
 
       if (review) {
-        saved = await updateReview(review.id, {
-          opinion: opinion.trim(),
-          score: Number(score),
-        });
-        saved = await publishReview(saved.id);
+        if (review.is_published) {
+          // Ya está publicada → actualizamos review publicada (nueva versión)
+          saved = await updatePublishedReview(review.id, payload);
+        } else {
+          // Es borrador → primero actualizamos, luego publicamos
+          const updated = await updateReview(review.id, payload);
+          setReview(updated);
+          saved = await publishReview(updated.id);
+        }
       } else {
-        saved = await createReview({
+        // No existía review → creamos y publicamos
+        const created = await createReview({
           article: articleId,
           reviewer: reviewerId,
-          opinion: opinion.trim(),
-          score: Number(score),
+          ...payload,
         });
-        saved = await publishReview(saved.id);
+        setReview(created);
+        saved = await publishReview(created.id);
       }
 
       setReview(saved);
@@ -195,11 +286,18 @@ export default function ReviewArticle() {
 
       window.dispatchEvent(
         new CustomEvent("review-updated", {
-          detail: { articleId, state: saved.is_edited ? "sent_edited" : "sent" },
+          detail: {
+            articleId,
+            state: saved.is_published
+              ? wasAlreadyPublished
+                ? "sent_edited"
+                : "sent"
+              : "draft",
+          },
         })
       );
 
-      // ⬅️ ir a ReviewsIndex resaltando este artículo
+      // Volver al índice resaltando este artículo
       navigate({
         to: "/reviewer",
         search: { selected: String(articleId) },
@@ -214,24 +312,35 @@ export default function ReviewArticle() {
 
   // ---- Render ----
   if (loading) {
-    return <p className="text-slate-600 dark:text-slate-300 px-6 py-8">Cargando artículo…</p>;
+    return (
+      <p className="px-6 py-8 text-slate-600 dark:text-slate-300">
+        Cargando artículo…
+      </p>
+    );
   }
 
   if (!article) {
-    return <p className="text-red-600 px-6 py-8">No se encontró el artículo.</p>;
+    return (
+      <p className="px-6 py-8 text-red-600">No se encontró el artículo.</p>
+    );
   }
+
+  const isPublished = !!review?.is_published;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
       {/* Encabezado */}
       <div className="flex items-start justify-between gap-4">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{article.title}</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          {article.title}
+        </h1>
         <span
           className={[
             "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
             derivedState.key === "pending" && "bg-slate-200 text-slate-800",
             derivedState.key === "draft" && "bg-amber-200 text-amber-900",
-            (derivedState.key === "sent" || derivedState.key === "sent_edited") &&
+            (derivedState.key === "sent" ||
+              derivedState.key === "sent_edited") &&
               "bg-emerald-200 text-emerald-900",
           ]
             .filter(Boolean)
@@ -242,11 +351,13 @@ export default function ReviewArticle() {
       </div>
 
       {lastUpdated && (
-        <p className="mt-1 text-xs text-slate-500">Última actualización: {lastUpdated}</p>
+        <p className="mt-1 text-xs text-slate-500">
+          Última actualización: {lastUpdated}
+        </p>
       )}
 
       {/* Datos del artículo */}
-      <div className="mt-2 text-sm text-slate-700 dark:text-slate-300 space-y-1">
+      <div className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
         <p>
           <span className="font-semibold">Tipo:</span>{" "}
           {article.type || "No especificado"}
@@ -254,7 +365,9 @@ export default function ReviewArticle() {
         <p>
           <span className="font-semibold">Autores:</span>{" "}
           {article.authors?.length
-            ? article.authors.map(a => a.full_name || a.email || "Autor").join(", ")
+            ? article.authors
+                .map((a) => a.full_name || a.email || "Autor")
+                .join(", ")
             : "Desconocidos"}
         </p>
       </div>
@@ -266,7 +379,7 @@ export default function ReviewArticle() {
 
       {/* Descargas */}
       <div className="mt-5 flex flex-wrap items-center gap-4">
-        {article.main_file && (
+        {article.main_file && typeof article.main_file === "string" && (
           <a
             href={hrefFrom(article.main_file)}
             target="_blank"
@@ -277,30 +390,33 @@ export default function ReviewArticle() {
             Descargar artículo principal
           </a>
         )}
-        {isPoster && article.source_file && (
-          <a
-            href={hrefFrom(article.source_file)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline hover:text-blue-800"
-            download
-          >
-            Descargar información adicional (poster)
-          </a>
-        )}
+        {isPoster &&
+          article.source_file &&
+          typeof article.source_file === "string" && (
+            <a
+              href={hrefFrom(article.source_file)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline hover:text-blue-800"
+              download
+            >
+              Descargar información adicional (poster)
+            </a>
+          )}
       </div>
 
       {/* Aviso de login si no hay id */}
       {!Number.isFinite(reviewerId) && (
-        <div className="mt-6 rounded-md bg-amber-50 border border-amber-200 p-3 text-amber-800">
-          No se pudo identificar tu usuario. Iniciá sesión para guardar/editar la revisión.
+        <div className="mt-6 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-800">
+          No se pudo identificar tu usuario. Iniciá sesión para guardar/editar
+          la revisión.
         </div>
       )}
 
       {/* Formulario */}
       <div className="mt-8 space-y-5">
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
             Opinión
           </label>
           <textarea
@@ -308,44 +424,74 @@ export default function ReviewArticle() {
             value={opinion}
             onChange={(e) => setOpinion(e.target.value)}
             placeholder="Escribí aquí tu revisión…"
-            className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+            className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
-            Puntuación
-          </label>
+        {/* Bloque de puntuación con estilos mejorados */}
+        <div className="rounded-2xl bg-slate-50/70 p-4 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900/40 dark:ring-slate-700">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+              Puntuación
+            </label>
+          </div>
+
           <select
             value={score}
             onChange={(e) => setScore(e.target.value)}
-            className="w-28 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 p-2 text-sm"
+            className={[
+              "w-full max-w-xs rounded-xl border bg-white p-2.5 text-sm text-slate-900 shadow-sm",
+              "focus:outline-none focus:ring-2 focus:ring-sky-400",
+              "dark:bg-slate-900 dark:text-slate-100",
+              scoreInfo?.selectClass ?? "border-slate-300 dark:border-slate-600",
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
-            <option value="" disabled>Seleccionar</option>
-            {SCORE_OPTIONS.map((s) => (
-              <option key={s} value={String(s)}>{s}</option>
+            <option value="" disabled>
+              Seleccionar puntuación…
+            </option>
+            {SCORE_DEFS.map(({ value, label }) => (
+              <option key={value} value={String(value)}>
+                {label}
+              </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-slate-500">
-            Valores permitidos: -3, -2, -1, 0, 1, 2, 3
-          </p>
+
         </div>
 
         <div className="flex flex-wrap gap-3 pt-1">
-          <Button
-            onClick={handleSaveDraft}
-            disabled={saving || !opinion.trim() || score === "" || !Number.isFinite(reviewerId)}
-            className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg"
-          >
-            {saving ? "Guardando…" : "Guardar borrador"}
-          </Button>
+          {/* 4. Si está enviada, NO mostramos el botón de guardar borrador */}
+          {!isPublished && (
+            <Button
+              onClick={handleSaveDraft}
+              disabled={
+                saving ||
+                !opinion.trim() ||
+                score === "" ||
+                !Number.isFinite(reviewerId)
+              }
+              className="rounded-lg bg-slate-700 px-6 py-2 font-semibold text-white hover:bg-slate-600"
+            >
+              {saving ? "Guardando…" : "Guardar borrador"}
+            </Button>
+          )}
 
           <Button
             onClick={handleSend}
-            disabled={saving || !opinion.trim() || score === "" || !Number.isFinite(reviewerId)}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-6 rounded-lg"
+            disabled={
+              saving ||
+              !opinion.trim() ||
+              score === "" ||
+              !Number.isFinite(reviewerId)
+            }
+            className="rounded-lg bg-emerald-600 px-6 py-2 font-semibold text-white hover:bg-emerald-500"
           >
-            {saving ? "Enviando…" : review?.is_published ? "Actualizar y enviar" : "Enviar"}
+            {saving
+              ? "Enviando…"
+              : isPublished
+              ? "Actualizar y enviar"
+              : "Enviar"}
           </Button>
         </div>
       </div>
