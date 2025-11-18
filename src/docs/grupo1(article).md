@@ -42,7 +42,7 @@
     ArticleDetail - (src/components/article/ArticleDetail.tsx)
         * Props: objeto del tipo article.
         * Data: todos los atributos de un articulo.
-        * Acciones: ver archivo principal, ver archivo fuentes (si tiene), volver al menu de articulos.
+        * Acciones: ver archivo principal, ver archivo fuentes (si tiene), ver reviews del articulo (solo en estado aceptado o rechazado), volver al menu de articulos.
 
     ArticleForm - (src/components/article/ArticleForm.tsx)
         * Props: listado de conferencias, listado de usuarios, flag de edición (modo alta o edición), articulo (para modo edición), userId.
@@ -99,6 +99,9 @@
     conferenceServices - (src/services/conferenceServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
         * metodo "getActiveConferences()"
         * metodo "getConferenceById()"
+
+    reviewerServices - (src/services/reviewerServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getReviewsByArticle()" 
 
     sessionServices - (src/services/sessionServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
         * metodo "getSessionsByConferenceGrupo1()"

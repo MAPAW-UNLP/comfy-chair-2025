@@ -1,4 +1,3 @@
-
 // -------------------------------------------------------------------------------------- 
 //
 // Grupo 1 - Componente para mostrar todos los campos completos de un articulo.
@@ -7,12 +6,12 @@
 
 // Importaciones
 import { Button } from "../ui/button";
-import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
 import { useEffect, useState } from 'react';
+import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
+import { getReviewsByArticle } from '@/services/reviewerServices';
+import type { ReviewsByArticleId } from '@/services/reviewerServices';
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
-import { getReviewsByArticle } from '@/services/reviewerServices'
-import type { Review } from '@/services/reviewerServices'
 
 // Lo que espera recibir el componente
 export interface ArticleDetailProps {
@@ -43,7 +42,7 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
   const { mainFileName, sourceFileName } = useArticleFiles(article);
 
   // Estado y carga de reviews
-  const [reviews, setReviews] = useState<Review[] | null>(null);
+  const [reviews, setReviews] = useState<ReviewsByArticleId>();
   const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
 
   useEffect(() => {
@@ -55,7 +54,6 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
         if (mounted) setReviews(data ?? []);
       } catch (e) {
         console.error('Error fetching reviews', e);
-        if (mounted) setReviews([]);
       } finally {
         if (mounted) setLoadingReviews(false);
       }
@@ -158,27 +156,32 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
               </div>
             )}
 
-            {!loadingReviews && (!reviews || reviews.length === 0) && (
-              <div className="py-4 text-sm text-muted-foreground">No hay reviews publicadas para este artículo.</div>
+            {!loadingReviews && (!reviews || reviews.count === 0) && (
+              <div className="italic text-slate-500 text-center mt-3">
+                  <p>No hay reviews publicadas para este artículo...</p>
+              </div>
             )}
 
-            {!loadingReviews && reviews && reviews.length > 0 && (
+            {!loadingReviews && reviews && reviews.count > 0 && (
               (() => {
-                const publishedReviews = reviews.filter((r) => r.is_published === true);
+                const publishedReviews = reviews.reviews.filter((r) => r.is_published === true);
                 
                 if (publishedReviews.length === 0) {
                   return (
-                    <div className="py-4 text-sm text-muted-foreground">No hay reviews publicadas para este artículo.</div>
+                    <div className="italic text-slate-500 text-center mt-3">
+                      <p>No hay reviews publicadas para este artículo...</p>
+                    </div>
                   );
                 }
                 
                 return (
-                  <div className="space-y-4">
-                    {publishedReviews.map((r) => (
+                  <div className="space-y-2">
+                    {publishedReviews.map((r, index) => (
                       <div key={r.id} className="p-3 border rounded">
                         <div className="flex justify-between items-center">
-                          <div className="text-sm text-muted-foreground">Revisor: {String(r.reviewer)}</div>
-                          <div className="text-sm font-medium">Puntaje: {r.score}</div>
+                          <div className="text-sm"><b className="italic">Review</b> #{index + 1}</div>
+                          <div className="text-sm"><b className="italic">Revisor:</b> {String(r.reviewer)}</div>
+                          <div className="text-sm"><b className="italic">Puntaje:</b> {r.score}</div>
                         </div>
                         <div className="mt-2 text-sm">{r.opinion}</div>
                       </div>
