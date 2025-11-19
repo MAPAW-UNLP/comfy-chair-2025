@@ -12,6 +12,7 @@ import { getReviewsByArticle } from '@/services/reviewerServices';
 import type { ReviewsByArticleId } from '@/services/reviewerServices';
 import type { Article, Status, Type } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
+import ReviewBox from "@/components/ReviewBox";
 
 // Lo que espera recibir el componente
 export interface ArticleDetailProps {
@@ -132,42 +133,12 @@ const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
       </div>
     </div>
+    {(article.status === "accepted" || article.status === "rejected") &&
+    !loadingReviews &&
+    reviews && (
+      <ReviewBox reviews={reviews} />
+    )}
 
-    {/* Card con las reviews del artículo */}
-    {(article.status === "accepted" || article.status === "rejected") && !loadingReviews && reviews && (() => {
-      const publishedReviews = reviews.reviews?.filter(r => r.is_published) || [];
-
-      // ❗ Si no hay reviews publicadas → NO mostrar nada
-      if (publishedReviews.length === 0) return null;
-
-      return (
-        <div className="bg-white shadow-lg rounded-2xl p-6 w-full mt-2">
-          <div className="text-start flex flex-col gap-2">
-
-            <h2 className="text-lg font-bold italic text-slate-500 text-center">
-              Reviews del Articulo
-            </h2>
-
-            <hr className="bg-slate-100" />
-
-            <div className="space-y-2">
-              {publishedReviews.map((r, index) => (
-                <div key={r.id} className="p-3 border rounded">
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm"><b className="italic">Review</b> #{index + 1}</div>
-                    <div className="text-sm"><b className="italic">Revisor:</b> {String(r.reviewer)}</div>
-                    <div className="text-sm"><b className="italic">Puntaje:</b> {r.score}</div>
-                  </div>
-
-                  <div className="mt-2 text-sm">{r.opinion}</div>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        </div>
-      );
-    })()}
 
   </div>
 );
