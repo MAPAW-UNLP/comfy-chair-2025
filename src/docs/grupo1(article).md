@@ -64,6 +64,11 @@
         * Data: ruta actual
         * Acciones: viajar a la ruta seleccionada
 
+    ReviewBox - (src/components/ReviewBox.tsx)
+        * Props: listado de reviews
+        * Data: numero de review (dentro de la lista), revisor, puntaje y opinión.
+        * Acciones: ninguna, solo muestra las reviews
+
 # ---------- Routes ----------
 
     article/detail/$articleId.tsx - (src/routes/article/detail/articleId.tsx)
