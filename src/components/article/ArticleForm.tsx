@@ -141,6 +141,12 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       return;
     }
 
+    // Validar que el usuario logueado esté entre los autores
+    if (!authors.some(a => a.id === userId)) {
+      toast.error("Debes incluirte como autor del artículo.");
+      return;
+    }
+
     // Preparar objeto a enviar al backend
     try {
 
@@ -207,6 +213,12 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
       return;
     }
 
+    // Validar que el usuario logueado esté entre los autores
+    if (!authors.some(a => a.id === userId)) {
+      toast.error("Debes incluirte como autor del artículo.");
+      return;
+    }
+
     // Preparar objeto a enviar al backend
     try {
 
@@ -258,7 +270,8 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
     if (!editMode) {
       handleAgregarAutor(userId);
     }
-  });
+  }, [editMode, userId]);
+
 
   //------------------------------------------------------------
   // Efecto para precargar datos del form en modo edición
@@ -490,11 +503,9 @@ const ArticleForm : React.FC<ArticleFormProps> = ({ conferences, users, editMode
           {authors.map((a) => (
             <div key={a.id} className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded-lg shadow-sm w-full">
               <span className="truncate text-sm">{a.full_name} ({a.email})</span>
-              {a.id !== userId && (
-                <button type="button" onClick={() => handleEliminarAutor(a.id)} className="text-red-500 hover:text-red-700">
-                  <X size={16} />
-                </button>
-              )}   
+              <button type="button" onClick={() => handleEliminarAutor(a.id)} className="text-red-500 hover:text-red-700">
+                <X size={16} />
+              </button>   
             </div>
           ))}
         </div>
