@@ -10,11 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
 
-interface SelectionPageProps {
-  sessionId: number;
-}
-
-export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
+export const SelectionMethod = () => {
   const navigate = useNavigate();
   const [sessionTitle, setSessionTitle] = useState<string>('Sesión');
   const [selectedMethod, setSelectedMethod] = useState<'cutoff' | 'threshold'>(
@@ -27,25 +23,40 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
   const [showResults, setShowResults] = useState(false);
   const [acceptedCount, setAcceptedCount] = useState(0);
   const [rejectedCount, setRejectedCount] = useState(0);
+  const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const session = await getSessionById(sessionId);
-        setSessionTitle(session.title || 'Sesión desconocida');
-      } catch (error) {
-        console.error('Error fetching session:', error);
-        setSessionTitle('Sesión desconocida');
-        toast.error('No se pudo cargar la sesión.', {
+    const loadSessionData = async () => {
+      const sessionIdString = localStorage.getItem("selectedSession");
+      const sessionId = sessionIdString ? parseInt(sessionIdString) : NaN;
+
+      if (sessionId <= 0 || isNaN(sessionId)) {
+        setLoadingSession(false);
+        toast.error('No hay sesión seleccionada en localStorage.', {
           position: 'top-left',
         });
-      } finally {
-        setLoadingSession(false);
+        return;
       }
-    };
 
-    if (sessionId) fetchSession();
-  }, [sessionId]);
+      // Guarda el id obtenido para usarlo en otras funciones
+      setCurrentSessionId(sessionId);
+
+      // Carga el título de la sesión
+        try {
+          const session = await getSessionById(sessionId);
+          setSessionTitle(session.title || 'Sesión desconocida');
+        } catch (error) {
+          console.error('Error fetching session:', error);
+          setSessionTitle('Sesión desconocida');
+          toast.error('No se pudo cargar la sesión.', {
+            position: 'top-left',
+          });
+        } finally {
+          setLoadingSession(false);
+        }
+      };
+      loadSessionData();
+    }, []);
 
   const executeSelection = async (methodOverride?: 'cutoff' | 'threshold') => {
     // Usa el override (si viene del boton) o el estado actual
@@ -55,6 +66,15 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     setShowResults(false);
     setAcceptedCount(0);
     setRejectedCount(0);
+
+    // Revisa si existe un id antes de ejecutar
+    if (currentSessionId === null) {
+      toast.error('No hay sesión activa para ejecutar la selección.', {
+        position: 'top-left',
+      });
+      setLoading(false);
+      return;
+    }
 
     try {
       let result: any = null;
@@ -68,7 +88,7 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
           return; // Frena la ejecución si falla
         }
         result = await executeCutoffSelection(
-          sessionId,
+          currentSessionId, // usa el estado interno
           parseFloat(percentage)
         );
       }
@@ -82,7 +102,7 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
           return; // Frena la ejecución si falla
         }
         result = await executeScoreThresholdSelection(
-          sessionId,
+          currentSessionId,
           parseFloat(cutoffScore)
         );
       }
@@ -117,9 +137,10 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
   };
 
   const goToReviewList = (status: 'accepted' | 'rejected') => {
+    if (currentSessionId === null) return; // si el id no se cargó
     navigate({
       to: '/chairs/selection/reviewed-article-list',
-      search: { sessionId: String(sessionId), status: status }, // parámetros de búsqueda
+      search: { status: status }, // parámetro de búsqueda
     });
   };
 
@@ -142,10 +163,10 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
     <div className="h-screen flex flex-col">
       {/* Titulo de la sesion */}
       <div
-        className="text-white py-1 px-6 flex items-center justify-start gap-3 flex-shrink-0"
+        className="text-white py-4 px-6 flex items-center flex-shrink-0 relative"
         style={{ backgroundColor: '#555353ff' }}
       >
-        <h1 className="text-lg truncate">{sessionTitle}</h1>
+        <h1 className="text-xl font-semibold mx-auto">{sessionTitle}</h1>
       </div>
 
       <div
@@ -154,7 +175,7 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
       >
         {showResults ? (
           // Texto a mostrar después de enter
-          <div className="h-[4.5rem] flex items-center"> 
+          <div className="h-[4.5rem] flex items-center">
             <span className="text-gray-900 text-lg font-bold">
 
             </span>
@@ -162,8 +183,7 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
         ) : (
           // Texto a mostrar antes de ver los resultados (estado inicial - info sobre la vista en sí)
           <p className="text-gray-500 text-justify">
-            Para ver la lista de artículos aceptados y rechazados, seleccione un
-            método para filtrarlos
+            Seleccione el criterio para obtener las listas de artículos aceptados y rechazados
           </p>
         )}
       </div>
@@ -174,11 +194,10 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
           <div className="flex w-full items-stretch overflow-hidden shadow-sm">
             {/* Botón 1 - Corte Fijo */}
             <Button
-              className={`flex-1 rounded-none ${
-                selectedMethod === 'cutoff'
-                  ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-white text-black hover:bg-gray-100 border-r border-gray-300'
-              }`}
+              className={`flex-1 rounded-none ${selectedMethod === 'cutoff'
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'bg-white text-black hover:bg-gray-100 border-r border-gray-300'
+                }`}
               variant={selectedMethod === 'cutoff' ? 'default' : 'outline'}
               onClick={() => {
                 setSelectedMethod('cutoff');
@@ -195,11 +214,10 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
 
             {/* Botón 2 - Mejor Puntaje */}
             <Button
-              className={`flex-1 rounded-none ${
-                selectedMethod === 'threshold'
-                  ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-white text-black hover:bg-gray-100'
-              }`}
+              className={`flex-1 rounded-none ${selectedMethod === 'threshold'
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'bg-white text-black hover:bg-gray-100'
+                }`}
               variant={selectedMethod === 'threshold' ? 'default' : 'outline'}
               onClick={() => {
                 setSelectedMethod('threshold');
@@ -294,31 +312,37 @@ export const SelectionPage = ({ sessionId }: SelectionPageProps) => {
           // Texto explicativo de la vista (este sería el estado inicial)
           <div className="flex flex-col gap-6 max-w-lg mx-auto">
             {/* Bloque 1 - Corte Fijo (explicación) */}
-            <div className="p-4 border rounded-lg shadow-md bg-white">
-              <h3 className="text-xl font-semibold mb-2 text-gray-700">
+            <div className="p-4 border rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-2 text-gray-700">
                 Corte Fijo (Porcentaje)
               </h3>
               <p className="text-gray-500 text-justify">
-                <span className="font-semibold text-gray-700"> </span>
                 Acepta el porcentaje de envíos ingresado (los mejores primero)
-                <span className="block mt-2 font-bold text-gray-600">
-                  Toma valores desde 0% hasta 100%
-                </span>
               </p>
+              <span className="block mt-2 font-bold text-gray-600">
+                <ul className="text-gray-600 list-disc list-inside space-y-1">
+                  <li>
+                    Valores: de 0% a 100%
+                  </li>
+                </ul>
+              </span>
             </div>
 
             {/* Bloque 2 - Mejor Puntaje (explicación) */}
-            <div className="p-4 border rounded-lg shadow-md bg-white">
-              <h3 className="text-xl font-semibold mb-2 text-gray-700">
+            <div className="p-4 border rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-2 text-gray-700">
                 Mejor Puntaje (Umbral)
               </h3>
               <p className="text-gray-500 text-justify">
-                <span className="font-semibold text-gray-700"> </span>
                 Acepta artículos cuyo puntaje superen al valor ingresado
-                <span className="block mt-2 font-bold text-gray-600">
-                  Toma valores desde -3 a 3
-                </span>
               </p>
+              <span className="block mt-2 font-bold text-gray-600">
+                <ul className="text-gray-600 list-disc list-inside space-y-1">
+                  <li>
+                    Valores: de -3 a 3
+                  </li>
+                </ul>
+              </span>
             </div>
           </div>
         )}

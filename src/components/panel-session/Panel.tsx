@@ -3,7 +3,7 @@ import { useNavigate, Link } from "@tanstack/react-router"
 import { Users, FileSearch, ClipboardCheck } from "lucide-react"
 import { getSession, type Session } from "@/services/sessionServices";
 
-export function HomeChair() {
+export function Panel() {
   const navigate = useNavigate()
 
   const [sessionTitle, setSessionTitle] = useState("Panel del Chair");
@@ -59,7 +59,7 @@ export function HomeChair() {
         </Link>
 
         <Link
-          to="/chairs/selection/session-list"
+          to="/chairs/selection/selection-method"
           className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center hover:shadow-2xl hover:bg-gray-50 transition border border-gray-300"
         >
           <ClipboardCheck size={70} className="mb-4 text-gray-700" />

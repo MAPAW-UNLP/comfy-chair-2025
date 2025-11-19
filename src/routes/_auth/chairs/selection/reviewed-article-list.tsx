@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { ReviewArticleList } from '@/components/selection/ReviewArticleList'; 
+import { ReviewedArticleList } from '@/components/selection/ReviewedArticleList'; 
 
 type SearchParams = {
-  sessionId: string;
   status: 'accepted' | 'rejected';
 };
 
@@ -17,15 +16,13 @@ export const Route = createFileRoute('/_auth/chairs/selection/reviewed-article-l
     }
 
     return {
-      sessionId: (search.sessionId as string) || '',
       status: status,
     };
   },
 });
 
 function RouteComponent() {
-  const { sessionId, status } = Route.useSearch();
-  const id = parseInt(sessionId);
+  const { status } = Route.useSearch();
 
-  return <ReviewArticleList sessionId={id} status={status} />;
+  return <ReviewedArticleList status={status} />;
 }

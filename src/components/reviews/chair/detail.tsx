@@ -13,8 +13,20 @@ export const ArticleReviewsDetail = ({ articleId }: { articleId: number }) => {
   useEffect(() => {
     const load = async () => {
       try {
+        /*
         const data = await getReviewsForArticle(articleId)
         setReviews(data)
+        */
+        const response: any = await getReviewsForArticle(articleId)
+        if (response.reviews && Array.isArray(response.reviews)) {
+          setReviews(response.reviews)
+        } else {
+          console.warn("Estructura incorrecta:", response)
+          setReviews([])
+        }
+      } catch (error) {
+        console.error("Error cargando revisiones:", error)
+        setReviews([])
       } finally {
         setLoading(false)
       }
