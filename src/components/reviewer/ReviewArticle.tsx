@@ -30,13 +30,13 @@ type Article = {
 
 // Definición de scores con etiquetas (orden de mejor a peor)
 const SCORE_DEFS = [
-  { value: 3, label: "Muy aceptado" },
+  { value: 3, label: "Fuertemente aceptado" },
   { value: 2, label: "Aceptado" },
-  { value: 1, label: "Aceptado con cambios mínimos" },
-  { value: 0, label: "Sin recomendación" },
-  { value: -1, label: "Requiere revisiones menores" },
-  { value: -2, label: "Requiere revisiones mayores" },
-  { value: -3, label: "Rechazado" },
+  { value: 1, label: "Debilmente aceptado" },
+  { value: 0, label: "Dudoso" },
+  { value: -1, label: "Debilmete rechazado" },
+  { value: -2, label: "Rechazado" },
+  { value: -3, label: "Fuertemente rechazado" },
 ];
 
 // Base para armar hrefs absolutos cuando llegan paths relativos
