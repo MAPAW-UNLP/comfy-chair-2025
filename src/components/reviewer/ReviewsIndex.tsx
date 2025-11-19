@@ -116,10 +116,10 @@ const STATUS_UI = {
     cta: "Editar borrador" as const,
   },
   completed: {
-    label: "Completo",
+    label: "Completado",
     badgeClass:
       "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 dark:text-emerald-200 dark:bg-emerald-900/30 dark:ring-emerald-800",
-    cta: "Ver" as const,
+    cta: "Ver revisiones" as const,
   },
 } as const;
 
