@@ -1,3 +1,4 @@
+// ./reviewer/ReviewsIndex.tsx
 import React, {
   useEffect,
   useMemo,
@@ -123,9 +124,14 @@ const STATUS_UI = {
   },
 } as const;
 
-/* -------------- 🔥 NUEVO ArticleCard con badge + botón alineados -------------- */
+/* -------------- ArticleCard con badge + botón alineados -------------- */
 
-function ArticleCard({ article, onAction, selected, flashing }: ArticleCardProps) {
+function ArticleCard({
+  article,
+  onAction,
+  selected,
+  flashing,
+}: ArticleCardProps) {
   const conf = STATUS_UI[article.status];
 
   return (
@@ -177,8 +183,12 @@ export default function ReviewsIndex() {
   const biddingCountdown = useCountdown(BIDDING_END || undefined);
   const reviewCountdown = useCountdown(REVIEW_END || undefined);
 
-  const biddingDhm = `${pad(biddingCountdown.days)}:${pad(biddingCountdown.hours)}:${pad(biddingCountdown.minutes)}`;
-  const reviewDhm = `${pad(reviewCountdown.days)}:${pad(reviewCountdown.hours)}:${pad(reviewCountdown.minutes)}`;
+  const biddingDhm = `${pad(biddingCountdown.days)}:${pad(
+    biddingCountdown.hours
+  )}:${pad(biddingCountdown.minutes)}`;
+  const reviewDhm = `${pad(reviewCountdown.days)}:${pad(
+    reviewCountdown.hours
+  )}:${pad(reviewCountdown.minutes)}`;
 
   const [articulos, setArticulos] = useState<Article[]>([]);
   const [bids, setBids] = useState<{ article: number; choice?: string }[]>([]);
@@ -214,7 +224,10 @@ export default function ReviewsIndex() {
     const load = async () => {
       setLoadingAssigned(true);
       try {
-        if (!auth.user || (phase !== "review" && phase !== "between-bidding-review")) {
+        if (
+          !auth.user ||
+          (phase !== "review" && phase !== "between-bidding-review")
+        ) {
           setAssigned(null);
           return;
         }
@@ -228,34 +241,37 @@ export default function ReviewsIndex() {
     load();
   }, [auth.user, reviewerId, phase]);
 
+  // ⚙️ reviewedMap: AHORA cuenta solo artículos donde TU review está publicada
   useEffect(() => {
     if (!assigned || assigned.length === 0) {
       setReviewedMap({});
       return;
     }
+
     let alive = true;
 
     (async () => {
       try {
-        const flags = await Promise.all(assigned.map((a) => hasPublishedReview(a.id)));
-        if (!alive) return;
+        const map: Record<number, boolean> = {};
 
-        const map: Record<number, boolean> = {};
-        assigned.forEach((a, i) => {
-          map[a.id] = Boolean(flags[i] ?? a.reviewed ?? false);
-        });
-        setReviewedMap(map);
-      } catch {
-        const map: Record<number, boolean> = {};
-        assigned.forEach((a) => (map[a.id] = Boolean(a.reviewed)));
-        setReviewedMap(map);
+        for (const a of assigned) {
+          const own = await getOwnReviewByArticle(a.id, reviewerId);
+          map[a.id] = Boolean(own?.is_published); // ✅ sólo tu review publicada
+        }
+
+        if (alive) setReviewedMap(map);
+      } catch (e) {
+        console.error("Error building reviewedMap:", e);
+        const fallback: Record<number, boolean> = {};
+        assigned.forEach((a) => (fallback[a.id] = false));
+        if (alive) setReviewedMap(fallback);
       }
     })();
 
     return () => {
       alive = false;
     };
-  }, [assigned]);
+  }, [assigned, reviewerId]);
 
   const reviewedCount = useMemo(
     () => Object.values(reviewedMap).filter(Boolean).length,
@@ -269,13 +285,15 @@ export default function ReviewsIndex() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [flashId, setFlashId] = useState<number | null>(null);
 
+  // Estado por artículo basado en TU review
   const computeStatusFor = useCallback(
     async (articleId: number): Promise<ReviewStatus> => {
       try {
-        const published = await hasPublishedReview(articleId);
-        if (published) return "completed";
         const own = await getOwnReviewByArticle(articleId, reviewerId);
-        return own ? "draft" : "pending";
+
+        if (own?.is_published) return "completed"; // tu review enviada
+        if (own) return "draft";                   // tenés borrador
+        return "pending";                          // no empezaste nada
       } catch {
         return "pending";
       }
@@ -388,7 +406,9 @@ export default function ReviewsIndex() {
             {/* No clickable */}
             <SoftCard>
               <div className="flex h-full flex-col items-center justify-center">
-                <div className="text-3xl font-semibold tracking-tight">{reviewDhm}</div>
+                <div className="text-3xl font-semibold tracking-tight">
+                  {reviewDhm}
+                </div>
                 <div className="mt-1 text-[11px] text-slate-400">
                   Días | Horas | Minutos
                 </div>
@@ -425,14 +445,18 @@ export default function ReviewsIndex() {
         </>
       ) : null}
 
-      {phase !== "review" && phase !== "bidding" && phase !== "between-bidding-review" && (
-        <div className="mt-10 rounded-2xl bg-slate-50 px-6 py-8 text-center text-slate-700 shadow-sm">
-          <p className="text-lg font-semibold">No hay nada para hacer por ahora…</p>
-          <p className="text-sm text-slate-500">
-            Cuando se habilite un nuevo ciclo, tus artículos aparecerán aquí.
-          </p>
-        </div>
-      )}
+      {phase !== "review" &&
+        phase !== "bidding" &&
+        phase !== "between-bidding-review" && (
+          <div className="mt-10 rounded-2xl bg-slate-50 px-6 py-8 text-center text-slate-700 shadow-sm">
+            <p className="text-lg font-semibold">
+              No hay nada para hacer por ahora…
+            </p>
+            <p className="text-sm text-slate-500">
+              Cuando se habilite un nuevo ciclo, tus artículos aparecerán aquí.
+            </p>
+          </div>
+        )}
     </div>
   );
 }

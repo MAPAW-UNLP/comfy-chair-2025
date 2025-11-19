@@ -13,6 +13,7 @@ import {
   publishReview,
   type Review as ReviewDTO,
 } from "@/services/reviewerServices";
+import api from "@/services/api";
 
 type Author = { id: number; full_name?: string; email?: string };
 
@@ -72,6 +73,15 @@ export default function ReviewArticle() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null); // solo la última edición (frontend)
+
+  // 🔹 Revisión de otros revisores
+  const [peerReviews, setPeerReviews] = useState<ReviewDTO[]>([]);
+  const [loadingPeers, setLoadingPeers] = useState(false);
+
+  const otherReviews = useMemo(
+    () => peerReviews.filter((r) => r.reviewer !== reviewerId),
+    [peerReviews, reviewerId]
+  );
 
   const isPoster = useMemo(
     () => (article?.type || "").toLowerCase() === "poster",
@@ -176,6 +186,42 @@ export default function ReviewArticle() {
       alive = false;
     };
   }, [articleId, reviewerId]);
+
+  // ---- Carga de revisiones publicadas de este artículo (otras personas) ----
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        setLoadingPeers(true);
+
+        const res = await api.get(`/api/article/${articleId}/reviews/`, {
+          validateStatus: () => true,
+        });
+
+        if (!alive) return;
+
+        // Soportamos varias formas de respuesta: {reviews: []}, [] o {results: []}
+        const raw = (res.data && (res.data.reviews ?? res.data)) ?? [];
+        if (Array.isArray(raw)) {
+          setPeerReviews(raw as ReviewDTO[]);
+        } else if (Array.isArray((res.data as any)?.results)) {
+          setPeerReviews((res.data as any).results as ReviewDTO[]);
+        } else {
+          setPeerReviews([]);
+        }
+      } catch (e) {
+        console.error("Error cargando revisiones publicadas:", e);
+        setPeerReviews([]);
+      } finally {
+        if (alive) setLoadingPeers(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [articleId]);
 
   // ---- Acciones ----
   const ensureFields = () => {
@@ -302,9 +348,13 @@ export default function ReviewArticle() {
         to: "/reviewer",
         search: { selected: String(articleId) },
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error al enviar la revisión:", e);
-      alert("Ocurrió un error al enviar la revisión.");
+      console.error("Detalle backend:", e?.response?.data);
+      alert(
+        e?.response?.data?.error ??
+          "Ocurrió un error al enviar la revisión."
+      );
     } finally {
       setSaving(false);
     }
@@ -354,7 +404,6 @@ export default function ReviewArticle() {
           {article.title}
         </h1>
       </div>
-
 
       {lastUpdated && (
         <p className="mt-1 text-xs text-slate-500">
@@ -449,7 +498,8 @@ export default function ReviewArticle() {
               "w-full max-w-xs rounded-xl border bg-white p-2.5 text-sm text-slate-900 shadow-sm",
               "focus:outline-none focus:ring-2 focus:ring-sky-400",
               "dark:bg-slate-900 dark:text-slate-100",
-              scoreInfo?.selectClass ?? "border-slate-300 dark:border-slate-600",
+              scoreInfo?.selectClass ??
+                "border-slate-300 dark:border-slate-600",
             ]
               .filter(Boolean)
               .join(" ")}
@@ -463,11 +513,10 @@ export default function ReviewArticle() {
               </option>
             ))}
           </select>
-
         </div>
 
         <div className="flex flex-wrap gap-3 pt-1">
-          {/* 4. Si está enviada, NO mostramos el botón de guardar borrador */}
+          {/* Si está enviada, NO mostramos el botón de guardar borrador */}
           {!isPublished && (
             <Button
               onClick={handleSaveDraft}
@@ -501,6 +550,47 @@ export default function ReviewArticle() {
           </Button>
         </div>
       </div>
+
+      {/* 🔽 Otras revisiones publicadas: solo cuando tu review está enviada/completa 🔽 */}
+      {isPublished && (
+        <section className="mt-10 border-t border-slate-200 pt-6 dark:border-slate-700">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+            Otras revisiones publicadas
+          </h2>
+
+          {loadingPeers ? (
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              Cargando revisiones…
+            </p>
+          ) : !otherReviews.length ? (
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+              Todavía no hay revisiones publicadas de otros revisores para este
+              artículo.
+            </p>
+          ) : (
+            <div className="mt-4 space-y-4">
+              {otherReviews.map((r) => (
+                <div
+                  key={r.id}
+                  className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 text-sm dark:border-slate-700 dark:bg-slate-900/40"
+                >
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="font-medium text-slate-900 dark:text-slate-100">
+                      Revisor #{r.reviewer}
+                    </span>
+                    <span className="inline-flex items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs text-slate-600 dark:border-slate-600 dark:text-slate-300">
+                      Puntuación: {r.score}
+                    </span>
+                  </div>
+                  <p className="whitespace-pre-wrap text-slate-700 dark:text-slate-200">
+                    {r.opinion}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
