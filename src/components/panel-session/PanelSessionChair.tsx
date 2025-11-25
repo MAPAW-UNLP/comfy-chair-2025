@@ -3,7 +3,7 @@ import { useNavigate, Link } from "@tanstack/react-router"
 import { Users, FileSearch, ClipboardCheck } from "lucide-react"
 import { getSession, type Session } from "@/services/sessionServices";
 
-export function Panel() {
+export function PanelSessionChair() {
   const navigate = useNavigate()
 
   const [sessionTitle, setSessionTitle] = useState("Panel del Chair");

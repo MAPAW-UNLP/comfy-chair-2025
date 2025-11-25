@@ -8,16 +8,15 @@ import {
   getSessionById,
 } from '@/services/selectionServices';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, Link, useSearch } from '@tanstack/react-router';
+
+interface SelectionSearchParams {
+  method: 'cutoff' | 'threshold';
+  value: string;
+}
 
 export const SelectionMethod = () => {
-  const navigate = useNavigate();
   const [sessionTitle, setSessionTitle] = useState<string>('Sesión');
-  const [selectedMethod, setSelectedMethod] = useState<'cutoff' | 'threshold'>(
-    'cutoff'
-  );
-  const [cutoffScore, setCutoffScore] = useState('');
-  const [percentage, setPercentage] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingSession, setLoadingSession] = useState(true);
   const [showResults, setShowResults] = useState(false);
@@ -25,6 +24,48 @@ export const SelectionMethod = () => {
   const [rejectedCount, setRejectedCount] = useState(0);
   const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
 
+  const navigate = useNavigate();
+  const search = useSearch({
+    from: '/_auth/chairs/selection/selection-method',
+  }) as SelectionSearchParams;
+
+  const selectedMethod = search.method;
+  const urlValue = search.value; // Unifica cutoffScore y percentage - valor desde la URL
+
+  const [localInputValue, setLocalInputValue] = useState(urlValue); // valor local del input
+
+  // Actualiza la url (se usa en Enter o cambio de método)
+  const updateSearchParams = (newMethod: 'cutoff' | 'threshold', newValue: string) => {
+    navigate({
+      search: ((prevSearch: any) => ({
+        ...prevSearch,
+        method: newMethod,
+        value: newValue,
+      })) as any,
+      replace: true,
+    });
+
+    // Oculta los resultados si el valor o el método cambia
+    if (newMethod !== selectedMethod || newValue !== urlValue) {
+      setShowResults(false);
+    }
+  };
+
+  // Reejecuta al volver para atrás
+  useEffect(() => {
+    if (urlValue && urlValue !== '' && !loadingSession && !loading && !showResults) {
+      executeSelection(selectedMethod, urlValue);
+    }
+  }, [urlValue, selectedMethod, loadingSession]);
+
+
+  // Sincroniza estado local con la url
+  useEffect(() => {
+    setLocalInputValue(urlValue);
+  }, [urlValue]);
+
+
+  // Carga la sesión seleccionada desde localStorage
   useEffect(() => {
     const loadSessionData = async () => {
       const sessionIdString = localStorage.getItem("selectedSession");
@@ -42,32 +83,29 @@ export const SelectionMethod = () => {
       setCurrentSessionId(sessionId);
 
       // Carga el título de la sesión
-        try {
-          const session = await getSessionById(sessionId);
-          setSessionTitle(session.title || 'Sesión desconocida');
-        } catch (error) {
-          console.error('Error fetching session:', error);
-          setSessionTitle('Sesión desconocida');
-          toast.error('No se pudo cargar la sesión.', {
-            position: 'top-left',
-          });
-        } finally {
-          setLoadingSession(false);
-        }
-      };
-      loadSessionData();
-    }, []);
+      try {
+        const session = await getSessionById(sessionId);
+        setSessionTitle(session.title || 'Sesión desconocida');
+      } catch (error) {
+        console.error('Error fetching session:', error);
+        setSessionTitle('Sesión desconocida');
+        toast.error('No se pudo cargar la sesión.', {
+          position: 'top-left',
+        });
+      } finally {
+        setLoadingSession(false);
+      }
+    };
+    loadSessionData();
+  }, []);
 
-  const executeSelection = async (methodOverride?: 'cutoff' | 'threshold') => {
-    // Usa el override (si viene del boton) o el estado actual
-    const method = methodOverride || selectedMethod;
-
+  const executeSelection = async (method: 'cutoff' | 'threshold', value: string) => {
+    // Usa el método y valor de la URL
     setLoading(true);
     setShowResults(false);
     setAcceptedCount(0);
     setRejectedCount(0);
 
-    // Revisa si existe un id antes de ejecutar
     if (currentSessionId === null) {
       toast.error('No hay sesión activa para ejecutar la selección.', {
         position: 'top-left',
@@ -78,23 +116,24 @@ export const SelectionMethod = () => {
 
     try {
       let result: any = null;
+      const numericValue = parseFloat(value);
 
       if (method === 'cutoff') {
-        if (!percentage || isNaN(parseFloat(percentage))) {
+        if (!value || isNaN(numericValue) || numericValue < 0 || numericValue > 100) {
           toast.error('Ingrese un porcentaje válido.', {
             position: 'top-left',
           });
           setLoading(false);
-          return; // Frena la ejecución si falla
+          return;
         }
         result = await executeCutoffSelection(
-          currentSessionId, // usa el estado interno
-          parseFloat(percentage)
+          currentSessionId,
+          numericValue
         );
       }
 
       if (method === 'threshold') {
-        if (!cutoffScore || isNaN(parseFloat(cutoffScore))) {
+        if (!value || isNaN(numericValue) || numericValue < -3 || numericValue > 3) {
           toast.error('Ingresa un puntaje mínimo válido.', {
             position: 'top-left',
           });
@@ -103,7 +142,7 @@ export const SelectionMethod = () => {
         }
         result = await executeScoreThresholdSelection(
           currentSessionId,
-          parseFloat(cutoffScore)
+          numericValue
         );
       }
 
@@ -112,10 +151,9 @@ export const SelectionMethod = () => {
 
       // Procesa los resultados
       const safeResult = result && typeof result === 'object' ? result : {};
-
-      // Toma los contadores del back
       setAcceptedCount(safeResult.accepted_count ?? 0);
       setRejectedCount(safeResult.rejected_count ?? 0);
+
     } catch (error: any) {
       const backendMessage =
         error.response?.data?.detail || error.response?.data?.error || null;
@@ -132,16 +170,9 @@ export const SelectionMethod = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !loading) {
-      executeSelection();
+      updateSearchParams(selectedMethod, localInputValue); // actualiza url con el valor local
+      executeSelection(selectedMethod, localInputValue); // ejecuta la selección con el valor local
     }
-  };
-
-  const goToReviewList = (status: 'accepted' | 'rejected') => {
-    if (currentSessionId === null) return; // si el id no se cargó
-    navigate({
-      to: '/chairs/selection/reviewed-article-list',
-      search: { status: status }, // parámetro de búsqueda
-    });
   };
 
   if (loadingSession) {
@@ -151,13 +182,6 @@ export const SelectionMethod = () => {
       </div>
     );
   }
-
-  // Guarda de ejecución
-  const isThresholdEmpty = !cutoffScore;
-  const isCutoffEmpty = !percentage;
-
-  const currentInputValue =
-    selectedMethod === 'threshold' ? cutoffScore : percentage;
 
   return (
     <div className="h-screen flex flex-col">
@@ -200,12 +224,8 @@ export const SelectionMethod = () => {
                 }`}
               variant={selectedMethod === 'cutoff' ? 'default' : 'outline'}
               onClick={() => {
-                setSelectedMethod('cutoff');
-                setCutoffScore(''); // Limpia el input del método opuesto (threshold)
-                setShowResults(false); // Oculta resultados cuando cambia de metodo
-
-                // Si el input de corte fijo no estaba vacío ejecuta la selección
-                if (!isCutoffEmpty) executeSelection('cutoff');
+                setLocalInputValue(''); // limpia input visual
+                updateSearchParams('cutoff', ''); // actualiza url y método
               }}
               disabled={loading}
             >
@@ -220,12 +240,8 @@ export const SelectionMethod = () => {
                 }`}
               variant={selectedMethod === 'threshold' ? 'default' : 'outline'}
               onClick={() => {
-                setSelectedMethod('threshold');
-                setPercentage(''); // Limpia el input del método opuesto (cutoff)
-                setShowResults(false);
-
-                // Si el input de mejor puntaje no estaba vacío ejecuta la selección
-                if (!isThresholdEmpty) executeSelection('threshold');
+                setLocalInputValue('');
+                updateSearchParams('threshold', '');
               }}
               disabled={loading}
             >
@@ -235,14 +251,8 @@ export const SelectionMethod = () => {
 
           <input
             type="number"
-            value={currentInputValue}
-            onChange={(e) => {
-              if (selectedMethod === 'threshold') {
-                setCutoffScore(e.target.value);
-              } else {
-                setPercentage(e.target.value);
-              }
-            }}
+            value={localInputValue}
+            onChange={(e) => { setLocalInputValue(e.target.value); }}
             onKeyDown={handleKeyDown}
             placeholder={
               selectedMethod === 'threshold'
@@ -282,15 +292,14 @@ export const SelectionMethod = () => {
               <h3 className="text-xl font-semibold mb-2 text-green-700">
                 Aceptados: {acceptedCount}
               </h3>
-              <Button
-                variant="outline"
-                className="w-full"
-                // Deshabilita el boton si no hay articulos en la lista
+              <Link
+                to="/chairs/selection/reviewed-article-list"
+                search={{ status: 'accepted' }}
+                className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
                 disabled={acceptedCount === 0}
-                onClick={() => goToReviewList('accepted')}
               >
                 Ver Artículos Aceptados
-              </Button>
+              </Link>
             </div>
 
             {/* Bloque Rechazados */}
@@ -298,14 +307,14 @@ export const SelectionMethod = () => {
               <h3 className="text-xl font-semibold mb-2 text-red-700">
                 Rechazados: {rejectedCount}
               </h3>
-              <Button
-                variant="outline"
-                className="w-full"
+              <Link
+                to="/chairs/selection/reviewed-article-list"
+                search={{ status: 'rejected' }}
+                className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
                 disabled={rejectedCount === 0}
-                onClick={() => goToReviewList('rejected')}
               >
                 Ver Artículos Rechazados
-              </Button>
+              </Link>
             </div>
           </div>
         ) : (

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Panel } from '@/components/panel-session/Panel'
+import { PanelSessionChair } from '@/components/panel-session/PanelSessionChair'
 
 export const Route = createFileRoute("/_auth/chairs/panel-session")({
-  component: Panel,
+  component: PanelSessionChair,
 })
