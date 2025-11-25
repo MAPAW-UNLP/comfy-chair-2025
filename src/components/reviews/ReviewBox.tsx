@@ -15,9 +15,9 @@ interface ReviewBoxProps {
 
 // Cuerpo del componente
 const ReviewBox: React.FC<ReviewBoxProps> = ({ reviews }) => {
+  
   const publishedReviews = reviews.reviews?.filter(r => r.is_published) || [];
 
-  // Si no hay reviews publicadas entonces no renderiza
   if (publishedReviews.length === 0) return null;
 
   //------------------------------------------------------------
@@ -27,15 +27,14 @@ const ReviewBox: React.FC<ReviewBoxProps> = ({ reviews }) => {
     <div className="bg-white shadow-lg rounded-2xl p-6 w-full mt-2">
       <div className="text-start flex flex-col gap-2">
 
-        {/* Titulo de la Card */}
         <h2 className="text-lg font-bold italic text-slate-500 text-center">
-          Reviews del Articulo
+          Reviews 
         </h2>
 
         <hr className="bg-slate-100" />
 
-        { /* Mapeo Cada Review */}
         <div className="space-y-2">
+
           {publishedReviews.map((r, index) => (
             <div key={r.id} className="p-3 border rounded">
               <div className="flex justify-between items-center">

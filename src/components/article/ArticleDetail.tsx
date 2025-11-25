@@ -7,7 +7,7 @@
 // Importaciones
 import { Button } from "../ui/button";
 import { useEffect, useState } from 'react';
-import ReviewBox from "@/components/ReviewBox";
+import ReviewBox from "@/components/reviews/ReviewBox";
 import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
 import { getReviewsByArticle } from '@/services/reviewerServices';
 import type { ReviewsByArticleId } from '@/services/reviewerServices';

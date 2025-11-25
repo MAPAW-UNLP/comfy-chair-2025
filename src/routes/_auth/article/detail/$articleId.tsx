@@ -13,7 +13,7 @@
 //
 // -------------------------------------------------------------------------------------- 
 
-import Breadcrumb from '@/components/Breadcrumb';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 import ArticleDetail from '@/components/article/ArticleDetail';
 import { useFetchArticle } from "@/hooks/Grupo1/useFetchArticle";
 import { createFileRoute, useParams } from '@tanstack/react-router';

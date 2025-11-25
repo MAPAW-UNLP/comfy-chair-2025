@@ -16,7 +16,7 @@
 //
 // -------------------------------------------------------------------------------------- 
 
-import Breadcrumb from '@/components/Breadcrumb';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useRouteContext } from '@tanstack/react-router';
 import ArticleCard from '@/components/article/ArticleCard';
 import { createFileRoute, useParams } from '@tanstack/react-router';
