@@ -49,3 +49,17 @@ export const getArticlesBySessionAndStatus = async (
   );
   return response.data;
 };
+
+// Selección definitiva de una sesión
+export const lockSelection = async (
+  sessionId: number,
+  typeSelection: 'ScoreThresholdSelection' | 'CutoffSelection'
+) => {
+  const response = await api.post(
+    `/api/session/${sessionId}/lock-selection/`,
+    {
+      type_selection: typeSelection,
+    }
+  );
+  return response.data;
+};
