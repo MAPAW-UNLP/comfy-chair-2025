@@ -31,7 +31,7 @@ const RootLayoutContent = () => {
         // { to: '/reviewer/', label: 'Revisor' },
         // { to: '/conference/view', label: 'Conferencias' },
         // { to: '/article/view', label: 'Articulos' },
-        { to: '/chairs/select-session', label: 'Lista de Sesiones'},
+        { to: '/chairs/select-session', label: 'Sesiones'},
         { to: '/chairs/panel-session', label: 'Panel de Sesión'},
         { to: '/article/select', label: 'Articulos a Asignar' },
         { to: '/review/chair/reviewed', label: 'Articulos Revisados' },

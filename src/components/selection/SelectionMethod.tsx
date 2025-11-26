@@ -266,7 +266,7 @@ export const SelectionMethod = () => {
             disabled={loading}
             className="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded"
           >
-            {loading ? 'Guardando...' : 'Guardar Selección'}
+            {loading ? 'Confirmando...' : 'Confirmar Selección'}
           </Button>
         </div>
       )}
@@ -276,7 +276,7 @@ export const SelectionMethod = () => {
         style={{ backgroundColor: 'var(--background)' }}
       >
 
-        <div className="h-[4.5rem] flex items-center mt-4">
+        <div className="h-[4.5rem] flex items-center mt-3">
           {isSelectionLocked ? (
             <div className="flex flex-col text-gray-700 leading-tight">
               {/* Título y método */}
@@ -294,9 +294,9 @@ export const SelectionMethod = () => {
             </div>
           ) : (
             // Contenido cuando la selección no está bloqueada
-            <span className="text-gray-500 text-md text-justify">
+            <span className="text-gray-500 text-md font-bold text-center">
               {showResults
-                ? 'Si estás conforme con la selección, podes guardarla'
+                ? 'Una vez confirmada la selección, no podrá modificarse'
                 : 'Seleccione el criterio para obtener los listados de artículos aceptados y rechazados'
               }
             </span>
@@ -435,7 +435,7 @@ export const SelectionMethod = () => {
                 <span className="block mt-2 font-bold text-gray-600">
                   <ul className="text-gray-600 list-disc list-inside space-y-1">
                     <li>
-                      Valores: de 0% a 100%
+                      Valores: de 1% a 100%
                     </li>
                   </ul>
                 </span>

@@ -42,7 +42,7 @@ export const ReviewedArticlesList = () => {
   return (
     <div className="mx-auto">
       <div className="text-white py-4 px-6 text-center bg-gray-700 -t-lg"
-      style={{ backgroundColor: "#555353ff" }}>
+        style={{ backgroundColor: "#555353ff" }}>
         <h2 className="text-xl font-semibold">Artículos con revisiones</h2>
       </div>
 
@@ -57,16 +57,19 @@ export const ReviewedArticlesList = () => {
               key={a.id}
               to={ReviewDetailRoute.to}
               params={{ id: String(a.id) }}
-              className="flex items-center justify-between px-6 py-5 hover:bg-gray-100 transition cursor-pointer"
+              className="flex items-center justify-between px-6 py-5 hover:bg-gray-100 transition cursor-pointer gap-x-4"
             >
               <div className="flex-1 text-center">
                 <p className="text-base text-gray-900 leading-tight">{a.title}</p>
               </div>
 
               {/* BOTÓN */}
-              <div className="px-2 py-1 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-800 transition"
-              style={{ backgroundColor: "#555353ff" }}>
-                Ver revisiones
+              <div className="flex flex-col items-center justify-center 
+                px-2 py-1 rounded-lg bg-gray-700 text-white 
+                font-semibold hover:bg-gray-800 transition"
+                style={{ backgroundColor: "#767373ff" }}>
+                <div>Ver</div>
+                <div>revisiones</div>
               </div>
             </Link>
           ))}
