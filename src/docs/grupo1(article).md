@@ -59,12 +59,12 @@
         * Data: nombre completo y correo de cada usuario.
         * Acciones: buscar y seleccionar usuarios.
 
-    Breadcrumb - (src/components/Breadcrumb.tsx)
+    Breadcrumb - (src/components/ui/Breadcrumb.tsx)
         * Props: items (rutas)
         * Data: ruta actual
         * Acciones: viajar a la ruta seleccionada
 
-    ReviewBox - (src/components/ReviewBox.tsx)
+    ReviewBox - (src/components/reviews/ReviewBox.tsx)
         * Props: listado de reviews
         * Data: numero de review (dentro de la lista), revisor, puntaje y opinión.
         * Acciones: ninguna, solo muestra las reviews
