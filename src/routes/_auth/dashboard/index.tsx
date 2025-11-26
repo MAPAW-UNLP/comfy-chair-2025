@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate, useRouteContext } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { getUserFullData, type ProcessedConference } from '@/services/userServices'
 import { Badge } from '@/components/ui/badge'
 
-export const Route = createFileRoute('/_auth/dashboard')({
+export const Route = createFileRoute('/_auth/dashboard/')({
   component: DashboardPage,
 })
 
@@ -14,7 +14,7 @@ function DashboardPage() {
   const { logout } = useAuth()
   const navigate = useNavigate()
   // Get user from the parent _auth route context
-  const { user } = useRouteContext({ from: '/_auth/dashboard' })
+  const { user } = useRouteContext({ from: '/_auth/dashboard/' })
 
   // Fetch user conferences and roles
   const { data: conferences, isLoading, isError } = useQuery({
@@ -72,7 +72,12 @@ function DashboardPage() {
                   <p className="text-sm text-muted-foreground">Rol</p>
                   <p className="font-medium">{user.role}</p>
                 </div>
-                <Button onClick={handleLogout} variant="destructive" size="sm" className="w-full mt-4">
+                <Link to="/dashboard/update">
+                  <Button variant="outline" size="sm" className="w-full mt-4">
+                    Actualizar Datos
+                  </Button>
+                </Link>
+                <Button onClick={handleLogout} variant="destructive" size="sm" className="w-full mt-2">
                   Cerrar Sesión
                 </Button>
               </CardContent>

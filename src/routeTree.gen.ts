@@ -13,11 +13,13 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthUsersRouteImport } from './routes/_auth/users'
 import { Route as AuthNotificationsRouteImport } from './routes/_auth/notifications'
-import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as AuthReviewerIndexRouteImport } from './routes/_auth/reviewer/index'
+import { Route as AuthDashboardIndexRouteImport } from './routes/_auth/dashboard/index'
 import { Route as AuthReviewerBiddingRouteImport } from './routes/_auth/reviewer/bidding'
 import { Route as AuthReviewerAssignedRouteImport } from './routes/_auth/reviewer/assigned'
+import { Route as AuthDashboardUpdateRouteImport } from './routes/_auth/dashboard/update'
 import { Route as AuthConferenceViewRouteImport } from './routes/_auth/conference/view'
 import { Route as AuthConferenceCreateRouteImport } from './routes/_auth/conference/create'
 import { Route as AuthConferenceIdRouteImport } from './routes/_auth/conference/$id'
@@ -51,19 +53,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthUsersRoute = AuthUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthNotificationsRoute = AuthNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthDashboardRoute = AuthDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthRoute,
-} as any)
 const AuthReviewerIndexRoute = AuthReviewerIndexRouteImport.update({
   id: '/reviewer/',
   path: '/reviewer/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthDashboardIndexRoute = AuthDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthReviewerBiddingRoute = AuthReviewerBiddingRouteImport.update({
@@ -74,6 +81,11 @@ const AuthReviewerBiddingRoute = AuthReviewerBiddingRouteImport.update({
 const AuthReviewerAssignedRoute = AuthReviewerAssignedRouteImport.update({
   id: '/reviewer/assigned',
   path: '/reviewer/assigned',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthDashboardUpdateRoute = AuthDashboardUpdateRouteImport.update({
+  id: '/dashboard/update',
+  path: '/dashboard/update',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthConferenceViewRoute = AuthConferenceViewRouteImport.update({
@@ -149,16 +161,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/dashboard': typeof AuthDashboardRoute
   '/notifications': typeof AuthNotificationsRoute
+  '/users': typeof AuthUsersRoute
   '/article/create': typeof AuthArticleCreateRoute
   '/article/select': typeof AuthArticleSelectRoute
   '/article/view': typeof AuthArticleViewRoute
   '/conference/$id': typeof AuthConferenceIdRoute
   '/conference/create': typeof AuthConferenceCreateRoute
   '/conference/view': typeof AuthConferenceViewRoute
+  '/dashboard/update': typeof AuthDashboardUpdateRoute
   '/reviewer/assigned': typeof AuthReviewerAssignedRoute
   '/reviewer/bidding': typeof AuthReviewerBiddingRoute
+  '/dashboard': typeof AuthDashboardIndexRoute
   '/reviewer': typeof AuthReviewerIndexRoute
   '/article/assign/$id': typeof AuthArticleAssignIdRoute
   '/article/edit/$id': typeof AuthArticleEditIdRoute
@@ -172,16 +186,18 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/dashboard': typeof AuthDashboardRoute
   '/notifications': typeof AuthNotificationsRoute
+  '/users': typeof AuthUsersRoute
   '/article/create': typeof AuthArticleCreateRoute
   '/article/select': typeof AuthArticleSelectRoute
   '/article/view': typeof AuthArticleViewRoute
   '/conference/$id': typeof AuthConferenceIdRoute
   '/conference/create': typeof AuthConferenceCreateRoute
   '/conference/view': typeof AuthConferenceViewRoute
+  '/dashboard/update': typeof AuthDashboardUpdateRoute
   '/reviewer/assigned': typeof AuthReviewerAssignedRoute
   '/reviewer/bidding': typeof AuthReviewerBiddingRoute
+  '/dashboard': typeof AuthDashboardIndexRoute
   '/reviewer': typeof AuthReviewerIndexRoute
   '/article/assign/$id': typeof AuthArticleAssignIdRoute
   '/article/edit/$id': typeof AuthArticleEditIdRoute
@@ -197,16 +213,18 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/notifications': typeof AuthNotificationsRoute
+  '/_auth/users': typeof AuthUsersRoute
   '/_auth/article/create': typeof AuthArticleCreateRoute
   '/_auth/article/select': typeof AuthArticleSelectRoute
   '/_auth/article/view': typeof AuthArticleViewRoute
   '/_auth/conference/$id': typeof AuthConferenceIdRoute
   '/_auth/conference/create': typeof AuthConferenceCreateRoute
   '/_auth/conference/view': typeof AuthConferenceViewRoute
+  '/_auth/dashboard/update': typeof AuthDashboardUpdateRoute
   '/_auth/reviewer/assigned': typeof AuthReviewerAssignedRoute
   '/_auth/reviewer/bidding': typeof AuthReviewerBiddingRoute
+  '/_auth/dashboard/': typeof AuthDashboardIndexRoute
   '/_auth/reviewer/': typeof AuthReviewerIndexRoute
   '/_auth/article/assign/$id': typeof AuthArticleAssignIdRoute
   '/_auth/article/edit/$id': typeof AuthArticleEditIdRoute
@@ -222,16 +240,18 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
-    | '/dashboard'
     | '/notifications'
+    | '/users'
     | '/article/create'
     | '/article/select'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/dashboard/update'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
+    | '/dashboard'
     | '/reviewer'
     | '/article/assign/$id'
     | '/article/edit/$id'
@@ -245,16 +265,18 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
-    | '/dashboard'
     | '/notifications'
+    | '/users'
     | '/article/create'
     | '/article/select'
     | '/article/view'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
+    | '/dashboard/update'
     | '/reviewer/assigned'
     | '/reviewer/bidding'
+    | '/dashboard'
     | '/reviewer'
     | '/article/assign/$id'
     | '/article/edit/$id'
@@ -269,16 +291,18 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/login'
     | '/register'
-    | '/_auth/dashboard'
     | '/_auth/notifications'
+    | '/_auth/users'
     | '/_auth/article/create'
     | '/_auth/article/select'
     | '/_auth/article/view'
     | '/_auth/conference/$id'
     | '/_auth/conference/create'
     | '/_auth/conference/view'
+    | '/_auth/dashboard/update'
     | '/_auth/reviewer/assigned'
     | '/_auth/reviewer/bidding'
+    | '/_auth/dashboard/'
     | '/_auth/reviewer/'
     | '/_auth/article/assign/$id'
     | '/_auth/article/edit/$id'
@@ -326,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/users': {
+      id: '/_auth/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthUsersRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/notifications': {
       id: '/_auth/notifications'
       path: '/notifications'
@@ -333,18 +364,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthNotificationsRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/dashboard': {
-      id: '/_auth/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthDashboardRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/reviewer/': {
       id: '/_auth/reviewer/'
       path: '/reviewer'
       fullPath: '/reviewer'
       preLoaderRoute: typeof AuthReviewerIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/dashboard/': {
+      id: '/_auth/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthDashboardIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/reviewer/bidding': {
@@ -359,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/reviewer/assigned'
       fullPath: '/reviewer/assigned'
       preLoaderRoute: typeof AuthReviewerAssignedRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/dashboard/update': {
+      id: '/_auth/dashboard/update'
+      path: '/dashboard/update'
+      fullPath: '/dashboard/update'
+      preLoaderRoute: typeof AuthDashboardUpdateRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/conference/view': {
@@ -456,16 +494,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthRouteChildren {
-  AuthDashboardRoute: typeof AuthDashboardRoute
   AuthNotificationsRoute: typeof AuthNotificationsRoute
+  AuthUsersRoute: typeof AuthUsersRoute
   AuthArticleCreateRoute: typeof AuthArticleCreateRoute
   AuthArticleSelectRoute: typeof AuthArticleSelectRoute
   AuthArticleViewRoute: typeof AuthArticleViewRoute
   AuthConferenceIdRoute: typeof AuthConferenceIdRoute
   AuthConferenceCreateRoute: typeof AuthConferenceCreateRoute
   AuthConferenceViewRoute: typeof AuthConferenceViewRoute
+  AuthDashboardUpdateRoute: typeof AuthDashboardUpdateRoute
   AuthReviewerAssignedRoute: typeof AuthReviewerAssignedRoute
   AuthReviewerBiddingRoute: typeof AuthReviewerBiddingRoute
+  AuthDashboardIndexRoute: typeof AuthDashboardIndexRoute
   AuthReviewerIndexRoute: typeof AuthReviewerIndexRoute
   AuthArticleAssignIdRoute: typeof AuthArticleAssignIdRoute
   AuthArticleEditIdRoute: typeof AuthArticleEditIdRoute
@@ -477,16 +517,18 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthDashboardRoute: AuthDashboardRoute,
   AuthNotificationsRoute: AuthNotificationsRoute,
+  AuthUsersRoute: AuthUsersRoute,
   AuthArticleCreateRoute: AuthArticleCreateRoute,
   AuthArticleSelectRoute: AuthArticleSelectRoute,
   AuthArticleViewRoute: AuthArticleViewRoute,
   AuthConferenceIdRoute: AuthConferenceIdRoute,
   AuthConferenceCreateRoute: AuthConferenceCreateRoute,
   AuthConferenceViewRoute: AuthConferenceViewRoute,
+  AuthDashboardUpdateRoute: AuthDashboardUpdateRoute,
   AuthReviewerAssignedRoute: AuthReviewerAssignedRoute,
   AuthReviewerBiddingRoute: AuthReviewerBiddingRoute,
+  AuthDashboardIndexRoute: AuthDashboardIndexRoute,
   AuthReviewerIndexRoute: AuthReviewerIndexRoute,
   AuthArticleAssignIdRoute: AuthArticleAssignIdRoute,
   AuthArticleEditIdRoute: AuthArticleEditIdRoute,

@@ -18,8 +18,8 @@ const RootLayoutContent = () => {
   const commonLinks: { to: string; label: string }[] = [];
 
   // Enlaces adicionales según el estado de autenticación
-  const authLinks = user 
-    ? [
+  const authLinks = user?.role === 'admin' ? // Nav bar para admins
+    [
       { to: '/reviewer/', label: 'Revisor' },
       { to: '/conference/view', label: 'Conferencias' },
       { to: '/article/view', label: 'Articulos' },
@@ -28,11 +28,23 @@ const RootLayoutContent = () => {
       { to: '/reviewer/bidding', label: 'Bidding' },
       { to: '/notifications', label: 'Notificaciones' },
       { to: '/dashboard', label: 'Panel' },
+      { to: '/users', label: 'Usuarios' },
       ]
-    : [
+      : user?.role == 'user' ? // Nav bar para usuarios normales
+      [
+        { to: '/reviewer/', label: 'Revisor' },
+        //{ to: '/conference/view', label: 'Conferencias' }, -> No muestra conferencia
+        { to: '/article/view', label: 'Articulos' },
+        { to: '/article/select', label: 'Asignar Revisor' },
+        { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+        { to: '/reviewer/bidding', label: 'Bidding' },
+        { to: '/notifications', label: 'Notificaciones' },
+        { to: '/dashboard', label: 'Panel' },
+      ]
+      : [
         { to: '/login', label: 'Ingresar' },
         { to: '/register', label: 'Registrarse' },
-      ];
+      ]
 
   // Combinar todos los enlaces
   const links = [...commonLinks, ...authLinks];
