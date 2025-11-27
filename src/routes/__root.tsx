@@ -21,22 +21,24 @@ const RootLayoutContent = () => {
   };
 
   const routerState = useRouterState();
-  const isHomeChair = routerState.location.pathname === '/chairs/select-session';
+  const isPanelSession = routerState.location.pathname === '/chairs/select-session';
   //const isDashboard = routerState.location.pathname === '/dashboard';
 
   const commonLinks: { to: string; label: string }[] = [];
 
   const authLinks = user
     ? [
-        { to: '/reviewer/', label: 'Revisor' },
-        { to: '/conference/view', label: 'Conferencias' },
-        { to: '/article/view', label: 'Articulos' },
-        { to: '/article/select', label: 'Articulos a asignar' },
-        { to: '/review/chair/reviewed', label: 'Articulos revisados' },
-        { to: '/chairs/selection/session-list', label: 'Seleccionar corte de sesión' },
-        { to: '/reviewer/bidding', label: 'Bidding' },
-        { to: '/notifications', label: 'Notificaciones' },
-        { to: '/dashboard', label: 'Panel' },
+        // { to: '/reviewer/', label: 'Revisor' },
+        // { to: '/conference/view', label: 'Conferencias' },
+        // { to: '/article/view', label: 'Articulos' },
+        { to: '/chairs/select-session', label: 'Sesiones'},
+        { to: '/chairs/panel-session', label: 'Panel de Sesión'},
+        { to: '/article/select', label: 'Articulos a Asignar' },
+        { to: '/review/chair/reviewed', label: 'Articulos Revisados' },
+        { to: '/chairs/selection/selection-method', label: 'Seleccionar Corte de Sesión' },
+        // { to: '/reviewer/bidding', label: 'Bidding' },
+        // { to: '/notifications', label: 'Notificaciones' },
+        // { to: '/dashboard', label: 'Panel' },
       ]
     : [
         { to: '/login', label: 'Ingresar' },
@@ -52,7 +54,7 @@ const RootLayoutContent = () => {
       <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
 
         {/* Flecha de retroceso (solo si no estamos en Home) */}
-        {!isHomeChair && /*!isDashboard &&*/ (
+        {!isPanelSession && /*!isDashboard &&*/ (
           <button
             onClick={handleBack}
             className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center md:hidden"
@@ -79,7 +81,7 @@ const RootLayoutContent = () => {
         {/* Nombre de la app + ícono */}
         <div className="flex items-center gap-2 ml-auto order-2">
           <Link
-            to="/"
+            to="/chairs/select-session"
             className="font-bold text-lg flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
           >
             ComfyChair
@@ -88,7 +90,7 @@ const RootLayoutContent = () => {
           </Link>
 
           {/* Botón colapsable (solo móvil) */}
-          {!isHomeChair && /*!isDashboard &&*/ (
+          {!isPanelSession && /*!isDashboard &&*/ (
           <button
             onClick={() => setIsOpen(true)}
             className="md:hidden p-1 rounded hover:bg-gray-700"
@@ -103,7 +105,7 @@ const RootLayoutContent = () => {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar móvil (izquierda) */}
-        {!isHomeChair && /*!isDashboard &&*/ (
+        {!isPanelSession && /*!isDashboard &&*/ (
           <aside
             className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${
               isOpen ? 'translate-x-0' : '-translate-x-full'

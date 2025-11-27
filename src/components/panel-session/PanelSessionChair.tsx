@@ -3,7 +3,7 @@ import { useNavigate, Link } from "@tanstack/react-router"
 import { Users, FileSearch, ClipboardCheck } from "lucide-react"
 import { getSession, type Session } from "@/services/sessionServices";
 
-export function HomeChair() {
+export function PanelSessionChair() {
   const navigate = useNavigate()
 
   const [sessionTitle, setSessionTitle] = useState("Panel del Chair");
@@ -54,17 +54,7 @@ export function HomeChair() {
         >
           <Users size={70} className="mb-4 text-gray-700" />
           <p className="text-xl font-semibold text-gray-800">
-            Articulos a asignar
-          </p>
-        </Link>
-
-        <Link
-          to="/chairs/selection/session-list"
-          className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center hover:shadow-2xl hover:bg-gray-50 transition border border-gray-300"
-        >
-          <ClipboardCheck size={70} className="mb-4 text-gray-700" />
-          <p className="text-xl font-semibold text-gray-800">
-            Seleccionar corte de sesión
+            Articulos a Asignar
           </p>
         </Link>
 
@@ -74,7 +64,18 @@ export function HomeChair() {
         >
           <FileSearch size={70} className="mb-4 text-gray-700" />
           <p className="text-xl font-semibold text-gray-800">
-            Articulos revisados
+            Articulos Revisados
+          </p>
+        </Link>
+
+        <Link
+          to="/chairs/selection/selection-method"
+          search={{ method: 'cutoff', value: '' }}
+          className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center hover:shadow-2xl hover:bg-gray-50 transition border border-gray-300"
+        >
+          <ClipboardCheck size={70} className="mb-4 text-gray-700" />
+          <p className="text-xl font-semibold text-gray-800">
+            Seleccionar Corte de Sesión
           </p>
         </Link>
       </div>

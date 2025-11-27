@@ -23,7 +23,7 @@ export function SelectSessionChair() {
 
   const selectSession = (sessionId: number) => {
     localStorage.setItem("selectedSession", String(sessionId))
-    navigate({ to: "/chairs/home" })
+    navigate({ to: "/chairs/panel-session" })
   }
 
   if (loading) {
