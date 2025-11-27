@@ -1,6 +1,6 @@
 // src/services/assignmentsServices.ts
-import api from "@/services/api";
-import { getAllArticles, type Article } from "@/services/articleServices";
+import api from '@/services/api';
+import { getAllArticles, type Article } from '@/services/articleServices';
 
 export interface AssignedArticle {
   id: number;
@@ -33,8 +33,8 @@ export async function fetchAssignedArticles(
 
     if (Array.isArray(list) && list.length > 0) {
       return list.map((a: any) => ({
-        id: Number(a.id),
-        title: a.title ?? a.titulo ?? "Sin título",
+        id: Number(a.article),
+        title: a.title ?? a.titulo ?? 'Sin título',
       }));
     }
   } catch {
@@ -58,10 +58,17 @@ export async function fetchAssignedArticlesStrict(
     const { data } = await api.get(`/api/reviewers/${reviewerId}/`);
 
     const list: any[] =
-      data?.assigned_articles ?? data?.assignedArticles ?? data?.articles ?? data?.assigned ?? [];
+      data?.assigned_articles ??
+      data?.assignedArticles ??
+      data?.articles ??
+      data?.assigned ??
+      [];
 
     if (Array.isArray(list) && list.length > 0) {
-      return list.map((a: any) => ({ id: Number(a.id), title: a.title ?? a.titulo ?? 'Sin título' }));
+      return list.map((a: any) => ({
+        id: Number(a.id),
+        title: a.title ?? a.titulo ?? 'Sin título',
+      }));
     }
     return [];
   } catch {
