@@ -64,89 +64,15 @@ const scoreBadgeVariant = (score: number) => {
   return "destructive";
 };
 
-// --- Servicio: intenta API real y usa mock si falla
+// --- Servicio: consume el endpoint real (sin mock)
 async function fetchReviewsWithHistory(): Promise<ReviewsResponse> {
-  // Intento A: endpoint consolidado
-  try {
-    const { data } = await api.get("/api/reviewer/reviews", {
-      params: { include: "history_minimal" },
-    });
-    if (Array.isArray(data)) return data;
-  } catch {
-    /* noop */
+  const { data } = await api.get("/api/reviewer/reviews", {
+    params: { include: "history_minimal" },
+  });
+  if (!Array.isArray(data)) {
+    throw new Error("Formato inesperado del historial");
   }
-
-  // Intento B: endpoints alternativos (si existieran)
-  try {
-    const { data: items } = await api.get("/api/reviewer/reviews-min");
-    if (Array.isArray(items)) return items;
-  } catch {
-    /* noop */
-  }
-
-  // Mock local (solo artículos ENVIADOS). La última versión guarda score/opinion.
-  console.warn("⚠️ Backend no disponible, usando datos simulados mínimos.");
-  const now = new Date();
-  const daysAgo = (n: number) =>
-    new Date(now.getTime() - n * 86400000).toISOString();
-
-  const mock: ReviewsResponse = [
-    {
-      review_id: 1,
-      article: {
-        id: 101,
-        title: "Optimizing Conference Scheduling with Django",
-        type: "regular",
-        session_name: "IA Aplicada",
-      },
-      sent_at: daysAgo(10),
-      last_modified_at: daysAgo(2),
-      edits: [{ edited_at: daysAgo(9) }, { edited_at: daysAgo(5) }],
-      latest: {
-        edited_at: daysAgo(2),
-        score: 3,
-        opinion:
-          "Versión final: bien estructurado, mejoras de rendimiento resueltas.",
-      },
-    },
-    {
-      review_id: 2,
-      article: {
-        id: 102,
-        title: "Machine Learning for Review Assignment",
-        type: "poster",
-        session_name: "Recomendación y ML",
-      },
-      sent_at: daysAgo(6),
-      last_modified_at: undefined,
-      edits: [],
-      latest: {
-        edited_at: daysAgo(6),
-        score: 1,
-        opinion: "Versión final enviada sin cambios posteriores.",
-      },
-    },
-    {
-      review_id: 3,
-      article: {
-        id: 103,
-        title: "Graph-Based Similarity for Reviewer Matching",
-        type: "regular",
-        session_name: "Minería de Datos",
-      },
-      sent_at: daysAgo(9),
-      last_modified_at: daysAgo(1),
-      edits: [{ edited_at: daysAgo(8) }, { edited_at: daysAgo(4) }],
-      latest: {
-        edited_at: daysAgo(1),
-        score: 2,
-        opinion:
-          "Versión final: ajuste de conclusiones y referencias actualizado.",
-      },
-    },
-  ];
-
-  return mock;
+  return data;
 }
 
 // --- UI principal
