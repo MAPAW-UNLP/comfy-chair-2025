@@ -44,6 +44,7 @@ export function ArticleStatsChart({
 
           return (
             <div key={index} className="flex flex-col gap-2">
+              {/* Fila superior: Ícono, label, valor y porcentaje */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Icon className={`w-5 h-5 ${item.colorClass}`} />
@@ -56,17 +57,22 @@ export function ArticleStatsChart({
                   </span>
                 </div>
               </div>
+              
+              {/* Barra de progreso animada - Siempre mostrar el contenedor */}
               <div className="w-full bg-gray-200 rounded-full h-8 overflow-hidden">
-                <div
-                  className={`${item.gradientClass} h-full flex items-center justify-start px-3 transition-all duration-500 ease-out`}
-                  style={{ width: `${percentage}%` }}
-                >
-                  {percentage > 10 && (
-                    <span className="text-xs font-semibold text-white">
-                      {item.value}
-                    </span>
-                  )}
-                </div>
+                {item.value > 0 && (
+                  <div
+                    className={`${item.gradientClass} h-full flex items-center justify-start px-3 transition-all duration-500 ease-out`}
+                    style={{ width: `${percentage}%` }}
+                  >
+                    {/* Mostrar el número dentro de la barra solo si hay suficiente espacio (>10%) */}
+                    {percentage > 10 && (
+                      <span className="text-xs font-semibold text-white">
+                        {item.value}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           );
