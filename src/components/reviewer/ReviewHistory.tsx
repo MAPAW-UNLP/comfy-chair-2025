@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { getArticleById, type Article } from "@/services/articleServices";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,19 +66,9 @@ const scoreBadgeVariant = (score: number) => {
   return "destructive";
 };
 
-// --- Servicio: consume el endpoint real (sin mock)
-async function fetchReviewsWithHistory(): Promise<ReviewsResponse> {
-  const { data } = await api.get("/api/reviewer/reviews", {
-    params: { include: "history_minimal" },
-  });
-  if (!Array.isArray(data)) {
-    throw new Error("Formato inesperado del historial");
-  }
-  return data;
-}
-
 // --- UI principal
 export default function ReviewHistoryPage() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string>("");
   const [rows, setRows] = useState<ReviewsResponse>([]);
@@ -90,12 +82,107 @@ export default function ReviewHistoryPage() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<ReviewWithHistory | null>(null);
 
+  const reviewerId = useMemo(() => {
+    if (user?.id != null) return Number(user.id);
+    const stored =
+      localStorage.getItem("cc_user_id") || sessionStorage.getItem("cc_user_id");
+    return stored ? Number(stored) : NaN;
+  }, [user?.id]);
+
+  const fetchArticleCached = async (
+    articleId: number,
+    cache: Map<number, Article>
+  ): Promise<Article | null> => {
+    if (cache.has(articleId)) return cache.get(articleId) as Article;
+    try {
+      const art = await getArticleById(articleId);
+      cache.set(articleId, art);
+      return art;
+    } catch {
+      return null;
+    }
+  };
+
+  const fetchReviewsWithHistory = async (
+    reviewer: number
+  ): Promise<ReviewsResponse> => {
+    const res = await api.get(`/api/reviews/reviewer/${reviewer}/`, {
+      validateStatus: () => true,
+    });
+    if (res.status === 404) return [];
+    const list = Array.isArray(res.data)
+      ? res.data
+      : Array.isArray((res.data as any)?.results)
+        ? (res.data as any).results
+        : [];
+
+    const articleCache = new Map<number, Article>();
+
+    const histories = await Promise.all(
+      list.map(async (rev: any) => {
+        // Traer versiones para reconstruir historial
+        const versionsRes = await api.get(`/api/reviews/${rev.id}/versions/`, {
+          validateStatus: () => true,
+        });
+        const versions = Array.isArray(versionsRes.data)
+          ? versionsRes.data
+          : Array.isArray((versionsRes.data as any)?.results)
+            ? (versionsRes.data as any).results
+            : [];
+
+        const sorted = [...versions].sort(
+          (a: any, b: any) => Number(a?.version_number ?? 0) - Number(b?.version_number ?? 0)
+        );
+        const latest = sorted[sorted.length - 1] ?? rev;
+        const edits = sorted.slice(0, -1).map((v: any) => ({
+          edited_at: v?.created_at ?? v?.updated_at ?? "",
+        }));
+
+        const sent_at = latest?.created_at ?? rev?.created_at ?? "";
+        const last_modified_at =
+          sorted.length > 1
+            ? sorted[sorted.length - 1]?.created_at ?? ""
+            : rev?.updated_at && rev?.created_at && rev.updated_at > rev.created_at
+              ? rev.updated_at
+              : undefined;
+
+        const article = await fetchArticleCached(Number(rev.article), articleCache);
+
+        return {
+          review_id: rev.id,
+          article: {
+            id: Number(rev.article),
+            title: article?.title ?? "Artículo",
+            type: (article?.type as any) ?? undefined,
+            session_name: (article as any)?.session?.title ?? undefined,
+          },
+          sent_at,
+          last_modified_at,
+          latest: {
+            edited_at: latest?.created_at ?? sent_at ?? "",
+            score: Number(latest?.score ?? rev?.score ?? 0),
+            opinion: latest?.opinion ?? rev?.opinion ?? "",
+          },
+          edits,
+        } as ReviewWithHistory;
+      })
+    );
+
+    return histories;
+  };
+
   useEffect(() => {
+    if (!Number.isFinite(reviewerId)) {
+      setErr("No se pudo identificar al revisor.");
+      setLoading(false);
+      return;
+    }
+
     (async () => {
       setLoading(true);
       setErr("");
       try {
-        const data = await fetchReviewsWithHistory();
+        const data = await fetchReviewsWithHistory(reviewerId);
         const onlySent = (data ?? []).filter((r) => !!r.sent_at);
         onlySent.sort((a, b) => {
           const la = new Date(a.last_modified_at ?? a.sent_at).getTime();
@@ -109,7 +196,7 @@ export default function ReviewHistoryPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [reviewerId]);
 
   const filtered = useMemo(() => {
     return rows.filter((r) => {
