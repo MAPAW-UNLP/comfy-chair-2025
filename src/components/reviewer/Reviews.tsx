@@ -38,37 +38,25 @@ function formatDate(d: string) {
   }
 }
 
-// 🔧 MOCK: simulación de fetch de revisiones de otros revisores
-async function mockFetchOtherReviews(articleId: number): Promise<ReviewPublic[]> {
-  // Simulamos latencia
-  await new Promise((r) => setTimeout(r, 600));
-  // Datos de ejemplo (podés reemplazar luego por el servicio real)
-  return [
-    {
-      id: 101,
-      reviewer_alias: "Anónimo",
-      score: 2,
-      comment:
-        "Propuesta sólida y bien evaluada experimentalmente. Recomendación positiva con ajustes menores en claridad de la sección 4.",
-      updated_at: "2025-11-10",
-    },
-    {
-      id: 102,
-      reviewer_alias: "Anónimo",
-      score: 0,
-      comment:
-        "Tema relevante, pero faltan más corridas y discusión sobre amenazas a la validez.",
-      updated_at: "2025-11-09",
-    },
-    {
-      id: 103,
-      reviewer_alias: "Anónimo",
-      score: -1,
-      comment:
-        "Metodología poco justificada y referencias clave ausentes. Revisión mayor sugerida.",
-      updated_at: "2025-11-08",
-    },
-  ];
+// Fetch real de revisiones de otros revisores desde el backend
+async function fetchOtherReviews(articleId: number): Promise<ReviewPublic[]> {
+  if (!articleId) return [];
+  const res = await fetch(`/api/articles/${articleId}/reviews/`, {
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Error fetching reviews: ${res.status}`);
+  }
+  const data = await res.json();
+  // Normalizar respuesta al shape ReviewPublic
+  return (Array.isArray(data) ? data : data.results ?? []).map((r: any) => ({
+    id: Number(r.id),
+    reviewer_alias: r.reviewer_alias ?? r.reviewer?.alias ?? r.reviewer_name ?? "Anónimo",
+    score: Number(r.score ?? r.rating ?? 0),
+    comment: r.comment ?? r.opinion ?? r.body ?? "",
+    updated_at: r.updated_at ?? r.updatedAt ?? r.created_at ?? "",
+  }));
 }
 
 export default function OtherReviews() {
@@ -110,14 +98,14 @@ export default function OtherReviews() {
     };
   }, [articleId]);
 
-  // Cargar revisiones de otros (mock)
+  // Cargar revisiones de otros revisores
   useEffect(() => {
     let mounted = true;
     setLoading(true);
     setErr("");
     (async () => {
       try {
-        const data = await mockFetchOtherReviews(articleId);
+        const data = await fetchOtherReviews(articleId);
         if (!mounted) return;
         // Ordenar por fecha de actualización desc
         const sorted = [...data].sort(
