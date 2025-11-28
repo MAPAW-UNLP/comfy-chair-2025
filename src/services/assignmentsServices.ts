@@ -18,10 +18,13 @@ export interface AssignedArticle {
  * usa el listado general de artículos para que la UI no rompa.
  */
 export async function fetchAssignedArticles(
-  reviewerId: number | string
+  reviewerId: number | string,
+  conferenceId?: number | string
 ): Promise<AssignedArticle[]> {
   try {
-    const { data } = await api.get(`/api/reviewers/${reviewerId}/`);
+    // si se pasa conferenceId lo enviamos como query param (si el backend lo soporta)
+    const params = conferenceId ? { conference: conferenceId } : undefined;
+    const { data } = await api.get(`/api/reviewers/${reviewerId}/`, { params });
 
     // Posibles claves de serializers
     const list: any[] =
@@ -32,8 +35,25 @@ export async function fetchAssignedArticles(
       [];
 
     if (Array.isArray(list) && list.length > 0) {
-      return list.map((a: any) => ({
-        id: Number(a.article),
+      // Si el backend no filtra por conference y recibimos conferenceId,
+      // intentamos filtrar cliente-side si los items contienen info de conferencia.
+      let filtered = list;
+      if (conferenceId) {
+        filtered = list.filter(
+          (a: any) =>
+            // buscar campos comunes que puedan contener el id de conferencia
+            Number(a.conference ?? a.conference_id ?? a.conferenceId) ===
+              Number(conferenceId) ||
+            // o artículos ya serializados con article.conference
+            Number(a.article_conference ?? a.article?.conference) ===
+              Number(conferenceId)
+        );
+        // si el filtro queda vacío, mantenemos la lista original para no romper la UI
+        if (filtered.length === 0) filtered = list;
+      }
+
+      return filtered.map((a: any) => ({
+        id: Number(a.article ?? a.id ?? a.article_id),
         title: a.title ?? a.titulo ?? 'Sin título',
       }));
     }
@@ -52,10 +72,12 @@ export async function fetchAssignedArticles(
  * caer al fallback que trae todos los artículos.
  */
 export async function fetchAssignedArticlesStrict(
-  reviewerId: number | string
+  reviewerId: number | string,
+  conferenceId?: number | string
 ): Promise<AssignedArticle[]> {
   try {
-    const { data } = await api.get(`/api/reviewers/${reviewerId}/`);
+    const params = conferenceId ? { conference: conferenceId } : undefined;
+    const { data } = await api.get(`/api/reviewers/${reviewerId}/`, { params });
 
     const list: any[] =
       data?.assigned_articles ??
@@ -65,8 +87,20 @@ export async function fetchAssignedArticlesStrict(
       [];
 
     if (Array.isArray(list) && list.length > 0) {
-      return list.map((a: any) => ({
-        id: Number(a.id),
+      let filtered = list;
+      if (conferenceId) {
+        filtered = list.filter(
+          (a: any) =>
+            Number(a.conference ?? a.conference_id ?? a.conferenceId) ===
+              Number(conferenceId) ||
+            Number(a.article_conference ?? a.article?.conference) ===
+              Number(conferenceId)
+        );
+        if (filtered.length === 0) filtered = list;
+      }
+
+      return filtered.map((a: any) => ({
+        id: Number(a.id ?? a.article ?? a.article_id),
         title: a.title ?? a.titulo ?? 'Sin título',
       }));
     }
@@ -78,7 +112,8 @@ export async function fetchAssignedArticlesStrict(
 
 /** Alias con el mismo contrato; útil si tu UI espera “Flat” */
 export async function fetchAssignedArticlesFlat(
-  reviewerId: number
+  reviewerId: number,
+  conferenceId?: number
 ): Promise<AssignedArticle[]> {
-  return fetchAssignedArticles(reviewerId);
+  return fetchAssignedArticles(reviewerId, conferenceId);
 }

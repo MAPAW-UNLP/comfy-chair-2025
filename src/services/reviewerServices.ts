@@ -39,6 +39,22 @@ export type UpdateReviewPayload = {
   score?: number;
 };
 
+export type Type = "regular" | "poster";
+
+// Helper para traer assignments / artículos asignados al revisor,
+// opcionalmente filtrando por conference id.
+export async function fetchAssignedArticles({ conferenceId }: { conferenceId?: number } = {}) {
+  const q = conferenceId ? `?conference=${encodeURIComponent(String(conferenceId))}` : "";
+  const res = await fetch(`/api/reviewer/assignments/${q}`, {
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Error fetching assignments: ${res.status}`);
+  }
+  return res.json();
+}
+
 function isFilledReview(r: Partial<Review> | null | undefined) {
   return !!(r && typeof r.score === 'number' && String(r.opinion ?? '').trim());
 }

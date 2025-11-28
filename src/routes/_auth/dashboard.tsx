@@ -31,14 +31,19 @@ function DashboardPage() {
   }
 
   const handleRoleClick = (conference: ProcessedConference, role: string) => {
-    // guardar selección en el contexto
+    const roleKey = String(role ?? "").toLowerCase().trim();
+
+    // guardar la selección con el rol 
     setSelectedRole({
-      role,
+      role: roleKey,
       conferenceId: conference.conference_id,
       conferenceName: conference.conference_name,
-    })
+    });
 
-    if (role === 'reviewer') navigate({ to: '/reviewer' })
+    // redirigir al área del revisor cuando corresponda
+    if (roleKey === "revisor") {
+      navigate({ to: "/reviewer" });
+    }
   }
 
   return (

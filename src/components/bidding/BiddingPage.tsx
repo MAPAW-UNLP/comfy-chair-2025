@@ -286,7 +286,7 @@ export default function BiddingPage() {
         </p>
         <Button
           className="mt-8 w-full py-6 text-base"
-          onClick={() => navigate({ to: "/" })}
+          onClick={() => navigate({ to: "/reviewer" })}
         >
           Volver al inicio
         </Button>

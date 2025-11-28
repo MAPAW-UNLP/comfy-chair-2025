@@ -10,6 +10,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { getAllArticles, type Article } from "@/services/articleServices";
 import { getBidsByReviewer } from "@/services/biddingServices";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRole } from "@/contexts/RoleContext";
 import { useCountdown } from "@/utils/useCountdown";
 import {
   fetchAssignedArticles,
@@ -177,6 +178,13 @@ export default function ReviewsIndex() {
   const navigate = useNavigate();
   const auth = useAuth();
   const reviewerId = Number(auth.user?.id ?? 1);
+  const { selectedRole } = useRole();
+
+  // normalizar rol y obtener conferenceId si el rol seleccionado es reviewer/revisor
+  const roleKey = String(selectedRole?.role ?? "").toLowerCase().trim();
+  const isReviewerRole =
+    roleKey === "reviewer" || roleKey === "revisor" || roleKey.startsWith("rev");
+  const selectedConferenceId = isReviewerRole ? selectedRole?.conferenceId : undefined;
 
   const phase = getPhase(new Date());
 
@@ -191,6 +199,7 @@ export default function ReviewsIndex() {
   )}:${pad(reviewCountdown.minutes)}`;
 
   const [articulos, setArticulos] = useState<Article[]>([]);
+  const [articulosLoaded, setArticulosLoaded] = useState(false);
   const [bids, setBids] = useState<{ article: number; choice?: string }[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
@@ -213,65 +222,145 @@ export default function ReviewsIndex() {
         const userBids = auth.user ? await getBidsByReviewer(reviewerId) : [];
         setArticulos(arts);
         setBids(userBids);
+        // marcar que ya cargamos los artículos (aunque sean 0)
+        setArticulosLoaded(true);
         setErr(null);
       } catch {
         setErr("No se pudieron cargar los datos.");
+        setArticulosLoaded(true); // evitar bloquear otros efectos en caso de error
       }
     })();
   }, [auth.user, reviewerId]);
 
-  useEffect(() => {
-    const load = async () => {
-      setLoadingAssigned(true);
-      try {
-        if (
-          !auth.user ||
-          (phase !== "review" && phase !== "between-bidding-review")
-        ) {
-          setAssigned(null);
-          return;
-        }
-        setAssigned(await fetchAssignedArticles(reviewerId));
-      } catch {
-        setAssigned([]);
-      } finally {
-        setLoadingAssigned(false);
-      }
-    };
-    load();
-  }, [auth.user, reviewerId, phase]);
 
-  // ⚙️ reviewedMap: AHORA cuenta solo artículos donde TU review está publicada
-  useEffect(() => {
-    if (!assigned || assigned.length === 0) {
-      setReviewedMap({});
-      return;
+  /**
+   * Intenta obtener el id de la conferencia desde un Article (session -> conference).
+   * Devuelve null si no se puede determinar.
+   */
+  function getArticleConferenceId(a: Article): number | null {
+    // @ts-ignore
+    const session = a?.session;
+    if (!session) return null;
+
+    // session puede venir como id (number/string) o como objeto
+    if (typeof session === "number" || typeof session === "string") {
+      // si session es solo un id no tenemos la info de conference aquí
+      return null;
     }
 
+    // session es objeto: buscar conference como id, string, o como objeto con id
+    // @ts-ignore
+    const conf = session.conference ?? session.conference_id ?? session.conferenceId ?? null;
+    if (!conf) return null;
+
+    if (typeof conf === "number") return conf;
+    if (typeof conf === "string" && /^\d+$/.test(conf)) return Number(conf);
+
+    // conf puede ser objeto { id: X, ... }
+    if (typeof conf === "object" && conf !== null) {
+      const id = conf.id ?? conf.pk ?? conf.conference_id ?? null;
+      if (typeof id === "number") return id;
+      if (typeof id === "string" && /^\d+$/.test(id)) return Number(id);
+    }
+
+    return null;
+  }
+
+  const lastFetchKey = React.useRef<string | null>(null);
+
+  useEffect(() => {
     let alive = true;
 
     (async () => {
-      try {
-        const map: Record<number, boolean> = {};
+      // Esperar que la lista de artículos esté cargada para poder filtrar por sesión->conferencia
+      if (!articulosLoaded) return;
 
-        for (const a of assigned) {
-          const own = await getOwnReviewByArticle(a.id, reviewerId);
-          map[a.id] = Boolean(own?.is_published); // ✅ sólo tu review publicada
+      // Si el rol es revisor pero aún no tenemos conferenceId, no hagas la petición
+      if (isReviewerRole && (selectedConferenceId === undefined || selectedConferenceId === null))
+        return;
+
+      // Construimos una "clave" para evitar refetches redundantes (misma conferencia / mismo reviewer / misma fase)
+      const fetchKey = `${String(selectedConferenceId ?? "all")}:${String(reviewerId)}:${phase}`;
+      if (lastFetchKey.current === fetchKey) return;
+      lastFetchKey.current = fetchKey;
+
+      // Si no estamos en fase / user -> limpiar y salir
+      if (phase !== "review" || !auth.user) {
+        if (alive) {
+          setAssigned(null);
+          setData([]);
+          setReviewedMap({});
+          setLoading(false);
+        }
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // 1) traer asignaciones (backend puede filtrar por conferenceId)
+        const rows = await fetchAssignedArticles(reviewerId, selectedConferenceId);
+
+        // 2) filtrar por conferencia usando la metadata de articulos.session -> conference
+        let filtered = rows;
+        if (selectedConferenceId && articulos.length > 0) {
+          const articMap = new Map<number, Article>();
+          for (const a of articulos) articMap.set(a.id, a);
+
+          const tmp = rows.filter((r) => {
+            const aid = Number(r.id);
+            const art = articMap.get(aid);
+            if (!art) return false;
+            const confId = getArticleConferenceId(art);
+            if (confId === null) return false;
+            return Number(confId) === Number(selectedConferenceId);
+          });
+
+          // si queda vacío por inconsistencia, fallback a rows (evita mostrar vacío por error del mapper)
+          if (tmp.length > 0) filtered = tmp;
         }
 
-        if (alive) setReviewedMap(map);
+        // 3) calcular estado y reviewedMap en paralelo (Promise.all)
+        const enriched = await Promise.all(
+          filtered.map(async (a) => {
+            const own = await getOwnReviewByArticle(a.id, reviewerId);
+            const status: ReviewStatus = own?.is_published
+              ? "completed"
+              : own
+              ? "draft"
+              : "pending";
+            return {
+              id: a.id,
+              title: a.title,
+              status,
+              ownPublished: Boolean(own?.is_published),
+            };
+          })
+        );
+
+        if (!alive) return;
+
+        // 4) actualizar estados de una sola vez para evitar re-renders intermedios
+        setAssigned(filtered);
+        setData(enriched.map((e) => ({ id: e.id, title: e.title, status: e.status })));
+        const map: Record<number, boolean> = {};
+        enriched.forEach((e) => (map[e.id] = e.ownPublished));
+        setReviewedMap(map);
       } catch (e) {
-        console.error("Error building reviewedMap:", e);
-        const fallback: Record<number, boolean> = {};
-        assigned.forEach((a) => (fallback[a.id] = false));
-        if (alive) setReviewedMap(fallback);
+        setAssigned([]);
+        setData([]);
+        setReviewedMap({});
+        // eslint-disable-next-line no-console
+        console.error("Error cargando artículos asignados:", e);
+      } finally {
+        if (alive) setLoading(false);
       }
     })();
 
     return () => {
       alive = false;
     };
-  }, [assigned, reviewerId]);
+  }, [articulosLoaded, reviewerId, phase, selectedConferenceId, auth.user]);
 
   const reviewedCount = useMemo(
     () => Object.values(reviewedMap).filter(Boolean).length,
@@ -320,42 +409,6 @@ export default function ReviewsIndex() {
     const el = document.getElementById(`art-${selectedId}`);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [loading, selectedId]);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      if (phase !== "review" || !auth.user) {
-        if (alive) {
-          setData([]);
-          setLoading(false);
-        }
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const assignedRows = await fetchAssignedArticles(reviewerId);
-
-        const rows = await Promise.all(
-          assignedRows.map(async (a) => ({
-            id: a.id,
-            title: a.title,
-            status: await computeStatusFor(a.id),
-          }))
-        );
-
-        if (alive) setData(rows);
-      } catch (err) {
-        if (alive) setData([]);
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [reviewerId, computeStatusFor, phase, auth.user]);
 
   const handleAction = useCallback(
     (article: UiRow) => {

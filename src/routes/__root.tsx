@@ -1,14 +1,15 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { createRootRoute, Link, Outlet, useLocation } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { RoleProvider, useRole } from '@/contexts/RoleContext';
 
 import { Armchair, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 
 // Componente interno que usa el contexto de autenticación
 const RootLayoutContent = () => {
+  const location = useLocation();
   // Estado para controlar si el menú lateral móvil está abierto o cerrado
   const [isOpen, setIsOpen] = useState(false);
   
@@ -71,6 +72,14 @@ const RootLayoutContent = () => {
   // Combinar todos los enlaces
   const links = [...commonLinks, ...authLinks];
 
+  // Navegación escritorio
+  const pathname =
+    typeof window !== 'undefined' && window.location && window.location.pathname
+      ? window.location.pathname
+      : '/';
+  const normalize = (p: string) => (p ? p.replace(/\/+$/, '') || '/' : '/');
+  const current = normalize(location?.pathname ?? '/');
+
   return (
     <div className="flex flex-col h-screen">
 
@@ -79,11 +88,16 @@ const RootLayoutContent = () => {
 
         {/* Navegación visible solo en pantallas medianas en adelante */}
         <nav className="hidden md:flex gap-2 order-1 md:order-1">
-          {links.map((link) => (
-            <Link key={link.to} to={link.to} className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isActive = normalize(link.to) === current; // igualdad EXACTA
+            const base = 'px-3 py-1 rounded-md hover:bg-gray-400';
+            const activeCls = isActive ? 'bg-slate-400 text-white' : '';
+            return (
+              <Link key={link.to} to={link.to} className={`${base} ${activeCls}`}>
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Nombre de la app + ícono, ahora enlaza al landing page */}
@@ -120,11 +134,21 @@ const RootLayoutContent = () => {
 
           {/* Lista de enlaces de navegación (en columna) */}
           <nav className="flex flex-col mt-4 gap-2">
-            {links.map((link) => (
-              <Link key={link.to} to={link.to} className="px-4 mx-2 py-2 rounded-md hover:bg-gray-700 [&.active]:bg-slate-400 [&.active]:text-white" onClick={() => setIsOpen(false)}> {/*cierra el menú al navegar*/}
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const isActive = normalize(link.to) === current;
+              const base = 'px-4 mx-2 py-2 rounded-md hover:bg-gray-700';
+              const activeCls = isActive ? 'bg-slate-400 text-white' : '';
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`${base} ${activeCls}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
         </aside>
