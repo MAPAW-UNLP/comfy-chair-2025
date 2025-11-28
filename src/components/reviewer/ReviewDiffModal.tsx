@@ -61,11 +61,11 @@ export default function ReviewDiffModal({ open, onClose, versions }: Props) {
                   <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
                     <div style={{ flex: 1, background: "#fff6f6", padding: 8, borderRadius: 6 }}>
                       <div style={{ fontSize: 12, color: "#888" }}>Antes</div>
-                      <div style={{ fontWeight: 600 }}>{p.from.score ?? "—"}</div>
+                      <div style={{ fontWeight: 600 }}>{scoreLabel(p.from.score)}</div>
                     </div>
                     <div style={{ flex: 1, background: "#f6fff6", padding: 8, borderRadius: 6 }}>
                       <div style={{ fontSize: 12, color: "#888" }}>Ahora</div>
-                      <div style={{ fontWeight: 600 }}>{p.to.score ?? "—"}</div>
+                      <div style={{ fontWeight: 600 }}>{scoreLabel(p.to.score)}</div>
                     </div>
                   </div>
                 </div>

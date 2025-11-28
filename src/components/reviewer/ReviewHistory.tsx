@@ -24,6 +24,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { SCORE_DEFS } from "@/components/reviewer/ReviewArticle";
 
 // --- Tipos base
 type ArticleLite = {
@@ -68,6 +69,12 @@ const scoreBadgeVariant = (score: number) => {
   if (score === -1) return "secondary";
   return "destructive";
 };
+
+function scoreLabel(score?: number | null) {
+  if (score === null || score === undefined) return "—";
+  const found = SCORE_DEFS.find((s) => s.value === score);
+  return found ? found.label : String(score);
+}
 
 // --- UI principal
 export default function ReviewHistoryPage() {
@@ -356,7 +363,7 @@ export default function ReviewHistoryPage() {
           <div className="text-sm font-medium mb-2">Versión final</div>
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <Badge variant={scoreBadgeVariant(current.latest.score)}>
-              Score {current.latest.score}
+              {scoreLabel(current.latest.score)}
             </Badge>
             <span className="text-sm text-muted-foreground">
               {formatDate(current.latest.edited_at)}
