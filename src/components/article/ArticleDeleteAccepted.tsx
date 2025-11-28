@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription } from "@/components/ui/alert-dialog"
 import { AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { checkDeletionRequestExists } from "@/services/articleServices";
 
 // Lo que espera recibir el componente
 interface ArticleDeleteAcceptedProps {
@@ -44,7 +45,7 @@ export default function ArticleDeleteAccepted({ trigger, articleId}: ArticleDele
       const requestData = { article_id: articleId, description: descripcion.trim() };
       const res = await api.post("/api/article-deletion-request/", requestData, { headers: { "Content-Type": "application/json" }});
       toast.success('Solicitud de baja enviada correctamente!', { duration: 5000 });
-      console.log(res.data);
+      window.location.reload();
       setOpen(false)
     } catch (err: any) {
       console.error("Error al enviar la solicitud:", err);
@@ -52,25 +53,13 @@ export default function ArticleDeleteAccepted({ trigger, articleId}: ArticleDele
     }
   }
 
-  //------------------------------------------------------------
-  // Verificar si ya existe una solicitud de baja para este artículo
-  //------------------------------------------------------------
-  const checkDeletionRequestExists = async (): Promise<boolean> => {
-    try {
-      const res = await api.get(`/api/article-deletion-request/exists/${articleId}`);
-      return res.data.exists; // true o false
-    } catch (err) {
-      console.error("Error al verificar solicitud de baja:", err);
-      return false;
-    }
-  };
-
+ 
   //------------------------------------------------------------
   // Manejo del clic en el trigger para abrir el diálogo
   //------------------------------------------------------------
   const handleTriggerClick = async (e: React.SyntheticEvent) => {
     e.preventDefault(); // evitamos abrir el dialog automáticamente
-    const exists = await checkDeletionRequestExists();
+    const exists = await checkDeletionRequestExists(articleId);
     if (exists) {
       toast.error("Este artículo ya tiene una solicitud de baja pendiente", { duration: 5000 });
       return;

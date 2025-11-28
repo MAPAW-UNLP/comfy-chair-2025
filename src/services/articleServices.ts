@@ -226,3 +226,16 @@ export const getAllArticles = async (): Promise<Article[]> => {
   const response = await api.get('/api/article');
   return response.data;
 };
+
+ //------------------------------------------------------------
+  // Verificar si ya existe una solicitud de baja para este artículo
+  //------------------------------------------------------------
+    export const checkDeletionRequestExists = async (articleId: number): Promise<boolean> => {
+      try {
+        const res = await api.get(`/api/article-deletion-request/exists/${articleId}`);
+        return res.data.exists; // true o false
+      } catch (err) {
+        console.error("Error al verificar solicitud de baja:", err);
+        return false;
+      }
+    };

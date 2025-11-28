@@ -18,6 +18,7 @@ import { downloadMainFile, downloadSourceFile } from "@/services/articleServices
 import { CircleXIcon, EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { checkDeletionRequestExists } from "@/services/articleServices"; // Asegúrate de que la ruta sea correcta
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
@@ -87,9 +88,14 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
   const navigateEditArticle = () => {navigate({ to: `/article/edit/${article.id}` });};
   const navigateDetailArticle = () => {navigate({ to: `/article/detail/${article.id}` });};
 
+  // Estado para verificar si ya se solicitó la baja
+  const [deletionRequested, setDeletionRequested] = useState<boolean>(false);
+  const [isLoadingDeletionStatus, setIsLoadingDeletionStatus] = useState<boolean>(true);
+
+
   // Tiempo restante (deadline)
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
-  const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;  
+  const deadlineDate = article.session?.deadline ? new Date(article.session?.deadline) : null;  
 
   // Hook custom para el manejo de archivos
   const { mainFileName, sourceFileName } = useArticleFiles(article);
@@ -106,6 +112,30 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
       toast.success('Error al eliminar el articulo...', { duration: 5000 });
     }
   }
+
+  //------------------------------------------------------------
+  // Efecto para verificar si el artículo ya solicitó la baja al montar el componente
+  //------------------------------------------------------------
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        // Consultamos a la API
+        const exists = await checkDeletionRequestExists(article.id);
+        setDeletionRequested(exists);
+      } catch (error) {
+        console.error("Error al verificar solicitud de baja:", error);
+      } finally {
+        setIsLoadingDeletionStatus(false);
+      }
+    };
+
+    // Solo verificamos si el artículo está aceptado
+    if (article.status === "accepted") {
+      checkStatus();
+    } else {
+      setIsLoadingDeletionStatus(false);
+    }
+  }, [article.id, article.status]); 
 
   //------------------------------------------------------------
   // Efecto para actualizar el tiempo restante cada minuto si el estado es "Recibido"
@@ -135,7 +165,7 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
     const interval = setInterval(actualizarTiempo, 1000 * 60 * 5); // actualiza cada 5 minutos
     return () => clearInterval(interval);
 
-  }, [article.status, article.session?.deadline]);
+  }, [article.status, article.session?.deadline, deadlineDate]);
 
   //------------------------------------------------------------
   // Renderizado del componente
@@ -145,7 +175,16 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
       
       {/* Titulo, Sesion y Conferencia */}
       <div className="flex-1 flex flex-col justify-center">
-        <h2 className="text-lg font-bold italic text-slate-500 text-center">{article.title}</h2>
+        <div className="flex justify-center items-center gap-2">
+          <h2 className="text-lg font-bold italic text-slate-500 text-center">{article.title}</h2>
+          
+          {/* TAG ROJO: Se muestra si no está cargando y si deletionRequested es true */}
+          {!isLoadingDeletionStatus && deletionRequested && (
+            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white shadow-md text-center">
+              Solicitado de Baja
+            </span>
+          )}
+        </div>
       </div>
 
       <hr className="bg-slate-100"/>
@@ -192,7 +231,9 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
                   onConfirm={() => handleDelete(article.id)}
                 />
               )}
-              {(article.status === "accepted") && (
+              
+              {/* Opción de "Solicitar Baja": Solo visible si NO se ha solicitado aún */}
+              {(article.status === "accepted") && !deletionRequested && (
                 <ArticleDeleteAccepted
                   trigger={
                     <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">
@@ -200,7 +241,9 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
                     </DropdownMenuItem>
                   }
                   articleId={article.id}
-                  onConfirm={() => console.log("Solicitud de baja confirmada")} // acá ponés tu lógica real
+                  onConfirm={() => {
+                    toast.success('Solicitud de baja enviada correctamente.', { duration: 5000 });
+                  }}
                 />
               )}
             </DropdownMenuContent>
@@ -244,11 +287,11 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
               <DialogHeader>
                 <DialogTitle>Modificar Articulo</DialogTitle>
                 <DialogDescription>
-                      Tienes tiempo de modificar tu artículo hasta el día:
-                      <br />
-                      {/* TODO FIX: por alguna razón interpreta la Date de la base de datos como zona horaria UTC y al parsearse a la
-                          hora de argentina UTC-3 muestra 3 horas menos, se parsea a hora UTC para que muestre la fecha y hora reales */}
-                      <b>{deadlineDate?.toLocaleString("es-AR", { timeZone: "UTC", dateStyle: "full", timeStyle: "short"})}</b>
+                  Tienes tiempo de modificar tu artículo hasta el día:
+                  <br />
+                  {/* TODO FIX: por alguna razón interpreta la Date de la base de datos como zona horaria UTC y al parsearse a la
+                      hora de argentina UTC-3 muestra 3 horas menos, se parsea a hora UTC para que muestre la fecha y hora reales */}
+                  <b>{deadlineDate?.toLocaleString("es-AR", { timeZone: "UTC", dateStyle: "full", timeStyle: "short"})}</b>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
