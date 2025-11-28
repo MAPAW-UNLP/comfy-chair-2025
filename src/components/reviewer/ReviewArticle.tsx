@@ -29,7 +29,7 @@ type Article = {
 };
 
 // Definición de scores con etiquetas (orden de mejor a peor)
-const SCORE_DEFS = [
+export const SCORE_DEFS = [
   { value: 3, label: "Fuertemente aceptado" },
   { value: 2, label: "Aceptado" },
   { value: 1, label: "Debilmente aceptado" },

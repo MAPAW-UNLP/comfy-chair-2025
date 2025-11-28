@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import api from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { getArticleById, type Article } from "@/services/articleServices";
+import React from "react";
+import ReviewDiffModal from "@/components/reviewer/ReviewDiffModal";
+import { fetchReviewVersions } from "@/services/reviewerServices";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -81,6 +84,8 @@ export default function ReviewHistoryPage() {
   // Modal simple
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<ReviewWithHistory | null>(null);
+  const [diffOpen, setDiffOpen] = useState(false);
+  const [diffVersions, setDiffVersions] = useState<any[]>([]);
 
   const reviewerId = useMemo(() => {
     if (user?.id != null) return Number(user.id);
@@ -222,6 +227,14 @@ export default function ReviewHistoryPage() {
     setCurrent(null);
   };
 
+  const handleShowDiff = async (reviewId: number) => {
+    const versions = await fetchReviewVersions(reviewId);
+    // asegurar orden por numero de versión o fecha
+    const sorted = versions.slice().sort((a,b) => (a.version_number ?? 0) - (b.version_number ?? 0));
+    setDiffVersions(sorted);
+    setDiffOpen(true);
+  };
+
   return (
     <section className="container mx-auto p-4 space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -353,14 +366,32 @@ export default function ReviewHistoryPage() {
         </Card>
 
         <div className="flex justify-end">
-          <Button variant="secondary" onClick={closeHistory}>
-            Cerrar
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                // cerrar detalle y abrir modal de diff
+                setOpen(false);
+                if (current && current.review_id) {
+                  handleShowDiff(current.review_id);
+                }
+              }}
+            >
+              Ver modificaciones
+            </Button>
+
+            <Button variant="secondary" onClick={closeHistory}>
+              Cerrar
+            </Button>
+          </div>
         </div>
       </div>
     )}
   </DialogContent>
 </Dialog>
+
+      {/* Diff Modal */}
+      <ReviewDiffModal open={diffOpen} onClose={() => setDiffOpen(false)} versions={diffVersions} />
 
     </section>
   );

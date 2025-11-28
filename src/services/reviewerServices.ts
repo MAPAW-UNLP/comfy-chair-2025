@@ -19,6 +19,14 @@ export interface ReviewerInfo {
   assigned_count?: number
 }
 
+export interface ReviewVersion {
+  id: number;
+  version_number?: number;
+  created_at?: string | null;
+  score?: number | null;
+  opinion?: string | null;
+}
+
 export type CreateReviewPayload = {
   article: number;
   reviewer: number;
@@ -156,4 +164,14 @@ export const assignReviewerToArticle = async (reviewerId: number, articleId: num
 export const removeReviewerFromArticle = async (reviewerId: number, articleId: number) => {
   const response = await api.delete(`/api/chair/${reviewerId}/${articleId}/delete/`)
   return response.data
+}
+
+export async function fetchReviewVersions(reviewId: number | string): Promise<ReviewVersion[]> {
+  try {
+    const res = await api.get(`/api/reviews/${reviewId}/versions/`);
+    return res?.data ?? [];
+  } catch (err) {
+    console.error("Error fetching review versions:", err);
+    return [];
+  }
 }
