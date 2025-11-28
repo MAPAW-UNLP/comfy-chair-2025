@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { createFileRoute, useNavigate, useRouteContext } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/contexts/AuthContext'
@@ -5,16 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getUserFullData, type ProcessedConference } from '@/services/userServices'
 import { Badge } from '@/components/ui/badge'
-
-export const Route = createFileRoute('/_auth/dashboard')({
-  component: DashboardPage,
-})
+import { useRole } from '@/contexts/RoleContext'
 
 function DashboardPage() {
+  const [savingRoleMsg, setSavingRoleMsg] = useState<string | null>(null)
   const { logout } = useAuth()
   const navigate = useNavigate()
   // Get user from the parent _auth route context
   const { user } = useRouteContext({ from: '/_auth/dashboard' })
+  // obtener funciones del contexto de rol (incluye clearSelectedRole)
+  const { setSelectedRole, clearSelectedRole } = useRole()
 
   // Fetch user conferences and roles
   const { data: conferences, isLoading, isError } = useQuery({
@@ -23,22 +24,31 @@ function DashboardPage() {
   })
 
   const handleLogout = () => {
+    // limpiar la selección de rol al cerrar sesión
+    try { clearSelectedRole() } catch {}
     logout()
     navigate({ to: '/login', search: { redirect: undefined, registered: undefined } })
   }
 
   const handleRoleClick = (conference: ProcessedConference, role: string) => {
-    alert(
-      `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
-      `Conferencia: ${conference.conference_name}\n` +
-      `Conference ID: ${conference.conference_id}\n` +
-      `Rol: ${role}\n\n` +
-      `Esta funcionalidad redirigirá a la página correspondiente del rol una vez que las rutas estén completamente implementadas.`
-    )
+    // guardar selección en el contexto
+    setSelectedRole({
+      role,
+      conferenceId: conference.conference_id,
+      conferenceName: conference.conference_name,
+    })
+
+    if (role === 'reviewer') navigate({ to: '/reviewer' })
   }
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      {/* Aviso temporal cuando se guarda la selección de rol */}
+      {savingRoleMsg && (
+        <div className="mb-4 rounded-md bg-amber-50 border border-amber-200 text-amber-900 px-4 py-2 max-w-3xl mx-auto">
+          {savingRoleMsg}
+        </div>
+      )}
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -169,4 +179,8 @@ function DashboardPage() {
     </div>
   )
 }
+
+export const Route = createFileRoute('/_auth/dashboard')({
+  component: DashboardPage,
+})
 

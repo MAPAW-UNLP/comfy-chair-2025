@@ -1,6 +1,7 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { RoleProvider, useRole } from '@/contexts/RoleContext';
 
 import { Armchair, Menu, X } from 'lucide-react';
 import { useState } from 'react';
@@ -14,25 +15,58 @@ const RootLayoutContent = () => {
   // Obtener el estado de autenticación
   const { user } = useAuth();
 
+  // Obtener rol seleccionado (si existe)
+  const { selectedRole } = useRole();
+
   // Lista de páginas principales de la aplicación (común para todos)
   const commonLinks: { to: string; label: string }[] = [];
 
-  // Enlaces adicionales según el estado de autenticación
-  const authLinks = user 
-    ? [
-      { to: '/reviewer/', label: 'Revisor' },
-      { to: '/conference/view', label: 'Conferencias' },
-      { to: '/article/view', label: 'Articulos' },
-      { to: '/article/select', label: 'Asignar Revisor' },
-      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+  // Links que siempre deben mostrarse cuando el usuario está autenticado
+  const commonAuthLinks = [
+    { to: '/notifications', label: 'Notificaciones' },
+    { to: '/dashboard', label: 'Panel' },
+  ];
+
+  // normalizar rol
+  const roleKey = String(selectedRole?.role ?? "").toLowerCase().trim();
+
+  // Mapa de rutas por rol
+  const roleRoutes: Record<string, { to: string; label: string }[]> = {
+    revisor: [
+      { to: '/reviewer/', label: 'Inicio' },
       { to: '/reviewer/bidding', label: 'Bidding' },
-      { to: '/notifications', label: 'Notificaciones' },
-      { to: '/dashboard', label: 'Panel' },
-      ]
-    : [
-        { to: '/login', label: 'Ingresar' },
-        { to: '/register', label: 'Registrarse' },
-      ];
+      { to: '/reviewer/history', label: 'Historial' },
+    ],
+    autor: [
+      { to: '/article/view', label: 'Articulos' },
+      // otras rutas de autor...
+    ],
+    chair: [
+      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+      { to: '/article/select', label: 'Asignar Revisor' }, 
+      // otras rutas de chair...
+    ],
+    admin: [
+      { to: '/conference/view', label: 'Conferencias' },
+      // otras rutas de admin...
+    ]
+  };
+
+  // Si no hay rol seleccionado: mostrar sólo los links comunes (Notificaciones / Panel)
+  let authLinks: { to: string; label: string }[] = [];
+  if (!user) {
+    authLinks = [
+      { to: '/login', label: 'Ingresar' },
+      { to: '/register', label: 'Registrarse' },
+    ];
+  } else if (!roleKey) {
+    // usuario autenticado pero sin rol seleccionado -> sólo commonAuthLinks
+    authLinks = [...commonAuthLinks];
+  } else {
+    // usuario autenticado y con rol seleccionado -> rutas del rol + commonAuthLinks
+    const roleSpecific = roleRoutes[roleKey] ?? commonAuthLinks;
+    authLinks = [...roleSpecific, ...commonAuthLinks];
+  }
 
   // Combinar todos los enlaces
   const links = [...commonLinks, ...authLinks];
@@ -54,7 +88,7 @@ const RootLayoutContent = () => {
 
         {/* Nombre de la app + ícono, ahora enlaza al landing page */}
         <Link
-          to="/"
+          to="/dashboard"
           className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
         >
           ComfyChair
@@ -112,11 +146,13 @@ const RootLayoutContent = () => {
   );
 };
 
-// Definición del componente principal (layout raíz) con el provider
+// Definición del componente principal (layout raíz) con los providers
 const RootLayout = () => {
   return (
     <AuthProvider>
-      <RootLayoutContent />
+      <RoleProvider>
+        <RootLayoutContent />
+      </RoleProvider>
     </AuthProvider>
   );
 };
