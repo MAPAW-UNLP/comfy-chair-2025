@@ -11,19 +11,19 @@ import { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { checkDeletionRequestExists } from "@/services/articleServices"
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription } from "@/components/ui/alert-dialog"
 import { AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger, AlertDialogTitle } from "@/components/ui/alert-dialog"
-import { checkDeletionRequestExists } from "@/services/articleServices";
 
 // Lo que espera recibir el componente
 interface ArticleDeleteAcceptedProps {
   trigger: React.ReactNode
   articleId: number
-  onConfirm?: () => void
+  onConfirm: () => void
 }
 
 //Cuerpo del Componente
-export default function ArticleDeleteAccepted({ trigger, articleId}: ArticleDeleteAcceptedProps) {
+export default function ArticleDeleteAccepted({ trigger, articleId, onConfirm }: ArticleDeleteAcceptedProps) {
 
   // Estados del componente
   const [descripcion, setDescripcion] = useState("")
@@ -43,17 +43,18 @@ export default function ArticleDeleteAccepted({ trigger, articleId}: ArticleDele
     setLoading(true);
     try {
       const requestData = { article_id: articleId, description: descripcion.trim() };
-      const res = await api.post("/api/article-deletion-request/", requestData, { headers: { "Content-Type": "application/json" }});
+      await api.post("/api/article-deletion-request/", requestData, { headers: { "Content-Type": "application/json" }});
       toast.success('Solicitud de baja enviada correctamente!', { duration: 5000 });
-      window.location.reload();
+      onConfirm?.();
       setOpen(false)
     } catch (err: any) {
       console.error("Error al enviar la solicitud:", err);
       setError(err.response?.data?.detail || "Error al enviar la solicitud");
+    } finally {
+      setLoading(false);
     }
   }
 
- 
   //------------------------------------------------------------
   // Manejo del clic en el trigger para abrir el diálogo
   //------------------------------------------------------------

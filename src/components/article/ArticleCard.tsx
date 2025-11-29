@@ -7,6 +7,7 @@
 // Importaciones
 import { toast } from 'sonner';
 import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button";
 import { useNavigate } from '@tanstack/react-router';
 import { deleteArticle } from "@/services/articleServices";
@@ -14,11 +15,11 @@ import ArticleDeleteAccepted from './ArticleDeleteAccepted';
 import ArticleDeleteReception from "./ArticleDeleteReception";
 import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
 import { type Article, type Status } from "@/services/articleServices";
+import { checkDeletionRequestExists } from "@/services/articleServices";
 import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
-import { CircleXIcon, EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { AlertCircleIcon, CircleXIcon, EyeIcon, FileDownIcon, PencilIcon, SettingsIcon, Trash2Icon } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { checkDeletionRequestExists } from "@/services/articleServices"; // Asegúrate de que la ruta sea correcta
 
 // Lo que espera recibir el componente
 export interface ArticleCardProps {
@@ -88,10 +89,9 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
   const navigateEditArticle = () => {navigate({ to: `/article/edit/${article.id}` });};
   const navigateDetailArticle = () => {navigate({ to: `/article/detail/${article.id}` });};
 
-  // Estado para verificar si ya se solicitó la baja
+  // Estado para verificar si el articulo tiene una solicitud de baja
   const [deletionRequested, setDeletionRequested] = useState<boolean>(false);
   const [isLoadingDeletionStatus, setIsLoadingDeletionStatus] = useState<boolean>(true);
-
 
   // Tiempo restante (deadline)
   const [tiempoRestante, setTiempoRestante] = useState<string>("");
@@ -114,7 +114,7 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
   }
 
   //------------------------------------------------------------
-  // Efecto para verificar si el artículo ya solicitó la baja al montar el componente
+  // Efecto para verificar si el artículo tiene una solicitud de baja
   //------------------------------------------------------------
   useEffect(() => {
     const checkStatus = async () => {
@@ -129,7 +129,7 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
       }
     };
 
-    // Solo verificamos si el artículo está aceptado
+    // Solo verifica si el artículo está aceptado
     if (article.status === "accepted") {
       checkStatus();
     } else {
@@ -173,18 +173,20 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
   return (
     <div className="w-full max-w-md rounded-2xl shadow-md border p-4 mb-2 bg-white flex flex-col gap-4">
       
-      {/* Titulo, Sesion y Conferencia */}
-      <div className="flex-1 flex flex-col justify-center">
-        <div className="flex justify-center items-center gap-2">
-          <h2 className="text-lg font-bold italic text-slate-500 text-center">{article.title}</h2>
-          
-          {/* TAG ROJO: Se muestra si no está cargando y si deletionRequested es true */}
-          {!isLoadingDeletionStatus && deletionRequested && (
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white shadow-md text-center">
-              Solicitado de Baja
-            </span>
-          )}
-        </div>
+      {/* Titulo de la Card*/}
+      <div className="flex-1 flex flex-col justify-center items-center"> 
+        
+        {/* Badge: se muestra solo si el articulo tiene una solicitud de baja*/}
+        {!isLoadingDeletionStatus && deletionRequested && (
+          <Badge variant="secondary" className="bg-red-900 text-white mb-1">
+            <AlertCircleIcon />
+            Solicitud de Baja Pendiente
+          </Badge>
+        )}
+
+        {/* Titulo del Artículo */}
+        <h2 className="text-lg font-bold italic text-slate-500 text-center">{article.title}</h2>
+
       </div>
 
       <hr className="bg-slate-100"/>
@@ -242,6 +244,7 @@ const ArticleCard : React.FC<ArticleCardProps> = ({ article, onDeleted }) => {
                   }
                   articleId={article.id}
                   onConfirm={() => {
+                    setDeletionRequested(true);
                     toast.success('Solicitud de baja enviada correctamente.', { duration: 5000 });
                   }}
                 />
