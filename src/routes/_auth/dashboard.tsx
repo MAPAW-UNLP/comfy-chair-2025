@@ -28,22 +28,26 @@ function DashboardPage() {
   }
 
   const handleRoleClick = (conference: ProcessedConference, role: string) => {
-    alert(
-      `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
-      `Conferencia: ${conference.conference_name}\n` +
-      `Conference ID: ${conference.conference_id}\n` +
-      `Rol: ${role}\n\n` +
-      `Esta funcionalidad redirigirá a la página correspondiente del rol una vez que las rutas estén completamente implementadas.`
-    )
+    if(role === "autor"){
+      navigate({ to: `/articles/${conference.conference_id}`, replace: true })
+    }
+    else{
+       alert(
+        `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
+        `Conferencia: ${conference.conference_name}\n` +
+        `Conference ID: ${conference.conference_id}\n` +
+        `Rol: ${role}\n\n` +
+        `Esta funcionalidad redirigirá a la página correspondiente del rol una vez que las rutas estén completamente implementadas.`
+      )
+    }
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-[calc(100dvh-64px)] bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Panel</h1>
+            <h1 className="text-3xl font-bold">Inicio</h1>
             <p className="text-muted-foreground mt-1">Bienvenido, {user.full_name}</p>
           </div>
         </div>
