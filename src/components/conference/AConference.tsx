@@ -13,10 +13,10 @@ import { deleteConference } from '@/services/conferenceServices';
 import { CarouselContainer, CarouselItem } from '@/components/ui/carousel-container';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
-import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import Statistics from './Statistics';
-import { getArticleByConferenceId, type Article } from '@/services/articleServices';
+import Breadcrumb from '../ui/Breadcrumb';
+import { getArticlesByConferenceId, type Article } from '@/services/articleServices';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function formatearFecha(fecha: string): string {
@@ -65,7 +65,7 @@ function AConference() {
 
   const fetchArticles = async () => {
     try {
-      const data = await getArticleByConferenceId(Number(conferencia.id));
+      const data = await getArticlesByConferenceId(Number(conferencia.id));
       setArticles(data);
     } catch (error) {
       console.error('Error al cargar los artículos:', error);
@@ -101,7 +101,7 @@ function AConference() {
 
   return (
     <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
-      <ConferenceBreadcrumb conference={conferencia} />
+      <Breadcrumb items={[{label: "Home", to: "/conference/view" } , {label: "Conferencia"}]} />
 
       <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
         <div className="flex justify-between items-center">

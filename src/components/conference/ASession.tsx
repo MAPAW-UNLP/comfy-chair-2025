@@ -11,14 +11,17 @@ import ModalEliminar from './ModalDelete';
 import { useNavigate } from '@tanstack/react-router';
 import EditarSession from './SessionEdit';
 import { getAllUsers, type User } from '@/services/userServices';
-import { getArticleBySessionId, type Article } from '@/services/articleServices';
+import {
+  getArticleBySessionId,
+  type Article,
+} from '@/services/articleServices';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import SessionArticleCard from './SessionArticleCard';
-import ConferenceBreadcrumb from './ConferenceBreadcrumb';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import Statistics from './Statistics';
 import { useAuth } from '@/contexts/AuthContext';
+import Breadcrumb from '../ui/Breadcrumb';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
@@ -30,7 +33,7 @@ function ASession() {
   const [articles, setArticles] = useState<Article[] | []>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[] | []>([]);
   const navigate = useNavigate();
-  const {user}= useAuth()
+  const { user } = useAuth();
 
   const fetchSession = async () => {
     try {
@@ -86,9 +89,15 @@ function ASession() {
 
   return (
     <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
-      <ConferenceBreadcrumb
-        conference={session?.conference!}
-        session={session!}
+      <Breadcrumb
+        items={[
+          { label: 'Home', to: '/conference/view' },
+          {
+            label: 'Conferencia',
+            to: `/conference/${session!.conference?.id}`,
+          },
+          { label: 'Sesión' },
+        ]}
       />
       <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
         <div className="flex justify-between items-center">
@@ -141,11 +150,15 @@ function ASession() {
 
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
         {verEstadisticas ? (
-          <Statistics 
+          <Statistics
             fromConference={false}
-            acceptedArticles={articles.filter(a => a.status === 'accepted').length}
-            regularArticles={articles.filter(a => a.type === 'regular').length}
-            posterArticles={articles.filter(a => a.type === 'poster').length}
+            acceptedArticles={
+              articles.filter((a) => a.status === 'accepted').length
+            }
+            regularArticles={
+              articles.filter((a) => a.type === 'regular').length
+            }
+            posterArticles={articles.filter((a) => a.type === 'poster').length}
             totalArticles={articles.length}
           />
         ) : (
