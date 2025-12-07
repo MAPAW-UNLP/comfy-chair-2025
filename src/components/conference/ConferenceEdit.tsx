@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route } from '@/routes/conference/edit/$id';
+import { Route } from '@/routes/_auth/conference/edit/$id';
 import { updateConference } from '@/services/conferenceServices';
 import { useNavigate } from '@tanstack/react-router';
 import ConferenceForm from './ConferenceForm';

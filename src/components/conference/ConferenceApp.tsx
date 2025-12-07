@@ -7,14 +7,14 @@ import {
   getActiveConferences,
   getFinishedConferences,
 } from '@/services/conferenceServices';
-import { Route } from '@/routes/conference/view';
+import { Route } from '@/routes/_auth/conference/view';
 import { useEffect, useState } from 'react';
 import { SearchBar } from './ConferenceSearch';
 
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
 export type Conference = {
-  id: string;
+  id: number;
   title: string;
   description: string;
   start_date?: string;

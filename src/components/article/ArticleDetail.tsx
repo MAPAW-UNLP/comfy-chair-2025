@@ -1,15 +1,29 @@
-/* Componente que muestra todos los datos de un articulo en detalle*/
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para mostrar todos los campos completos de un articulo.
+//
+// -------------------------------------------------------------------------------------- 
 
 // Importaciones
-import React from "react";
 import { Button } from "../ui/button";
-import type { Article } from "@/services/articleServices";
-import type { Status, Type } from "@/services/articleServices";
+import { useEffect, useState } from 'react';
+import ReviewBox from "@/components/reviews/ReviewBox";
+import { useArticleFiles } from "@/hooks/Grupo1/useArticleFiles";
+import { getReviewsByArticle } from '@/services/reviewerServices';
+import type { ReviewsByArticleId } from '@/services/reviewerServices';
+import type { Article, Status, Type } from "@/services/articleServices";
+import { downloadMainFile, downloadSourceFile } from "@/services/articleServices";
 
 // Lo que espera recibir el componente
-export interface ArticleCardProps {
+export interface ArticleDetailProps {
   article: Article;
 }
+
+// Textos asociados a cada tipo
+const tipoTexto: Record<Type, string> = {
+  regular: "Regular",
+  poster: "Poster",
+};
 
 // Textos asociados a cada estado
 const estadoTexto: Record<Status, string> = {
@@ -22,58 +36,114 @@ const estadoTexto: Record<Status, string> = {
   rejected: "Rechazado",
 };
 
-// Textos asociados a cada tipo
-const tipoTexto: Record<Type, string> = {
-  regular: "Regular",
-  poster: "Poster",
-};
-
-const handleDownload = async (url: string, filename: string) => {
-  const response = await fetch(url);
-  const blob = await response.blob();
-  const link = document.createElement("a");
-  link.href = window.URL.createObjectURL(blob);
-  link.download = filename; // nombre personalizado
-  link.click();
-};
-
-const API_BASE = import.meta.env.VITE_API_URL;
-
 //Cuerpo del Componente
-const ArticleDetail: React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleDetail : React.FC<ArticleDetailProps> = ({ article }) => {
 
+  // Hook custom para el manejo de archivos
+  const { mainFileName, sourceFileName } = useArticleFiles(article);
+
+  // Estado y carga de reviews
+  const [reviews, setReviews] = useState<ReviewsByArticleId>();
+  const [loadingReviews, setLoadingReviews] = useState<boolean>(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchReviews = async () => {
+      setLoadingReviews(true);
+      try {
+        const data = await getReviewsByArticle(article.id);
+        if (mounted) setReviews(data ?? []);
+      } catch (e) {
+        console.error('Error fetching reviews', e);
+      } finally {
+        if (mounted) setLoadingReviews(false);
+      }
+    };
+
+    if (article.status === 'accepted' || article.status === 'rejected') {
+      fetchReviews();
+    }
+
+    return () => { mounted = false };
+  }, [article.id, article.status]);
+
+  //------------------------------------------------------------
   // Renderizado del componente
+  //------------------------------------------------------------
   return (
-    <div>
-      <hr className="my-2"/>
-      <div className="text-start flex-1 flex flex-col gap-1 mb-2">
-        <p><b>Titulo: </b>{article.title}</p>
-        <p><b>Sesión: </b>{article.session?.title}</p>
-        <p><b>Conferencia: </b>{article.session?.conference?.title}</p>
-        <p><b>Tipo: </b>{tipoTexto[article.type] ?? "Desconocido"}</p>
-        <p><b>Estado: </b>{estadoTexto[article.status] ?? "Desconocido"}</p>
-        <p><b>Autor de Notificación: </b>{article.corresponding_author?.email}</p>
-        <p><b>Autores: </b>{article.authors?.map((author, index) => (<span key={index}>{author?.email}{index < article.authors.length - 1 ? ", " : ""}</span>))}</p>
-        <p><b>Abstract: </b>{article.abstract}</p>
-      </div>
-      <hr className="my-2"/>
-      <div className="flex flex-row gap-4">
-        <div className="flex flex-col basis-1/2 gap-1">
-          <span className="text-sm text-slate-900 font-medium text-start">Articulo</span> 
-          <Button variant="outline" className="bg-slate-900 text-white" onClick={() => handleDownload(`${API_BASE}/api/article/${article.id}/download_main/`,"Articulo")}>
-            Descargar
-          </Button>
+    <div className="flex flex-col items-start gap-4 max-w-5xl w-full">
+
+      {/* Card con los detalles del articulo */}
+      <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
+        <div className="text-start flex flex-col gap-2">
+
+          {/* Titulo de la card */}
+          <h2 className="text-lg font-bold italic text-slate-500 text-center">
+            Detalle del Articulo
+          </h2>
+
+          <hr className="bg-slate-100" />
+
+          {/* Detalles del Artículo */}
+          <p><b>Título:</b> {article?.title}</p>
+          <p><b>Tipo:</b> {tipoTexto[article?.type!] ?? "Desconocido"}</p>
+          <p><b>Sesión:</b> {article?.session?.title}</p>
+          <p><b>Conferencia:</b> {article?.session?.conference?.title}</p>
+          <p><b>Estado:</b> {estadoTexto[article?.status!] ?? "Desconocido"}</p>
+          <p><b>Autor de Notificación:</b> {article?.corresponding_author?.email}</p>
+          <p>
+            <b>Autores:</b>{" "}
+            {article?.authors?.map((author, index) => (
+              <span key={index}>
+                {author?.email}
+                {index < article.authors.length - 1 ? ", " : ""}
+              </span>
+            ))}
+          </p>
+          <p><b>Abstract:</b> {article?.abstract}</p>
+
+          {/* Botones de Archivos */}
+          <div className="flex flex-col sm:flex-row gap-2 w-full">
+            
+            {/* Archivo Principal Descargable*/}
+            {mainFileName && (
+              <div className="flex-1 grid items-start">
+                <p><b>Articulo</b></p>
+                <Button
+                  variant="outline"
+                  onClick={() => downloadMainFile(article.id, mainFileName!)}
+                  className="w-full text-white bg-slate-900"
+                >
+                  Descargar Artículo
+                </Button>
+              </div>
+            )}
+
+            {/* Archivo de Fuentes Descargable*/}
+            {sourceFileName && (
+              <div className="flex-1 grid items-start">
+                <p><b>Fuentes</b></p>
+                <Button
+                  variant="outline"
+                  onClick={() => downloadSourceFile(article.id, sourceFileName!)}
+                  className="w-full text-white bg-slate-900"
+                >
+                  Descargar Fuentes
+                </Button>
+              </div>
+            )}
+          </div>
+
         </div>
-        <div className={`flex flex-col basis-1/2 gap-1 ${article.type !== "poster" ? 'invisible' : 'visible'}`}>
-          <span className="text-sm text-slate-900 font-medium text-start">Fuentes</span>
-            <Button variant="outline" className="bg-slate-900 text-white" onClick={() => handleDownload(`${API_BASE}/api/article/${article.id}/download_source/`,"Fuentes")}>
-              Descargar
-            </Button>
-        </div>
       </div>
+
+      {/* Card de Reviews si el artículo está aceptado o rechazado */}
+      {(article.status === "accepted" || article.status === "rejected") && !loadingReviews && reviews && (
+        <ReviewBox reviews={reviews} />
+      )}
+
     </div>
   );
-
 };
 
 export default ArticleDetail;

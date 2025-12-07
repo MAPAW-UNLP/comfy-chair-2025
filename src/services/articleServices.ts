@@ -1,8 +1,13 @@
-// src/services/articleServices.ts
-import { axiosInstance as api } from './api';
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Servicios relacionados a la app users (alta, baja y modificación).
+// También fue modificado por otros grupos para adaptarse a sus necesidades.
+//
+// -------------------------------------------------------------------------------------- 
 
-import type { Session } from '@/services/sessionServices';
+import { axiosInstance as api } from './api';
 import type { User } from '@/services/userServices';
+import type { Session } from '@/services/sessionServices';
 
 export type Type = "regular" | "poster";
 
@@ -33,9 +38,19 @@ export interface ArticleNew {
   session: number | null;
 }
 
+export interface ArticleUpdate {
+  title?: string;
+  main_file?: File | null;
+  source_file?: File | null;
+  status?: string | null;
+  type?: string | null;
+  abstract?: string;
+  authors?: number[];
+  corresponding_author?: number | null;
+  session?: number | null;
+}
+
 function normalizeArticleShape(raw: any): Article {
-  // Hacemos cast directo para no romper tu tipado actual.
-  // Si en tu back vienen strings, esto seguirá compilando sin tocar tu UI.
   return {
     id: Number(raw?.id),
     title: raw?.title ?? raw?.titulo ?? 'Sin título',
@@ -50,75 +65,69 @@ function normalizeArticleShape(raw: any): Article {
   };
 }
 
-/* -------------------------
- * LISTAR
- * ------------------------- */
-export const getAllArticles = async (): Promise<Article[]> => {
-  const response = await api.get('/api/article');
-  return response.data;
+//------------------------------------------------------------
+// GRUPO 1 - Buscar Articulo por ID
+//------------------------------------------------------------
+export const getArticleById = async (id: number): Promise<Article> => {
+  const res = await api.get(`/api/article/${id}/`);
+  if (!res.status || res.status >= 400) throw new Error("Error al obtener el artículo");
+  return res.data;
 };
 
-//Alta de Articulos
+//------------------------------------------------------------
+// GRUPO 1 - Listar Articulos por ID de conferencia
+//------------------------------------------------------------
+export const getArticlesByConferenceId = async (conferenceId: number): Promise<Article[]> => {
+  const response = await api.get(`/api/article/getArticlesByConferenceId/${conferenceId}`);
+  const articles: Article[] = response.data;
+  return articles;
+};
+
+//------------------------------------------------------------
+// GRUPO 1 - Alta de Articulos
+//------------------------------------------------------------
 export async function createArticle(newArticle: ArticleNew) {
-  // Crear FormData
   const formData = new FormData();
-  formData.append('title', newArticle.title);
-  formData.append('main_file', newArticle.main_file);
-  if (newArticle.source_file && newArticle.source_file !== null) {
-    formData.append('source_file', newArticle.source_file);
+  formData.append("title", newArticle.title);
+  formData.append("main_file", newArticle.main_file);
+  if (newArticle.source_file) {
+    formData.append("source_file", newArticle.source_file);
   }
-  formData.append('status', newArticle.status || 'reception');
-  formData.append('type', newArticle.type || '');
-  formData.append('abstract', newArticle.abstract || '');
-  formData.append('corresponding_author_id', newArticle.corresponding_author?.toString() || '');
-  formData.append('session_id', newArticle.session?.toString() || '');
+  formData.append("status", newArticle.status || "reception");
+  formData.append("type", newArticle.type || "");
+  formData.append("abstract", newArticle.abstract || "");
+  formData.append("corresponding_author_id", newArticle.corresponding_author?.toString() || "");
+  formData.append("session_id", newArticle.session?.toString() || "");
 
-  // Agregar autores
   newArticle.authors.forEach((authorId) => {
-    formData.append('authors_ids', authorId.toString());
+    formData.append("authors_ids", authorId.toString());
   });
 
-  const response = await fetch('http://127.0.0.1:8000/api/article/', {
-    method: 'POST',
-    body: formData,
-  });
+  try {
+    const res = await api.post(`/api/article/`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    console.error('Error response:', errorData);
-    console.error('Status:', response.status);
-    throw new Error(`Error al crear el artículo: ${JSON.stringify(errorData)}`);
+    return normalizeArticleShape(res.data);
+
+  } catch (err: any) {
+    if (err.response?.data) {
+      throw new Error(JSON.stringify(err.response.data));
+    }
+    throw err;
   }
-  // Normalizamos por consistencia con el resto del servicio
-  const data = await response.json();
-  return normalizeArticleShape(data);
 }
-
-export interface ArticleUpdate {
-  title?: string;
-  main_file?: File | null;
-  source_file?: File | null;
-  status?: string | null;
-  type?: string | null;
-  abstract?: string;
-  authors?: number[];
-  corresponding_author?: number | null;
-  session?: number | null;
-}
-
-/**
- * Update an article partially. Only fields provided will be sent.
- * Accepts files (main_file / source_file) if the user uploaded new ones.
- */
+ 
+//------------------------------------------------------------
+// GRUPO 1 - Edición de Articulos
+//------------------------------------------------------------
 export async function updateArticle(id: number, updated: ArticleUpdate) {
   const formData = new FormData();
 
   if (updated.title !== undefined) formData.append('title', updated.title as string);
   if (updated.main_file !== undefined && updated.main_file !== null) formData.append('main_file', updated.main_file);
-  // If main_file is explicitly null we won't append it (backend should keep existing file)
   if (updated.source_file !== undefined) {
   if (updated.source_file === null) {
-    // Si es null, forzamos que el backend elimine el archivo
     formData.append('source_file', '');
     } else {
       formData.append('source_file', updated.source_file);
@@ -139,7 +148,6 @@ export async function updateArticle(id: number, updated: ArticleUpdate) {
     });
     return res.data;
   } catch (err: any) {
-    // Normalize axios error
     if (err.response && err.response.data) {
       throw new Error(JSON.stringify(err.response.data));
     }
@@ -147,14 +155,78 @@ export async function updateArticle(id: number, updated: ArticleUpdate) {
   }
 }
 
-export const getArticleById = async (id: number): Promise<Article> => {
-  const res = await api.get(`/api/article/${id}/`);
-  if (!res.status || res.status >= 400) throw new Error("Error al obtener el artículo");
-  return res.data;
+//------------------------------------------------------------
+// GRUPO 1 - Eliminar Artículo por ID
+//------------------------------------------------------------
+export const deleteArticle = async (id: number): Promise<void> => {
+  try {
+    const res = await api.delete(`/api/article/${id}/`);
+
+    if (!res.status || res.status >= 400) {
+      throw new Error("Error al eliminar el artículo");
+    }
+  } catch (err: any) {
+    if (err.response?.data) {
+      throw new Error(JSON.stringify(err.response.data));
+    }
+    throw err;
+  }
 };
 
+//------------------------------------------------------------
+// GRUPO 1 - Descargar archivo principal del artículo
+//------------------------------------------------------------
+export async function downloadMainFile(articleId: number, fileName: string) {
+  const res = await api.get(`/api/article/${articleId}/download_main/`, {
+    responseType: "blob",
+  });
 
-// Obtener artículos por ID de sesión grupo 3
+  if (res.status !== 200) {
+    throw new Error("No se pudo descargar el archivo principal.");
+  }
+
+  const url = window.URL.createObjectURL(res.data);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName || "archivo";
+  link.click();
+  window.URL.revokeObjectURL(url);
+}
+
+//------------------------------------------------------------
+// GRUPO 1 - Descargar archivo de fuentes del artículo
+//------------------------------------------------------------
+export async function downloadSourceFile(articleId: number, fileName: string) {
+  const res = await api.get(`/api/article/${articleId}/download_source/`, {
+    responseType: "blob",
+  });
+
+  if (res.status !== 200) {
+    throw new Error("No se pudo descargar el archivo de fuentes.");
+  }
+
+  const url = window.URL.createObjectURL(res.data);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName || "fuentes";
+  link.click();
+  window.URL.revokeObjectURL(url);
+}
+
+//------------------------------------------------------------
+// GRUPO 1 - Verificar si ya existe una solicitud de baja para este artículo
+//------------------------------------------------------------
+export const checkDeletionRequestExists = async (articleId: number): Promise<boolean> => {
+  try {
+    const res = await api.get(`/api/article-deletion-request/exists/${articleId}`);
+    return res.data.exists; // true o false
+  } catch (err) {
+    console.error("Error al verificar solicitud de baja:", err);
+    return false;
+  }
+};
+
+// GRUPO 3 - Obtener artículo por ID de sesión
 export const getArticleBySessionId = async (id: number): Promise<Article[]> => {
   console.log('Obteniendo artículos para la sesión con ID:', id);
   const res = await api.get(`/api/article/getArticlesBySessionId/${id}/`);
@@ -162,13 +234,8 @@ export const getArticleBySessionId = async (id: number): Promise<Article[]> => {
   return res.data;
 };
 
-// Obtener artículos por ID de conferencia grupo 3
-export const getArticleByConferenceId = async (id: number): Promise<Article[]> => {
-  console.log('Obteniendo artículos para la conferencia con ID:', id);
-  const res = await api.get(`/api/article/getArticlesByConferenceId/${id}/`); //TODO: todavia no esta este endpoint, ver si es el mismo nombre de ruta
-  if (!res.status || res.status >= 400) throw new Error("Error al obtener los artículos");
-  return res.data;
+// Usado por el grupo 1 en el sprint 1. Se deja por si es usado por otro grupo.
+export const getAllArticles = async (): Promise<Article[]> => {
+  const response = await api.get('/api/article');
+  return response.data;
 };
-
-
-
