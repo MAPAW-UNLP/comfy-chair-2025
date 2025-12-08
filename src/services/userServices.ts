@@ -118,5 +118,6 @@ export const getCommonUsers= async (): Promise<User[]> =>{
 
 export const getUserById= async (id: number): Promise<User> =>{
   const response = await api.get(`/user/getUserById/${id}`);
+  console.log(response)
   return response.data;
 }
