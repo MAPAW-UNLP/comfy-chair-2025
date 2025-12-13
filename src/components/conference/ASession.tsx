@@ -15,21 +15,25 @@ import {
   getArticleBySessionId,
   type Article,
 } from '@/services/articleServices';
-import { CarouselContainer, CarouselItem } from '../ui/carousel-container';
-import ArticleCard from '../article/ArticleCard';
 import { toast } from 'sonner';
 import { SearchBar } from './ConferenceSearch';
 import SessionArticleCard from './SessionArticleCard';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import Statistics from './Statistics';
+import { useAuth } from '@/contexts/AuthContext';
+import Breadcrumb from '../ui/Breadcrumb';
 
 function ASession() {
   const sessionInicial = Route.useLoaderData();
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(sessionInicial);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [verEstadisticas, setVerEstadisticas] = useState(false);
   const [chairs, setChairs] = useState<User[] | []>([]);
   const [articles, setArticles] = useState<Article[] | []>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[] | []>([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const fetchSession = async () => {
     try {
@@ -43,16 +47,12 @@ function ASession() {
     }
   };
 
-  const goToConferencia = () => {
-    navigate({ to: `/conference/${session!.conference?.id}` });
-  };
-
   const handleEliminarSession = () => {
     setShowDeleteModal(true);
   };
 
   const onDelete = async () => {
-    await deleteSession(String(session!.id));
+    await deleteSession(String(session!.id), user!.id);
     toast.warning('Sesión eliminada');
     navigate({ to: `/conference/${session!.conference?.id}` });
   };
@@ -89,14 +89,22 @@ function ASession() {
 
   return (
     <div className="flex flex-col mt-5 px-8 w-full gap-2 ">
+      <Breadcrumb
+        items={[
+          { label: 'Home', to: '/conference/view' },
+          {
+            label: 'Conferencia',
+            to: `/conference/${session!.conference?.id}`,
+          },
+          { label: 'Sesión' },
+        ]}
+      />
       <div className="flex flex-col gap-1 bg-card rounded shadow border border-gray-200 p-5 w-full">
         <div className="flex justify-between items-center">
-          <div className="flex flex-col ">
-            <span className="text-sm font-medium">Sesión</span>
-            <h1 className="text-lg sm:text-2xl font-bold">
-              {session!.title.toUpperCase()}
-            </h1>
-          </div>
+          <h1 className="text-lg sm:text-2xl font-bold">
+            {session!.title.toUpperCase()}
+          </h1>
+
           <EditarSession session={session!} onSessionUpdated={fetchSession} />
         </div>
         <p className="text-sm">Deadline {formatearFecha(session!.deadline)}</p>
@@ -117,36 +125,68 @@ function ASession() {
         </p>
       </div>
 
+      <div className="flex justify-center items-center my-3">
+        <Tabs
+          value={verEstadisticas ? 'estadisticas' : 'articulos'}
+          onValueChange={(v) => setVerEstadisticas(v === 'estadisticas')}
+          className="flex items-center"
+        >
+          <TabsList className="py-5 shadow">
+            <TabsTrigger
+              value="articulos"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
+            >
+              Artículos
+            </TabsTrigger>
+            <TabsTrigger
+              value="estadisticas"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
+            >
+              Estadísticas
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       <div className="flex flex-col bg-card rounded shadow border border-gray-200 p-5 w-full gap-4">
-        <div className="flex justify-between items-center gap-20">
-          <h2 className="text-1xl font-bold">Artículos</h2>
-          <SearchBar
-            datos={articles}
-            setResultados={setFilteredArticles}
-            campos={['title']}
+        {verEstadisticas ? (
+          <Statistics
+            fromConference={false}
+            acceptedArticles={
+              articles.filter((a) => a.status === 'accepted').length
+            }
+            regularArticles={
+              articles.filter((a) => a.type === 'regular').length
+            }
+            posterArticles={articles.filter((a) => a.type === 'poster').length}
+            totalArticles={articles.length}
           />
-          <p>&nbsp;</p>
-        </div>
-        {filteredArticles.length > 0 ? (
-          filteredArticles.map((article) => (
-            <SessionArticleCard article={article} />
-          ))
-        ) : articles.length > 0 ? (
-          <p className="text-center py-4 text-muted-foreground">
-            No hay coincidencias.
-          </p>
         ) : (
-          <p>No hay artículos asignados</p>
+          <>
+            <div className="flex flex-col gap-3">
+              <h2 className="text-1xl font-bold">Artículos</h2>
+              <SearchBar
+                datos={articles}
+                setResultados={setFilteredArticles}
+                campos={['title']}
+              />
+            </div>
+            {filteredArticles.length > 0 ? (
+              filteredArticles.map((article) => (
+                <SessionArticleCard key={article.id} article={article} />
+              ))
+            ) : articles.length > 0 ? (
+              <p className="text-center py-4 text-muted-foreground">
+                No hay coincidencias.
+              </p>
+            ) : (
+              <p>No hay artículos asignados</p>
+            )}
+          </>
         )}
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-5 m-2 gap-3">
-        <Button
-          variant={'secondary'}
-          className="cursor-pointer bg-slate-900 text-white hover:bg-slate-700"
-          onClick={goToConferencia}
-        >
-          Volver a {session!.conference?.title}
-        </Button>
+        <div></div>
 
         {articles.length == 0 && (
           <Button
