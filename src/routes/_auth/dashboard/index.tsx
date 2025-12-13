@@ -80,6 +80,11 @@ function DashboardPage() {
                 <Button onClick={handleLogout} variant="destructive" size="sm" className="w-full mt-2">
                   Cerrar Sesión
                 </Button>
+                <Link to="/users">
+                  <Button variant="link" size="sm" className="w-full mt-0">
+                    Ver Usuarios
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
