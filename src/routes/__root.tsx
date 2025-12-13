@@ -23,16 +23,17 @@ const RootLayoutContent = () => {
       { to: '/dashboard', label: 'Inicio' },
       { to: '/reviewer/', label: 'Revisor' },
       { to: '/conference/view', label: 'Conferencias' },
-      { to: '/article/create', label: 'Subir Articulo' },
+      { to: '/article/view', label: 'Articulos' },
       { to: '/article/select', label: 'Asignar Revisor' },
-      { to: '/chairs/selection/session-list', label: 'Seleccionar Corte' },
+      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
       { to: '/reviewer/bidding', label: 'Bidding' },
       { to: '/notifications', label: 'Notificaciones' },
+      
       ]
-    : [
+      : [
         { to: '/login', label: 'Ingresar' },
         { to: '/register', label: 'Registrarse' },
-      ];
+      ]
 
   // Combinar todos los enlaces
   const links = [...commonLinks, ...authLinks];
