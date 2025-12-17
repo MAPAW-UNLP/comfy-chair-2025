@@ -1,5 +1,14 @@
 import api from '@/services/api';
 
+//------------------------------------------------------------
+// GRUPO 1: Requerido para cargas las reviws por artículo
+//------------------------------------------------------------
+export interface ReviewsByArticleId {
+  articleId: number;
+  count: number;
+  reviews: Review[];
+}
+
 export interface Review {
   id: number;
   article: number;
@@ -191,3 +200,26 @@ export async function fetchReviewVersions(reviewId: number | string): Promise<Re
     return [];
   }
 }
+//------------------------------------------------------------
+// GRUPO 1: Obtener todas las reviews de un artículo
+//------------------------------------------------------------
+export const getReviewsByArticle = async (articleId: number): Promise<ReviewsByArticleId> => {
+  try {
+    const response = await api.get(`/api/article/${articleId}/reviews`, {
+      validateStatus: () => true,
+    });
+    
+    // Si el estado es 200 y la data es un objeto válido (el tipo ReviewsByArticleId)
+    if (response.status === 200 && response.data) {
+      // Devolvemos el objeto completo
+      return response.data as ReviewsByArticleId; 
+    }
+    
+    // Si falla o no hay data, devolvemos un objeto ReviewsByArticleId vacío
+    return { articleId, count: 0, reviews: [] };
+    
+  } catch (e) {
+    console.error('getReviewsByArticle error', e);
+    return { articleId, count: 0, reviews: [] };
+  }
+};

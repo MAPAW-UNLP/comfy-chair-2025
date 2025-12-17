@@ -31,41 +31,48 @@ const RootLayoutContent = () => {
   // normalizar rol
   const roleKey = String(selectedRole?.role ?? "").toLowerCase().trim();
 
-  // Mapa de rutas por rol
+  // Mapa de rutas por rol (mantiene la cobertura de main + la selección por rol de HEAD)
   const roleRoutes: Record<string, { to: string; label: string }[]> = {
     revisor: [
-      { to: '/reviewer/', label: 'Inicio' },
+      { to: '/reviewer/', label: 'Revisor' },
       { to: '/reviewer/bidding', label: 'Bidding' },
       { to: '/reviewer/history', label: 'Historial' },
     ],
     autor: [
       { to: '/article/view', label: 'Articulos' },
-      // otras rutas de autor...
     ],
     chair: [
       { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
-      { to: '/article/select', label: 'Asignar Revisor' }, 
-      // otras rutas de chair...
+      { to: '/article/select', label: 'Asignar Revisor' },
     ],
     admin: [
       { to: '/conference/view', label: 'Conferencias' },
-      // otras rutas de admin...
     ]
   };
 
-  // Si no hay rol seleccionado: mostrar sólo los links comunes (Notificaciones / Panel)
+  // Si no hay rol seleccionado: mostrar lo mismo que main (inicio + accesos), pero sin perder
+  // el comportamiento de HEAD (Panel/Notificaciones)
   let authLinks: { to: string; label: string }[] = [];
+
   if (!user) {
     authLinks = [
       { to: '/login', label: 'Ingresar' },
       { to: '/register', label: 'Registrarse' },
     ];
   } else if (!roleKey) {
-    // usuario autenticado pero sin rol seleccionado -> sólo commonAuthLinks
-    authLinks = [...commonAuthLinks];
+    // main tenía un menú "completo" sin depender de rol
+    authLinks = [
+      { to: '/dashboard', label: 'Inicio' },
+      { to: '/reviewer/', label: 'Revisor' },
+      { to: '/conference/view', label: 'Conferencias' },
+      { to: '/article/view', label: 'Articulos' },
+      { to: '/article/select', label: 'Asignar Revisor' },
+      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+      { to: '/reviewer/bidding', label: 'Bidding' },
+      ...commonAuthLinks,
+    ];
   } else {
-    // usuario autenticado y con rol seleccionado -> rutas del rol + commonAuthLinks
-    const roleSpecific = roleRoutes[roleKey] ?? commonAuthLinks;
+    const roleSpecific = roleRoutes[roleKey] ?? [];
     authLinks = [...roleSpecific, ...commonAuthLinks];
   }
 
@@ -87,30 +94,25 @@ const RootLayoutContent = () => {
       <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
 
         {/* Navegación visible solo en pantallas medianas en adelante */}
-        <nav className="hidden md:flex gap-2 order-1 md:order-1">
-          {links.map((link) => {
-            const isActive = normalize(link.to) === current; // igualdad EXACTA
-            const base = 'px-3 py-1 rounded-md hover:bg-gray-400';
-            const activeCls = isActive ? 'bg-slate-400 text-white' : '';
-            return (
-              <Link key={link.to} to={link.to} className={`${base} ${activeCls}`}>
-                {link.label}
-              </Link>
-            );
-          })}
+        <nav className="hidden xl:flex gap-2 order-1 xl:order-1">
+          {links.map((link) => (
+            <Link key={link.to} to={link.to} className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         {/* Nombre de la app + ícono, ahora enlaza al landing page */}
         <Link
-          to="/dashboard"
-          className="font-bold text-lg order-2 md:order-2 ml-auto flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
+          to="/"
+          className="font-bold text-lg order-2 xl:order-2 ml-auto flex items-center gap-2 hover:underline focus:outline-none focus:ring-2 focus:ring-slate-400"
         >
           ComfyChair
           <Armchair />
         </Link>
 
         {/* Botón colapsable (solo se muestra en móvil) */}
-        <button onClick={() => setIsOpen(true)} className="md:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}
+        <button onClick={() => setIsOpen(true)} className="xl:hidden p-1 rounded hover:bg-gray-700 order-0"> {/*abre el sidebar móvil*/}
           <Menu />
         </button>
 
@@ -120,7 +122,7 @@ const RootLayoutContent = () => {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar móvil (se desliza desde la izquierda) */}
-        <aside className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:hidden`}>
+        <aside className={`fixed z-20 top-0 left-0 h-full bg-slate-900 text-white w-64 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'} xl:hidden`}>
 
           {/* Encabezado del menú móvil */}
           <div className="flex items-center justify-between p-4">

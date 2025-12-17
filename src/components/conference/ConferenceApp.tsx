@@ -14,7 +14,7 @@ import { SearchBar } from './ConferenceSearch';
 type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
 
 export type Conference = {
-  id: string;
+  id: number;
   title: string;
   description: string;
   start_date?: string;
@@ -72,16 +72,16 @@ function ConferenceApp() {
           onValueChange={(v) => setVerActivas(v === 'activas')}
           className="flex items-center"
         >
-          <TabsList className="h-10 shadow">
+          <TabsList className="py-5 shadow">
             <TabsTrigger
               value="activas"
-              className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
             >
               Activas
             </TabsTrigger>
             <TabsTrigger
               value="terminadas"
-              className="text-xs sm:text-sm cursor-pointer font-normal data-[state=active]:font-bold"
+              className="cursor-pointer data-[state=active]:font-bold p-4 text-lg"
             >
               Terminadas
             </TabsTrigger>
@@ -104,11 +104,7 @@ function ConferenceApp() {
           conferencias.map((c) => {
             return <ConferenceBox key={c.id} conferencia={c} />;
           })
-        ) : (confActivas.length > 0) || (confTerminadas.length > 0) ? (
-          <p>No hay coincidencias.</p>
-        ) : (
-          <p>Aún no hay conferencias disponibles.</p>
-        )}
+        ) : <p>No hay conferencias.</p>}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import SessionForm, { type SessionFormData } from './SessionForm';
 import { toast } from 'sonner';
 import { createSession } from '@/services/sessionServices';
 import type { Conference } from './ConferenceApp';
+import { useAuth } from '@/contexts/AuthContext';
 
 type AltaSessionProps = {
   conference: Conference;
@@ -26,6 +27,7 @@ export default function AltaSession({
 }: AltaSessionProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const {user}= useAuth()
 
   const handleSubmit = async (data: SessionFormData) => {
     setIsLoading(true);
@@ -42,7 +44,7 @@ export default function AltaSession({
           data.selectionMethod === 'mejores' ? data.threshold : undefined,
       };
       console.log('Creating session with data:', sessionData);
-      await createSession(sessionData, Number(conference.id));
+      await createSession(sessionData, Number(conference.id), user!.id);
 
       toast.success('Sesión creada exitosamente');
       setOpen(false);
