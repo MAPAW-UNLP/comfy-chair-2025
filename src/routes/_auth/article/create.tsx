@@ -1,45 +1,54 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { getAllUsers, type User } from '@/services/userServices';
-import { getAllConferences, type Conference } from '@/services/conferenceServices';
-import { useEffect, useState } from 'react';
-import ArticleForm from '@/components/article/ArticleForm';
+// -------------------------------------------------------------------------------------- 
+//
+// Grupo 1 - Componente para el alta de un articulo en una conferencia específica
+//
+// Funcionalidades principales:
+//
+// - Obtener la lista completa de conferencias activas.
+// - Obtener la lista completa de usuarios registrados.
+// - Mostrar un spinner de carga mientras se recuperan los datos necesarios.
+// - Renderiza el componente "ArticleForm" y le envía como props la lista de usuarios y 
+//   la lista de conferencias activas.
+//
+// -------------------------------------------------------------------------------------- 
 
-//URL de la página
+import { useRouteContext } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
+import ArticleForm from '@/components/article/ArticleForm';
+import { useFetchUsers } from '@/hooks/Grupo1/useFetchUsers';
+import { useFetchConferences } from '@/hooks/Grupo1/useFetchConferences';
+
 export const Route = createFileRoute('/_auth/article/create')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
-  //Listas de Usuarios y Conferencias
-  const [userList, setUser] = useState<User[]>([]);
-  const [conferenceList, setConference] = useState<Conference[]>([]);
+  // Usuario Actual
+  const { user } = useRouteContext({ from: '/_auth/article/create' });
 
-  //Recupera usuarios del server ni bien se abre la pestaña
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const data = await getAllUsers();
-      setUser(data);
-    };
-    fetchUsers();
-  }, []);
+  // Hooks
+  const { userList, loadingUsers } = useFetchUsers();
+  const { conferenceList, loadingConferences } = useFetchConferences();
 
-  //Recupera conferencias del server ni bien se abre la pestaña
-  useEffect(() => {
-    const fetchConferences = async () => {
-      const data = await getAllConferences();
-      setConference(data);
-      console.log(data);
-    };
-    fetchConferences();
-  }, []);
+  // Estado de carga
+  const loading = loadingUsers || loadingConferences;
+
+  // Spinner de carga
+  if (loading) {
+    return (
+      <div className="grid place-items-center w-full min-h-[calc(100dvh-64px)]">
+        <div className="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   //Cuerpo del Componente
   return (
-      <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
-        {/*Importo el Form y le envío los usuarios y conferencias de la app*/}
-        <ArticleForm users={userList} conferences={conferenceList}/>
-      </div>
-    )
-}
+    <div className="flex flex-wrap gap-4 mx-4 my-4 justify-center">
+      {/* Le envío al form la lista de conferencias y la lista de usuarios */}
+      <ArticleForm conferences={conferenceList} users={userList} userId={Number(user.id)} />
+    </div>
+  );
 
+}

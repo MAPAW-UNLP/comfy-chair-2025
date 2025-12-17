@@ -1,5 +1,13 @@
-// src/services/reviewerServices.ts
 import api from '@/services/api';
+
+//------------------------------------------------------------
+// GRUPO 1: Requerido para cargas las reviws por artículo
+//------------------------------------------------------------
+export interface ReviewsByArticleId {
+  articleId: number;
+  count: number;
+  reviews: Review[];
+}
 
 export interface Review {
   id: number;
@@ -20,6 +28,14 @@ export interface ReviewerInfo {
   assigned_count?: number
 }
 
+export interface ReviewVersion {
+  id: number;
+  version_number?: number;
+  created_at?: string | null;
+  score?: number | null;
+  opinion?: string | null;
+}
+
 export type CreateReviewPayload = {
   article: number;
   reviewer: number;
@@ -31,6 +47,22 @@ export type UpdateReviewPayload = {
   opinion?: string;
   score?: number;
 };
+
+export type Type = "regular" | "poster";
+
+// Helper para traer assignments / artículos asignados al revisor,
+// opcionalmente filtrando por conference id.
+export async function fetchAssignedArticles({ conferenceId }: { conferenceId?: number } = {}) {
+  const q = conferenceId ? `?conference=${encodeURIComponent(String(conferenceId))}` : "";
+  const res = await fetch(`/api/reviewer/assignments/${q}`, {
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Error fetching assignments: ${res.status}`);
+  }
+  return res.json();
+}
 
 function isFilledReview(r: Partial<Review> | null | undefined) {
   return !!(r && typeof r.score === 'number' && String(r.opinion ?? '').trim());
@@ -79,11 +111,23 @@ export async function createReview(payload: CreateReviewPayload): Promise<Review
 }
 
 /**
- * Actualiza una review existente
- * Backend: PUT /api/reviews/{id}/update/
+ * Actualiza una review existente en estado BORRADOR
+ * Backend: PUT /api/reviews/{id}/updateDraft/
  */
 export async function updateReview(id: number, payload: UpdateReviewPayload): Promise<Review> {
-  const { data } = await api.put(`/api/reviews/${id}/update/`, payload);
+  const { data } = await api.put(`/api/reviews/${id}/updateDraft/`, payload);
+  return data as Review;
+}
+
+/**
+ * Actualiza una review ya PUBLICADA (crea nueva versión)
+ * Backend: PUT /api/reviews/{id}/updatePublished/
+ */
+export async function updatePublishedReview(
+  id: number,
+  payload: UpdateReviewPayload
+): Promise<Review> {
+  const { data } = await api.put(`/api/reviews/${id}/updatePublished/`, payload);
   return data as Review;
 }
 
@@ -146,3 +190,36 @@ export const removeReviewerFromArticle = async (reviewerId: number, articleId: n
   const response = await api.delete(`/api/chair/${reviewerId}/${articleId}/delete/`)
   return response.data
 }
+
+export async function fetchReviewVersions(reviewId: number | string): Promise<ReviewVersion[]> {
+  try {
+    const res = await api.get(`/api/reviews/${reviewId}/versions/`);
+    return res?.data ?? [];
+  } catch (err) {
+    console.error("Error fetching review versions:", err);
+    return [];
+  }
+}
+//------------------------------------------------------------
+// GRUPO 1: Obtener todas las reviews de un artículo
+//------------------------------------------------------------
+export const getReviewsByArticle = async (articleId: number): Promise<ReviewsByArticleId> => {
+  try {
+    const response = await api.get(`/api/article/${articleId}/reviews`, {
+      validateStatus: () => true,
+    });
+    
+    // Si el estado es 200 y la data es un objeto válido (el tipo ReviewsByArticleId)
+    if (response.status === 200 && response.data) {
+      // Devolvemos el objeto completo
+      return response.data as ReviewsByArticleId; 
+    }
+    
+    // Si falla o no hay data, devolvemos un objeto ReviewsByArticleId vacío
+    return { articleId, count: 0, reviews: [] };
+    
+  } catch (e) {
+    console.error('getReviewsByArticle error', e);
+    return { articleId, count: 0, reviews: [] };
+  }
+};

@@ -1,49 +1,6 @@
-import type { Conference } from '@/components/conference/ConferenceApp';
+import { type User } from './userServices';
 import { axiosInstance as api } from './api';
-
-type VISTA_CHOICES = 'single blind' | 'double blind' | 'completo';
-
-export interface ConferenceG1 {
-  id: number;
-  title: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  blind_kind: VISTA_CHOICES;
-}
-
-// Obtener todas las conferencias que no han finalizado
-export const getAllConferencesGrupo1 = async (): Promise<ConferenceG1[]> => {
-  const response = await api.get('/api/conference');
-  const now = new Date();
-  return response.data.filter((conf: Conference) => new Date(conf.end_date) >= now);
-};
-import type { User } from './userServices';
-
-export const getAllConferences = async (): Promise<Conference[]> => {
-  const response = await api.get('/api/conference/');
-  return response.data;
-};
-
-export const getActiveConferences = async (): Promise<Conference[]> => {
-  try {
-    const response = await api.get('/api/conference/active/');
-    return response.data;
-  } catch (err) {
-    console.warn('Backend no disponible, devolviendo lista vacía.');
-    return [];
-  }
-};
-
-export const getFinishedConferences = async (): Promise<Conference[]> => {
-  const response = await api.get('/api/conference/finished/');
-  return response.data;
-};
-
-export const getConference = async (id: string): Promise<Conference> => {
-  const response = await api.get(`/api/conference/${id}/`);
-  return response.data;
-};
+import { type Conference } from '@/components/conference/ConferenceApp';
 
 const errorMessages: Record<string, string> = {
   'conference with this title already exists.':
@@ -70,14 +27,62 @@ const handleConferenceError = (err: any, isCreate: boolean) => {
   throw err;
 };
 
+//------------------------------------------------------------
+// GRUPO 1: Trae una conferencia filtrada por su id
+//------------------------------------------------------------
+export const getConferenceById = async (id: number): Promise<Conference | null> => {
+  const response = await api.get(`/api/conference/${id}/`);
+  const conf: Conference = response.data;
+  return conf;
+};
+
+//------------------------------------------------------------
+// GRUPO 1: Trae una lista de conferencias que no han finalizado
+//------------------------------------------------------------
+export const getActiveConferences = async (): Promise<Conference[]> => {
+  try {
+    const response = await api.get('/api/conference/active/');
+    return response.data;
+  } catch (err) {
+    console.warn('Backend no disponible, devolviendo lista vacía.');
+    return [];
+  }
+};
+
+export const getAllConferences = async (): Promise<Conference[]> => {
+  const response = await api.get('/api/conference/');
+  return response.data;
+};
+
+export const getFinishedConferences = async (): Promise<Conference[]> => {
+  const response = await api.get('/api/conference/finished/');
+  return response.data;
+};
+
+export const getConference = async (id: string): Promise<Conference> => {
+  const response = await api.get(`/api/conference/${id}/`);
+  return response.data;
+};
+
 export const createConference = async (
   conferencia: Omit<Conference, 'id'>,
-  chairs: User[]
+  chairs: User[],
+  user_id: string
 ): Promise<Conference> => {
   try {
+
+    //prueba para agregar admin
+    // const response = await api.post('/user/register-admin/', {
+    //   full_name: "nicolas admin",
+    //   affiliation: "unlp",
+    //   email: "nicoarditi13@gmail.com",
+    //   password: "48595519"
+    // });
+
     const response = await api.post('/api/conference/', {
       ...conferencia,
       chairs: chairs.map(user => user.id),
+      user_id
     });
 
     return response.data;
@@ -90,12 +95,14 @@ export const createConference = async (
 export const updateConference = async (
   id: string,
   conferencia: Omit<Conference, 'id'>,
-  chairs: User[]
+  chairs: User[],
+  user_id: string
 ): Promise<Conference> => {
   try {
     const response = await api.patch(`/api/conference/${id}/`, {
       ...conferencia,
       chairs: chairs.map(user => user.id),
+      user_id
     });
     return response.data;
   } catch (err) {
@@ -104,6 +111,6 @@ export const updateConference = async (
   }
 };
 
-export const deleteConference = async (id: string): Promise<void> => {
-  await api.delete(`/api/conference/${id}/`);
+export const deleteConference = async (id: string, user_id: string): Promise<void> => {
+  await api.delete(`/api/conference/${id}/?user_id=${user_id}`);
 };

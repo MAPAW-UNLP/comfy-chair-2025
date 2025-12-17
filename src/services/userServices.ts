@@ -41,6 +41,9 @@ export interface ProcessedConference {
   roles: string[];
 }
 
+//------------------------------------------------------------
+// GRUPO 1: Trae una lista de usuarios registrados - Usado también por el grupo 3
+//------------------------------------------------------------
 export const getAllUsers = async (): Promise<User[]> => {
   const response = await api.get('/user/getUsers');
   return response.data;
@@ -107,7 +110,7 @@ export const markNotificationAsRead = async (notificationId: number): Promise<Ma
   return response.data;
 }
 
-//Necesario para grupo-3
+// Necesario para grupo 3
 export const getCommonUsers= async (): Promise<User[]> =>{
   const response = await api.get('/user/getCommonUsers');
   return response.data;
@@ -118,4 +121,35 @@ export const getUserById= async (id: number): Promise<User> =>{
   return response.data;
 }
 
-//-----------------------------------------------------------
+// Update user data (name, affiliation, email)
+export interface UpdateUserDataPayload {
+  full_name: string;
+  affiliation: string;
+  email: string;
+}
+
+export interface UpdateUserDataResponse {
+  message: string;
+  user: User;
+}
+
+export const updateUserData = async (data: UpdateUserDataPayload): Promise<UpdateUserDataResponse> => {
+  const response = await api.put('/user/update/', data);
+  return response.data;
+}
+
+// Update user password
+export interface UpdatePasswordPayload {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface UpdatePasswordResponse {
+  message: string;
+}
+
+export const updateUserPassword = async (data: UpdatePasswordPayload): Promise<UpdatePasswordResponse> => {
+  const response = await api.put('/user/update-password/', data);
+  return response.data;
+}

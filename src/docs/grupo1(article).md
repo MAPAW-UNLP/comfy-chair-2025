@@ -1,56 +1,116 @@
-### Aspectos del Front Desarrollados por el Grupo 1
+# Aspectos del Front Desarrollados por el Grupo 1
 
-El grupo 1 se encargó del alta de articulos y la posibilidad de editar los mismos antes del deadline de la sesión a la que corresponden.
+    El grupo 1 se encargó de la lectura, alta, baja y modificación de articulos. También se implementó la funcionalidad para solicitar la baja de un articulo cuando este ya fue aceptado en una sesión de una conferencia específica. 
 
-1) ////////// Routes //////////
+# ---------- Hooks ----------
 
-# /article/view (src/routes/article/view.tsx)
+    useArticleFiles.tsx - (src/hooks/Grupo1/useArticleFiles.tsx)
+        * Hook que gestiona la lectura, descarga y manejo de los archivos de un artículo (archivo principal y archivo de fuentes).
 
-Esta ruta hace uso del componente [ArticleCard]: carga todos los articulos de la base de datos (cuando esté implementado el login debería traer solo los articulos propios del usuario autenticado) y mapea cada uno a un componente tipo "card".
+    useFetchArticle.tsx - (src/hooks/Grupo1/useFetchArticle.tsx)
+        * Hook que obtiene un artículo específico por su ID.
 
-# /article/create (src/routes/article/create.tsx)
+    useFetchConference.tsx - (src/hooks/Grupo1/useFetchConference.tsx)
+        * Hook que obtiene los datos de una conferencia por su ID.
 
-Esta ruta hace uso del componente [ArticleForm]: carga todas las conferencias y todos los usuarios de la base de datos (cuando estén implementados los roles debería traer solo los usuarios autores) para enviarselos al componente form, de esta forma el componente posee todo lo que necesita para dar de alta un articulo.
+    useFetchConferenceArticles.tsx - (src/hooks/Grupo1/useFetchConferenceArticles.tsx)
+        * Hook que obtiene todos los artículos del usuario logueado pertenecientes a una conferencia específica.
 
-# /article/edit/id (src/routes/article/edit/$id.tsx)
+    useFetchConferences.tsx - (src/hooks/Grupo1/useFetchConferences.tsx)
+        * Hook que obtiene la lista completa de las conferencias activas.
 
-Esta ruta posee un componente de prueba actualmente ya que está programada para el segundo sprint. Debería reutilizar el componente [ArticleForm], cargando la informacion del articulo a editar y permitir poder guardar los cambios o cancelar y volver atrás.
+    useFetchUsers.tsx - (src/hooks/Grupo1/useFetchUsers.tsx)
+        * Hook que obtiene la lista de usuarios del sistema.
 
-2) ////////// Components //////////
+# ---------- Components ----------
 
-# ArticleCard (src/components/article/ArticleCard.tsx)
+    ArticleCard - (src/components/article/ArticleCard.tsx)
+        * Props: objeto del tipo article.
+        * Data: titulo, tipo, sesion, conferencia, estado y deadline de un articulo.
+        * Acciones: ver detalle, editar (si permite), descargar archivo principal, descargar archivo fuentes (si tiene), eliminar (si permite).
 
-Este componente muestra un articulo en forma de "card", resaltando el titulo, sesion y conferencia del mismo. Además posee una serie de botones interactivos:
+    ArticleDeleteAccepted - (src/components/article/ArticleDeleteAccepted.tsx)
+        * Props: trigger, callback
+        * Data: dialogo de confirmación, motivo de la solicitud
+        * Acciones: cancelar accion, confirmar solicitud de baja de articulo aceptado
 
-Boton "Estado": tiene 3 colores distintos. Rojo (slate-900) cuando el estado del articulo es "Rechazado", verde (lime-900) cuando es "Aceptado" y azul (slate-900) para el resto de los estados. Al clickear el boton se abre un modal con una descripcion del estado correspondiente para que el usuario entienda con detalle que significa cada estado del articulo.
+    ArticleDeleteReception - (src/components/article/ArticleDeleteReception.tsx)
+        * Props: trigger, callback
+        * Data: dialogo de confirmación
+        * Acciones: cancelar accion, confirmar eliminación de articulo
+        
+    ArticleDetail - (src/components/article/ArticleDetail.tsx)
+        * Props: objeto del tipo article.
+        * Data: todos los atributos de un articulo.
+        * Acciones: ver archivo principal, ver archivo fuentes (si tiene), ver reviews del articulo (solo en estado aceptado o rechazado), volver al menu de articulos.
 
-Boton "Modificar": si la fecha actual es anterior a la deadline de la sesión, entonces el boton se ve de color azul (slate-900) y permite abrir un modal que muestra la fecha y hora de la deadline de la sesion para que el usuario pueda saber hasta cuando tiene tiempo de modificar el articulo. El texto del boton muestra la cantidad de tiempo restante en dias, horas o minutos segun corresponda.
-Si la fecha actual es posterior a la deadline de la sesión, entonces el boton se ve de color gris (zinc-500) y se encuentra deshabilitado (no clickeable) con la leyenda "No Disponible".
+    ArticleForm - (src/components/article/ArticleForm.tsx)
+        * Props: listado de conferencias, listado de usuarios, flag de edición (modo alta o edición), articulo (para modo edición), userId.
+        * Data: todos los atributos de un articulo a crear o editar (en edición no se puede cambiar la conferencia).
+        * Acciones: subir articulo (modo alta), editar articulo(modo edición), volver al menu de articulos (modo edición).
 
-Icono "Ver": utiliza el componente [ArticleDetail]. Permite abrir un modal que muestra la información detallada de un articulo. 
+    ConferenceCombobox - (src/components/combobox/ConferenceCombobox.tsx)
+        * Props: listado de conferencias, valor actual, flag de disabled (para modo edición del form), metodo onValueChange.
+        * Data: titulo de cada conferencia.
+        * Acciones: buscar y seleccionar conferencias.
 
-Icono "Editar": navega hacia la ruta /article/edit/id. Correspondiendo id al articulo del cual se clickea para poder permitir editar el mismo. Este icono solo se visualiza cuando el articulo se puede editar (antes de la deadline de la sesión).
+    UserCombobox - (src/components/combobox/UserCombobox.tsx)
+        * Props: listado de usuarios, metodo onValueChange.
+        * Data: nombre completo y correo de cada usuario.
+        * Acciones: buscar y seleccionar usuarios.
 
-# ArticleForm (src/components/article/ArticleForm.tsx)
+    Breadcrumb - (src/components/ui/Breadcrumb.tsx)
+        * Props: items (rutas)
+        * Data: ruta actual
+        * Acciones: viajar a la ruta seleccionada
 
-Este componente muestra un formulario con todos los campos requeridos para el alta de un articulo. El form hace uso de los componentes [ConferenceCombobox] y [UserCombobox] para poder mostrar y permitir seleccionar las conferencias (cada conferencia trae sus sesiones también) y usuarios autores. Todos los campos del formulario son obligatorios, en caso de tratarse de un articulo tipo "poster" se agrega un campo extra para subir el archivo con las fuentes. El resto de campos son iguales para ambos tipos de articulos.
-Todos los campos poseen validaciones null y los campos de archivos (articulo y fuentes) validan que el archivo seleccionado no sea vacío.
-En caso de haber un error al subir el articulo entonces se muestra un mensaje debajo del form. En caso de exito se navega a la ruta /article/view para ver el articulo cargado y también se muestra un toast de confirmación.
+    ReviewBox - (src/components/reviews/ReviewBox.tsx)
+        * Props: listado de reviews
+        * Data: numero de review (dentro de la lista), revisor, puntaje y opinión.
+        * Acciones: ninguna, solo muestra las reviews
 
-# ArticleDetail (src/components/article/ArticleDetail.tsx)
+# ---------- Routes ----------
 
-Este componente muestra todos los campos de un articulo de forma completa y detallada. Ademas permite descargar el archivo que contiene el articulo y el archivo de fuentes en caso de tratarse de un articulo del tipo abstract.
+    article/detail/$articleId.tsx - (src/routes/article/detail/articleId.tsx)
+        * Hace uso del componente "ArticleDetail"
+        * Muestra un breadcrumb que permite volver al menú anterior (articles/$conferenceId)
+        * Muestra un mensaje si no encuentra un articulo con el id indicado
 
-# ConferenceCombobox (src/components/combobox/ConferenceCombobox.tsx)
+    article/edit/$articleId.tsx - (src/routes/article/edit/articleId.tsx)
+        * Hace uso del componente "ArticleForm"
+        * Muestra un mensaje si no encuentra un articulo con el id indicado
+        * Bloquea la edición si ya pasó la deadline de la sesión del articulo o si el usuario autenticado no es autor
+        
+    article/create - (src/routes/article/create.tsx)
+        * Hace uso del componente "ArticleForm"
 
-Este componente provee un input de tipo "combobox" para poder buscar y seleccionar conferencias.
+    articles/$conferenceId - (src/routes/articles/conferenceId.tsx)
+        * Hace uso del componente "ArticleCard"
+        * Muestra un breadcrumb que permite volver al menú anterior (dashboard)
+        * Muestra un mensaje si no encuentra una conferencia con el id indicado
+        * Muestra todos los articulos de la conferencia seleccionada
 
-# UserCombobox (src/components/combobox/UserCombobox.tsx)
+# ---------- Services ----------
 
-Este componente provee un input de tipo "combobox" para poder buscar y seleccionar usuarios.
+    articleServices - (src/services/articleServices.ts)
+        * metodo "createArticle()"
+        * metodo "updateArticle()"
+        * metodo "getArticleById()"
+        * metodo "getArticlesByConferenceId()"
+        * metodo "deleteArticle()"
+        * metodo "downloadMainFile()"
+        * metodo "downloadSourceFile()"
 
-3) ////////// Services //////////
+    conferenceServices - (src/services/conferenceServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getActiveConferences()"
+        * metodo "getConferenceById()"
 
-# articleServices (src/services/articleServices.ts)
+    reviewerServices - (src/services/reviewerServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getReviewsByArticle()" 
 
-Este servicio se encarga de la comunicación entre el front y la api que maneja los articulos. Declara los tipos de articulo, los estados posibles del articulo, la interfaz para la lectura de un articulo y la interfaz para el alta de un articulo. Posee tambien 3 metodos, "getAllArticles", "createArticle" y "getArticleById" que dan servicio a los componentes del front declarados anteriormente.
+    sessionServices - (src/services/sessionServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getSessionsByConferenceGrupo1()"
+
+    userServices - (src/services/userServices.ts) - Desarrollado por otro grupo, solo se usaron o crearon los metodos necesarios.
+        * metodo "getAllUsers()"
+    
