@@ -1,20 +1,28 @@
+import { useEffect, useState } from 'react'
 import { createFileRoute, Link, useNavigate, useRouteContext } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/contexts/AuthContext'
+import { useRole } from '@/contexts/RoleContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { getUserFullData, type ProcessedConference } from '@/services/userServices'
 import { Badge } from '@/components/ui/badge'
+import { getUserFullData, type ProcessedConference } from '@/services/userServices'
 
 export const Route = createFileRoute('/_auth/dashboard/')({
   component: DashboardPage,
 })
 
 function DashboardPage() {
+  const [savingRoleMsg, setSavingRoleMsg] = useState<string | null>(null)
+
   const { logout } = useAuth()
   const navigate = useNavigate()
+
   // Get user from the parent _auth route context
   const { user } = useRouteContext({ from: '/_auth/dashboard/' })
+
+  // Role selection context (grupo4)
+  const { setSelectedRole, clearSelectedRole } = useRole()
 
   // Fetch user conferences and roles
   const { data: conferences, isLoading, isError } = useQuery({
@@ -22,28 +30,66 @@ function DashboardPage() {
     queryFn: getUserFullData,
   })
 
+  // Auto-hide the banner
+  useEffect(() => {
+    if (!savingRoleMsg) return
+    const t = setTimeout(() => setSavingRoleMsg(null), 2500)
+    return () => clearTimeout(t)
+  }, [savingRoleMsg])
+
   const handleLogout = () => {
+    // limpiar la selección de rol al cerrar sesión (grupo4)
+    try {
+      clearSelectedRole()
+    } catch {}
+
     logout()
     navigate({ to: '/login', search: { redirect: undefined, registered: undefined } })
   }
 
   const handleRoleClick = (conference: ProcessedConference, role: string) => {
-    if(role === "autor"){
+    const roleKey = String(role ?? '').toLowerCase().trim()
+
+    // Guardar selección (grupo4) para rutas que dependan de rol/conferencia
+    try {
+      setSelectedRole({
+        role: roleKey,
+        conferenceId: conference.conference_id,
+        conferenceName: conference.conference_name,
+      })
+      setSavingRoleMsg(`Rol seleccionado: ${roleKey} — ${conference.conference_name}`)
+    } catch {}
+
+    // Mantener comportamiento de main para Autor
+    if (roleKey === 'autor') {
       navigate({ to: `/articles/${conference.conference_id}`, replace: true })
+      return
     }
-    else{
-       alert(
-        `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
+
+    // Comportamiento real de grupo4 para Revisor
+    if (roleKey === 'revisor') {
+      navigate({ to: '/reviewer' })
+      return
+    }
+
+    // Mantener fallback informativo de main (otros roles aún en desarrollo)
+    alert(
+      `🚧 MOCK - Funcionalidad en desarrollo\n\n` +
         `Conferencia: ${conference.conference_name}\n` +
         `Conference ID: ${conference.conference_id}\n` +
         `Rol: ${role}\n\n` +
         `Esta funcionalidad redirigirá a la página correspondiente del rol una vez que las rutas estén completamente implementadas.`
-      )
-    }
+    )
   }
 
   return (
     <div className="min-h-[calc(100dvh-64px)] bg-background p-4 md:p-8">
+      {savingRoleMsg && (
+        <div className="mb-4 rounded-md bg-amber-50 border border-amber-200 text-amber-900 px-4 py-2 max-w-3xl mx-auto">
+          {savingRoleMsg}
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
@@ -76,14 +122,17 @@ function DashboardPage() {
                   <p className="text-sm text-muted-foreground">Rol</p>
                   <p className="font-medium">{user.role}</p>
                 </div>
+
                 <Link to="/dashboard/update">
                   <Button variant="outline" size="sm" className="w-full mt-4">
                     Actualizar Datos
                   </Button>
                 </Link>
+
                 <Button onClick={handleLogout} variant="destructive" size="sm" className="w-full mt-2">
                   Cerrar Sesión
                 </Button>
+
                 <Link to="/users">
                   <Button variant="link" size="sm" className="w-full mt-0">
                     Ver Usuarios
@@ -183,4 +232,3 @@ function DashboardPage() {
     </div>
   )
 }
-
