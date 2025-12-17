@@ -12,6 +12,8 @@ const RootLayoutContent = () => {
   const location = useLocation();
   // Estado para controlar si el menú lateral móvil está abierto o cerrado
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Obtener el estado de autenticación
   const { user } = useAuth();
 
   // Obtener rol seleccionado (si existe)
@@ -40,8 +42,9 @@ const RootLayoutContent = () => {
       { to: '/article/view', label: 'Articulos' },
     ],
     chair: [
-      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
-      { to: '/article/select', label: 'Asignar Revisor' },
+      { to: '/article/select', label: 'Articulos a Asignar' },
+      { to: '/review/chair/reviewed', label: 'Articulos Revisados' },
+      { to: '/chairs/selection/selection-method', label: 'Seleccionar Corte de Sesión' },
     ],
     admin: [
       { to: '/conference/view', label: 'Conferencias' },
@@ -64,8 +67,9 @@ const RootLayoutContent = () => {
       { to: '/reviewer/', label: 'Revisor' },
       { to: '/conference/view', label: 'Conferencias' },
       { to: '/article/view', label: 'Articulos' },
-      { to: '/article/select', label: 'Asignar Revisor' },
-      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+      { to: '/article/select', label: 'Articulos a Asignar' },
+      { to: '/review/chair/reviewed', label: 'Articulos Revisados' },
+      { to: '/chairs/selection/selection-method', label: 'Seleccionar Corte de Sesión' },
       { to: '/reviewer/bidding', label: 'Bidding' },
       ...commonAuthLinks,
     ];
@@ -74,6 +78,7 @@ const RootLayoutContent = () => {
     authLinks = [...roleSpecific, ...commonAuthLinks];
   }
 
+  // Combinar todos los enlaces
   const links = [...commonLinks, ...authLinks];
 
   // Navegación escritorio
@@ -88,28 +93,12 @@ const RootLayoutContent = () => {
     <div className="flex flex-col h-screen">
 
       {/* Navbar superior */}
-      <header className="relative bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-
-        {/* Flecha de retroceso (solo si no estamos en Home) */}
-        {!isPanelSession && /*!isDashboard &&*/ (
-          <button
-            onClick={handleBack}
-            className="absolute left-4 p-2 rounded-md hover:bg-slate-700 flex items-center justify-center md:hidden"
-            title="Volver"
-          >
-            <ArrowLeft size={20} />
-          </button>
-        )}
-
+      <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
 
         {/* Navegación visible solo en pantallas medianas en adelante */}
         <nav className="hidden xl:flex gap-2 order-1 xl:order-1">
           {links.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white"
-            >
+            <Link key={link.to} to={link.to} className="px-3 py-1 rounded-md hover:bg-gray-400 [&.active]:bg-slate-400 [&.active]:text-white">
               {link.label}
             </Link>
           ))}
@@ -129,19 +118,9 @@ const RootLayoutContent = () => {
           <Menu />
         </button>
 
-          {/* Botón colapsable (solo móvil) */}
-          {!isPanelSession && /*!isDashboard &&*/ (
-          <button
-            onClick={() => setIsOpen(true)}
-            className="md:hidden p-1 rounded hover:bg-gray-700"
-          >
-            <Menu />
-          </button>
-          )}
-        </div>
       </header>
 
-      {/* Cuerpo principal */}
+      {/* Cuerpo principal de la aplicación */}
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar móvil (se desliza desde la izquierda) */}
@@ -180,12 +159,17 @@ const RootLayoutContent = () => {
 
         {/* Área principal donde se renderizan las páginas hijas */}
         <main className="flex-1 overflow-auto">
-          <Outlet />
+          <Outlet /> {/* Outlet es el "espacio" donde TanStack Router inyecta la página actual */}
         </main>
+
       </div>
 
+      {/* Herramientas de desarrollo del router (solo útiles en dev) */}
       <TanStackRouterDevtools />
-      <Toaster position="top-right" />
+
+      {/* Componente global de notificaciones tipo toast */}
+      <Toaster position='top-right' />
+
     </div>
   );
 };
@@ -201,4 +185,5 @@ const RootLayout = () => {
   );
 };
 
+// Exportamos la ruta raíz del enrutador, usando este layout como componente principal
 export const Route = createRootRoute({ component: RootLayout });
