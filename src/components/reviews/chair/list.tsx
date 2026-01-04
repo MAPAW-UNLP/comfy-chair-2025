@@ -67,7 +67,7 @@ export const ReviewedArticlesList = () => {
               <div className="flex flex-col items-center justify-center 
                 px-2 py-1 rounded-lg bg-gray-700 text-white 
                 font-semibold hover:bg-gray-800 transition"
-                style={{ backgroundColor: "#767373ff" }}>
+                style={{ backgroundColor: "#70b144ff" }}>
                 <div>Ver</div>
                 <div>revisiones</div>
               </div>

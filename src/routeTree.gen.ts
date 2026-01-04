@@ -26,7 +26,6 @@ import { Route as AuthConferenceCreateRouteImport } from './routes/_auth/confere
 import { Route as AuthConferenceIdRouteImport } from './routes/_auth/conference/$id'
 import { Route as AuthChairsSelectSessionRouteImport } from './routes/_auth/chairs/select-session'
 import { Route as AuthChairsPanelSessionRouteImport } from './routes/_auth/chairs/panel-session'
-import { Route as AuthArticleViewRouteImport } from './routes/_auth/article/view'
 import { Route as AuthArticlesConferenceIdRouteImport } from './routes/_auth/articles/$conferenceId'
 import { Route as AuthArticleSelectRouteImport } from './routes/_auth/article/select'
 import { Route as AuthArticleCreateRouteImport } from './routes/_auth/article/create'
@@ -37,9 +36,6 @@ import { Route as AuthConferenceSessionIdRouteImport } from './routes/_auth/conf
 import { Route as AuthConferenceEditIdRouteImport } from './routes/_auth/conference/edit/$id'
 import { Route as AuthChairsSelectionSelectionMethodRouteImport } from './routes/_auth/chairs/selection/selection-method'
 import { Route as AuthChairsSelectionReviewedArticleListRouteImport } from './routes/_auth/chairs/selection/reviewed-article-list'
-import { Route as AuthArticleEditIdRouteImport } from './routes/_auth/article/edit/$id'
-import { Route as AuthChairsSelectionSessionListRouteImport } from './routes/_auth/chairs/selection/session-list'
-import { Route as AuthChairsSelectionArticlesSessionRouteImport } from './routes/_auth/chairs/selection/articles-session'
 import { Route as AuthArticleEditArticleIdRouteImport } from './routes/_auth/article/edit/$articleId'
 import { Route as AuthArticleDetailArticleIdRouteImport } from './routes/_auth/article/detail/$articleId'
 import { Route as AuthArticleAssignIdRouteImport } from './routes/_auth/article/assign/$id'
@@ -128,11 +124,6 @@ const AuthChairsPanelSessionRoute = AuthChairsPanelSessionRouteImport.update({
   path: '/chairs/panel-session',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthArticleViewRoute = AuthArticleViewRouteImport.update({
-  id: '/article/view',
-  path: '/article/view',
-  getParentRoute: () => AuthRoute,
-} as any)
 const AuthArticlesConferenceIdRoute =
   AuthArticlesConferenceIdRouteImport.update({
     id: '/articles/$conferenceId',
@@ -213,10 +204,9 @@ export interface FileRoutesByFullPath {
   '/users': typeof AuthUsersRoute
   '/article/create': typeof AuthArticleCreateRoute
   '/article/select': typeof AuthArticleSelectRoute
-  '/article/view': typeof AuthArticleViewRoute
+  '/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
   '/chairs/panel-session': typeof AuthChairsPanelSessionRoute
   '/chairs/select-session': typeof AuthChairsSelectSessionRoute
-  '/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
   '/conference/$id': typeof AuthConferenceIdRoute
   '/conference/create': typeof AuthConferenceCreateRoute
   '/conference/view': typeof AuthConferenceViewRoute
@@ -227,13 +217,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthDashboardIndexRoute
   '/reviewer': typeof AuthReviewerIndexRoute
   '/article/assign/$id': typeof AuthArticleAssignIdRoute
-  '/article/edit/$id': typeof AuthArticleEditIdRoute
-  '/chairs/selection/reviewed-article-list': typeof AuthChairsSelectionReviewedArticleListRoute
-  '/chairs/selection/selection-method': typeof AuthChairsSelectionSelectionMethodRoute
   '/article/detail/$articleId': typeof AuthArticleDetailArticleIdRoute
   '/article/edit/$articleId': typeof AuthArticleEditArticleIdRoute
-  '/chairs/selection/articles-session': typeof AuthChairsSelectionArticlesSessionRoute
-  '/chairs/selection/session-list': typeof AuthChairsSelectionSessionListRoute
+  '/chairs/selection/reviewed-article-list': typeof AuthChairsSelectionReviewedArticleListRoute
+  '/chairs/selection/selection-method': typeof AuthChairsSelectionSelectionMethodRoute
   '/conference/edit/$id': typeof AuthConferenceEditIdRoute
   '/conference/session/$id': typeof AuthConferenceSessionIdRoute
   '/review/chair/$id': typeof AuthReviewChairIdRoute
@@ -248,10 +235,9 @@ export interface FileRoutesByTo {
   '/users': typeof AuthUsersRoute
   '/article/create': typeof AuthArticleCreateRoute
   '/article/select': typeof AuthArticleSelectRoute
-  '/article/view': typeof AuthArticleViewRoute
+  '/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
   '/chairs/panel-session': typeof AuthChairsPanelSessionRoute
   '/chairs/select-session': typeof AuthChairsSelectSessionRoute
-  '/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
   '/conference/$id': typeof AuthConferenceIdRoute
   '/conference/create': typeof AuthConferenceCreateRoute
   '/conference/view': typeof AuthConferenceViewRoute
@@ -262,13 +248,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthDashboardIndexRoute
   '/reviewer': typeof AuthReviewerIndexRoute
   '/article/assign/$id': typeof AuthArticleAssignIdRoute
-  '/article/edit/$id': typeof AuthArticleEditIdRoute
-  '/chairs/selection/reviewed-article-list': typeof AuthChairsSelectionReviewedArticleListRoute
-  '/chairs/selection/selection-method': typeof AuthChairsSelectionSelectionMethodRoute
   '/article/detail/$articleId': typeof AuthArticleDetailArticleIdRoute
   '/article/edit/$articleId': typeof AuthArticleEditArticleIdRoute
-  '/chairs/selection/articles-session': typeof AuthChairsSelectionArticlesSessionRoute
-  '/chairs/selection/session-list': typeof AuthChairsSelectionSessionListRoute
+  '/chairs/selection/reviewed-article-list': typeof AuthChairsSelectionReviewedArticleListRoute
+  '/chairs/selection/selection-method': typeof AuthChairsSelectionSelectionMethodRoute
   '/conference/edit/$id': typeof AuthConferenceEditIdRoute
   '/conference/session/$id': typeof AuthConferenceSessionIdRoute
   '/review/chair/$id': typeof AuthReviewChairIdRoute
@@ -285,10 +268,9 @@ export interface FileRoutesById {
   '/_auth/users': typeof AuthUsersRoute
   '/_auth/article/create': typeof AuthArticleCreateRoute
   '/_auth/article/select': typeof AuthArticleSelectRoute
-  '/_auth/article/view': typeof AuthArticleViewRoute
+  '/_auth/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
   '/_auth/chairs/panel-session': typeof AuthChairsPanelSessionRoute
   '/_auth/chairs/select-session': typeof AuthChairsSelectSessionRoute
-  '/_auth/articles/$conferenceId': typeof AuthArticlesConferenceIdRoute
   '/_auth/conference/$id': typeof AuthConferenceIdRoute
   '/_auth/conference/create': typeof AuthConferenceCreateRoute
   '/_auth/conference/view': typeof AuthConferenceViewRoute
@@ -299,13 +281,10 @@ export interface FileRoutesById {
   '/_auth/dashboard/': typeof AuthDashboardIndexRoute
   '/_auth/reviewer/': typeof AuthReviewerIndexRoute
   '/_auth/article/assign/$id': typeof AuthArticleAssignIdRoute
-  '/_auth/article/edit/$id': typeof AuthArticleEditIdRoute
-  '/_auth/chairs/selection/reviewed-article-list': typeof AuthChairsSelectionReviewedArticleListRoute
-  '/_auth/chairs/selection/selection-method': typeof AuthChairsSelectionSelectionMethodRoute
   '/_auth/article/detail/$articleId': typeof AuthArticleDetailArticleIdRoute
   '/_auth/article/edit/$articleId': typeof AuthArticleEditArticleIdRoute
-  '/_auth/chairs/selection/articles-session': typeof AuthChairsSelectionArticlesSessionRoute
-  '/_auth/chairs/selection/session-list': typeof AuthChairsSelectionSessionListRoute
+  '/_auth/chairs/selection/reviewed-article-list': typeof AuthChairsSelectionReviewedArticleListRoute
+  '/_auth/chairs/selection/selection-method': typeof AuthChairsSelectionSelectionMethodRoute
   '/_auth/conference/edit/$id': typeof AuthConferenceEditIdRoute
   '/_auth/conference/session/$id': typeof AuthConferenceSessionIdRoute
   '/_auth/review/chair/$id': typeof AuthReviewChairIdRoute
@@ -322,10 +301,9 @@ export interface FileRouteTypes {
     | '/users'
     | '/article/create'
     | '/article/select'
-    | '/article/view'
+    | '/articles/$conferenceId'
     | '/chairs/panel-session'
     | '/chairs/select-session'
-    | '/articles/$conferenceId'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -336,13 +314,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/reviewer'
     | '/article/assign/$id'
-    | '/article/edit/$id'
-    | '/chairs/selection/reviewed-article-list'
-    | '/chairs/selection/selection-method'
     | '/article/detail/$articleId'
     | '/article/edit/$articleId'
-    | '/chairs/selection/articles-session'
-    | '/chairs/selection/session-list'
+    | '/chairs/selection/reviewed-article-list'
+    | '/chairs/selection/selection-method'
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/review/chair/$id'
@@ -357,10 +332,9 @@ export interface FileRouteTypes {
     | '/users'
     | '/article/create'
     | '/article/select'
-    | '/article/view'
+    | '/articles/$conferenceId'
     | '/chairs/panel-session'
     | '/chairs/select-session'
-    | '/articles/$conferenceId'
     | '/conference/$id'
     | '/conference/create'
     | '/conference/view'
@@ -371,13 +345,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/reviewer'
     | '/article/assign/$id'
-    | '/article/edit/$id'
-    | '/chairs/selection/reviewed-article-list'
-    | '/chairs/selection/selection-method'
     | '/article/detail/$articleId'
     | '/article/edit/$articleId'
-    | '/chairs/selection/articles-session'
-    | '/chairs/selection/session-list'
+    | '/chairs/selection/reviewed-article-list'
+    | '/chairs/selection/selection-method'
     | '/conference/edit/$id'
     | '/conference/session/$id'
     | '/review/chair/$id'
@@ -393,10 +364,9 @@ export interface FileRouteTypes {
     | '/_auth/users'
     | '/_auth/article/create'
     | '/_auth/article/select'
-    | '/_auth/article/view'
+    | '/_auth/articles/$conferenceId'
     | '/_auth/chairs/panel-session'
     | '/_auth/chairs/select-session'
-    | '/_auth/articles/$conferenceId'
     | '/_auth/conference/$id'
     | '/_auth/conference/create'
     | '/_auth/conference/view'
@@ -407,13 +377,10 @@ export interface FileRouteTypes {
     | '/_auth/dashboard/'
     | '/_auth/reviewer/'
     | '/_auth/article/assign/$id'
-    | '/_auth/article/edit/$id'
-    | '/_auth/chairs/selection/reviewed-article-list'
-    | '/_auth/chairs/selection/selection-method'
     | '/_auth/article/detail/$articleId'
     | '/_auth/article/edit/$articleId'
-    | '/_auth/chairs/selection/articles-session'
-    | '/_auth/chairs/selection/session-list'
+    | '/_auth/chairs/selection/reviewed-article-list'
+    | '/_auth/chairs/selection/selection-method'
     | '/_auth/conference/edit/$id'
     | '/_auth/conference/session/$id'
     | '/_auth/review/chair/$id'
@@ -549,11 +516,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthChairsPanelSessionRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/article/view': {
-      id: '/_auth/article/view'
-      path: '/article/view'
-      fullPath: '/article/view'
-      preLoaderRoute: typeof AuthArticleViewRouteImport
     '/_auth/articles/$conferenceId': {
       id: '/_auth/articles/$conferenceId'
       path: '/articles/$conferenceId'
@@ -653,10 +615,9 @@ interface AuthRouteChildren {
   AuthUsersRoute: typeof AuthUsersRoute
   AuthArticleCreateRoute: typeof AuthArticleCreateRoute
   AuthArticleSelectRoute: typeof AuthArticleSelectRoute
-  AuthArticleViewRoute: typeof AuthArticleViewRoute
+  AuthArticlesConferenceIdRoute: typeof AuthArticlesConferenceIdRoute
   AuthChairsPanelSessionRoute: typeof AuthChairsPanelSessionRoute
   AuthChairsSelectSessionRoute: typeof AuthChairsSelectSessionRoute
-  AuthArticlesConferenceIdRoute: typeof AuthArticlesConferenceIdRoute
   AuthConferenceIdRoute: typeof AuthConferenceIdRoute
   AuthConferenceCreateRoute: typeof AuthConferenceCreateRoute
   AuthConferenceViewRoute: typeof AuthConferenceViewRoute
@@ -667,13 +628,10 @@ interface AuthRouteChildren {
   AuthDashboardIndexRoute: typeof AuthDashboardIndexRoute
   AuthReviewerIndexRoute: typeof AuthReviewerIndexRoute
   AuthArticleAssignIdRoute: typeof AuthArticleAssignIdRoute
-  AuthArticleEditIdRoute: typeof AuthArticleEditIdRoute
-  AuthChairsSelectionReviewedArticleListRoute: typeof AuthChairsSelectionReviewedArticleListRoute
-  AuthChairsSelectionSelectionMethodRoute: typeof AuthChairsSelectionSelectionMethodRoute
   AuthArticleDetailArticleIdRoute: typeof AuthArticleDetailArticleIdRoute
   AuthArticleEditArticleIdRoute: typeof AuthArticleEditArticleIdRoute
-  AuthChairsSelectionArticlesSessionRoute: typeof AuthChairsSelectionArticlesSessionRoute
-  AuthChairsSelectionSessionListRoute: typeof AuthChairsSelectionSessionListRoute
+  AuthChairsSelectionReviewedArticleListRoute: typeof AuthChairsSelectionReviewedArticleListRoute
+  AuthChairsSelectionSelectionMethodRoute: typeof AuthChairsSelectionSelectionMethodRoute
   AuthConferenceEditIdRoute: typeof AuthConferenceEditIdRoute
   AuthConferenceSessionIdRoute: typeof AuthConferenceSessionIdRoute
   AuthReviewChairIdRoute: typeof AuthReviewChairIdRoute
@@ -686,10 +644,9 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthUsersRoute: AuthUsersRoute,
   AuthArticleCreateRoute: AuthArticleCreateRoute,
   AuthArticleSelectRoute: AuthArticleSelectRoute,
-  AuthArticleViewRoute: AuthArticleViewRoute,
+  AuthArticlesConferenceIdRoute: AuthArticlesConferenceIdRoute,
   AuthChairsPanelSessionRoute: AuthChairsPanelSessionRoute,
   AuthChairsSelectSessionRoute: AuthChairsSelectSessionRoute,
-  AuthArticlesConferenceIdRoute: AuthArticlesConferenceIdRoute,
   AuthConferenceIdRoute: AuthConferenceIdRoute,
   AuthConferenceCreateRoute: AuthConferenceCreateRoute,
   AuthConferenceViewRoute: AuthConferenceViewRoute,
@@ -700,16 +657,12 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardIndexRoute: AuthDashboardIndexRoute,
   AuthReviewerIndexRoute: AuthReviewerIndexRoute,
   AuthArticleAssignIdRoute: AuthArticleAssignIdRoute,
-  AuthArticleEditIdRoute: AuthArticleEditIdRoute,
+  AuthArticleDetailArticleIdRoute: AuthArticleDetailArticleIdRoute,
+  AuthArticleEditArticleIdRoute: AuthArticleEditArticleIdRoute,
   AuthChairsSelectionReviewedArticleListRoute:
     AuthChairsSelectionReviewedArticleListRoute,
   AuthChairsSelectionSelectionMethodRoute:
     AuthChairsSelectionSelectionMethodRoute,
-  AuthArticleDetailArticleIdRoute: AuthArticleDetailArticleIdRoute,
-  AuthArticleEditArticleIdRoute: AuthArticleEditArticleIdRoute,
-  AuthChairsSelectionArticlesSessionRoute:
-    AuthChairsSelectionArticlesSessionRoute,
-  AuthChairsSelectionSessionListRoute: AuthChairsSelectionSessionListRoute,
   AuthConferenceEditIdRoute: AuthConferenceEditIdRoute,
   AuthConferenceSessionIdRoute: AuthConferenceSessionIdRoute,
   AuthReviewChairIdRoute: AuthReviewChairIdRoute,
