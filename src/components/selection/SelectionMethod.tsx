@@ -249,6 +249,11 @@ export const SelectionMethod = () => {
     );
   }
 
+  const handleMethodClick = (method: 'cutoff' | 'threshold') => {
+    setLocalInputValue(''); // limpia input
+    updateSearchParams(method, ''); // actualiza url y método
+  };
+
   return (
     <div className="h-screen flex flex-col">
       {/* Titulo de la sesion */}
@@ -259,6 +264,7 @@ export const SelectionMethod = () => {
         <h1 className="text-xl font-semibold mx-auto">{sessionTitle}</h1>
       </div>
 
+      {/* Botón para confirmar la seleccion */}
       {!isSelectionLocked && showResults && (
         <div className="bg-white py-3 px-6 flex justify-center border-b border-gray-300 flex-shrink-0">
           <Button
@@ -271,196 +277,149 @@ export const SelectionMethod = () => {
         </div>
       )}
 
-      <div
-        className="px-6 py-2 flex flex-col items-start justify-between flex-shrink-0"
-        style={{ backgroundColor: 'var(--background)' }}
-      >
-
-        <div className="h-[4.5rem] flex items-center mt-3">
-          {isSelectionLocked ? (
-            <div className="flex flex-col text-gray-700 leading-tight">
-              {/* Título y método */}
-              <span className="text-lg font-bold">
-                Selección Definida: {lockedMethod === 'cutoff' ? 'Corte Fijo' : 'Mejor Puntaje'}
-              </span>
-
-              {/* Descripción del resultado de selección */}
-              <span className="text-sm text-gray-700 mt-1">
-                {lockedMethod === 'cutoff'
-                  ? `Se aceptó el ${lockedValue}% de artículos (de mejor a peor puntaje)`
-                  : `Se aceptaron todos los artículos que superaron el puntaje ${lockedValue}`
-                }
-              </span>
-            </div>
-          ) : (
-            // Contenido cuando la selección no está bloqueada
-            <span className="text-gray-500 text-md font-bold text-center">
-              {showResults
-                ? 'Una vez confirmada la selección, no podrá modificarse'
-                : 'Seleccione el criterio para obtener los listados de artículos aceptados y rechazados'
-              }
-            </span>
-          )}
-        </div>
+      {/* Mensaje de estado de la seleccion */}
+      <div className="px-6 pt-4 pb-0 flex flex-col items-center">
+        <span className="text-gray-500 text-md font-bold text-center">
+          {isSelectionLocked
+            ? `Selección Definida: ${lockedMethod === 'cutoff' ? 'Corte Fijo' : 'Mejor Puntaje'}`
+            : showResults
+              ? 'Una vez confirmada la selección, no podrá modificarse'
+              : 'Seleccione el criterio para obtener los listados de artículos aceptados y rechazados'}
+        </span>
       </div>
-
-
-      {/* Barra de selección de filtros */}
-      {!isSelectionLocked && (
-        <div className="text-white py-2 px-6 flex items-center justify-start flex-shrink-0">
-          <div className="flex w-full flex-col items-center justify-center">
-            <div className="flex w-full items-stretch overflow-hidden shadow-sm">
-              {/* Botón 1 - Corte Fijo */}
-              <Button
-                className={`flex-1 rounded-none ${selectedMethod === 'cutoff'
-                  ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-white text-black hover:bg-gray-100 border-r border-gray-300'
-                  }`}
-                variant={selectedMethod === 'cutoff' ? 'default' : 'outline'}
-                onClick={() => {
-                  setLocalInputValue(''); // limpia input visual
-                  updateSearchParams('cutoff', ''); // actualiza url y método
-                }}
-                disabled={loading || isSelectionLocked}
-              >
-                Corte Fijo
-              </Button>
-
-              {/* Botón 2 - Mejor Puntaje */}
-              <Button
-                className={`flex-1 rounded-none ${selectedMethod === 'threshold'
-                  ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-white text-black hover:bg-gray-100'
-                  }`}
-                variant={selectedMethod === 'threshold' ? 'default' : 'outline'}
-                onClick={() => {
-                  setLocalInputValue('');
-                  updateSearchParams('threshold', '');
-                }}
-                disabled={loading || isSelectionLocked}
-              >
-                Mejor Puntaje
-              </Button>
-            </div>
-
-            <input
-              type="number"
-              value={localInputValue}
-              onChange={(e) => { setLocalInputValue(e.target.value); }}
-              onKeyDown={handleKeyDown}
-              placeholder={
-                selectedMethod === 'threshold'
-                  ? 'Puntaje Mínimo'
-                  : 'Porcentaje (%)'
-              }
-              className="px-3 py-2 rounded-none w-full text-black text-center no-spinner bg-white"
-              disabled={loading || isSelectionLocked}
-            />
-            {/* Info del input - se muestra si no hay resultados exitosos */}
-            {!showResults && (
-              <p className="text-gray-500 text-sm mt-1">
-                Ingrese un valor para ver los artículos
-              </p>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Contenido: puede ser explicación de vista o lista de resultados */}
-      <div className="flex-1 overflow-auto p-6">
-        {loading ? (
-          <div className="text-center text-gray-500">
-            Ejecutando selección...
-          </div>
-        ) : (showResults || isSelectionLocked) ? (
-          // Bloques de Resultados: se muestran despues de presionar enter y si la ejecución fue exitosa
-          <div className="flex flex-col gap-6 max-w-lg mx-auto">
-            {/* Cantidad total de artículos revisados */}
-            <div className="p-4 border rounded-lg shadow-md bg-white text-center">
-              <h3 className="text-xl font-semibold mb-0 text-gray-600">
-                Totales: {acceptedCount + rejectedCount} artículos revisados
-              </h3>
+      < div className="flex-1 overflow-auto p-6" >
+        {
+          loading ? (
+            <div className="text-center text-gray-500" >
+              Ejecutando selección...
             </div>
-
-            {/* Bloque Aceptados */}
-            <div className="p-4 border rounded-lg shadow-md bg-white">
-              <h3 className="text-xl font-semibold mb-2 text-green-700">
-                Aceptados: {acceptedCount}
-              </h3>
-              <Link
-                to="/chairs/selection/reviewed-article-list"
-                search={{ status: 'accepted' }}
-                className={`w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 
-                  ${acceptedCount === 0
-                    ? 'bg-gray-200 border-gray-400 text-gray-500 disabled:pointer-events-none' // estilo gris deshabilitado
-                    : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground' // estilo habilitado
-                  }`}
-                disabled={acceptedCount === 0}
-              >
-                Ver Artículos Aceptados
-              </Link>
-            </div>
-
-            {/* Bloque Rechazados */}
-            <div className="p-4 border rounded-lg shadow-md bg-white">
-              <h3 className="text-xl font-semibold mb-2 text-red-700">
-                Rechazados: {rejectedCount}
-              </h3>
-              <Link
-                to="/chairs/selection/reviewed-article-list"
-                search={{ status: 'rejected' }}
-                className={`w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 
-                  ${rejectedCount === 0
-                    ? 'bg-gray-200 border-gray-400 text-gray-500 disabled:pointer-events-none'
-                    : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
-                  }`}
-                disabled={rejectedCount === 0}
-              >
-                Ver Artículos Rechazados
-              </Link>
-            </div>
-          </div>
-        ) : (
-          // Texto explicativo de la vista (este sería el estado inicial)
-          !isSelectionLocked && (
+          ) : (showResults || isSelectionLocked) ? (
+            // Bloques de Resultados: se muestran despues de presionar enter y si la ejecución fue exitosa
             <div className="flex flex-col gap-6 max-w-lg mx-auto">
-              {/* Bloque 1 - Corte Fijo (explicación) */}
-              <div className="p-6 border rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold mb-2 text-gray-700">
+              {/* Cantidad total de artículos revisados */}
+              <div className="p-4 border rounded-lg shadow-md bg-white text-center">
+                <h3 className="text-xl font-semibold mb-0 text-gray-600">
+                  Totales: {acceptedCount + rejectedCount} artículos revisados
+                </h3>
+              </div>
+
+              {/* Bloque Aceptados */}
+              <div className="p-4 border rounded-lg shadow-md bg-white">
+                <h3 className="text-xl font-semibold mb-2 text-green-700">
+                  Aceptados: {acceptedCount}
+                </h3>
+                <Link
+                  to="/chairs/selection/reviewed-article-list"
+                  search={{ status: 'accepted' }}
+                  className={`w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 
+                  ${acceptedCount === 0
+                      ? 'bg-gray-200 border-gray-400 text-gray-500 disabled:pointer-events-none' // estilo gris deshabilitado
+                      : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground' // estilo habilitado
+                    }`}
+                  disabled={acceptedCount === 0}
+                >
+                  Ver Artículos Aceptados
+                </Link>
+              </div>
+
+              {/* Bloque Rechazados */}
+              <div className="p-4 border rounded-lg shadow-md bg-white">
+                <h3 className="text-xl font-semibold mb-2 text-red-700">
+                  Rechazados: {rejectedCount}
+                </h3>
+                <Link
+                  to="/chairs/selection/reviewed-article-list"
+                  search={{ status: 'rejected' }}
+                  className={`w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 
+                  ${rejectedCount === 0
+                      ? 'bg-gray-200 border-gray-400 text-gray-500 disabled:pointer-events-none'
+                      : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                    }`}
+                  disabled={rejectedCount === 0}
+                >
+                  Ver Artículos Rechazados
+                </Link>
+              </div>
+            </div>
+          ) : (
+            // Explicacion de cada metodo (este sería el estado inicial)
+            <div className="flex flex-col gap-6 max-w-xl mx-auto w-full px-2">
+
+              {/* Botón 1: Corte Fijo */}
+              <Button
+                variant="outline"
+                onClick={() => handleMethodClick('cutoff')}
+                className={`h-auto w-full p-6 flex flex-col items-start text-left border-2 transition-all whitespace-normal ${selectedMethod === 'cutoff'
+                  ? 'bg-zinc-300 border-zinc-500' // Gris cuando el metodo esta seleccionado
+                  : 'bg-white border-gray-200 hover:bg-zinc-50' // Blanco no-seleccionado
+                  }`}
+              >
+                <h3 className="text-xl font-bold mb-2 text-slate-800">
                   Corte Fijo (Porcentaje)
                 </h3>
-                <p className="text-gray-500 text-justify">
-                  Acepta el porcentaje de envíos ingresado (los mejores primero)
+                <p className="text-base text-slate-600 leading-relaxed">
+                  Acepta el porcentaje de envíos ingresado (los mejores primero).
                 </p>
-                <span className="block mt-2 font-bold text-gray-600">
-                  <ul className="text-gray-600 list-disc list-inside space-y-1">
-                    <li>
-                      Valores: de 1% a 100%
-                    </li>
-                  </ul>
-                </span>
-              </div>
 
-              {/* Bloque 2 - Mejor Puntaje (explicación) */}
-              <div className="p-8 border rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                {selectedMethod === 'cutoff' && (
+                  <div className="mt-6 w-full" onClick={(e) => e.stopPropagation()}>
+                    <label className="text-sm font-medium text-slate-700 mb-2 block">
+                      Ingresa el porcentaje:
+                    </label>
+                    <input
+                      type="number"
+                      value={localInputValue}
+                      onChange={(e) => setLocalInputValue(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Valores entre 1% y 100%"
+                      className="w-full p-3 rounded-md border border-slate-300 text-black outline-none focus:ring-2 focus:ring-slate-400 bg-white"
+                      autoFocus // Enfoca el input automaticamente al seleccionar el meotodo
+                    />
+                    <p className="mt-2 text-sm text-slate-500">Presiona Enter para calcular</p>
+                  </div>
+                )}
+              </Button>
+
+              {/* Botón 2: Mejor Puntaje */}
+              <Button
+                variant="outline"
+                onClick={() => handleMethodClick('threshold')}
+                className={`h-auto w-full p-6 flex flex-col items-start text-left border-2 transition-all whitespace-normal ${selectedMethod === 'threshold'
+                  ? 'bg-zinc-300 border-zinc-500' // Gris cuando el metodo esta seleccionado
+                  : 'bg-white border-gray-200 hover:bg-zinc-50' // Blanco no-seleccionado
+                  }`}
+              >
+                <h3 className="text-xl font-bold mb-2 text-slate-800">
                   Mejor Puntaje (Umbral)
                 </h3>
-                <p className="text-gray-500 text-justify">
-                  Acepta artículos cuyo puntaje superen al valor ingresado
+                <p className="text-base text-slate-600 leading-relaxed">
+                  Acepta artículos cuyo puntaje superen al valor ingresado.
                 </p>
-                <span className="block mt-2 font-bold text-gray-600">
-                  <ul className="text-gray-600 list-disc list-inside space-y-1">
-                    <li>
-                      Valores: de -3 a 3
-                    </li>
-                  </ul>
-                </span>
-              </div>
+
+                {selectedMethod === 'threshold' && (
+                  <div className="mt-6 w-full" onClick={(e) => e.stopPropagation()}>
+                    <label className="text-sm font-medium text-slate-700 mb-2 block">
+                      Ingresa el puntaje mínimo:
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={localInputValue}
+                      onChange={(e) => setLocalInputValue(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Valores entre -3 y 3"
+                      className="w-full p-3 rounded-md border border-slate-300 text-black outline-none focus:ring-2 focus:ring-slate-400 bg-white"
+                      autoFocus
+                    />
+                    <p className="mt-2 text-sm text-slate-500">Presiona Enter para calcular</p>
+                  </div>
+                )}
+              </Button>
             </div>
-          )
-        )}
-      </div>
-    </div>
+          )}
+      </div >
+    </div >
   );
 };
