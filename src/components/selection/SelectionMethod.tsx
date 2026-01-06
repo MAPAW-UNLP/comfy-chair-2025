@@ -352,8 +352,8 @@ export const SelectionMethod = () => {
                 variant="outline"
                 onClick={() => handleMethodClick('cutoff')}
                 className={`h-auto w-full p-6 flex flex-col items-start text-left border-2 transition-all whitespace-normal ${selectedMethod === 'cutoff'
-                  ? 'bg-zinc-300 border-zinc-500' // Gris cuando el metodo esta seleccionado
-                  : 'bg-white border-gray-200 hover:bg-zinc-50' // Blanco no-seleccionado
+                  ? 'bg-zinc-300 border-zinc-500 hover:bg-zinc-300 hover:border-zinc-500' // Gris cuando el metodo esta seleccionado
+                  : 'bg-white border-gray-200 hover:bg-white hover:border-gray-200' // Blanco no-seleccionado
                   }`}
               >
                 <h3 className="text-xl font-bold mb-2 text-slate-800">
@@ -387,8 +387,8 @@ export const SelectionMethod = () => {
                 variant="outline"
                 onClick={() => handleMethodClick('threshold')}
                 className={`h-auto w-full p-6 flex flex-col items-start text-left border-2 transition-all whitespace-normal ${selectedMethod === 'threshold'
-                  ? 'bg-zinc-300 border-zinc-500' // Gris cuando el metodo esta seleccionado
-                  : 'bg-white border-gray-200 hover:bg-zinc-50' // Blanco no-seleccionado
+                  ? 'bg-zinc-300 border-zinc-500 hover:bg-zinc-300 hover:border-zinc-500' // Gris cuando el metodo esta seleccionado
+                  : 'bg-white border-gray-200 hover:bg-white hover:border-gray-200' // Blanco no-seleccionado
                   }`}
               >
                 <h3 className="text-xl font-bold mb-2 text-slate-800">
