@@ -42,8 +42,9 @@ const RootLayoutContent = () => {
       { to: '/article/view', label: 'Articulos' },
     ],
     chair: [
-      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
-      { to: '/article/select', label: 'Asignar Revisor' },
+      { to: '/article/select', label: 'Articulos a Asignar' },
+      { to: '/review/chair/reviewed', label: 'Articulos Revisados' },
+      { to: '/chairs/selection/selection-method', label: 'Seleccionar Corte de Sesión' },
     ],
     admin: [
       { to: '/conference/view', label: 'Conferencias' },
@@ -66,8 +67,7 @@ const RootLayoutContent = () => {
       { to: '/reviewer/', label: 'Revisor' },
       { to: '/conference/view', label: 'Conferencias' },
       { to: '/article/view', label: 'Articulos' },
-      { to: '/article/select', label: 'Asignar Revisor' },
-      { to: '/chairs/selection/session-list', label: 'Seleccionar corte' },
+      { to: '/chairs/select-session', label: 'Chair' },
       { to: '/reviewer/bidding', label: 'Bidding' },
       ...commonAuthLinks,
     ];
